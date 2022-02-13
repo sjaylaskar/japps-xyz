@@ -1,0 +1,26 @@
+location:
+Country
+City
+
+event:
+Event
+
+theatre:
+Theatre
+Auditorium
+AuditoriumSeat
+
+show:
+Show [...eventId, auditoriumId,...]
+ShowSeat [auditoriumSeatId, amount, showId]
+
+booking:
+Booking [getShowSeats(), showId...]
+Payment
+
+user:
+User
+
+NoSQL:
+EventData
+Comment
