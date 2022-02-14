@@ -5,11 +5,14 @@
 */
 package com.xyz.apps.ticketeer.location;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
+
+import com.xyz.apps.ticketeer.model.DtoList;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -19,10 +22,46 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(force = true)
-@AllArgsConstructor
-public class CityDtoList {
+public class CityDtoList extends DtoList<CityDto> {
 
     /** The city dtos. */
-    private final List<CityDto> cityDtos;
+    private final List<CityDto> cityDtos = new ArrayList<>();
+
+    /**
+     * Instantiates a new city dto list.
+     */
+    CityDtoList() {
+
+    }
+
+    /**
+     * Instantiates a new city dto list.
+     *
+     * @param cityDtos the city dtos
+     */
+    CityDtoList(final List<CityDto> cityDtos) {
+        this.cityDtos.addAll(cityDtos);
+    }
+
+    /**
+     * Of.
+     *
+     * @param cityDtos the city dtos
+     * @return the city dto list
+     */
+    static CityDtoList of(final List<CityDto> cityDtos) {
+        if (CollectionUtils.isEmpty(cityDtos)) {
+            return new CityDtoList();
+        }
+        return new CityDtoList(cityDtos);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected List<CityDto> dtos() {
+
+        return cityDtos;
+    }
 }

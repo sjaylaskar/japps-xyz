@@ -65,7 +65,7 @@ public class CityModelMapper extends AbstractModelMapper {
      * To dtos.
      *
      * @param cities the cities
-     * @return the list of cities.S
+     * @return the list of cities.
      */
     protected List<CityDto> toDtos(final List<City> cities) {
         if (CollectionUtils.isEmpty(cities)) {
@@ -74,4 +74,5 @@ public class CityModelMapper extends AbstractModelMapper {
 
         return cities.stream().map(this::toDto).collect(Collectors.toList());
     }
+
 }

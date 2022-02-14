@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /** The security enabled. */
     @Value("${security.enabled:false}")
     private boolean securityEnabled;
 

@@ -1,34 +1,32 @@
 /*
-* Id: Theatre.java 13-Feb-2022 4:30:24 pm SubhajoyLaskar
+* Id: Event.java 15-Feb-2022 3:00:51 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.theatre;
+package com.xyz.apps.ticketeer.event;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
-import com.xyz.apps.ticketeer.location.City;
+import com.xyz.apps.ticketeer.model.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+
 /**
- * The theatre.
+ * The Event.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
-@Entity
+@javax.persistence.Entity
 @Getter
 @Setter
 @ToString
-public class Theatre extends com.xyz.apps.ticketeer.model.Entity {
+public class Event extends Entity {
 
     /** The id. */
     @Id
@@ -37,10 +35,4 @@ public class Theatre extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The name. */
     private String name;
-
-    /** The city. */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "cityId", nullable = false, updatable = false)
-    private City city;
-
 }

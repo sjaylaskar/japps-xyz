@@ -8,7 +8,6 @@ package com.xyz.apps.ticketeer.location;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,8 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.xyz.apps.ticketeer.model.DtoList;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -54,9 +54,7 @@ public class CityController {
      * @return the city dto
      */
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> add(@RequestBody
-    final CityDto cityDto) {
+    public ResponseEntity<?> add(@RequestBody final CityDto cityDto) {
 
         try {
             log.info("CityDto: " + cityDto);
@@ -81,9 +79,7 @@ public class CityController {
      * @return the list of cities
      */
     @PostMapping("/add/multiple")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> addMultiple(@RequestBody
-    final CityDtoList cityDtoList) {
+    public ResponseEntity<?> addMultiple(@RequestBody final CityDtoList cityDtoList) {
 
         try {
             log.info("CityDto list: " + cityDtoList);
@@ -92,7 +88,7 @@ public class CityController {
             log.info("Cities added: " + citiesAdded);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new CityDtoList(cityModelMapper.toDtos(citiesAdded)));
+                .body(CityDtoList.of(cityModelMapper.toDtos(citiesAdded)));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -108,9 +104,7 @@ public class CityController {
      * @return the city dto
      */
     @PutMapping("/update")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> update(@RequestBody
-    final CityDto cityDto) {
+    public ResponseEntity<?> update(@RequestBody final CityDto cityDto) {
 
         try {
             log.info("CityDto: " + cityDto);
@@ -134,9 +128,7 @@ public class CityController {
      * @param cityDto the city dto
      */
     @DeleteMapping("/delete")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> delete(@RequestBody
-    final CityDto cityDto) {
+    public ResponseEntity<?> delete(@RequestBody final CityDto cityDto) {
 
         try {
             log.info("CityDto: " + cityDto);
@@ -158,9 +150,7 @@ public class CityController {
      * @param id the id
      */
     @DeleteMapping("/delete/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> deleteById(@PathVariable
-    final Long id) {
+    public ResponseEntity<?> deleteById(@PathVariable final Long id) {
 
         try {
             log.info("CityDto id: " + id);
@@ -181,9 +171,7 @@ public class CityController {
      * @param code the code
      */
     @DeleteMapping("/delete/code/{code}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> deleteByCode(@PathVariable
-    final String code) {
+    public ResponseEntity<?> deleteByCode(@PathVariable final String code) {
 
         try {
             log.info("CityDto code: " + code);
@@ -205,9 +193,7 @@ public class CityController {
      * @return the city by id
      */
     @GetMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
-    public ResponseEntity<?> getById(@PathVariable("id")
-    final Long id) {
+    public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
         try {
             final CityDto cityDto = cityModelMapper.toDto(cityService.findById(id));
@@ -228,9 +214,7 @@ public class CityController {
      * @return the city by code
      */
     @GetMapping(value = "code/{code}")
-    public ResponseEntity<?> getByCode(@PathVariable("code")
-    final String code) {
-
+    public ResponseEntity<?> getByCode(@PathVariable("code") final String code) {
         try {
             final CityDto cityDto = cityModelMapper.toDto(cityService.findByCode(code));
             return (cityDto != null)
@@ -251,15 +235,14 @@ public class CityController {
      * @return the city by name
      */
     @GetMapping(value = "name/{name}")
-    public ResponseEntity<?> getByName(@PathVariable("name")
-    final String name) {
+    public ResponseEntity<?> getByName(@PathVariable("name") final String name) {
 
         try {
-            final CityDto cityDto = cityModelMapper.toDto(cityService.findByName(name));
-            return (cityDto != null)
+            final CityDtoList cityDtoList = CityDtoList.of(cityModelMapper.toDtos(cityService.findByName(name)));
+            return (DtoList.isNotEmpty(cityDtoList))
                 ? ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(cityDto)
+                    .body(cityDtoList)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("City: " + name + " not found.");
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
@@ -274,15 +257,14 @@ public class CityController {
      * @return the by country code
      */
     @GetMapping(value = "country/{countryCode}")
-    public ResponseEntity<?> getByCountryCode(@PathVariable("countryCode")
-    final String countryCode) {
+    public ResponseEntity<?> getByCountryCode(@PathVariable("countryCode") final String countryCode) {
 
         try {
-            final List<CityDto> cityDtos = cityModelMapper.toDtos(cityService.findByCountryCode(countryCode));
-            return (CollectionUtils.isNotEmpty(cityDtos))
+            final CityDtoList cityDtoList = CityDtoList.of(cityModelMapper.toDtos(cityService.findByCountryCode(countryCode)));
+            return (DtoList.isNotEmpty(cityDtoList))
                 ? ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(cityDtos)
+                    .body(cityDtoList)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cities not found for country: " + countryCode);
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
@@ -297,15 +279,14 @@ public class CityController {
      * @return the by country id
      */
     @GetMapping(value = "country/{countryId}")
-    public ResponseEntity<?> getByCountryId(@PathVariable("countryId")
-    final Long countryId) {
+    public ResponseEntity<?> getByCountryId(@PathVariable("countryId") final Long countryId) {
 
         try {
-            final List<CityDto> cityDtos = cityModelMapper.toDtos(cityService.findByCountry(countryId));
-            return (CollectionUtils.isNotEmpty(cityDtos))
+            final CityDtoList cityDtoList = CityDtoList.of(cityModelMapper.toDtos(cityService.findByCountry(countryId)));
+            return (DtoList.isNotEmpty(cityDtoList))
                 ? ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(cityDtos)
+                    .body(cityDtoList)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cities not found for country: " + countryId);
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
@@ -322,11 +303,11 @@ public class CityController {
     public ResponseEntity<?> all() {
 
         try {
-            final List<CityDto> cityDtos = cityService.findAll().stream().map(cityModelMapper::toDto).collect(Collectors.toList());
-            return (CollectionUtils.isNotEmpty(cityDtos))
+            final CityDtoList cityDtoList = CityDtoList.of(cityService.findAll().stream().map(cityModelMapper::toDto).collect(Collectors.toList()));
+            return (DtoList.isNotEmpty(cityDtoList))
                 ? ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(cityDtos)
+                    .body(cityDtoList)
                 : ResponseEntity.status(HttpStatus.NO_CONTENT).body("No cities found.");
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities. Error: "

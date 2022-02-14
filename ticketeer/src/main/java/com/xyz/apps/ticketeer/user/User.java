@@ -10,8 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.xyz.apps.ticketeer.model.AbstractEntity;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -26,7 +24,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class User extends AbstractEntity {
+public class User extends com.xyz.apps.ticketeer.model.Entity {
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

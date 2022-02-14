@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xyz.apps.ticketeer.model.DtoList;
+
 import lombok.extern.log4j.Log4j2;
 
 
@@ -53,9 +55,7 @@ public class CountryController {
      * @return the country dto
      */
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> add(@RequestBody
-    final CountryDto countryDto) {
+    public ResponseEntity<?> add(@RequestBody final CountryDto countryDto) {
 
         try {
             log.info("CountryDto: " + countryDto);
@@ -81,9 +81,7 @@ public class CountryController {
      * @return the list of countries
      */
     @PostMapping("/add/multiple")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> addMultiple(@RequestBody
-    final CountryDtoList countryDtoList) {
+    public ResponseEntity<?> addMultiple(@RequestBody final CountryDtoList countryDtoList) {
 
         try {
             log.info("CountryDto list: " + countryDtoList);
@@ -92,7 +90,7 @@ public class CountryController {
             log.info("Countries added: " + countriesAdded);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new CountryDtoList(countryModelMapper.toDtos(countriesAdded)));
+                .body(CountryDtoList.of(countryModelMapper.toDtos(countriesAdded)));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -109,14 +107,22 @@ public class CountryController {
      */
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public CountryDto update(@RequestBody
-    final CountryDto countryDto) {
+    public ResponseEntity<?> update(@RequestBody final CountryDto countryDto) {
 
-        log.info("CountryDto: " + countryDto);
-        final Country country = countryModelMapper.toEntity(countryDto);
-        final Country countryUpdated = countryService.update(country);
-        log.info("Country updated: " + countryUpdated);
-        return countryModelMapper.toDto(countryUpdated);
+        try {
+            log.info("CountryDto: " + countryDto);
+            final Country country = countryModelMapper.toEntity(countryDto);
+            final Country countryUpdated = countryService.update(country);
+            log.info("Country updated: " + countryUpdated);
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(countryModelMapper.toDto(countryUpdated));
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to update country: " + countryDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -125,14 +131,20 @@ public class CountryController {
      * @param countryDto the country dto
      */
     @DeleteMapping("/delete")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void delete(@RequestBody
-    final CountryDto countryDto) {
+    public ResponseEntity<?> delete(@RequestBody final CountryDto countryDto) {
 
-        log.info("CountryDto: " + countryDto);
-        final Country country = countryModelMapper.toEntity(countryDto);
-        countryService.delete(country);
-        log.info("Country deleted: " + countryDto);
+        try {
+            log.info("CountryDto: " + countryDto);
+            final Country country = countryModelMapper.toEntity(countryDto);
+            countryService.delete(country);
+            log.info("Country deleted: " + countryDto);
+            return ResponseEntity.accepted().body("Deleted country: " + countryDto);
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to delete country: " + countryDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -141,13 +153,20 @@ public class CountryController {
      * @param id the id
      */
     @DeleteMapping("/delete/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteById(@PathVariable
-    final Long id) {
+    public ResponseEntity<?> deleteById(@PathVariable final Long id) {
 
-        log.info("CountryDto id: " + id);
-        countryService.deleteById(id);
-        log.info("Country deleted: " + id);
+        try {
+
+            log.info("CountryDto id: " + id);
+            countryService.deleteById(id);
+            log.info("Country deleted: " + id);
+            return ResponseEntity.accepted().body("Deleted country: " + id);
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to delete country: " + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -157,12 +176,19 @@ public class CountryController {
      */
     @DeleteMapping("/delete/code/{code}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteByCode(@PathVariable
-    final String code) {
+    public ResponseEntity<?> deleteByCode(@PathVariable final String code) {
 
-        log.info("CountryDto code: " + code);
-        countryService.deleteByCode(code);
-        log.info("Country deleted: " + code);
+        try {
+            log.info("CountryDto code: " + code);
+            countryService.deleteByCode(code);
+            log.info("Country deleted: " + code);
+            return ResponseEntity.accepted().body("Deleted country: " + code);
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to delete country: " + code + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -171,13 +197,19 @@ public class CountryController {
      * @param name the name
      */
     @DeleteMapping("/delete/name/{name}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteByName(@PathVariable
-    final String name) {
+    public ResponseEntity<?> deleteByName(@PathVariable final String name) {
 
-        log.info("CountryDto name: " + name);
-        countryService.deleteByName(name);
-        log.info("Country deleted: " + name);
+        try {
+            log.info("CountryDto name: " + name);
+            countryService.deleteByName(name);
+            log.info("Country deleted: " + name);
+            return ResponseEntity.accepted().body("Deleted country: " + name);
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to delete country: " + name + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -187,10 +219,18 @@ public class CountryController {
      * @return the country by id
      */
     @GetMapping(value = "/{id}")
-    public CountryDto getById(@PathVariable("id")
-    final Long id) {
+    public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
-        return countryModelMapper.toDto(countryService.findById(id));
+        try {
+            final CountryDto countryDto = countryModelMapper.toDto(countryService.findById(id));
+            return (countryDto != null)
+                ? ResponseEntity.status(HttpStatus.FOUND)
+                    .body(countryDto)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Country: " + id + " not found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find country: "
+                + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -200,10 +240,19 @@ public class CountryController {
      * @return the country by code
      */
     @GetMapping(value = "code/{code}")
-    public CountryDto getByCode(@PathVariable("code")
-    final String code) {
+    public ResponseEntity<?> getByCode(@PathVariable("code") final String code) {
 
-        return countryModelMapper.toDto(countryService.findByCode(code));
+        try {
+            final CountryDto countryDto = countryModelMapper.toDto(countryService.findByCode(code));
+            return (countryDto != null)
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(countryDto)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Country: " + code + " not found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find country: "
+                + code + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -213,10 +262,20 @@ public class CountryController {
      * @return the country by name
      */
     @GetMapping(value = "name/{name}")
-    public CountryDto getByName(@PathVariable("name")
-    final String name) {
+    public ResponseEntity<?> getByName(@PathVariable("name") final String name) {
 
-        return countryModelMapper.toDto(countryService.findByName(name));
+        try {
+            final CountryDto countryDto = countryModelMapper.toDto(countryService.findByName(name));
+            return (countryDto != null)
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(countryDto)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Country: " + name + " not found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find country: "
+                + name + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+
     }
 
     /**
@@ -225,8 +284,17 @@ public class CountryController {
      * @return the list
      */
     @GetMapping("/all")
-    public List<CountryDto> all() {
-
-        return countryService.findAll().stream().map(countryModelMapper::toDto).collect(Collectors.toList());
+    public ResponseEntity<?> all() {
+        try {
+            final CountryDtoList countryDtoList = CountryDtoList.of(countryService.findAll().stream().map(countryModelMapper::toDto).collect(Collectors.toList()));
+            return (DtoList.isNotEmpty(countryDtoList))
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(countryDtoList)
+                : ResponseEntity.status(HttpStatus.NO_CONTENT).body("No cities found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities. Error: "
+                + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 }

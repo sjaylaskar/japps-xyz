@@ -13,8 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.xyz.apps.ticketeer.model.AbstractEntity;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -30,8 +28,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class City extends AbstractEntity {
-    /** The id. */
+public class City extends com.xyz.apps.ticketeer.model.Entity {
+
+    /** The city id. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

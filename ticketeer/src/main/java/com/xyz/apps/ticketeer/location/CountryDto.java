@@ -5,7 +5,7 @@
 */
 package com.xyz.apps.ticketeer.location;
 
-import com.xyz.apps.ticketeer.model.AbstractDto;
+import com.xyz.apps.ticketeer.model.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +20,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CountryDto extends AbstractDto {
+public class CountryDto extends Dto<Country> {
 
     /** The code. */
     private String code;

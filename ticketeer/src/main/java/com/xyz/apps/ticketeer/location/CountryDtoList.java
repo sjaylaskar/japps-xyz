@@ -5,11 +5,14 @@
 */
 package com.xyz.apps.ticketeer.location;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
+
+import com.xyz.apps.ticketeer.model.DtoList;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -20,10 +23,48 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(force = true)
-@AllArgsConstructor
-public class CountryDtoList {
+public class CountryDtoList extends DtoList<CountryDto> {
 
     /** The country dtos. */
-    private final List<CountryDto> countryDtos;
+    private final List<CountryDto> countryDtos = new ArrayList<>();
+
+    /**
+     * Instantiates a new country dto list.
+     */
+    public CountryDtoList() {
+
+    }
+
+    /**
+     * Instantiates a new country dto list.
+     *
+     * @param countryDtos the country dtos
+     */
+    public CountryDtoList(final List<CountryDto> countryDtos) {
+        this.countryDtos.addAll(countryDtos);
+    }
+
+    /**
+     * Of.
+     *
+     * @param countryDtos the country dtos
+     * @return the country dto list
+     */
+    static CountryDtoList of(final List<CountryDto> countryDtos) {
+        if (CollectionUtils.isEmpty(countryDtos)) {
+            return new CountryDtoList();
+        }
+        return new CountryDtoList(countryDtos);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected List<CountryDto> dtos() {
+
+        return countryDtos;
+    }
+
+
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 
@@ -31,12 +32,12 @@ public interface CityRepository extends JpaRepository<City, Long> {
     City findByCode(final String code);
 
     /**
-     * Finds the by name.
+     * Finds the cities by name.
      *
      * @param name the name
-     * @return the city
+     * @return the citites
      */
-    City findByName(final String name);
+    List<City> findByName(final String name);
 
     /**
      * Finds the cities by country.
@@ -44,6 +45,7 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param countryId the country id
      * @return the list of cities
      */
+    @Query("select c from City c where c.countryId = :countryId")
     List<City> findByCountry(final Long countryId);
 
     /**
@@ -52,7 +54,7 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param code the code
      */
     @Transactional
-    void deleteByCode(String code);
+    void deleteByCode(final String code);
 
     /**
      * Finds the by country code.
@@ -60,6 +62,7 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param countryCode the country code
      * @return the list
      */
-    List<City> findByCountryCode(String countryCode);
+    @Query("select c from City c Join Country cn on c.countryId = cn.id where cn.code = :countryCode")
+    List<City> findByCountryCode(final String countryCode);
 
 }

@@ -18,7 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public abstract class AbstractDto {
+public class Dto<T extends Entity> {
 
-    protected Long id;
+    public Long id;
 }

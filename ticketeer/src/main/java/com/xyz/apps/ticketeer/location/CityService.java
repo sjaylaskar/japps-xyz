@@ -109,12 +109,12 @@ public class CityService {
     }
 
     /**
-     * Finds the city by name.
+     * Finds the cities by name.
      *
      * @param name the name
-     * @return the city
+     * @return the cities
      */
-    public City findByName(final String name) {
+    public List<City> findByName(final String name) {
 
         return cityRepository.findByName(name);
     }
