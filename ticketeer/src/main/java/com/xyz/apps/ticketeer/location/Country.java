@@ -7,6 +7,9 @@ package com.xyz.apps.ticketeer.location;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import com.xyz.apps.ticketeer.model.AbstractEntity;
 
@@ -26,6 +29,11 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Country extends AbstractEntity {
+
+    /** The id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     /** The code. */
     @Column(unique = true, nullable = false)

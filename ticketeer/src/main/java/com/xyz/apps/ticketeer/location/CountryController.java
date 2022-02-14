@@ -61,6 +61,22 @@ public class CountryController {
     }
 
     /**
+     * Adds multiple.
+     *
+     * @param countryDtos the country dtos
+     * @return the list of countries
+     */
+    @PostMapping("/add/multiple")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<CountryDto> addMultiple(@RequestBody final List<CountryDto> countryDtos) {
+        log.info("CountryDtos: " + countryDtos);
+        final List<Country> countries = countryModelMapper.toEntities(countryDtos);
+        final List<Country> countriesAdded = countryService.addAll(countries);
+        log.info("Countries added: " + countriesAdded);
+        return countryModelMapper.toDtos(countriesAdded);
+    }
+
+    /**
      * Updates the country.
      *
      * @param countryDto the country dto
@@ -81,30 +97,59 @@ public class CountryController {
      *
      * @param countryDto the country dto
      */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void delete(@RequestBody final CountryDto countryDto) {
         log.info("CountryDto: " + countryDto);
         final Country country = countryModelMapper.toEntity(countryDto);
         countryService.delete(country);
+        log.info("Country deleted: " + countryDto);
     }
 
     /**
-     * Delete.
+     * Delete by id.
      *
      * @param id the id
      */
     @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void deleteById(@PathVariable final Long id) {
         log.info("CountryDto id: " + id);
         countryService.deleteById(id);
-        log.info("Country deleted.");
+        log.info("Country deleted: " + id);
+    }
+
+    /**
+     * Delete by code.
+     *
+     * @param code the code
+     */
+    @DeleteMapping("/delete/code/{code}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteByCode(@PathVariable final String code) {
+        log.info("CountryDto code: " + code);
+        countryService.deleteByCode(code);
+        log.info("Country deleted: " + code);
+    }
+
+    /**
+     * Delete by name.
+     *
+     * @param name the name
+     */
+    @DeleteMapping("/delete/name/{name}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteByName(@PathVariable final String name) {
+        log.info("CountryDto name: " + name);
+        countryService.deleteByName(name);
+        log.info("Country deleted: " + name);
     }
 
     /**
      * Gets the country by id.
      *
      * @param id the id
-     * @return the by id
+     * @return the country by id
      */
     @GetMapping(value = "/{id}")
     public CountryDto getById(@PathVariable("id") final Long id) {
@@ -112,24 +157,24 @@ public class CountryController {
     }
 
     /**
-     * Gets the by code.
+     * Gets the country by code.
      *
      * @param code the code
-     * @return the by code
+     * @return the country by code
      */
-    @GetMapping(value = "/{code}")
-    public CountryDto getByCode(@PathVariable("id") final String code) {
+    @GetMapping(value = "code/{code}")
+    public CountryDto getByCode(@PathVariable("code") final String code) {
         return countryModelMapper.toDto(countryService.findByCode(code));
     }
 
     /**
-     * Gets the by name.
+     * Gets the country by name.
      *
      * @param name the name
-     * @return the by name
+     * @return the country by name
      */
-    @GetMapping(value = "/{name}")
-    public CountryDto getByName(@PathVariable("id") final String name) {
+    @GetMapping(value = "name/{name}")
+    public CountryDto getByName(@PathVariable("name") final String name) {
         return countryModelMapper.toDto(countryService.findByName(name));
     }
 

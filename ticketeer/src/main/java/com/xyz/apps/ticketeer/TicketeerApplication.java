@@ -3,16 +3,19 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.starter;
+package com.xyz.apps.ticketeer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+
+import com.xyz.apps.ticketeer.config.AppConfig;
 
 /**
  * The ticketeer application.
  */
-@SpringBootApplication
-public class TicketeerApplication {
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+public class TicketeerApplication implements AppConfig {
 
 	/**
 	 * The main method.

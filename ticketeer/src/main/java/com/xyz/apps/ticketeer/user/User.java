@@ -6,6 +6,9 @@
 package com.xyz.apps.ticketeer.user;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import com.xyz.apps.ticketeer.model.AbstractEntity;
 
@@ -20,26 +23,14 @@ import lombok.ToString;
  * @version 1.0
  */
 @Entity
-
-/**
- * Gets the email.
- *
- * @return the email
- */
 @Getter
-
-/**
- * Sets the email.
- *
- * @param email the new email
- */
 @Setter
-
-/**
- * {@inheritDoc}
- */
 @ToString
 public class User extends AbstractEntity {
+    /** The id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
 
     /** The username. */
     private String username;
@@ -55,4 +46,7 @@ public class User extends AbstractEntity {
 
     /** The email. */
     private String email;
+
+    /** The phone number. */
+    private String phoneNumber;
 }

@@ -7,6 +7,9 @@ package com.xyz.apps.ticketeer.location;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -28,6 +31,10 @@ import lombok.ToString;
 @Setter
 @ToString
 public class City extends AbstractEntity {
+    /** The id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     /** The code. */
     @Column(unique = true, nullable = false)
@@ -38,6 +45,6 @@ public class City extends AbstractEntity {
     private String name;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id", nullable = false, updatable = false)
+    @JoinColumn(name = "country_id", nullable = false, updatable = false)
     private Country country;
 }

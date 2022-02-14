@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.location;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -33,5 +35,21 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
      * @return the country
      */
     Country findByName(final String name);
+
+    /**
+     * Delete by code.
+     *
+     * @param code the code
+     */
+    @Transactional
+    void deleteByCode(final String code);
+
+    /**
+     * Delete by name.
+     *
+     * @param name the name
+     */
+    @Transactional
+    void deleteByName(final String name);
 
 }
