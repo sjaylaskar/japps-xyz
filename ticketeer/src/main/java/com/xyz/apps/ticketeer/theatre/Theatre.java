@@ -41,7 +41,7 @@ public class Theatre extends AbstractEntity {
 
     /** The city. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "city_id", nullable = false, updatable = false)
+    @JoinColumn(name = "cityId", nullable = false, updatable = false)
     private City city;
 
 }

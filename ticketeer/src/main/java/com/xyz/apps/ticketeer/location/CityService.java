@@ -122,12 +122,23 @@ public class CityService {
     /**
      * Finds the cities by country.
      *
-     * @param country the country
+     * @param countryId the country id
      * @return the list of cities
      */
-    public List<City> findByCountry(final Country country) {
+    public List<City> findByCountry(final Long countryId) {
 
-        return cityRepository.findByCountry(country);
+        return cityRepository.findByCountry(countryId);
+    }
+
+    /**
+     * Finds the by country code.
+     *
+     * @param countryCode the country code
+     * @return the list of cities
+     */
+    public List<City> findByCountryCode(final String countryCode) {
+
+        return cityRepository.findByCountryCode(countryCode);
     }
 
     /**

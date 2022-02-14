@@ -41,10 +41,10 @@ public interface CityRepository extends JpaRepository<City, Long> {
     /**
      * Finds the cities by country.
      *
-     * @param country the country
+     * @param countryId the country id
      * @return the list of cities
      */
-    List<City> findByCountry(final Country country);
+    List<City> findByCountry(final Long countryId);
 
     /**
      * Delete by code.
@@ -53,5 +53,13 @@ public interface CityRepository extends JpaRepository<City, Long> {
      */
     @Transactional
     void deleteByCode(String code);
+
+    /**
+     * Finds the by country code.
+     *
+     * @param countryCode the country code
+     * @return the list
+     */
+    List<City> findByCountryCode(String countryCode);
 
 }

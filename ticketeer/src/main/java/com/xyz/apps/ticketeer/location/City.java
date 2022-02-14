@@ -45,6 +45,6 @@ public class City extends AbstractEntity {
     private String name;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "country_id", nullable = false, updatable = false)
+    @JoinColumn(name = "countryId", nullable = false, updatable = false)
     private Country country;
 }

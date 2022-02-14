@@ -5,7 +5,7 @@
  */
 package com.xyz.apps.ticketeer.location;
 
-import com.xyz.apps.ticketeer.model.AbstractEntity;
+import com.xyz.apps.ticketeer.model.AbstractDto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +21,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CityDto extends AbstractEntity {
+public class CityDto extends AbstractDto {
 
     /** The code. */
     private String code;

@@ -1,13 +1,15 @@
 /*
-* Id: CityController.java 14-Feb-2022 3:12:26 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: CityController.java 14-Feb-2022 3:12:26 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.location;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +39,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class CityController {
 
+    /** The city service. */
     @Autowired
     private CityService cityService;
 
+    /** The city model mapper. */
     @Autowired
     private CityModelMapper cityModelMapper;
 
@@ -51,14 +55,23 @@ public class CityController {
      */
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CityDto> add(@RequestBody final CityDto cityDto) {
-        log.info("CityDto: " + cityDto);
-        final City city = cityModelMapper.toEntity(cityDto);
-        final City cityAdded = cityService.add(city);
-        log.info("City added: " + cityAdded);
-        return ResponseEntity
+    public ResponseEntity<?> add(@RequestBody
+    final CityDto cityDto) {
+
+        try {
+            log.info("CityDto: " + cityDto);
+            final City city = cityModelMapper.toEntity(cityDto);
+            final City cityAdded = cityService.add(city);
+            log.info("City added: " + cityAdded);
+            return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(cityModelMapper.toDto(cityAdded));
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to add city: " + cityDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -69,14 +82,23 @@ public class CityController {
      */
     @PostMapping("/add/multiple")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CityDtoList> addMultiple(@RequestBody final CityDtoList cityDtoList) {
-        log.info("CityDto list: " + cityDtoList);
-        final List<City> cities = cityModelMapper.toEntities(cityDtoList.getCityDtos());
-        final List<City> citiesAdded = cityService.addAll(cities);
-        log.info("Cities added: " + citiesAdded);
-        return ResponseEntity
+    public ResponseEntity<?> addMultiple(@RequestBody
+    final CityDtoList cityDtoList) {
+
+        try {
+            log.info("CityDto list: " + cityDtoList);
+            final List<City> cities = cityModelMapper.toEntities(cityDtoList.getCityDtos());
+            final List<City> citiesAdded = cityService.addAll(cities);
+            log.info("Cities added: " + citiesAdded);
+            return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new CityDtoList(cityModelMapper.toDtos(citiesAdded)));
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to add cities: " + cityDtoList + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -87,14 +109,23 @@ public class CityController {
      */
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CityDto> update(@RequestBody final CityDto cityDto) {
-        log.info("CityDto: " + cityDto);
-        final City city = cityModelMapper.toEntity(cityDto);
-        final City cityUpdated = cityService.update(city);
-        log.info("City updated: " + cityUpdated);
-        return  ResponseEntity
+    public ResponseEntity<?> update(@RequestBody
+    final CityDto cityDto) {
+
+        try {
+            log.info("CityDto: " + cityDto);
+            final City city = cityModelMapper.toEntity(cityDto);
+            final City cityUpdated = cityService.update(city);
+            log.info("City updated: " + cityUpdated);
+            return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(cityModelMapper.toDto(cityUpdated));
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to update city: " + cityDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -104,11 +135,21 @@ public class CityController {
      */
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void delete(@RequestBody final CityDto cityDto) {
-        log.info("CityDto: " + cityDto);
-        final City city = cityModelMapper.toEntity(cityDto);
-        cityService.delete(city);
-        log.info("City deleted: " + cityDto);
+    public ResponseEntity<?> delete(@RequestBody
+    final CityDto cityDto) {
+
+        try {
+            log.info("CityDto: " + cityDto);
+            final City city = cityModelMapper.toEntity(cityDto);
+            cityService.delete(city);
+            log.info("City deleted: " + cityDto);
+            return ResponseEntity.accepted().body("Deleted city: " + cityDto);
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to delete city: " + cityDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -118,10 +159,20 @@ public class CityController {
      */
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteById(@PathVariable final Long id) {
-        log.info("CityDto id: " + id);
-        cityService.deleteById(id);
-        log.info("City deleted: " + id);
+    public ResponseEntity<?> deleteById(@PathVariable
+    final Long id) {
+
+        try {
+            log.info("CityDto id: " + id);
+            cityService.deleteById(id);
+            log.info("City deleted: " + id);
+            return ResponseEntity.accepted().body("Deleted city with id: " + id);
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to delete city with id: " + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -131,10 +182,20 @@ public class CityController {
      */
     @DeleteMapping("/delete/code/{code}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteByCode(@PathVariable final String code) {
-        log.info("CityDto code: " + code);
-        cityService.deleteByCode(code);
-        log.info("City deleted: " + code);
+    public ResponseEntity<?> deleteByCode(@PathVariable
+    final String code) {
+
+        try {
+            log.info("CityDto code: " + code);
+            cityService.deleteByCode(code);
+            log.info("City deleted: " + code);
+            return ResponseEntity.accepted().body("Deleted city: " + code);
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to delete city: " + code + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -145,8 +206,19 @@ public class CityController {
      */
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.FOUND)
-    public CityDto getById(@PathVariable("id") final Long id) {
-        return cityModelMapper.toDto(cityService.findById(id));
+    public ResponseEntity<?> getById(@PathVariable("id")
+    final Long id) {
+
+        try {
+            final CityDto cityDto = cityModelMapper.toDto(cityService.findById(id));
+            return (cityDto != null)
+                ? ResponseEntity.status(HttpStatus.FOUND)
+                    .body(cityDto)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("City: " + id + " not found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
+                + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -156,8 +228,20 @@ public class CityController {
      * @return the city by code
      */
     @GetMapping(value = "code/{code}")
-    public CityDto getByCode(@PathVariable("code") final String code) {
-        return cityModelMapper.toDto(cityService.findByCode(code));
+    public ResponseEntity<?> getByCode(@PathVariable("code")
+    final String code) {
+
+        try {
+            final CityDto cityDto = cityModelMapper.toDto(cityService.findByCode(code));
+            return (cityDto != null)
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(cityDto)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("City: " + code + " not found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
+                + code + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -167,8 +251,66 @@ public class CityController {
      * @return the city by name
      */
     @GetMapping(value = "name/{name}")
-    public CityDto getByName(@PathVariable("name") final String name) {
-        return cityModelMapper.toDto(cityService.findByName(name));
+    public ResponseEntity<?> getByName(@PathVariable("name")
+    final String name) {
+
+        try {
+            final CityDto cityDto = cityModelMapper.toDto(cityService.findByName(name));
+            return (cityDto != null)
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(cityDto)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("City: " + name + " not found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
+                + name + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Gets the by country code.
+     *
+     * @param countryCode the country code
+     * @return the by country code
+     */
+    @GetMapping(value = "country/{countryCode}")
+    public ResponseEntity<?> getByCountryCode(@PathVariable("countryCode")
+    final String countryCode) {
+
+        try {
+            final List<CityDto> cityDtos = cityModelMapper.toDtos(cityService.findByCountryCode(countryCode));
+            return (CollectionUtils.isNotEmpty(cityDtos))
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(cityDtos)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cities not found for country: " + countryCode);
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
+                + countryCode + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Gets the by country id.
+     *
+     * @param countryId the country id
+     * @return the by country id
+     */
+    @GetMapping(value = "country/{countryId}")
+    public ResponseEntity<?> getByCountryId(@PathVariable("countryId")
+    final Long countryId) {
+
+        try {
+            final List<CityDto> cityDtos = cityModelMapper.toDtos(cityService.findByCountry(countryId));
+            return (CollectionUtils.isNotEmpty(cityDtos))
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(cityDtos)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cities not found for country: " + countryId);
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
+                + countryId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 
     /**
@@ -177,7 +319,18 @@ public class CityController {
      * @return the list
      */
     @GetMapping("/all")
-    public List<CityDto> all() {
-       return cityService.findAll().stream().map(cityModelMapper::toDto).collect(Collectors.toList());
+    public ResponseEntity<?> all() {
+
+        try {
+            final List<CityDto> cityDtos = cityService.findAll().stream().map(cityModelMapper::toDto).collect(Collectors.toList());
+            return (CollectionUtils.isNotEmpty(cityDtos))
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(cityDtos)
+                : ResponseEntity.status(HttpStatus.NO_CONTENT).body("No cities found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities. Error: "
+                + ExceptionUtils.getRootCauseMessage(exception));
+        }
     }
 }
