@@ -1,0 +1,57 @@
+http://localhost:8082/xyz/apps/ticketeer/api/country/add/multiple
+{
+    "countryDtos": [
+        {
+            "code": "NL",
+            "name": "Nederlands"
+        },
+        {
+            "code": "USA",
+            "name": "United States of America"
+        }
+    ]
+}
+
+http://localhost:8082/xyz/apps/ticketeer/api/city/add
+{
+    "code" : "SEC",
+    "name" : "Secunderabad",
+    "country" : {"id" : 1}
+}
+
+http://localhost:8082/xyz/apps/ticketeer/api/city/add/multiple
+
+{
+    "cityDtos": [
+        {
+            "code": "MUM",
+            "name": "Mumbai",
+            "country": {
+                "id": 1,
+                "code": "IN",
+                "name": "India"
+            }
+        },
+        {
+            "code": "CA",
+            "name": "California",
+            "country": {
+                "id": 5
+            }
+        },
+        {
+            "code": "ROT",
+            "name": "Rotterdam",
+            "country": {
+                "id": 4
+            }
+        }
+    ]
+}
+
+http://localhost:8082/xyz/apps/ticketeer/api/country/add
+{
+    "code" : "IN",
+    "name" : "India"
+}
+

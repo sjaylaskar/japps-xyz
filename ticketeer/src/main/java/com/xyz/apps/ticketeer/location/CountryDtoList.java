@@ -1,5 +1,5 @@
 /*
-* Id: CityList.java 14-Feb-2022 11:34:42 am SubhajoyLaskar
+* Id: CityDtoList.java 14-Feb-2022 11:37:31 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
@@ -9,21 +9,21 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 /**
- * The city list.
- *
- * @author Subhajoy Laskar
- * @version 1.0
+ * The country dto list.
  */
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class CityList {
+public class CountryDtoList {
 
-    /** The cities. */
-    private List<City> cities;
+    /** The country dtos. */
+    private final List<CountryDto> countryDtos;
 }
