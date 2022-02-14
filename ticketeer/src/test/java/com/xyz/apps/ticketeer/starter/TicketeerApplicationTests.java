@@ -1,4 +1,4 @@
-package com.xyz.apps.ticketeer;
+package com.xyz.apps.ticketeer.starter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
