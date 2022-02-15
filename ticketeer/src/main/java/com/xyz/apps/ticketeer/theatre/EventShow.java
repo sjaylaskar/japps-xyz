@@ -5,6 +5,10 @@
 */
 package com.xyz.apps.ticketeer.theatre;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import com.xyz.apps.ticketeer.model.Entity;
 
 import lombok.Getter;
@@ -23,4 +27,8 @@ import lombok.ToString;
 @ToString
 public class EventShow extends Entity {
 
+    /** The id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
 }

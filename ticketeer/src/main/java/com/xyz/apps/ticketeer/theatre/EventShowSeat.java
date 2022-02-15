@@ -5,6 +5,10 @@
 */
 package com.xyz.apps.ticketeer.theatre;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import com.xyz.apps.ticketeer.model.Entity;
 
 
@@ -14,6 +18,11 @@ import com.xyz.apps.ticketeer.model.Entity;
  * @author Subhajoy Laskar
  * @version 1.0
  */
+@javax.persistence.Entity
 public class EventShowSeat extends Entity {
 
+    /** The id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
 }

@@ -10,6 +10,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.log4j.Log4j2;
+
 
 /**
  * The city service.
@@ -18,11 +20,16 @@ import org.springframework.stereotype.Service;
  * @version 1.0
  */
 @Service
+@Log4j2
 public class CityService {
 
     /** The city repository. */
     @Autowired
     private CityRepository cityRepository;
+
+    /** The country repository. */
+    @Autowired
+    private CountryRepository countryRepository;
 
     /**
      * Adds the city.
@@ -124,10 +131,15 @@ public class CityService {
      *
      * @param countryId the country id
      * @return the list of cities
+     * @throws CountryNotFoundException in case the country is not found
      */
-    public List<City> findByCountry(final Long countryId) {
-
-        return cityRepository.findByCountry(countryId);
+    public List<City> findByCountry(final Long countryId) throws CountryNotFoundException {
+        final Country country = countryRepository.findById(countryId).orElse(null);
+        if (country == null) {
+            log.error("Country not found for id: " + countryId);
+            throw new CountryNotFoundException(countryId);
+        }
+        return cityRepository.findByCountry(country);
     }
 
     /**

@@ -8,6 +8,8 @@ package com.xyz.apps.ticketeer.location;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -279,7 +281,8 @@ public class CityController {
      * @return the by country id
      */
     @GetMapping(value = "country/{countryId}")
-    public ResponseEntity<?> getByCountryId(@PathVariable("countryId") final Long countryId) {
+    public ResponseEntity<?> getByCountryId(
+            @PathVariable("countryId") @NotNull(message = "Country id is required.") final Long countryId) {
 
         try {
             final CityDtoList cityDtoList = CityDtoList.of(cityModelMapper.toDtos(cityService.findByCountry(countryId)));

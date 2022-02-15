@@ -34,16 +34,6 @@ public abstract class DtoList<T extends Dto<?>> {
     }
 
     /**
-     * Checks if is empty.
-     *
-     * @param dtoList the dto list
-     * @return true, if is empty
-     */
-    public static <D extends Dto<?>> boolean isEmpty(final DtoList<D> dtoList) {
-        return (dtoList != null && CollectionUtils.isNotEmpty(dtoList.dtos()));
-    }
-
-    /**
      * Checks if is not empty.
      *
      * @param <D> the generic type
@@ -51,6 +41,18 @@ public abstract class DtoList<T extends Dto<?>> {
      * @return true, if is not empty
      */
     public static <D extends Dto<?>> boolean isNotEmpty(final DtoList<D> dtoList) {
-        return !isEmpty(dtoList);
+        return (dtoList != null && CollectionUtils.isNotEmpty(dtoList.dtos()));
+    }
+
+
+    /**
+     * Checks if is empty.
+     *
+     * @param <D> the generic type
+     * @param dtoList the dto list
+     * @return true, if is empty
+     */
+    public static <D extends Dto<?>> boolean isEmpty(final DtoList<D> dtoList) {
+        return !isNotEmpty(dtoList);
     }
 }

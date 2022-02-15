@@ -29,6 +29,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.enabled:false}")
     private boolean securityEnabled;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 
@@ -45,6 +48,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .roles("USER", "ADMIN");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(final WebSecurity web) throws Exception {
 

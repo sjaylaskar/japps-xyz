@@ -45,8 +45,8 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param countryId the country id
      * @return the list of cities
      */
-    @Query("select c from City c where c.countryId = :countryId")
-    List<City> findByCountry(final Long countryId);
+    @Query("select c from City c where c.country = :country")
+    List<City> findByCountry(final Country country);
 
     /**
      * Delete by code.
@@ -62,7 +62,8 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param countryCode the country code
      * @return the list
      */
-    @Query("select c from City c Join Country cn on c.countryId = cn.id where cn.code = :countryCode")
+    @Query(value = "select * from City c Join Country cn on c.country_id = cn.id where cn.code = :countryCode",
+           nativeQuery = true)
     List<City> findByCountryCode(final String countryCode);
 
 }

@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,13 +38,16 @@ public class City extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The code. */
     @Column(unique = true, nullable = false)
+    @NotNull(message = "City code is required.")
     private String code;
 
     /** The name. */
     @Column(nullable = false)
+    @NotNull(message = "City name is required.")
     private String name;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "countryId", nullable = false, updatable = false)
+    @NotNull(message = "Country is required for City.")
     private Country country;
 }
