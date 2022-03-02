@@ -39,7 +39,7 @@ public class EventShow extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
     private Long id;
 
     /** The date. */
@@ -59,17 +59,17 @@ public class EventShow extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The event venue. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "eventVenueId", nullable = false, updatable = false)
+    @JoinColumn(name = "eventVenueId", nullable = false)
     private EventVenue eventVenue;
 
     /** The auditorium. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "auditoriumId", nullable = false, updatable = false)
+    @JoinColumn(name = "auditoriumId", nullable = false)
     private Auditorium auditorium;
 
     /** The event. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "eventId", nullable = false, updatable = false)
+    @JoinColumn(name = "eventId", nullable = false)
     private Event event;
 
     /**

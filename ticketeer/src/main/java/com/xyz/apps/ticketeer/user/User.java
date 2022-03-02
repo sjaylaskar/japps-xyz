@@ -30,7 +30,7 @@ import lombok.ToString;
 public class User extends com.xyz.apps.ticketeer.model.Entity {
     /** The id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     private Long id;
 
     /** The username. */

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -18,11 +19,12 @@ import lombok.ToString;
  * @version 1.0
  */
 @Getter
+@Setter
 @ToString
 public class SeatRowPriceDtoList {
 
     /** The seat row price dtos. */
-    private final List<SeatRowPriceDto> seatRowPriceDtos = new ArrayList<>();
+    private List<SeatRowPriceDto> seatRowPriceDtos = new ArrayList<>();
 
     /**
      * Instantiates a new seat row price dto list.

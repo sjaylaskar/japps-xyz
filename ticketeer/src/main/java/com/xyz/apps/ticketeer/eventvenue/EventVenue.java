@@ -33,7 +33,7 @@ public class EventVenue extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_venue_seq")
     private Long id;
 
     /** The name. */
@@ -45,7 +45,7 @@ public class EventVenue extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The city. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "cityId", nullable = false, updatable = false)
+    @JoinColumn(name = "cityId", nullable = false)
     private City city;
     
     /**

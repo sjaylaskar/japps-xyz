@@ -6,16 +6,20 @@
 package com.xyz.apps.ticketeer.event;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.xyz.apps.ticketeer.model.DtoList;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -86,6 +90,26 @@ public class EventController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to add events: " + eventDtoList + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * All.
+     *
+     * @return the response entity
+     */
+    @GetMapping("/all")
+    public ResponseEntity<?> all() {
+        try {
+            final EventDtoList eventDtoList = EventDtoList.of(eventService.findAll().stream().map(eventModelMapper::toDto).collect(Collectors.toList()));
+            return (DtoList.isNotEmpty(eventDtoList))
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(eventDtoList)
+                : ResponseEntity.status(HttpStatus.NO_CONTENT).body("No events found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
+                + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 }

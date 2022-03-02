@@ -42,4 +42,14 @@ public class EventService {
     public List<Event> addAll(final List<Event> events) {
         return eventRepository.saveAll(events);
     }
+
+    /**
+     * Finds all events.
+     *
+     * @return the list
+     */
+    public List<Event> findAll() {
+
+        return eventRepository.findAll();
+    }
 }

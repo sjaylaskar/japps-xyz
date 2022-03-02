@@ -10,6 +10,10 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * The dto list.
  *
@@ -17,15 +21,18 @@ import org.apache.commons.collections4.CollectionUtils;
  * @version 1.0
  * @param <T> the generic type
  */
-public abstract class DtoList<T extends Dto<?>> {
+@Getter
+@Setter
+@ToString
+public class DtoList<T extends Dto<?>> {
 
     /** The dtos. */
-    protected final List<T> dtos = new ArrayList<>();
+    private List<T> dtos = new ArrayList<>();
 
     /**
      * Instantiates a new dto list.
      */
-    protected DtoList() {
+    public DtoList() {
 
     }
 
@@ -34,7 +41,7 @@ public abstract class DtoList<T extends Dto<?>> {
      *
      * @param dtos the dtos
      */
-    protected DtoList(final List<T> dtos) {
+    public DtoList(final List<T> dtos) {
         this.dtos.addAll(dtos);
     }
 

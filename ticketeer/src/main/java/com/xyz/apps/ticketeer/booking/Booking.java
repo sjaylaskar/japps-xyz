@@ -16,6 +16,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.xyz.apps.ticketeer.eventshow.EventShow;
 import com.xyz.apps.ticketeer.user.User;
@@ -38,7 +40,7 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_seq")
     private Long id;
 
     /** The booking time. */
@@ -53,13 +55,18 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
     /** The number of seats. */
     private int numberOfSeats;
 
+    @NotNull(message = "Amount cannot be null.")
+    @Min(value = 1, message = "Amount must be atleast 1.")
+    @Column(nullable = false)
+    private Double amount;
+
     /** The user. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "userId", nullable = false, updatable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
     /** The event show. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "eventShowId", nullable = false, updatable = false)
+    @JoinColumn(name = "eventShowId", nullable = false)
     private EventShow eventShow;
 }

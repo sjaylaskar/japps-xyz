@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.event;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,9 +30,10 @@ public class Event extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
     private Long id;
 
     /** The name. */
+    @Column(nullable = false)
     private String name;
 }

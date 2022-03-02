@@ -23,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class AbstractModelMapper<E extends Entity, D extends Dto<E>> {
 
+    /** The entity type class. */
     private Class<E> entityTypeClass;
 
+    /** The dto type class. */
     private Class<D> dtoTypeClass;
 
     /**

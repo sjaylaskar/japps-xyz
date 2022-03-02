@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -35,8 +36,13 @@ public class Payment extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq")
     private Long id;
+
+    @NotNull(message = "Payment amount cannot be null.")
+    @Min(value = 1, message = "Amount must be atleast 1.")
+    @Column(nullable = false)
+    private Double amount;
 
     /** The booking. */
     @NotNull(message = "Booking cannot be null.")

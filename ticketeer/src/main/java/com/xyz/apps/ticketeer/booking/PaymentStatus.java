@@ -18,5 +18,11 @@ public enum PaymentStatus {
     SUCCESS,
 
     /** The failure. */
-    FAILURE
+    FAILURE,
+
+    /** The on hold. */
+    ON_HOLD,
+
+    /** The refunded. */
+    REFUNDED
 }

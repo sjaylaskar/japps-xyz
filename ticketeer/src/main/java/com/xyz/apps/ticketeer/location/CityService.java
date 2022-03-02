@@ -38,7 +38,6 @@ public class CityService {
      * @return the city
      */
     public City add(final City city) {
-
         return cityRepository.save(city);
     }
 
@@ -59,7 +58,6 @@ public class CityService {
      * @return the city
      */
     public City update(final City city) {
-
         return cityRepository.save(city);
     }
 

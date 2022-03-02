@@ -2,6 +2,10 @@ http://localhost:8082/xyz/apps/ticketeer/api/country/add/multiple
 {
     "dtos": [
         {
+            "code": "IN",
+            "name": "India"
+        },
+        {
             "code": "NL",
             "name": "Nederlands"
         },
@@ -21,33 +25,57 @@ http://localhost:8082/xyz/apps/ticketeer/api/city/add
 
 http://localhost:8082/xyz/apps/ticketeer/api/city/add/multiple
 
+{"dtos" : [
 {
-    "dtos": [
-        {
-            "code": "MUM",
-            "name": "Mumbai",
-            "country": {
-                "id": 1,
-                "code": "IN",
-                "name": "India"
-            }
-        },
-        {
-            "code": "CA",
-            "name": "California",
-            "country": {
-                "id": 5
-            }
-        },
-        {
-            "code": "ROT",
-            "name": "Rotterdam",
-            "country": {
-                "id": 4
-            }
-        }
-    ]
+    "code" : "HYD",
+    "name" : "Hyderabad",
+    "country" : {"id" : 1}
+},
+{
+    "code" : "DEL",
+    "name" : "New Delhi",
+    "country" : {"id" : 1}
+},    
+{
+    "code" : "CA",
+    "name" : "California",
+    "country" : {"id" : 3}
+},
+{
+     "code" : "ROT",
+    "name" : "Rotterdam",
+    "country" : {"id" : 2}
+}]
 }
+
+http://localhost:8082/xyz/apps/ticketeer/api/eventvenue/add
+
+{
+    "name" : "PVR Sarath City",
+    "city" : {"id": 2},
+    "numberOfAuditoriums" : 3,
+    "auditoriumDetailsDtoList" : {
+        "auditoriumDetailsDtos" : [
+            {
+                "name" : "Screen A",
+                "numberOfRows" : 10,
+                "seatsPerRow" : 20
+            },
+            {
+                "name" : "Screen B",
+                "numberOfRows" : 12,
+                "seatsPerRow" : 10
+            },
+            {
+                "name" : "Screen C",
+                "numberOfRows" : 20,
+                "seatsPerRow" : 10
+            }
+        ]
+    }
+}
+
+
 
 http://localhost:8082/xyz/apps/ticketeer/api/country/add
 {

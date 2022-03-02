@@ -33,7 +33,7 @@ public class Auditorium extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "auditorium_seq")
     private Long id;
 
     /** The name. */
@@ -47,10 +47,8 @@ public class Auditorium extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The event venue. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "eventVenueId", nullable = false, updatable = false)
+    @JoinColumn(name = "eventVenueId", nullable = false)
     private EventVenue eventVenue;
-
-
 
     /**
      * Instantiates a new auditorium.

@@ -33,7 +33,7 @@ public class City extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The city id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_seq")
     private Long id;
 
     /** The code. */
@@ -47,7 +47,7 @@ public class City extends com.xyz.apps.ticketeer.model.Entity {
     private String name;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "countryId", nullable = false, updatable = false)
+    @JoinColumn(name = "countryId", nullable = false)
     @NotNull(message = "Country is required for City.")
     private Country country;
 }
