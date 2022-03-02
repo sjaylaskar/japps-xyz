@@ -18,4 +18,8 @@ import com.xyz.apps.ticketeer.model.AbstractModelMapper;
 @Component
 public class CityModelMapper extends AbstractModelMapper<City, CityDto> {
 
+    public CityModelMapper() {
+        super(City.class, CityDto.class);
+    }
+
 }

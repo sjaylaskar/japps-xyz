@@ -18,4 +18,10 @@ import com.xyz.apps.ticketeer.model.AbstractModelMapper;
 @Component
 public class EventVenueModelMapper extends AbstractModelMapper<EventVenue, EventVenueDto> {
 
+    public EventVenueModelMapper() {
+
+        super(EventVenue.class, EventVenueDto.class);
+    }
+
+
 }

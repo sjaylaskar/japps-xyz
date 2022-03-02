@@ -50,6 +50,8 @@ public class Auditorium extends com.xyz.apps.ticketeer.model.Entity {
     @JoinColumn(name = "eventVenueId", nullable = false, updatable = false)
     private EventVenue eventVenue;
 
+
+
     /**
      * Instantiates a new auditorium.
      *
@@ -62,5 +64,12 @@ public class Auditorium extends com.xyz.apps.ticketeer.model.Entity {
         this.name = name;
         this.numberOfSeats = numberOfSeats;
         this.eventVenue = eventVenue;
+    }
+
+    /**
+     * Instantiates a new auditorium.
+     */
+    public Auditorium() {
+
     }
 }

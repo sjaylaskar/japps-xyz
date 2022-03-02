@@ -69,12 +69,12 @@ public class EventVenueService {
     private List<AuditoriumSeat> toAuditoriumSeatList(final Auditorium auditorium, final AuditoriumSeatInfo auditoriumSeatInfo) {
         final List<AuditoriumSeat> auditoriumSeats = new ArrayList<>();
 
-        char rowChar = 'A';
-        for (int row = 1; row <= auditoriumSeatInfo.numberOfRows; row++) {
+        char seatRow = 'A';
+        for (int rowNumber = 1; rowNumber <= auditoriumSeatInfo.numberOfRows; rowNumber++) {
             for (int seat = 1; seat <= auditoriumSeatInfo.seatsPerRow; seat++) {
-                auditoriumSeats.add(new AuditoriumSeat(rowChar, seat, auditorium));
+                auditoriumSeats.add(new AuditoriumSeat(seatRow, seat, auditorium));
             }
-            rowChar++;
+            seatRow++;
         }
 
         return auditoriumSeats;

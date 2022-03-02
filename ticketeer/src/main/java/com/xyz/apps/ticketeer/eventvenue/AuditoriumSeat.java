@@ -37,10 +37,10 @@ public class AuditoriumSeat extends com.xyz.apps.ticketeer.model.Entity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    /** The row. */
+    /** The seat row. */
     @Column(nullable = false)
     @NotNull(message = "Seat row cannot be null.")
-    private Character row;
+    private Character seatRow;
 
     /** The seat number. */
     @Min(value = 1, message = "Seat numbers must start with at least 1.")
@@ -51,16 +51,20 @@ public class AuditoriumSeat extends com.xyz.apps.ticketeer.model.Entity {
     @JoinColumn(name = "auditoriumId", nullable = false, updatable = false)
     private Auditorium auditorium;
 
+    public AuditoriumSeat() {
+
+    }
+
     /**
      * Instantiates a new auditorium seat.
      *
-     * @param row the row
+     * @param seatRow the seat row
      * @param seatNumber the seat number
      * @param auditorium the auditorium
      */
-    public AuditoriumSeat(final Character row, final int seatNumber, final Auditorium auditorium) {
+    public AuditoriumSeat(final Character seatRow, final int seatNumber, final Auditorium auditorium) {
 
-        this.row = row;
+        this.seatRow = seatRow;
         this.seatNumber = seatNumber;
         this.auditorium = auditorium;
     }

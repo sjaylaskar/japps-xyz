@@ -1,18 +1,17 @@
 /*
-* Id: AbstractModelMapper.java 14-Feb-2022 6:40:37 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: AbstractModelMapper.java 14-Feb-2022 6:40:37 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.model;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  * The abstract model mapper.
@@ -24,11 +23,21 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class AbstractModelMapper<E extends Entity, D extends Dto<E>> {
 
-    /** The entity type. */
-    private final Type entityType = new TypeToken<E>() {}.getType();
+    private Class<E> entityTypeClass;
 
-    /** The dto type. */
-    private final Type dtoType = new TypeToken<D>() {}.getType();
+    private Class<D> dtoTypeClass;
+
+    /**
+     * Instantiates a new abstract model mapper.
+     *
+     * @param entityTypeClass the entity type class
+     * @param dtoTypeClass the dto type class
+     */
+    public AbstractModelMapper(final Class<E> entityTypeClass, final Class<D> dtoTypeClass) {
+
+        this.entityTypeClass = entityTypeClass;
+        this.dtoTypeClass = dtoTypeClass;
+    }
 
     /** The model mapper. */
     @Autowired
@@ -41,10 +50,11 @@ public abstract class AbstractModelMapper<E extends Entity, D extends Dto<E>> {
      * @return the e
      */
     public E toEntity(final D dto) {
+
         if (dto == null) {
             return null;
         }
-        return modelMapper.map(dto, entityType);
+        return modelMapper.map(dto, entityTypeClass);
     }
 
     /**
@@ -54,6 +64,7 @@ public abstract class AbstractModelMapper<E extends Entity, D extends Dto<E>> {
      * @return the list
      */
     public List<E> toEntities(final List<D> dtos) {
+
         if (CollectionUtils.isEmpty(dtos)) {
             return null;
         }
@@ -67,10 +78,11 @@ public abstract class AbstractModelMapper<E extends Entity, D extends Dto<E>> {
      * @return the d
      */
     public D toDto(final E entity) {
+
         if (entity == null) {
             return null;
         }
-        return modelMapper.map(entity, dtoType);
+        return modelMapper.map(entity, dtoTypeClass);
     }
 
     /**
@@ -80,6 +92,7 @@ public abstract class AbstractModelMapper<E extends Entity, D extends Dto<E>> {
      * @return the list
      */
     public List<D> toDtos(final List<E> entities) {
+
         if (CollectionUtils.isEmpty(entities)) {
             return null;
         }

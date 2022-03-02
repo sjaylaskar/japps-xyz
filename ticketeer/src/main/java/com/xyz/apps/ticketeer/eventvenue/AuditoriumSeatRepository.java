@@ -21,5 +21,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AuditoriumSeatRepository extends JpaRepository<AuditoriumSeat, Long> {
 
-    public List<AuditoriumSeat> findByRowIn(final Collection<Character> rows);
+    /**
+     * Finds the by seat row in.
+     *
+     * @param seatRows the seat rows
+     * @return the list of {@link AuditoriumSeat}
+     */
+    public List<AuditoriumSeat> findBySeatRowIn(final Collection<Character> seatRows);
 }

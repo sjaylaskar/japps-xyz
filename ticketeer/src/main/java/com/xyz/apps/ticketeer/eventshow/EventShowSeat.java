@@ -50,9 +50,9 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The seat status. */
     @Enumerated(EnumType.ORDINAL)
-    @Column(nullable = false, columnDefinition = "default 0")
+    @Column(nullable = false)
     @NotNull(message = "Seat reservation status cannot be null.")
-    private SeatReservationStatus seatReservationStatus;
+    private SeatReservationStatus seatReservationStatus = SeatReservationStatus.AVAILABLE;
 
     /** The event show. */
     @ManyToOne(optional = false)
@@ -67,7 +67,6 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
     /** The booking. */
     @ManyToOne
     @JoinColumn(name = "bookingId")
-    @Column(nullable = true)
     private Booking booking;
 
     /**
@@ -90,7 +89,7 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
     @Min(value = 1, message = "Seat price must be atleast 1.")
     @NotNull(message = "Seat price cannot be null.")
     final Double amount,
-    @NotNull(message = "Seat status cannot be null.")
+    @NotNull(message = "Seat reservation status cannot be null.")
     final SeatReservationStatus seatReservationStatus,
     final EventShow eventShow,
     final AuditoriumSeat auditoriumSeat,

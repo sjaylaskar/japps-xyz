@@ -47,7 +47,7 @@ public class EventVenue extends com.xyz.apps.ticketeer.model.Entity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "cityId", nullable = false, updatable = false)
     private City city;
-
+    
     /**
      * Instantiates a new event venue.
      *
@@ -59,5 +59,12 @@ public class EventVenue extends com.xyz.apps.ticketeer.model.Entity {
         this.name = name;
         this.numberOfAuditoriums = numberOfAuditoriums;
         this.city = city;
+    }
+
+    /**
+     * Instantiates a new event venue.
+     */
+    public EventVenue() {
+
     }
 }

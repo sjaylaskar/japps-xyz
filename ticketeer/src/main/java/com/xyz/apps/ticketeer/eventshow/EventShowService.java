@@ -92,12 +92,12 @@ public class EventShowService {
     private List<EventShowSeat> toEventShowSeatList(final SeatRowPriceDto seatRowPriceDto,
             final EventShow eventShow) {
 
-        final List<Character> rows = new ArrayList<>();
+        final List<Character> seatRows = new ArrayList<>();
         for (char row = seatRowPriceDto.getStartRow(); row <= seatRowPriceDto.getEndRow(); row++) {
-            rows.add(row);
+            seatRows.add(row);
         }
 
-        final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.findByRowIn(rows);
+        final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.findBySeatRowIn(seatRows);
 
         return
            (CollectionUtils.isNotEmpty(auditoriumSeats))

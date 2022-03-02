@@ -18,4 +18,8 @@ import com.xyz.apps.ticketeer.model.AbstractModelMapper;
 @Component
 public class UserModelMapper extends AbstractModelMapper<User, UserDto> {
 
+    public UserModelMapper() {
+
+        super(User.class, UserDto.class);
+    }
 }
