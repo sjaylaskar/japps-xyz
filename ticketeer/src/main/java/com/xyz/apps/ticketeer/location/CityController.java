@@ -8,7 +8,7 @@ package com.xyz.apps.ticketeer.location;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +85,7 @@ public class CityController {
 
         try {
             log.info("CityDto list: " + cityDtoList);
-            final List<City> cities = cityModelMapper.toEntities(cityDtoList.getCityDtos());
+            final List<City> cities = cityModelMapper.toEntities(cityDtoList.dtos());
             final List<City> citiesAdded = cityService.addAll(cities);
             log.info("Cities added: " + citiesAdded);
             return ResponseEntity
@@ -173,7 +173,7 @@ public class CityController {
      * @param code the code
      */
     @DeleteMapping("/delete/code/{code}")
-    public ResponseEntity<?> deleteByCode(@PathVariable final String code) {
+    public ResponseEntity<?> deleteByCode(@PathVariable @NotBlank(message = "The city code to delete cannot be null.") final String code) {
 
         try {
             log.info("CityDto code: " + code);
@@ -216,7 +216,7 @@ public class CityController {
      * @return the city by code
      */
     @GetMapping(value = "code/{code}")
-    public ResponseEntity<?> getByCode(@PathVariable("code") final String code) {
+    public ResponseEntity<?> getByCode(@PathVariable("code") @NotBlank(message = "The city code to fetch cannot be blank.") final String code) {
         try {
             final CityDto cityDto = cityModelMapper.toDto(cityService.findByCode(code));
             return (cityDto != null)
@@ -237,7 +237,7 @@ public class CityController {
      * @return the city by name
      */
     @GetMapping(value = "name/{name}")
-    public ResponseEntity<?> getByName(@PathVariable("name") final String name) {
+    public ResponseEntity<?> getByName(@PathVariable("name") @NotBlank(message = "The city name to fetch cannot be blank.") final String name) {
 
         try {
             final CityDtoList cityDtoList = CityDtoList.of(cityModelMapper.toDtos(cityService.findByName(name)));
@@ -258,8 +258,9 @@ public class CityController {
      * @param countryCode the country code
      * @return the by country code
      */
-    @GetMapping(value = "country/{countryCode}")
-    public ResponseEntity<?> getByCountryCode(@PathVariable("countryCode") final String countryCode) {
+    @GetMapping(value = "country/code/{countryCode}")
+    public ResponseEntity<?> getByCountryCode(
+            @PathVariable("countryCode") final String countryCode) {
 
         try {
             final CityDtoList cityDtoList = CityDtoList.of(cityModelMapper.toDtos(cityService.findByCountryCode(countryCode)));
@@ -282,7 +283,7 @@ public class CityController {
      */
     @GetMapping(value = "country/{countryId}")
     public ResponseEntity<?> getByCountryId(
-            @PathVariable("countryId") @NotNull(message = "Country id is required.") final Long countryId) {
+            @PathVariable("countryId") final Long countryId) {
 
         try {
             final CityDtoList cityDtoList = CityDtoList.of(cityModelMapper.toDtos(cityService.findByCountry(countryId)));

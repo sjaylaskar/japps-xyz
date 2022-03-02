@@ -85,7 +85,7 @@ public class CountryController {
 
         try {
             log.info("CountryDto list: " + countryDtoList);
-            final List<Country> countries = countryModelMapper.toEntities(countryDtoList.getCountryDtos());
+            final List<Country> countries = countryModelMapper.toEntities(countryDtoList.dtos());
             final List<Country> countriesAdded = countryService.addAll(countries);
             log.info("Countries added: " + countriesAdded);
             return ResponseEntity

@@ -149,7 +149,11 @@ public class CityService {
      * @return the list of cities
      */
     public List<City> findByCountryCode(final String countryCode) {
-
+        final Country country = countryRepository.findByCode(countryCode);
+        if (country == null) {
+            log.error("Country not found for code: " + countryCode);
+            throw new CountryNotFoundException(countryCode);
+        }
         return cityRepository.findByCountryCode(countryCode);
     }
 

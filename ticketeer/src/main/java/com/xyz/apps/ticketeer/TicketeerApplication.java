@@ -25,5 +25,4 @@ public class TicketeerApplication implements AppConfig {
 	public static void main(final String[] args) {
 		SpringApplication.run(TicketeerApplication.class, args);
 	}
-
 }

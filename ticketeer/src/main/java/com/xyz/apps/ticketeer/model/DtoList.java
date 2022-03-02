@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -14,23 +15,55 @@ import org.apache.commons.collections4.CollectionUtils;
  *
  * @author Subhajoy Laskar
  * @version 1.0
+ * @param <T> the generic type
  */
 public abstract class DtoList<T extends Dto<?>> {
+
+    /** The dtos. */
+    protected final List<T> dtos = new ArrayList<>();
+
+    /**
+     * Instantiates a new dto list.
+     */
+    protected DtoList() {
+
+    }
+
+    /**
+     * Instantiates a new dto list.
+     *
+     * @param dtos the dtos
+     */
+    protected DtoList(final List<T> dtos) {
+        this.dtos.addAll(dtos);
+    }
 
     /**
      * The list of dtos.
      *
      * @return the list
      */
-    protected abstract List<T> dtos();
+    public List<T> dtos() {
+        return dtos;
+    }
 
     /**
      * Checks if is empty.
      *
      * @return true, if is empty
      */
-    protected boolean isEmpty() {
+    public boolean isEmpty() {
         return CollectionUtils.isEmpty(dtos());
+    }
+
+    /**
+     * Checks if is not empty.
+     *
+     * @return true, if is not empty
+     */
+    public boolean isNotEmpty() {
+
+        return !isEmpty();
     }
 
     /**
@@ -41,9 +74,8 @@ public abstract class DtoList<T extends Dto<?>> {
      * @return true, if is not empty
      */
     public static <D extends Dto<?>> boolean isNotEmpty(final DtoList<D> dtoList) {
-        return (dtoList != null && CollectionUtils.isNotEmpty(dtoList.dtos()));
+        return (dtoList != null && dtoList.isNotEmpty());
     }
-
 
     /**
      * Checks if is empty.

@@ -28,7 +28,7 @@ public class User extends com.xyz.apps.ticketeer.model.Entity {
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
+    private Long id;
 
     /** The username. */
     private String username;

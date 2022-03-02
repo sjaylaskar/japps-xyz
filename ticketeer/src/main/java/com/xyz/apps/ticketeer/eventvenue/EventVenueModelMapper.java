@@ -3,19 +3,19 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.location;
+package com.xyz.apps.ticketeer.eventvenue;
 
 import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.model.AbstractModelMapper;
 
 /**
- * The city model mapper.
+ * The event venue model mapper.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
 @Component
-public class CityModelMapper extends AbstractModelMapper<City, CityDto> {
+public class EventVenueModelMapper extends AbstractModelMapper<EventVenue, EventVenueDto> {
 
 }

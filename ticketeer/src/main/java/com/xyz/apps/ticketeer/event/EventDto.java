@@ -5,10 +5,7 @@
 */
 package com.xyz.apps.ticketeer.event;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.xyz.apps.ticketeer.model.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,21 +13,15 @@ import lombok.ToString;
 
 
 /**
- * The Event.
+ * The event dto.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
-@Entity
 @Getter
 @Setter
 @ToString
-public class Event extends com.xyz.apps.ticketeer.model.Entity {
-
-    /** The id. */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class EventDto extends Dto<Event> {
 
     /** The name. */
     private String name;

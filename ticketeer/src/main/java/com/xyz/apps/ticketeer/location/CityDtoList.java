@@ -5,7 +5,6 @@
 */
 package com.xyz.apps.ticketeer.location;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,9 +23,6 @@ import lombok.ToString;
 @ToString
 public class CityDtoList extends DtoList<CityDto> {
 
-    /** The city dtos. */
-    private final List<CityDto> cityDtos = new ArrayList<>();
-
     /**
      * Instantiates a new city dto list.
      */
@@ -40,7 +36,7 @@ public class CityDtoList extends DtoList<CityDto> {
      * @param cityDtos the city dtos
      */
     CityDtoList(final List<CityDto> cityDtos) {
-        this.cityDtos.addAll(cityDtos);
+        super(cityDtos);
     }
 
     /**
@@ -54,14 +50,5 @@ public class CityDtoList extends DtoList<CityDto> {
             return new CityDtoList();
         }
         return new CityDtoList(cityDtos);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected List<CityDto> dtos() {
-
-        return cityDtos;
     }
 }

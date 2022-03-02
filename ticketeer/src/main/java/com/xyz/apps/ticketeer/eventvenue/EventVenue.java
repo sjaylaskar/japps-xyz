@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.theatre;
+package com.xyz.apps.ticketeer.eventvenue;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +19,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The theatre.
+ * The event venue.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -28,19 +28,34 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Theatre extends com.xyz.apps.ticketeer.model.Entity {
+public class EventVenue extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
+    private Long id;
 
     /** The name. */
     private String name;
+
+    /** The number of auditoriums. */
+    private int numberOfAuditoriums;
 
     /** The city. */
     @ManyToOne(optional = false)
     @JoinColumn(name = "cityId", nullable = false, updatable = false)
     private City city;
 
+    /**
+     * Instantiates a new event venue.
+     *
+     * @param name the name
+     * @param numberOfAuditoriums the number of auditoriums 
+     * @param city the city
+     */
+    public EventVenue(final String name, final int numberOfAuditoriums, final City city) {
+        this.name = name;
+        this.numberOfAuditoriums = numberOfAuditoriums;
+        this.city = city;
+    }
 }
