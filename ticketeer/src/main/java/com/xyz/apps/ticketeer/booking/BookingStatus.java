@@ -5,6 +5,9 @@
 */
 package com.xyz.apps.ticketeer.booking;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The BookingStatus.
@@ -15,6 +18,15 @@ package com.xyz.apps.ticketeer.booking;
 public enum BookingStatus {
 
     RESERVED,
-    BOOKED,
-    CANCELLED
+    CONFIRMED,
+    CANCELLED;
+
+    public static BookingStatus of(final String bookingStatus) {
+        return
+        Arrays.asList(values())
+        .stream()
+        .filter(value -> StringUtils.equalsIgnoreCase(value.name(), bookingStatus))
+        .findFirst()
+        .orElse(null);
+    }
 }

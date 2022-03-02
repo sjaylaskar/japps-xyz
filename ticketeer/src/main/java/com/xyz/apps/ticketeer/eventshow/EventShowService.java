@@ -131,4 +131,17 @@ public class EventShowService {
             LocalTime.parse(eventShowDetailsDto.getEndTime()),
             event, eventVenue, auditorium);
     }
+
+    /**
+     * Search.
+     *
+     * @param eventShowSearchCriteria the event show search criteria
+     * @return the list
+     */
+    public List<EventShow> search(final EventShowSearchCriteria eventShowSearchCriteria) {
+        return eventShowRepository.findByEventShowSearchCriteria(
+            eventShowSearchCriteria.getCityId(),
+            eventShowSearchCriteria.getEventId(),
+            LocalDate.parse(eventShowSearchCriteria.getDate()));
+    }
 }

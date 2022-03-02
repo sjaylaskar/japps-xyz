@@ -5,7 +5,12 @@
 */
 package com.xyz.apps.ticketeer.eventshow;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -17,5 +22,15 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface EventShowRepository extends JpaRepository<EventShow, Long> {
+    @Query(
+        value = "select distinct es.* from event_show es "
+            + "where "
+            + "(:cityId is null or es.city_id = :cityId)"
+            + "and (:eventId is null or es.event_id = :eventId) "
+            + "and (:eventShowDate is null or es.date = :eventShowDate) ",
+        nativeQuery = true)
+    public List<EventShow> findByEventShowSearchCriteria(@Param("cityId") final Long cityId,
+                                                         @Param("eventId") final Long eventId,
+                                                         @Param("eventShowDate") final LocalDate eventShowDate);
 
 }

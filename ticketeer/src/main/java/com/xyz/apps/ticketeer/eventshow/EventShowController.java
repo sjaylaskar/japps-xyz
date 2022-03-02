@@ -5,11 +5,15 @@
 */
 package com.xyz.apps.ticketeer.eventshow;
 
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +62,34 @@ public class EventShowController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to add event show: " + eventShowDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Search.
+     *
+     * @param eventShowSearchCriteria the event show search criteria
+     * @return the response entity
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestBody final EventShowSearchCriteria eventShowSearchCriteria) {
+        try {
+            log.info("Event show search criteria: " + eventShowSearchCriteria);
+            final List<EventShow> eventShowsFound = eventShowService.search(eventShowSearchCriteria);
+            if (CollectionUtils.isNotEmpty(eventShowsFound)) {
+                log.info("Event shows found: " + eventShowsFound);
+                return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowsFound)));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No event shows found by given search criteria");
+            }
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to find event show by search criteria: " + eventShowSearchCriteria + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 }

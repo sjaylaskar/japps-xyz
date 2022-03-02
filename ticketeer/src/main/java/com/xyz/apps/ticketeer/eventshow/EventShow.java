@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import com.xyz.apps.ticketeer.event.Event;
 import com.xyz.apps.ticketeer.eventvenue.Auditorium;
 import com.xyz.apps.ticketeer.eventvenue.EventVenue;
+import com.xyz.apps.ticketeer.location.City;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -56,6 +57,10 @@ public class EventShow extends com.xyz.apps.ticketeer.model.Entity {
     @Column(nullable = false, columnDefinition = "TIME")
     @NotNull(message = "Show end time cannot be null.")
     private LocalTime endTime;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "cityId", nullable = false)
+    private City city;
 
     /** The event venue. */
     @ManyToOne(optional = false)

@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.eventshow;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -63,6 +65,10 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "auditoriumSeatId", nullable = false)
     private AuditoriumSeat auditoriumSeat;
+
+    /** The reservation time. */
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime reservationTime;
 
     /** The booking. */
     @ManyToOne

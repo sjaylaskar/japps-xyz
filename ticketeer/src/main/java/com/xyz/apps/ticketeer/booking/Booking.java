@@ -44,8 +44,12 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
     private Long id;
 
     /** The booking time. */
-    @Column(nullable = false)
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime bookingTime;
+
+    /** The reservation time. */
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime reservationTime;
 
     /** The booking status. */
     @Column(nullable = false)
@@ -55,10 +59,20 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
     /** The number of seats. */
     private int numberOfSeats;
 
+    /** The amount. */
     @NotNull(message = "Amount cannot be null.")
     @Min(value = 1, message = "Amount must be atleast 1.")
     @Column(nullable = false)
     private Double amount;
+
+    /** The final amount. */
+    @NotNull(message = "Amount cannot be null.")
+    @Min(value = 1, message = "Amount must be atleast 1.")
+    @Column(nullable = false)
+    private Double finalAmount;
+
+    /** The offer code. */
+    private String offerCode;
 
     /** The user. */
     @ManyToOne(optional = false)
@@ -69,4 +83,52 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "eventShowId", nullable = false)
     private EventShow eventShow;
+
+    /**
+     * Instantiates a new booking.
+     */
+    public Booking() {
+
+    }
+
+    /**
+     * Instantiates a new booking.
+     *
+     * @param bookingTime the booking time
+     * @param reservationTime the reservation time
+     * @param bookingStatus the booking status
+     * @param numberOfSeats the number of seats
+     * @param amount the amount
+     * @param finalAmount the final amount
+     * @param offerCode the offer code
+     * @param user the user
+     * @param eventShow the event show
+     */
+    public Booking(final LocalDateTime bookingTime,
+                   final LocalDateTime reservationTime,
+                   final BookingStatus bookingStatus,
+                   final int numberOfSeats,
+                   @NotNull(message = "Amount cannot be null.")
+                   @Min(value = 1, message = "Amount must be atleast 1.")
+                   final Double amount,
+                   @NotNull(message = "Amount cannot be null.")
+                   @Min(value = 1, message = "Amount must be atleast 1.")
+                   final Double finalAmount,
+                   final String offerCode,
+                   final User user,
+                   final EventShow eventShow) {
+
+        this.bookingTime = bookingTime;
+        this.reservationTime = reservationTime;
+        this.bookingStatus = bookingStatus;
+        this.numberOfSeats = numberOfSeats;
+        this.amount = amount;
+        this.finalAmount = finalAmount;
+        this.offerCode = offerCode;
+        this.user = user;
+        this.eventShow = eventShow;
+    }
+    
+    
+    
 }
