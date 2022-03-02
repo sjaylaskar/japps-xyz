@@ -11,16 +11,12 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.xyz.apps.ticketeer.model.DtoList;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 
 /**
  * The country dto list.
  */
-@Getter
-@Setter
 @ToString
 public class CountryDtoList extends DtoList<CountryDto> {
 

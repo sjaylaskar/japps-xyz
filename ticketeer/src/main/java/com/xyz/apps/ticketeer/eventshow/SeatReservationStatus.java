@@ -3,18 +3,23 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventvenue;
+package com.xyz.apps.ticketeer.eventshow;
 
 
 /**
- * The seat status.
+ * The seat reservation status.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public enum SeatStatus {
+public enum SeatReservationStatus {
 
+    /** The available. */
     AVAILABLE,
+
+    /** The reserved. */
     RESERVED,
+
+    /** The booked. */
     BOOKED
 }

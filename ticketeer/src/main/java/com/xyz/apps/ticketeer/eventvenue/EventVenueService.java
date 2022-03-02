@@ -43,7 +43,7 @@ public class EventVenueService {
         final EventVenue eventVenue = eventVenueRepository.save(toEventVenue(eventVenueDetailsDto));
 
         if (eventVenue != null) {
-            final Map<String, AuditoriumSeatInfo> auditoriumInfoMap = toAuditoriumInfoMap(eventVenueDetailsDto.getAuditoriumDetailsList(), eventVenue);
+            final Map<String, AuditoriumSeatInfo> auditoriumInfoMap = toAuditoriumInfoMap(eventVenueDetailsDto.getAuditoriumDetailsDtoList().getAuditoriumDetailsDtos(), eventVenue);
             final List<Auditorium> auditoriumList = auditoriumRepository.saveAll(auditoriumInfoMap.values().stream().map(auditoriumSeatInfo -> auditoriumSeatInfo.auditorium).toList());
 
             if (CollectionUtils.isNotEmpty(auditoriumList)) {
@@ -72,7 +72,7 @@ public class EventVenueService {
         char rowChar = 'A';
         for (int row = 1; row <= auditoriumSeatInfo.numberOfRows; row++) {
             for (int seat = 1; seat <= auditoriumSeatInfo.seatsPerRow; seat++) {
-                auditoriumSeats.add(new AuditoriumSeat(String.valueOf(rowChar), seat, auditorium));
+                auditoriumSeats.add(new AuditoriumSeat(rowChar, seat, auditorium));
             }
             rowChar++;
         }

@@ -5,12 +5,15 @@
 */
 package com.xyz.apps.ticketeer.eventvenue;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,9 +38,12 @@ public class AuditoriumSeat extends com.xyz.apps.ticketeer.model.Entity {
     private Long id;
 
     /** The row. */
-    private String row;
+    @Column(nullable = false)
+    @NotNull(message = "Seat row cannot be null.")
+    private Character row;
 
     /** The seat number. */
+    @Min(value = 1, message = "Seat numbers must start with at least 1.")
     private int seatNumber;
 
     /** The auditorium. */
@@ -52,12 +58,12 @@ public class AuditoriumSeat extends com.xyz.apps.ticketeer.model.Entity {
      * @param seatNumber the seat number
      * @param auditorium the auditorium
      */
-    public AuditoriumSeat(final String row, final int seatNumber, final Auditorium auditorium) {
+    public AuditoriumSeat(final Character row, final int seatNumber, final Auditorium auditorium) {
 
         this.row = row;
         this.seatNumber = seatNumber;
         this.auditorium = auditorium;
     }
-    
-    
+
+
 }

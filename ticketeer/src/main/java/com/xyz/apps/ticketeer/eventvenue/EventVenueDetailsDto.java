@@ -5,9 +5,6 @@
 */
 package com.xyz.apps.ticketeer.eventvenue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xyz.apps.ticketeer.location.City;
 
 import lombok.Getter;
@@ -35,6 +32,6 @@ public class EventVenueDetailsDto {
     private int numberOfAuditoriums;
 
     /** The auditorium details list. */
-    private final List<AuditoriumDetailsDto> auditoriumDetailsList = new ArrayList<>();
+    private final AuditoriumDetailsDtoList auditoriumDetailsDtoList = new AuditoriumDetailsDtoList();
 
 }

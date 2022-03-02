@@ -3,23 +3,19 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventvenue;
-
-import java.util.Collection;
-import java.util.List;
+package com.xyz.apps.ticketeer.eventshow;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 /**
- * The auditorium seat repository.
+ * The event show repository.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
 @Repository
-public interface AuditoriumSeatRepository extends JpaRepository<AuditoriumSeat, Long> {
+public interface EventShowRepository extends JpaRepository<EventShow, Long> {
 
-    public List<AuditoriumSeat> findByRowIn(final Collection<Character> rows);
 }

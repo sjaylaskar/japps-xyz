@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.eventvenue;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,6 +37,7 @@ public class EventVenue extends com.xyz.apps.ticketeer.model.Entity {
     private Long id;
 
     /** The name. */
+    @Column(nullable = false)
     private String name;
 
     /** The number of auditoriums. */

@@ -11,15 +11,11 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.xyz.apps.ticketeer.model.DtoList;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
  * The city dto list.
  */
-@Getter
-@Setter
 @ToString
 public class CityDtoList extends DtoList<CityDto> {
 

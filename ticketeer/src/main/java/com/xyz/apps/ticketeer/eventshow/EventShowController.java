@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventvenue;
+package com.xyz.apps.ticketeer.eventshow;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,45 +18,46 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * The event venue controller.
+ * The event show controller.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
 @CrossOrigin
 @RestController
-@RequestMapping("eventvenue")
+@RequestMapping("eventshow")
 @Log4j2
-public class EventVenueController {
+public class EventShowController {
 
-    /** The event venue service. */
+    /** The event show service. */
     @Autowired
-    private EventVenueService eventVenueService;
+    private EventShowService eventShowService;
 
+    /** The event show model mapper. */
     @Autowired
-    private EventVenueModelMapper eventVenueModelMapper;
+    private EventShowModelMapper eventShowModelMapper;
 
     /**
-     * Adds the event venue.
+     * Adds the event show.
      *
-     * @param eventVenueDetailsDto the event venue details dto
+     * @param eventShowDetailsDto the event show details dto
      * @return the response entity
      */
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody final EventVenueDetailsDto eventVenueDetailsDto) {
+    public ResponseEntity<?> add(@RequestBody final EventShowDetailsDto eventShowDetailsDto) {
 
         try {
-            log.info("Event venue: " + eventVenueDetailsDto);
-            final EventVenue eventVenueAdded = eventVenueService.add(eventVenueDetailsDto);
-            log.info("Event venue added: " + eventVenueAdded);
+            log.info("Event show: " + eventShowDetailsDto);
+            final EventShow eventShowAdded = eventShowService.add(eventShowDetailsDto);
+            log.info("Event show added: " + eventShowAdded);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(eventVenueModelMapper.toDto(eventVenueAdded));
+                .body(eventShowModelMapper.toDto(eventShowAdded));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add event venue: " + eventVenueDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add event show: " + eventShowDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 }

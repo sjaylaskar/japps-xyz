@@ -1,6 +1,6 @@
 http://localhost:8082/xyz/apps/ticketeer/api/country/add/multiple
 {
-    "countryDtos": [
+    "dtos": [
         {
             "code": "NL",
             "name": "Nederlands"
@@ -22,7 +22,7 @@ http://localhost:8082/xyz/apps/ticketeer/api/city/add
 http://localhost:8082/xyz/apps/ticketeer/api/city/add/multiple
 
 {
-    "cityDtos": [
+    "dtos": [
         {
             "code": "MUM",
             "name": "Mumbai",
