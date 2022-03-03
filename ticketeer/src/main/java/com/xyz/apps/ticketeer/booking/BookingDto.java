@@ -8,9 +8,7 @@ package com.xyz.apps.ticketeer.booking;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.xyz.apps.ticketeer.eventshow.EventShow;
-import com.xyz.apps.ticketeer.user.User;
-
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,12 +23,14 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class BookingDto {
 
     /** The booking id. */
     private Long bookingId;
 
     /** The event show seat ids. */
+    @Builder.Default
     private List<Long> eventShowSeatIds = new ArrayList<>();
 
     /** The booking time. */
@@ -52,10 +52,10 @@ public class BookingDto {
     private String offerCode;
 
     /** The user. */
-    private User user;
+    private Long userId;
 
     /** The event show. */
-    private EventShow eventShow;
+    private Long eventShowId;
 
     /** The is reserved. */
     private boolean isReserved;
@@ -81,12 +81,12 @@ public class BookingDto {
      * @param amount the amount
      * @param finalAmount the final amount
      * @param offerCode the offer code
-     * @param user the user
-     * @param eventShow the event show
+     * @param userId the user id
+     * @param eventShowId the event show id
      * @param isReserved the is reserved
-     * @param isConfirmed the is confirmed 
+     * @param isConfirmed the is confirmed
      */
-    public BookingDto(final Long bookingId,
+    BookingDto(final Long bookingId,
                       final List<Long> eventShowSeatIds,
                       final String bookingTime,
                       final String reservationTime,
@@ -94,8 +94,8 @@ public class BookingDto {
                       final Double amount,
                       final Double finalAmount,
                       final String offerCode,
-                      final User user,
-                      final EventShow eventShow,
+                      final Long userId,
+                      final Long eventShowId,
                       final boolean isReserved,
                       final boolean isConfirmed) {
 
@@ -107,10 +107,9 @@ public class BookingDto {
         this.amount = amount;
         this.finalAmount = finalAmount;
         this.offerCode = offerCode;
-        this.user = user;
-        this.eventShow = eventShow;
+        this.userId = userId;
+        this.eventShowId = eventShowId;
         this.isReserved = isReserved;
         this.isConfirmed = isConfirmed;
     }
-
 }

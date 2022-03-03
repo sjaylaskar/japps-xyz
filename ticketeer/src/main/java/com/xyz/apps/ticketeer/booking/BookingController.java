@@ -68,7 +68,7 @@ public class BookingController {
             if (bookingDtoUpdated.isConfirmed()) {
                 log.info("Booking confirmed: " + bookingDtoUpdated);
                 return ResponseEntity
-                    .status(HttpStatus.CREATED)
+                    .status(HttpStatus.ACCEPTED)
                     .body(bookingDtoUpdated);
             } else {
                 log.error("Booking could not be confirmed: " + bookingDtoUpdated);
@@ -81,6 +81,37 @@ public class BookingController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to confirm booking: " + bookingDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Cancel.
+     *
+     * @param bookingDto the booking dto
+     * @return the response entity
+     */
+    @PutMapping("/cancel")
+    public ResponseEntity<?> cancel(@RequestBody final BookingDto bookingDto) {
+
+        try {
+            log.info("Booking: " + bookingDto);
+            final boolean isBookingCancelled = bookingService.cancel(bookingDto.getBookingId());
+            if (isBookingCancelled) {
+                log.info("Booking cancelled: " + bookingDto);
+                return ResponseEntity
+                    .status(HttpStatus.ACCEPTED)
+                    .body("Booking cancelled: " + bookingDto);
+            } else {
+                log.error("Booking could not be cancelled: " + bookingDto);
+                return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body("Booking cancellation unsuccesful. Please try again!");
+            }
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to cancel booking: " + bookingDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 }

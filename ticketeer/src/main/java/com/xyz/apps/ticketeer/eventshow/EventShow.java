@@ -1,8 +1,8 @@
 /*
-* Id: Show.java 15-Feb-2022 3:06:09 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: Show.java 15-Feb-2022 3:06:09 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.eventshow;
 
 import java.time.LocalDate;
@@ -22,9 +22,11 @@ import com.xyz.apps.ticketeer.eventvenue.Auditorium;
 import com.xyz.apps.ticketeer.eventvenue.EventVenue;
 import com.xyz.apps.ticketeer.location.City;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 
 /**
  * The event show.
@@ -36,6 +38,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class EventShow extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
@@ -95,15 +98,12 @@ public class EventShow extends com.xyz.apps.ticketeer.model.Entity {
      * @param auditorium the auditorium
      */
     public EventShow(
-    @NotNull(message = "Show date cannot be null.")
-    final LocalDate date,
-    @NotNull(message = "Show start time cannot be null.")
-    final LocalTime startTime,
-    @NotNull(message = "Show end time cannot be null.")
-    final LocalTime endTime,
-    final Event event,
-    final EventVenue eventVenue,
-    final Auditorium auditorium) {
+            @NotNull(message = "Show date cannot be null.") final LocalDate date,
+            @NotNull(message = "Show start time cannot be null.") final LocalTime startTime,
+            @NotNull(message = "Show end time cannot be null.") final LocalTime endTime,
+            final Event event,
+            final EventVenue eventVenue,
+            final Auditorium auditorium) {
 
         this.date = date;
         this.startTime = startTime;
@@ -113,5 +113,31 @@ public class EventShow extends com.xyz.apps.ticketeer.model.Entity {
         this.auditorium = auditorium;
     }
 
+    /**
+     * Instantiates a new event show.
+     *
+     * @param id the id
+     * @param date the date
+     * @param startTime the start time
+     * @param endTime the end time
+     * @param city the city
+     * @param eventVenue the event venue
+     * @param auditorium the auditorium
+     * @param event the event
+     */
+    EventShow(final Long id,
+            final LocalDate date,
+            final LocalTime startTime,
+            final LocalTime endTime, final City city, final EventVenue eventVenue,
+            final Auditorium auditorium, final Event event) {
 
+        this.id = id;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.city = city;
+        this.eventVenue = eventVenue;
+        this.auditorium = auditorium;
+        this.event = event;
+    }
 }

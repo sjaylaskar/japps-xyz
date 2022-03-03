@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import com.xyz.apps.ticketeer.eventshow.EventShow;
 import com.xyz.apps.ticketeer.user.User;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -36,6 +37,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class Booking extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
@@ -128,7 +130,41 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
         this.user = user;
         this.eventShow = eventShow;
     }
-    
-    
-    
+
+    /**
+     * Instantiates a new booking.
+     *
+     * @param id the id
+     * @param bookingTime the booking time
+     * @param reservationTime the reservation time
+     * @param bookingStatus the booking status
+     * @param numberOfSeats the number of seats
+     * @param amount the amount
+     * @param finalAmount the final amount
+     * @param offerCode the offer code
+     * @param user the user
+     * @param eventShow the event show
+     */
+    Booking(final Long id,
+            final LocalDateTime bookingTime,
+            final LocalDateTime reservationTime,
+            final BookingStatus bookingStatus,
+            final int numberOfSeats,
+            final Double amount,
+            final Double finalAmount,
+            final String offerCode,
+            final User user,
+            final EventShow eventShow) {
+
+        this.id = id;
+        this.bookingTime = bookingTime;
+        this.reservationTime = reservationTime;
+        this.bookingStatus = bookingStatus;
+        this.numberOfSeats = numberOfSeats;
+        this.amount = amount;
+        this.finalAmount = finalAmount;
+        this.offerCode = offerCode;
+        this.user = user;
+        this.eventShow = eventShow;
+    }
 }

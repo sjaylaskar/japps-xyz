@@ -74,6 +74,22 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     public int reserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatCount") final int seatsCount);
 
     /**
+     * Book seats.
+     *
+     * @param ids the ids
+     * @param seatsCount the seats count
+     * @param bookingId the booking id
+     * @return the int
+     */
+    @Modifying
+    @Query(value = "update EventShowSeat ess set ess.seat_reservation_status = 2 where ess.booking_id = :bookingId and ess.id in :ids "
+        + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.booking_id = :bookingId and ess1.id in :ids and ess1.seat_reservation_status = 1) = :seatsCount",
+           nativeQuery = true)
+    public int bookSeats(@Param("ids") final Collection<Long> ids,
+            @Param("seatCount") final int seatsCount,
+            @Param("bookingId") final Long bookingId);
+
+    /**
      * Fill booking for reserved seats.
      *
      * @param ids the ids
@@ -83,9 +99,18 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      */
     @Modifying
     @Query(value = "update EventShowSeat ess set ess.booking_id = :bookingId where ess.id in :ids "
-        + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.id in :ids and ess1.seat_reservation_status = 1) = :seatsCount",
+        + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.booking_id = :bookingId and ess1.id in :ids and ess1.seat_reservation_status = 1) = :seatsCount",
            nativeQuery = true)
     public int fillBookingForReservedSeats(@Param("ids") final Collection<Long> ids,
             @Param("seatCount") final int seatsCount,
             @Param("bookingId") final Long bookingId);
+
+    /**
+     * Finds the total amount.
+     *
+     * @param ids the ids
+     * @return the double
+     */
+    @Query("select sum(ess.amount) from EventShowSeat ess where ess.id in :ids")
+    public double findTotalAmount(@Param("ids") final Collection<Long> ids);
 }

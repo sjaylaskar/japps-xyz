@@ -19,10 +19,10 @@ import org.springframework.stereotype.Repository;
  * @version 1.0
  */
 @Repository
-public interface BookingRepository extends JpaRepository<Booking, Long> {
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     @Modifying
-    @Query("update Booking b set b.bookingStatus = BookingStatus.CANCELLED.ordinal() where b.bookingId = :id")
-    public void cancelById(@Param("id") final Long id);
+    @Query("update Payment p set p.paymentStatus = PaymentStatus.REFUNDED.ordinal() where p.bookingId = :id and p.paymentStatus = PaymentStatus.SUCCESS.ordinal()")
+    public void refundPaymentById(@Param("id") final Long id);
 
 }
