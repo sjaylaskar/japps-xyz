@@ -23,5 +23,4 @@ public class EventModelMapper extends AbstractModelMapper<Event, EventDto> {
 
         super(Event.class, EventDto.class);
     }
-
 }

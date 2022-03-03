@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xyz.apps.ticketeer.event.Event;
+import com.xyz.apps.ticketeer.event.EventDetailsDtoList;
 import com.xyz.apps.ticketeer.event.EventRepository;
+import com.xyz.apps.ticketeer.event.EventService;
 import com.xyz.apps.ticketeer.eventvenue.Auditorium;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumRepository;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
@@ -42,6 +44,10 @@ public class EventShowService {
     @Autowired
     private EventShowSeatRepository eventShowSeatRepository;
 
+    /** The event service. */
+    @Autowired
+    private EventService eventService;
+
     /** The event repository. */
     @Autowired
     private EventRepository eventRepository;
@@ -58,6 +64,10 @@ public class EventShowService {
     @Autowired
     private AuditoriumSeatRepository auditoriumSeatRepository;
 
+    /** The event show seat model mapper. */
+    @Autowired
+    private EventShowSeatModelMapper eventShowSeatModelMapper;
+
     /**
      * Adds the event show.
      *
@@ -67,6 +77,7 @@ public class EventShowService {
     public EventShow add(final EventShowDetailsDto eventShowDetailsDto) {
 
         Objects.requireNonNull(eventShowDetailsDto, "The event show details cannot be null.");
+
         final EventShow eventShow = eventShowRepository.save(toEventShow(eventShowDetailsDto));
 
         if (eventShow != null) {
@@ -80,6 +91,22 @@ public class EventShowService {
         }
 
         return eventShow;
+    }
+
+    /**
+     * Delete.
+     *
+     * @param id the id
+     */
+    public void delete(final Long id) {
+
+        Objects.requireNonNull(id, "The event show id cannot be null.");
+
+        if (eventShowRepository.existsById(id)) {
+            eventShowRepository.deleteById(id);
+        }
+
+        throw new EventNotFoundException(id);
     }
 
     /**
@@ -99,17 +126,15 @@ public class EventShowService {
 
         final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.findBySeatRowIn(seatRows);
 
-        return
-           (CollectionUtils.isNotEmpty(auditoriumSeats))
-           ?
-            auditoriumSeats
-            .stream()
-            .map(auditoriumSeat -> new EventShowSeat(seatRowPriceDto.getAmount(),
-                SeatReservationStatus.AVAILABLE,
-                eventShow,
-                auditoriumSeat,
-                null))
-            .toList()
+        return (CollectionUtils.isNotEmpty(auditoriumSeats))
+            ? auditoriumSeats
+                .stream()
+                .map(auditoriumSeat -> new EventShowSeat(seatRowPriceDto.getAmount(),
+                    SeatReservationStatus.AVAILABLE,
+                    eventShow,
+                    auditoriumSeat,
+                    null))
+                .toList()
             : null;
     }
 
@@ -139,9 +164,32 @@ public class EventShowService {
      * @return the list
      */
     public List<EventShow> search(final EventShowSearchCriteria eventShowSearchCriteria) {
+
         return eventShowRepository.findByEventShowSearchCriteria(
             eventShowSearchCriteria.getCityId(),
             eventShowSearchCriteria.getEventId(),
             LocalDate.parse(eventShowSearchCriteria.getDate()));
+    }
+
+    /**
+     * Search events by city.
+     *
+     * @param cityId the city id
+     * @return the event details dto list
+     */
+    public EventDetailsDtoList searchEventsByCity(final Long cityId) {
+
+        final List<Event> events = eventShowRepository.findEventsByCityId(cityId);
+        return (CollectionUtils.isNotEmpty(events)) ? eventService.findAllByEvents(events) : null;
+    }
+
+    /**
+     * Finds the event show seats by event show id.
+     *
+     * @param eventShowId the event show id
+     * @return the event show seat dto list
+     */
+    public EventShowSeatDtoList findEventShowSeatsByEventShowId(final Long eventShowId) {
+        return EventShowSeatDtoList.of(eventShowSeatModelMapper.toDtos(eventShowSeatRepository.findByEventShowId(eventShowId)));
     }
 }

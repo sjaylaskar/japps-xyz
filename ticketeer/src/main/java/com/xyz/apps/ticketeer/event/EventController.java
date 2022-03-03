@@ -5,8 +5,9 @@
 */
 package com.xyz.apps.ticketeer.event;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xyz.apps.ticketeer.model.DtoList;
@@ -39,57 +41,51 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    /** The event model mapper. */
-    @Autowired
-    private EventModelMapper eventModelMapper;
-
     /**
-     * Adds the.
+     * Adds the event.
      *
-     * @param eventDto the event dto
      * @return the response entity
      */
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody final EventDto eventDto) {
+    public ResponseEntity<?> add(@RequestBody
+            @NotNull(message = "Event details cannot be null") final EventDetailsDto eventDetailsDto) {
 
         try {
-            log.info("Event: " + eventDto);
-            final Event event = eventModelMapper.toEntity(eventDto);
-            final Event eventAdded = eventService.add(event);
-            log.info("Event added: " + eventAdded);
+            log.info("Event details: " + eventDetailsDto);
+            final EventDetailsDto eventDetailsDtoAdded = eventService.add(eventDetailsDto);
+            log.info("Event added: " + eventDetailsDtoAdded);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(eventModelMapper.toDto(eventAdded));
+                .body(eventDetailsDtoAdded);
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add event: " + eventDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add event: " + eventDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 
     /**
-     * Adds the multiple.
+     * Adds multiple events.
      *
-     * @param eventDtoList the event dto list
+     * @param eventDetailsDtoList the event details dto list
      * @return the response entity
      */
     @PostMapping("/add/multiple")
-    public ResponseEntity<?> addMultiple(@RequestBody final EventDtoList eventDtoList) {
+    public ResponseEntity<?> addMultiple(@RequestBody @NotEmpty(message = "Events list cannot be null or empty.") final EventDetailsDtoList eventDetailsDtoList) {
 
         try {
-            log.info("Events list: " + eventDtoList);
-            final List<Event> events = eventModelMapper.toEntities(eventDtoList.dtos());
-            final List<Event> eventsAdded = eventService.addAll(events);
-            log.info("Events added: " + eventsAdded);
+            log.info("Events list: " + eventDetailsDtoList);
+            final EventDetailsDtoList eventDetailsDtoListAdded = eventService.addAll(eventDetailsDtoList);
+            log.info("Events added: " + eventDetailsDtoListAdded);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(EventDtoList.of(eventModelMapper.toDtos(eventsAdded)));
+                .body(eventDetailsDtoListAdded);
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add events: " + eventDtoList + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add events: " + eventDetailsDtoList + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 
@@ -101,11 +97,37 @@ public class EventController {
     @GetMapping("/all")
     public ResponseEntity<?> all() {
         try {
-            final EventDtoList eventDtoList = EventDtoList.of(eventService.findAll().stream().map(eventModelMapper::toDto).collect(Collectors.toList()));
-            return (DtoList.isNotEmpty(eventDtoList))
+            final EventDetailsDtoList eventDetailsDtoList = eventService.findAll();
+            return (DtoList.isNotEmpty(eventDetailsDtoList))
                 ? ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(eventDtoList)
+                    .body(eventDetailsDtoList)
+                : ResponseEntity.status(HttpStatus.NO_CONTENT).body("No events found.");
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
+                + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Search.
+     *
+     * @param text the text
+     * @param pageNumber the page number
+     * @param pageSize the page size
+     * @return the response entity
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> search(
+            @NotBlank(message = "Search text is required.") @RequestParam final String text,
+            @RequestParam(defaultValue = "0") final Integer pageNumber,
+            @RequestParam(defaultValue = "1") final Integer pageSize) {
+        try {
+            final EventDetailsDtoList eventDetailsDtoList = eventService.searchByText(text, pageNumber, pageSize);
+            return (DtoList.isNotEmpty(eventDetailsDtoList))
+                ? ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(eventDetailsDtoList)
                 : ResponseEntity.status(HttpStatus.NO_CONTENT).body("No events found.");
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "

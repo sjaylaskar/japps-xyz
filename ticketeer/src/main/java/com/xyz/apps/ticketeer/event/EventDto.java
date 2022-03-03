@@ -25,4 +25,17 @@ public class EventDto extends Dto<Event> {
 
     /** The name. */
     private String name;
+
+    /**
+     * Of.
+     *
+     * @param eventDetailsDto the event details dto
+     * @return the event dto
+     */
+    public static EventDto of(final EventDetailsDto eventDetailsDto) {
+        final EventDto eventDto = new EventDto();
+        eventDto.setId(eventDetailsDto.getId());
+        eventDto.setName(eventDetailsDto.getName());
+        return eventDto;
+    }
 }

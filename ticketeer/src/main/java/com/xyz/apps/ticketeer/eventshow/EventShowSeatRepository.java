@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.eventshow;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,6 +23,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Long> {
+
+    @Query("select evs from EventShowSeat evs where evs.eventShowId = :eventShowId")
+    public List<EventShowSeat> findByEventShowId(@Param("eventShowId") final Long eventShowId);
 
     /**
      * Cancel by booking id.

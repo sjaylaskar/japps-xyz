@@ -19,6 +19,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.xyz.apps.ticketeer.booking.Booking;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
 
@@ -59,6 +62,7 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
     /** The event show. */
     @ManyToOne(optional = false)
     @JoinColumn(name = "eventShowId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private EventShow eventShow;
 
     /** The auditorium seat. */
