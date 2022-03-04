@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.xyz.apps.ticketeer.booking.BookingDto;
 import com.xyz.apps.ticketeer.eventshow.EventShowSeatRepository;
+import com.xyz.apps.ticketeer.pricing.conveniencefee.PlatformConvenienceFeeService;
 
 /**
  * The pricing service.
@@ -28,8 +29,9 @@ public class PricingService {
     @Autowired
     private EventShowSeatRepository eventShowSeatRepository;
 
-    /** The platform convenience fee percentage. */
-    private static final double PLATFORM_CONVENIENCE_FEE_PERCENTAGE = 0.01;
+    /** The platform convenience fee service. */
+    @Autowired
+    private PlatformConvenienceFeeService platformConvenienceFeeService;
 
     /**
      * Calculate base amount.
@@ -57,7 +59,7 @@ public class PricingService {
                 // @TODO - Discount module -> Strategies, Types, CRUD, etc.
             }
 
-            amount += (amount * PLATFORM_CONVENIENCE_FEE_PERCENTAGE);
+            amount += (amount * platformConvenienceFeeService.findPercentage());
             return amount;
         }
         return 0d;

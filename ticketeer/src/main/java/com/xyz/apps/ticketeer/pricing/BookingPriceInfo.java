@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.pricing;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import lombok.Getter;
@@ -21,6 +22,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class BookingPriceInfo {
+
+    /** The offer code. */
+    private String offerCode;
 
     /** The base amount. */
     private Double baseAmount;
@@ -39,5 +43,8 @@ public class BookingPriceInfo {
 
     /** The final amount. */
     private Double finalAmount;
+
+    /** The booking date. */
+    private LocalDateTime bookingTime;
 
 }

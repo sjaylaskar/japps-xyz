@@ -80,8 +80,8 @@ public class CountryController {
      * @param countryDtos the country dtos
      * @return the list of countries
      */
-    @PostMapping("/add/multiple")
-    public ResponseEntity<?> addMultiple(@RequestBody final CountryDtoList countryDtoList) {
+    @PostMapping("/add/all")
+    public ResponseEntity<?> addAll(@RequestBody final CountryDtoList countryDtoList) {
 
         try {
             log.info("CountryDto list: " + countryDtoList);
@@ -106,7 +106,6 @@ public class CountryController {
      * @return the country dto
      */
     @PutMapping("/update")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> update(@RequestBody final CountryDto countryDto) {
 
         try {

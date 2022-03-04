@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -93,6 +94,12 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private EventShow eventShow;
 
+    /** The phone number. */
+    @Column(nullable = false, unique = true, length = 15)
+    @Size(min = 10, max = 15, message = "The phone number must be be at least 10 and at most 15 characters.")
+    @NotNull(message = "The phone number cannot be null.")
+    private String phoneNumber;
+
     /**
      * Instantiates a new booking.
      */
@@ -149,6 +156,7 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
      * @param offerCode the offer code
      * @param user the user
      * @param eventShow the event show
+     * @param phoneNumber the phone number
      */
     Booking(final Long id,
             final LocalDateTime bookingTime,
@@ -159,7 +167,8 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
             final Double finalAmount,
             final String offerCode,
             final User user,
-            final EventShow eventShow) {
+            final EventShow eventShow,
+            final String phoneNumber) {
 
         this.id = id;
         this.bookingTime = bookingTime;
@@ -171,5 +180,6 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
         this.offerCode = offerCode;
         this.user = user;
         this.eventShow = eventShow;
+        this.phoneNumber = phoneNumber;
     }
 }

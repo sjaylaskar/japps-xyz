@@ -3,11 +3,11 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.pricing;
+package com.xyz.apps.ticketeer.pricing.discount;
 
 
 /**
- * The InvalidOfferCodeException.
+ * The invalid offer code exception.
  *
  * @author Subhajoy Laskar
  * @version 1.0

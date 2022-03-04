@@ -3,18 +3,20 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.pricing;
+package com.xyz.apps.ticketeer.pricing.discount;
 
 
 /**
- * The DiscountType.
+ * The discount type.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
-enum DiscountType {
+public enum DiscountType {
 
+    /** The percentage. */
     PERCENTAGE,
 
+    /** The amount. */
     AMOUNT
 }

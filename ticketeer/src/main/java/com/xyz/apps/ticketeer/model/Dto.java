@@ -20,5 +20,5 @@ import lombok.ToString;
 @ToString
 public class Dto<T extends Entity> {
 
-    public Long id;
+    protected Long id;
 }

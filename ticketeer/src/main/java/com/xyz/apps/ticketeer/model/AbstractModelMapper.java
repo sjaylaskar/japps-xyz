@@ -68,7 +68,7 @@ public abstract class AbstractModelMapper<E extends Entity, D extends Dto<E>> {
     public List<E> toEntities(final List<D> dtos) {
 
         if (CollectionUtils.isEmpty(dtos)) {
-            return null;
+            return List.of();
         }
         return dtos.stream().map(this::toEntity).collect(Collectors.toList());
     }
@@ -96,7 +96,7 @@ public abstract class AbstractModelMapper<E extends Entity, D extends Dto<E>> {
     public List<D> toDtos(final List<E> entities) {
 
         if (CollectionUtils.isEmpty(entities)) {
-            return null;
+            return List.of();
         }
 
         return entities.stream().map(this::toDto).collect(Collectors.toList());

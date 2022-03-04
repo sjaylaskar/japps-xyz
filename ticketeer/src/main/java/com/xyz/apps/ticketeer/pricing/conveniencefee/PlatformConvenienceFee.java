@@ -3,7 +3,9 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.pricing;
+package com.xyz.apps.ticketeer.pricing.conveniencefee;
+
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
@@ -36,4 +38,9 @@ public class PlatformConvenienceFee extends com.xyz.apps.ticketeer.model.Entity 
     @NonNull
     @NotNull(message = "The fee percentage cannot be null.")
     private Double feePercentage = 0d;
+
+    /** The updatation time. */
+    @NonNull
+    @NotNull(message = "The fee updation time cannot be null.")
+    private LocalDateTime updationTime = LocalDateTime.now();
 }

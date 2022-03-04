@@ -80,8 +80,8 @@ public class CityController {
      * @param cityDtos the city dtos
      * @return the list of cities
      */
-    @PostMapping("/add/multiple")
-    public ResponseEntity<?> addMultiple(@RequestBody final CityDtoList cityDtoList) {
+    @PostMapping("/add/all")
+    public ResponseEntity<?> addAll(@RequestBody final CityDtoList cityDtoList) {
 
         try {
             log.info("CityDto list: " + cityDtoList);

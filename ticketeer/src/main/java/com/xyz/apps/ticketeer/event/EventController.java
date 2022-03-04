@@ -71,8 +71,8 @@ public class EventController {
      * @param eventDetailsDtoList the event details dto list
      * @return the response entity
      */
-    @PostMapping("/add/multiple")
-    public ResponseEntity<?> addMultiple(@RequestBody @NotEmpty(message = "Events list cannot be null or empty.") final EventDetailsDtoList eventDetailsDtoList) {
+    @PostMapping("/add/all")
+    public ResponseEntity<?> addAll(@RequestBody @NotEmpty(message = "Events list cannot be null or empty.") final EventDetailsDtoList eventDetailsDtoList) {
 
         try {
             log.info("Events list: " + eventDetailsDtoList);

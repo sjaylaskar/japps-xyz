@@ -3,8 +3,9 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.pricing;
+package com.xyz.apps.ticketeer.pricing.discount;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import com.mongodb.lang.NonNull;
+import com.xyz.apps.ticketeer.pricing.DiscountStrategy;
+import com.xyz.apps.ticketeer.pricing.ShowTimeType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -88,4 +91,10 @@ public class Discount extends com.xyz.apps.ticketeer.model.Entity {
     @NotNull(message = "The value of the discount cannot be null")
     @Min(value = 0, message = "The value of the discount must be at least 0..")
     private Double value = 0d;
+
+    /** The start date. */
+    private LocalDateTime startTime;
+
+    /** The end date. */
+    private LocalDateTime endTime;
 }

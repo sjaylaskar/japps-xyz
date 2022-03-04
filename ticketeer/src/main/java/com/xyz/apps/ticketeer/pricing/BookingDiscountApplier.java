@@ -7,6 +7,10 @@ package com.xyz.apps.ticketeer.pricing;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import com.xyz.apps.ticketeer.pricing.discount.Discount;
+import com.xyz.apps.ticketeer.pricing.discount.DiscountType;
+import com.xyz.apps.ticketeer.pricing.discount.InvalidOfferCodeException;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -45,13 +49,15 @@ public class BookingDiscountApplier {
      * Apply flat discount.
      */
     public void applyFlatDiscount() {
-        apply();
+
+        applyStraightDiscount();
     }
 
     /**
      * Apply nth seat discount.
      */
     public void applyNthSeatDiscount() {
+
         validate();
 
         final double pricePerSeat = bookingPriceInfo.getBaseAmount() / bookingPriceInfo.getNumberOfSeats();
@@ -61,40 +67,44 @@ public class BookingDiscountApplier {
 
         bookingPriceInfo.setFinalAmount(pricePerSeat * remSeatCount
             + ((DiscountType.PERCENTAGE.equals(discount.getDiscountType()))
-                    ? nthSeatCount * (pricePerSeat * (1 - discount.getValue() / 100))
-                    : nthSeatCount * (pricePerSeat - discount.getValue())));
+                ? nthSeatCount * (pricePerSeat * (1 - discount.getValue() / 100))
+                : nthSeatCount * (pricePerSeat - discount.getValue())));
     }
 
     /**
      * Apply N seats discount.
      */
     public void applyNSeatsDiscount() {
-        apply();
+
+        applyStraightDiscount();
     }
 
     /**
      * Apply.
      */
-    private void apply() {
+    private void applyStraightDiscount() {
 
         validate();
 
         bookingPriceInfo.setFinalAmount(DiscountType.PERCENTAGE.equals(discount.getDiscountType())
-                                         ? bookingPriceInfo.getBaseAmount() * (1 - discount.getValue() / 100)
-                                         : bookingPriceInfo.getBaseAmount() - discount.getValue());
+            ? bookingPriceInfo.getBaseAmount() * (1 - discount.getValue() / 100)
+            : bookingPriceInfo.getBaseAmount() - discount.getValue());
     }
 
     /**
      * Apply show time discount.
      */
     public void applyShowTimeDiscount() {
-        apply();
+
+        applyStraightDiscount();
     }
 
     /**
      * Validate.
      */
     private void validate() {
+
+        validateDate();
         validateMinAmount();
         validateMinSeats();
         validateCity();
@@ -104,11 +114,22 @@ public class BookingDiscountApplier {
     }
 
     /**
+     * Validate date.
+     */
+    private void validateDate() {
+        if ((discount.getEndTime() != null && (bookingPriceInfo.getBookingTime() == null || bookingPriceInfo.getBookingTime().isAfter(discount.getEndTime())))
+            || (discount.getStartTime() != null && (bookingPriceInfo.getBookingTime() == null || bookingPriceInfo.getBookingTime().isBefore(discount.getStartTime())))) {
+            throw new InvalidOfferCodeException("The offer code is not applicable at this time.");
+        }
+    }
+
+    /**
      * Validate min amount.
      */
     private void validateMinAmount() {
 
-        if (discount.getMinAmount() != null && (bookingPriceInfo.getBaseAmount() != null && bookingPriceInfo.getBaseAmount() < discount.getMinAmount())) {
+        if (discount.getMinAmount() != null
+            && (bookingPriceInfo.getBaseAmount() != null && bookingPriceInfo.getBaseAmount() < discount.getMinAmount())) {
             throw new InvalidOfferCodeException("Minimum amount required for this offer code is: " + discount.getMinAmount());
         }
     }
@@ -118,8 +139,10 @@ public class BookingDiscountApplier {
      */
     private void validateMinSeats() {
 
-        if (discount.getMinSeats() != null && (bookingPriceInfo.getNumberOfSeats() == null || bookingPriceInfo.getNumberOfSeats() < discount.getMinSeats())) {
-            throw new InvalidOfferCodeException("Minimum number of seats to be booked for this offer code is: " + discount.getMinSeats());
+        if (discount.getMinSeats() != null
+            && (bookingPriceInfo.getNumberOfSeats() == null || bookingPriceInfo.getNumberOfSeats() < discount.getMinSeats())) {
+            throw new InvalidOfferCodeException("Minimum number of seats to be booked for this offer code is: "
+                + discount.getMinSeats());
         }
     }
 
@@ -128,7 +151,8 @@ public class BookingDiscountApplier {
      */
     private void validateCity() {
 
-        if (CollectionUtils.isNotEmpty(discount.getApplicableCityIds()) && (bookingPriceInfo.getCityId() == null || !discount.getApplicableCityIds().contains(bookingPriceInfo.getCityId()))) {
+        if (CollectionUtils.isNotEmpty(discount.getApplicableCityIds())
+            && (bookingPriceInfo.getCityId() == null || !discount.getApplicableCityIds().contains(bookingPriceInfo.getCityId()))) {
             throw new InvalidOfferCodeException("The offer is not applicable for this city.");
         }
     }
@@ -138,7 +162,9 @@ public class BookingDiscountApplier {
      */
     private void validateEventVenue() {
 
-        if (CollectionUtils.isNotEmpty(discount.getApplicableEventVenueIds()) && (bookingPriceInfo.getEventVenueId() == null || !discount.getApplicableEventVenueIds().contains(bookingPriceInfo.getEventVenueId()))) {
+        if (CollectionUtils.isNotEmpty(discount.getApplicableEventVenueIds())
+            && (bookingPriceInfo.getEventVenueId() == null
+                || !discount.getApplicableEventVenueIds().contains(bookingPriceInfo.getEventVenueId()))) {
             throw new InvalidOfferCodeException("The offer is not applicable for this venue.");
         }
     }
@@ -147,8 +173,11 @@ public class BookingDiscountApplier {
      * Validate nth seat.
      */
     private void validateNthSeat() {
-        if (discount.getNthSeat() != null && (bookingPriceInfo.getNumberOfSeats() == null || bookingPriceInfo.getNumberOfSeats() < discount.getNthSeat())) {
-            throw new InvalidOfferCodeException("Minimum number of seats to be booked for this offer code is: " + discount.getNthSeat());
+
+        if (discount.getNthSeat() != null
+            && (bookingPriceInfo.getNumberOfSeats() == null || bookingPriceInfo.getNumberOfSeats() < discount.getNthSeat())) {
+            throw new InvalidOfferCodeException("Minimum number of seats to be booked for this offer code is: "
+                + discount.getNthSeat());
         }
     }
 
@@ -156,8 +185,12 @@ public class BookingDiscountApplier {
      * Validate show time.
      */
     private void validateShowTime() {
-        if (discount.getShowTimeType() != null && (bookingPriceInfo.getShowStartTime() == null || !discount.getShowTimeType().isInShowTimeRange(bookingPriceInfo.getShowStartTime()))) {
-            throw new InvalidOfferCodeException("The offer is only applicable for " + discount.getShowTimeType().name().toLowerCase() + " shows between " + discount.getShowTimeType().rangeString());
+
+        if (discount.getShowTimeType() != null
+            && (bookingPriceInfo.getShowStartTime() == null
+                || !discount.getShowTimeType().isInShowTimeRange(bookingPriceInfo.getShowStartTime()))) {
+            throw new InvalidOfferCodeException("The offer is only applicable for "
+                + discount.getShowTimeType().name().toLowerCase() + " shows between " + discount.getShowTimeType().rangeString());
         }
     }
 }

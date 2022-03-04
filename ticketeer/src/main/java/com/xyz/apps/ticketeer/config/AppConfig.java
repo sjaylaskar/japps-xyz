@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * The app config.
@@ -35,6 +36,18 @@ public interface AppConfig {
      */
     @Bean
     public default ModelMapper modelMapper() {
-        return new ModelMapper();
+        final ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        return modelMapper;
+    }
+
+    /**
+     * Rest template.
+     *
+     * @return the rest template
+     */
+    @Bean
+    public default RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

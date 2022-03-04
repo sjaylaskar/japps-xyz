@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -90,15 +91,16 @@ public class EventService {
      * @return the event details dto
      */
     @Transactional(rollbackOn = {Throwable.class})
-    public EventDetailsDto add(final EventDetailsDto eventDetailsDto) {
+    public EventDetailsDto add(@NotNull(message = "Event details to add cannot be null")
+    final  EventDetailsDto eventDetailsDto) {
         final Event event = add(eventModelMapper.toEntity(EventDto.of(eventDetailsDto)));
         if (event == null) {
-            throw new EventAddFailureException(Arrays.asList(eventDetailsDto));
+            throw new EventAddFailedException(Arrays.asList(eventDetailsDto));
         }
         eventDetailsDto.setEventId(event.getId());
         final EventDetails eventDetails = eventDetailsRepository.save(eventDetailsModelMapper.toEntity(eventDetailsDto));
         if (eventDetails == null) {
-            throw new EventAddFailureException(Arrays.asList(eventDetailsDto));
+            throw new EventAddFailedException(Arrays.asList(eventDetailsDto));
         }
         return eventDetailsModelMapper.toDto(eventDetails);
     }
@@ -110,16 +112,16 @@ public class EventService {
      * @return the event details dto list
      */
     @Transactional(rollbackOn = {Throwable.class})
-    public EventDetailsDtoList addAll(final EventDetailsDtoList eventDetailsDtoList) {
+    public EventDetailsDtoList addAll(@NotNull(message = "Event details list to add cannot be null or empty") final EventDetailsDtoList eventDetailsDtoList) {
         final List<Event> events = addAll(eventModelMapper.toEntities(eventDetailsDtoList.dtos().stream().map(EventDto::of).toList()));
         if (CollectionUtils.isEmpty(events)) {
-            throw new EventAddFailureException(eventDetailsDtoList.dtos());
+            throw new EventAddFailedException(eventDetailsDtoList.dtos());
         }
         final Iterator<Event> eventIterator = events.iterator();
         eventDetailsDtoList.dtos().forEach(eventDetailsDto -> eventDetailsDto.setEventId(eventIterator.next().getId()));
         final List<EventDetails> eventDetails = eventDetailsRepository.saveAll(eventDetailsModelMapper.toEntities(eventDetailsDtoList.dtos()));
         if (CollectionUtils.isEmpty(eventDetails)) {
-            throw new EventAddFailureException(eventDetailsDtoList.dtos());
+            throw new EventAddFailedException(eventDetailsDtoList.dtos());
         }
         return toEventDetailsDtoList(eventDetails);
     }
