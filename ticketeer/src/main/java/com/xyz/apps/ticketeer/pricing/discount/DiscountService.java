@@ -240,6 +240,41 @@ public class DiscountService {
     }
 
     /**
+     * Finds by city.
+     *
+     * @param cityId the city id
+     * @return the discount dto list
+     */
+    public DiscountDtoList findByCityId(final Long cityId) {
+        // TODO
+        return null;
+    }
+
+    /**
+     * Finds the by event venue id.
+     *
+     * @param eventVenueId the event venue id
+     * @return the discount dto list
+     */
+    public DiscountDtoList findByEventVenueId(final Long eventVenueId) {
+        // TODO
+        return null;
+    }
+
+    /**
+     * Finds all.
+     *
+     * @return the discount dto list
+     */
+    public DiscountDtoList findAll() {
+        final List<Discount> discounts = discountRepository.findAll();
+        if (CollectionUtils.isEmpty(discounts)) {
+            throw new DiscountNotFoundException();
+        }
+        return DiscountDtoList.of(discountModelMapper.toDtos(discounts));
+    }
+
+    /**
      * Validate.
      *
      * @param discountDto the discount dto

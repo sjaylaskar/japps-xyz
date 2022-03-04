@@ -34,4 +34,8 @@ public class DiscountNotFoundException extends RuntimeException {
     public DiscountNotFoundException(final String offerCode) {
         super("Invalid offer code: " + offerCode);
     }
+
+    public DiscountNotFoundException() {
+        super("No discounts found.");
+    }
 }
