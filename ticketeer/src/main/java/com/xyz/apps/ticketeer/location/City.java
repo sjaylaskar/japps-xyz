@@ -14,6 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -48,6 +51,7 @@ public class City extends com.xyz.apps.ticketeer.model.Entity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "countryId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Country is required for City.")
     private Country country;
 }

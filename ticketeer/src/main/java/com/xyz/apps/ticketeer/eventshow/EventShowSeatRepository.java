@@ -33,9 +33,11 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @param bookingId the booking id
      */
     @Modifying
-    @Query("update EventShowSeat ess set ess.seatReservationStatus = SeatReservationStatus.AVAILABLE.ordinal(), ess.bookingId = null where ess.bookingId = :bookingId")
+    @Query("update EventShowSeat ess set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventshow.SeatReservationStatus.AVAILABLE, ess.bookingId = null where ess.bookingId = :bookingId")
     public void cancelByBookingId(@Param("bookingId") final Long bookingId);
 
+    /** The are seats available query. */
+    static final String ARE_SEATS_AVAILABLE_QUERY = "select case when count(ess.seat_reservation_status) = :seatsCount then true else false from event_show_seat ess where ess.id in :ids and ess.seat_reservation_status = 'AVAILABLE'";
     /**
      * Are seats available.
      *
@@ -43,10 +45,15 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @param seatsCount the seats count
      * @return true, if successful
      */
-    @Query(value = "select case when count(ess.seat_reservation_status) = :seatsCount then true else false from event_show_seat ess where ess.id in :ids and ess.seat_reservation_status = 0",
+    @Query(value = ARE_SEATS_AVAILABLE_QUERY,
            nativeQuery = true)
     public boolean areSeatsAvailable(@Param("ids") final Collection<Long> ids, @Param("seatCount") final int seatsCount);
 
+    /** The are seats reserved query. */
+    static final String ARE_SEATS_RESERVED_QUERY = "select case when count(ess.seat_reservation_status) = :seatsCount then true else false from event_show_seat ess"
+            + " where ess.id in :ids"
+            + " and ess.seat_reservation_status = 'RESERVED'"
+            + " and ess.booking_id = :bookingId ";
     /**
      * Are seats reserved.
      *
@@ -55,15 +62,15 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @param seatsCount the seats count
      * @return true, if successful
      */
-    @Query(value = "select case when count(ess.seat_reservation_status) = :seatsCount then true else false from event_show_seat ess"
-        + " where ess.id in :ids"
-        + " and ess.seat_reservation_status = 1"
-        + " and ess.booking_id = :bookingId ",
+    @Query(value = ARE_SEATS_RESERVED_QUERY,
             nativeQuery = true)
      public boolean areSeatsReserved(@Param("ids") final Collection<Long> ids,
                                      @Param("bookingId") final Long bookingId,
                                      @Param("seatCount") final int seatsCount);
 
+    /** The reserve seats query. */
+    static final String RESERVE_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'RESERVED', ess.reservation_time = current_timestamp() where ess.id in :ids "
+            + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.id in :ids and ess1.seat_reservation_status = 'AVAILABLE') = :seatsCount";
     /**
      * Reserve seats.
      *
@@ -72,11 +79,13 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @return the int
      */
     @Modifying
-    @Query(value = "update EventShowSeat ess set ess.seat_reservation_status = 1, ess.reservation_time = current_timestamp() where ess.id in :ids "
-        + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.id in :ids and ess1.seat_reservation_status = 0) = :seatsCount",
+    @Query(value = RESERVE_SEATS_QUERY,
            nativeQuery = true)
     public int reserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatCount") final int seatsCount);
 
+    /** The book seats query. */
+    static final String BOOK_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'BOOKED' where ess.booking_id = :bookingId and ess.id in :ids "
+            + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.booking_id = :bookingId and ess1.id in :ids and ess1.seat_reservation_status = 'RESERVED') = :seatsCount";
     /**
      * Book seats.
      *
@@ -86,13 +95,15 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @return the int
      */
     @Modifying
-    @Query(value = "update EventShowSeat ess set ess.seat_reservation_status = 2 where ess.booking_id = :bookingId and ess.id in :ids "
-        + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.booking_id = :bookingId and ess1.id in :ids and ess1.seat_reservation_status = 1) = :seatsCount",
+    @Query(value = BOOK_SEATS_QUERY,
            nativeQuery = true)
     public int bookSeats(@Param("ids") final Collection<Long> ids,
             @Param("seatCount") final int seatsCount,
             @Param("bookingId") final Long bookingId);
 
+    /** The fill booking for reserved seats query. */
+    static final String FILL_BOOKING_FOR_RESERVED_SEATS_QUERY = "update EventShowSeat ess set ess.booking_id = :bookingId where ess.id in :ids "
+            + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.booking_id = :bookingId and ess1.id in :ids and ess1.seat_reservation_status = 'RESERVED') = :seatsCount";
     /**
      * Fill booking for reserved seats.
      *
@@ -102,8 +113,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @return the int
      */
     @Modifying
-    @Query(value = "update EventShowSeat ess set ess.booking_id = :bookingId where ess.id in :ids "
-        + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.booking_id = :bookingId and ess1.id in :ids and ess1.seat_reservation_status = 1) = :seatsCount",
+    @Query(value = FILL_BOOKING_FOR_RESERVED_SEATS_QUERY,
            nativeQuery = true)
     public int fillBookingForReservedSeats(@Param("ids") final Collection<Long> ids,
             @Param("seatCount") final int seatsCount,

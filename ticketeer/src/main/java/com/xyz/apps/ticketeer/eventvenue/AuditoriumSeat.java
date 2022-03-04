@@ -43,8 +43,10 @@ public class AuditoriumSeat extends com.xyz.apps.ticketeer.model.Entity {
     private Character seatRow;
 
     /** The seat number. */
+    @Column(nullable = false)
+    @NotNull(message = "The seat number cannot be null.")
     @Min(value = 1, message = "Seat numbers must start with at least 1.")
-    private int seatNumber;
+    private Integer seatNumber;
 
     /** The auditorium. */
     @ManyToOne(optional = false)
@@ -62,7 +64,7 @@ public class AuditoriumSeat extends com.xyz.apps.ticketeer.model.Entity {
      * @param seatNumber the seat number
      * @param auditorium the auditorium
      */
-    public AuditoriumSeat(final Character seatRow, final int seatNumber, final Auditorium auditorium) {
+    public AuditoriumSeat(final Character seatRow, final Integer seatNumber, final Auditorium auditorium) {
 
         this.seatRow = seatRow;
         this.seatNumber = seatNumber;

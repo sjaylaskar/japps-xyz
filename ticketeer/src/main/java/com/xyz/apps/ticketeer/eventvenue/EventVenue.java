@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.xyz.apps.ticketeer.location.City;
 
@@ -41,21 +43,24 @@ public class EventVenue extends com.xyz.apps.ticketeer.model.Entity {
     private String name;
 
     /** The number of auditoriums. */
-    private int numberOfAuditoriums;
+    @Column(nullable = false)
+    @NotNull(message = "The number of auditoriums cannot be null.")
+    @Min(value = 1, message = "The number of auditoriums must be atleast 1.")
+    private Integer numberOfAuditoriums;
 
     /** The city. */
     @ManyToOne(optional = false)
     @JoinColumn(name = "cityId", nullable = false)
     private City city;
-    
+
     /**
      * Instantiates a new event venue.
      *
      * @param name the name
-     * @param numberOfAuditoriums the number of auditoriums 
+     * @param numberOfAuditoriums the number of auditoriums
      * @param city the city
      */
-    public EventVenue(final String name, final int numberOfAuditoriums, final City city) {
+    public EventVenue(final String name, final Integer numberOfAuditoriums, final City city) {
         this.name = name;
         this.numberOfAuditoriums = numberOfAuditoriums;
         this.city = city;

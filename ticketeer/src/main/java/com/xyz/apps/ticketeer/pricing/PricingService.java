@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.booking;
+package com.xyz.apps.ticketeer.pricing;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xyz.apps.ticketeer.booking.BookingDto;
 import com.xyz.apps.ticketeer.eventshow.EventShowSeatRepository;
 
 /**

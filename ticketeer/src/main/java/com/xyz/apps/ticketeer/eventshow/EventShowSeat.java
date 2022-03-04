@@ -16,7 +16,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.OnDelete;
@@ -49,12 +48,11 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The amount. */
     @Column(nullable = false)
-    @Min(value = 1, message = "Seat price must be atleast 1.")
     @NotNull(message = "Seat price cannot be null.")
     private Double amount;
 
     /** The seat status. */
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @NotNull(message = "Seat reservation status cannot be null.")
     private SeatReservationStatus seatReservationStatus = SeatReservationStatus.AVAILABLE;
@@ -96,7 +94,6 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
      * @param booking the booking
      */
     public EventShowSeat(
-    @Min(value = 1, message = "Seat price must be atleast 1.")
     @NotNull(message = "Seat price cannot be null.")
     final Double amount,
     @NotNull(message = "Seat reservation status cannot be null.")

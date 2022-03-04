@@ -19,6 +19,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.xyz.apps.ticketeer.eventshow.EventShow;
 import com.xyz.apps.ticketeer.user.User;
 
@@ -55,21 +58,23 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The booking status. */
     @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private BookingStatus bookingStatus;
 
     /** The number of seats. */
-    private int numberOfSeats;
+    @Column(nullable = false)
+    @NotNull(message = "Number of seats cannot be null.")
+    @Min(value = 0, message = "Number of seats must be at least 0.")
+    @Builder.Default
+    private Integer numberOfSeats = 0;
 
     /** The amount. */
     @NotNull(message = "Amount cannot be null.")
-    @Min(value = 1, message = "Amount must be atleast 1.")
     @Column(nullable = false)
     private Double amount;
 
     /** The final amount. */
     @NotNull(message = "Amount cannot be null.")
-    @Min(value = 1, message = "Amount must be atleast 1.")
     @Column(nullable = false)
     private Double finalAmount;
 
@@ -79,11 +84,13 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
     /** The user. */
     @ManyToOne(optional = false)
     @JoinColumn(name = "userId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     /** The event show. */
     @ManyToOne(optional = false)
     @JoinColumn(name = "eventShowId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private EventShow eventShow;
 
     /**
@@ -109,12 +116,10 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
     public Booking(final LocalDateTime bookingTime,
                    final LocalDateTime reservationTime,
                    final BookingStatus bookingStatus,
-                   final int numberOfSeats,
+                   final Integer numberOfSeats,
                    @NotNull(message = "Amount cannot be null.")
-                   @Min(value = 1, message = "Amount must be atleast 1.")
                    final Double amount,
                    @NotNull(message = "Amount cannot be null.")
-                   @Min(value = 1, message = "Amount must be atleast 1.")
                    final Double finalAmount,
                    final String offerCode,
                    final User user,
@@ -149,7 +154,7 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
             final LocalDateTime bookingTime,
             final LocalDateTime reservationTime,
             final BookingStatus bookingStatus,
-            final int numberOfSeats,
+            final Integer numberOfSeats,
             final Double amount,
             final Double finalAmount,
             final String offerCode,

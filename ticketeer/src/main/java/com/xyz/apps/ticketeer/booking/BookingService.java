@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.xyz.apps.ticketeer.eventshow.EventShow;
 import com.xyz.apps.ticketeer.eventshow.EventShowSeatRepository;
+import com.xyz.apps.ticketeer.pricing.PricingService;
 import com.xyz.apps.ticketeer.user.User;
 
 
@@ -146,7 +147,6 @@ public class BookingService {
                 .booking(Booking.builder().id(bookingDto.getBookingId()).build())
                 .paymentMethod(DEFAULT_PAYMENT_METHOD)
                 .paymentStatus(PaymentStatus.SUCCESS)
-                .transactionId(DEFAULT_TRANSACTION_ID)
                 .build());
         final Booking booking = bookingRepository.findById(bookingDto.getBookingId()).orElseThrow(BookingExpiredException::new);
 
@@ -174,10 +174,16 @@ public class BookingService {
      */
     @Transactional(rollbackOn = {Throwable.class})
     public boolean cancel(final Long bookingId) {
-
-        bookingRepository.cancelById(bookingId);
+        final Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
+        booking.setBookingStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
         eventShowSeatRepository.cancelByBookingId(bookingId);
-        paymentRepository.refundPaymentById(bookingId);
+        final Payment payment = paymentRepository.findSuccessfulPaymentByBookingId(bookingId);
+        if (payment == null) {
+            throw new SuccessfulPaymentNotFoundForBookingException(bookingId);
+        }
+        payment.setPaymentStatus(PaymentStatus.REFUNDED);
+        paymentRepository.save(payment);
 
         return true;
     }

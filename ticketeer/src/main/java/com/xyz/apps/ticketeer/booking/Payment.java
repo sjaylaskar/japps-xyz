@@ -14,8 +14,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -42,7 +43,6 @@ public class Payment extends com.xyz.apps.ticketeer.model.Entity {
     private Long id;
 
     @NotNull(message = "Payment amount cannot be null.")
-    @Min(value = 1, message = "Amount must be atleast 1.")
     @Column(nullable = false)
     private Double amount;
 
@@ -59,12 +59,14 @@ public class Payment extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The transaction id. */
     @NotNull(message = "Transaction ID cannot be null.")
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String transactionId;
 
     /** The payment status. */
     @NotNull(message = "Payment status cannot be null.")
     @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 }

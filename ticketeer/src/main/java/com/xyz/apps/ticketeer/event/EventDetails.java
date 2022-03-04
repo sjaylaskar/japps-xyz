@@ -26,7 +26,7 @@ import lombok.ToString;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-@Document(collection = "eventDetails")
+@Document("eventDetails")
 @Getter
 @Setter
 @ToString
