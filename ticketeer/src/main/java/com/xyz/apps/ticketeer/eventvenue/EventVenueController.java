@@ -59,4 +59,7 @@ public class EventVenueController {
                 .body("Failed to add event venue: " + eventVenueDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
+
+    // TODO
+    // find by id
 }

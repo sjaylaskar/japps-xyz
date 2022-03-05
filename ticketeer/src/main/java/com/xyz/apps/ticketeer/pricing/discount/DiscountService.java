@@ -17,11 +17,18 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.model.DtoList;
 import com.xyz.apps.ticketeer.model.DtoListEmptyException;
+import com.xyz.apps.ticketeer.pricing.api.ApiPropertyKey;
+import com.xyz.apps.ticketeer.util.Environment;
 import com.xyz.apps.ticketeer.util.MongoTemplate;
+import com.xyz.apps.ticketeer.util.WebClientBuilder;
+
+import reactor.core.publisher.Mono;
 
 
 /**
@@ -30,6 +37,7 @@ import com.xyz.apps.ticketeer.util.MongoTemplate;
  * @author Subhajoy Laskar
  * @version 1.0
  */
+@Validated
 @Service
 public class DiscountService {
 
@@ -246,8 +254,13 @@ public class DiscountService {
      * @return the discount dto list
      */
     public DiscountDtoList findByCityId(final Long cityId) {
-        // TODO
-        return null;
+        final List<Discount> discounts = MongoTemplate.get().find(new Query().addCriteria(Criteria.where("applicableCityIds").in(cityId)), Discount.class);
+
+        if (CollectionUtils.isNotEmpty(discounts)) {
+            return DiscountDtoList.of(discountModelMapper.toDtos(discounts));
+        }
+
+        return DiscountDtoList.of();
     }
 
     /**
@@ -257,8 +270,13 @@ public class DiscountService {
      * @return the discount dto list
      */
     public DiscountDtoList findByEventVenueId(final Long eventVenueId) {
-        // TODO
-        return null;
+        final List<Discount> discounts = MongoTemplate.get().find(new Query().addCriteria(Criteria.where("applicableEventVenueIds").in(eventVenueId)), Discount.class);
+
+        if (CollectionUtils.isNotEmpty(discounts)) {
+            return DiscountDtoList.of(discountModelMapper.toDtos(discounts));
+        }
+
+        return DiscountDtoList.of();
     }
 
     /**
@@ -296,7 +314,12 @@ public class DiscountService {
      * @param applicableCityIds the applicable city ids
      */
     private void validateApplicableCityIds(final Set<Long> applicableCityIds) {
-        // TODO
+        applicableCityIds
+        .forEach(cityId -> {
+            WebClientBuilder.get().build().get().uri(Environment.property(ApiPropertyKey.GET_CITY_BY_ID.get(cityId))).retrieve()
+            .onStatus(status -> status.value() == HttpStatus.NOT_FOUND.value(),
+                      response -> Mono.error(new DiscountServiceException("Invalid city id: " + cityId)));
+        });
     }
 
     /**
@@ -305,6 +328,11 @@ public class DiscountService {
      * @param applicableEventVenueIds the applicable event venue ids
      */
     private void validateApplicableEventVenueIds(final Set<Long> applicableEventVenueIds) {
-        // TODO
+        applicableEventVenueIds
+        .forEach(eventVenueId -> {
+            WebClientBuilder.get().build().get().uri(Environment.property(ApiPropertyKey.GET_EVENT_VENUE_BY_ID.get(eventVenueId))).retrieve()
+            .onStatus(status -> status.value() == HttpStatus.NOT_FOUND.value(),
+                      response -> Mono.error(new DiscountServiceException("Invalid event venue id: " + eventVenueId)));
+        });
     }
 }

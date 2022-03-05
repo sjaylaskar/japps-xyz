@@ -14,6 +14,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import com.xyz.apps.ticketeer.config.api.ApiPropertyKey;
+import com.xyz.apps.ticketeer.util.Environment;
 
 /**
  * The app config.
@@ -49,5 +53,16 @@ public interface AppConfig {
     @Bean
     public default RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    /**
+     * Web client builder.
+     *
+     * @return the web client. builder
+     */
+    @Bean
+    public default WebClient.Builder webClientBuilder() {
+        return WebClient.builder()
+            .baseUrl(Environment.property(ApiPropertyKey.BASE_URL.get()));
     }
 }

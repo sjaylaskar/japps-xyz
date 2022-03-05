@@ -5,13 +5,13 @@
  */
 package com.xyz.apps.ticketeer.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+
+import com.xyz.apps.ticketeer.util.Environment;
 
 
 /**
@@ -23,10 +23,6 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 @Configuration
 public class MongoDatabaseConfig {
 
-    /** The environment. */
-    @Autowired
-    private Environment environment;
-
     /**
      * Mongo database factory.
      *
@@ -34,7 +30,7 @@ public class MongoDatabaseConfig {
      */
     @Bean
     public MongoDatabaseFactory mongoDatabaseFactory() {
-        return new SimpleMongoClientDatabaseFactory(environment.getProperty("spring.data.mongodb.uri"));
+        return new SimpleMongoClientDatabaseFactory(Environment.property("spring.data.mongodb.uri"));
     }
 
     /**

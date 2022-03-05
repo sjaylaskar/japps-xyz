@@ -47,8 +47,17 @@ public class DiscountDtoList extends DtoList<DiscountDto> {
      */
     static DiscountDtoList of(final List<DiscountDto> discountDtos) {
         if (CollectionUtils.isEmpty(discountDtos)) {
-            return new DiscountDtoList();
+            return DiscountDtoList.of();
         }
         return new DiscountDtoList(discountDtos);
+    }
+
+    /**
+     * Of.
+     *
+     * @return the discount dto list
+     */
+    static DiscountDtoList of() {
+        return new DiscountDtoList();
     }
 }

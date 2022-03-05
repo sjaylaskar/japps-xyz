@@ -221,4 +221,9 @@ public class DiscountController {
                 + offerCode + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
+
+    // @TODO:
+    // find by city
+    // find by event venue
+    // find all
 }
