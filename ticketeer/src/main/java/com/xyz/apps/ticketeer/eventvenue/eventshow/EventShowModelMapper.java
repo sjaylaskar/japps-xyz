@@ -3,7 +3,7 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.eventshow;
+package com.xyz.apps.ticketeer.eventvenue.eventshow;
 
 import org.springframework.stereotype.Component;
 

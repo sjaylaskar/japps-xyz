@@ -12,7 +12,7 @@ package com.xyz.apps.ticketeer.booking;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class SuccessfulPaymentNotFoundForBookingException extends RuntimeException {
+public class SuccessfulPaymentNotFoundForBookingException extends BookingServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -3469218342966086310L;

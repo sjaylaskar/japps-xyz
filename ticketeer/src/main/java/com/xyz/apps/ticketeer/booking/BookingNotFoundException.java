@@ -9,7 +9,7 @@ package com.xyz.apps.ticketeer.booking;
 /**
  * The booking not found exception.
  */
-public class BookingNotFoundException extends RuntimeException {
+public class BookingNotFoundException extends BookingServiceException {
 
     /**
      *

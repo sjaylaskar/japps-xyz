@@ -7,12 +7,12 @@ package com.xyz.apps.ticketeer.booking;
 
 
 /**
- * The SelectedSeatsUnavailableException.
+ * The selected seats unavailable exception.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class SelectedSeatsUnavailableException extends RuntimeException {
+public class SelectedSeatsUnavailableException extends BookingServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 1004173545467542294L;

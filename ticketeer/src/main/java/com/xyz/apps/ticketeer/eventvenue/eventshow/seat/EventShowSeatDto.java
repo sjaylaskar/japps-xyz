@@ -3,12 +3,13 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventshow;
+package com.xyz.apps.ticketeer.eventvenue.eventshow.seat;
 
 import java.time.LocalDateTime;
 
 import com.xyz.apps.ticketeer.booking.Booking;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.EventShow;
 import com.xyz.apps.ticketeer.model.Dto;
 
 import lombok.Getter;

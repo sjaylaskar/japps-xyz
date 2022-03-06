@@ -9,7 +9,10 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,7 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequestMapping("eventvenue")
 @Log4j2
+@Validated
 public class EventVenueController {
 
     /** The event venue service. */
@@ -47,11 +51,11 @@ public class EventVenueController {
 
         try {
             log.info("Event venue: " + eventVenueDetailsDto);
-            final EventVenue eventVenueAdded = eventVenueService.add(eventVenueDetailsDto);
+            final EventVenueDto eventVenueAdded = eventVenueService.add(eventVenueDetailsDto);
             log.info("Event venue added: " + eventVenueAdded);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(eventVenueModelMapper.toDto(eventVenueAdded));
+                .body(eventVenueAdded);
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -60,6 +64,24 @@ public class EventVenueController {
         }
     }
 
-    // TODO
-    // find by id
+   /**
+    * Gets the by id.
+    *
+    * @param id the id
+    * @return the by id
+    */
+   @GetMapping("/{id}")
+   public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
+
+       try {
+           final EventVenueDto eventVenueDto = eventVenueService.findById(id);
+           return ResponseEntity.status(HttpStatus.FOUND)
+                   .body(eventVenueDto);
+       } catch(final EventVenueNotFoundException eventVenueNotFoundException) {
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventVenueNotFoundException));
+       } catch (final Exception exception) {
+           return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
+               + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+       }
+   }
 }

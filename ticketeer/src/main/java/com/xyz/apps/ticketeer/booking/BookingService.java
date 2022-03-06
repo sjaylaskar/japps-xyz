@@ -6,16 +6,27 @@
 package com.xyz.apps.ticketeer.booking;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 
-import com.xyz.apps.ticketeer.eventshow.EventShow;
-import com.xyz.apps.ticketeer.eventshow.EventShowSeatRepository;
-import com.xyz.apps.ticketeer.pricing.calculator.PricingService;
-import com.xyz.apps.ticketeer.user.User;
+import com.xyz.apps.ticketeer.booking.api.external.ApiPropertyKey;
+import com.xyz.apps.ticketeer.booking.api.external.contract.BasicUserDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfo;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookingDto;
+import com.xyz.apps.ticketeer.util.Environment;
+import com.xyz.apps.ticketeer.util.WebClientBuilder;
+
+import reactor.core.publisher.Mono;
 
 
 /**
@@ -25,6 +36,7 @@ import com.xyz.apps.ticketeer.user.User;
  * @version 1.0
  */
 @Service
+@Validated
 public class BookingService {
 
     /** The booking repository. */
@@ -35,21 +47,6 @@ public class BookingService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    /** The event show seat repository. */
-    @Autowired
-    private EventShowSeatRepository eventShowSeatRepository;
-
-    /** The pricing service. */
-    @Autowired
-    private PricingService pricingService;
-
-    // @TODO - Connect with actual payment gateway interface.
-    /** The default payment method. */
-    private static final String DEFAULT_PAYMENT_METHOD = "UPI";
-
-    /** The default transaction id. */
-    private static final String DEFAULT_TRANSACTION_ID = "TRN1234";
-
     /**
      * Reserve.
      *
@@ -59,16 +56,45 @@ public class BookingService {
     @Transactional(rollbackOn = {Throwable.class})
     public BookingDto reserve(final BookingDto bookingDto) {
 
-        if (eventShowSeatRepository.areSeatsAvailable(bookingDto.getEventShowSeatIds(), bookingDto.getEventShowSeatIds().size())) {
-            int reservedBookingSeatCount = eventShowSeatRepository.reserveSeats(bookingDto.getEventShowSeatIds(), bookingDto
-                .getEventShowSeatIds().size());
+        validateBooking(bookingDto);
+
+        if (WebClientBuilder.get().build()
+                .post()
+                .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_AVAILABLE.get()))
+                .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
+                .retrieve()
+                .bodyToMono(Boolean.class).block()) {
+
+            int reservedBookingSeatCount = WebClientBuilder.get().build()
+                    .put()
+                    .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()))
+                    .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
+                    .retrieve()
+                    .bodyToMono(Integer.class).block();
             if (reservedBookingSeatCount != bookingDto.getEventShowSeatIds().size()) {
+                WebClientBuilder.get().build()
+                .put()
+                .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_UNRESERVE.get()))
+                .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
+                .retrieve()
+                .bodyToMono(Integer.class).block();
                 throw new SelectedSeatsUnavailableException();
             }
+
             final Booking booking = bookingRepository.save(toReservedBooking(bookingDto));
-            reservedBookingSeatCount = eventShowSeatRepository.fillBookingForReservedSeats(bookingDto.getEventShowSeatIds(), booking
-                .getNumberOfSeats(), booking.getId());
+
+            final EventShowSeatsBookingDto eventShowSeatsBookingDto = new EventShowSeatsBookingDto();
+            eventShowSeatsBookingDto.setBookingId(booking.getId());
+            eventShowSeatsBookingDto.setSeatIds(bookingDto.getEventShowSeatIds());
+
+            reservedBookingSeatCount = WebClientBuilder.get().build()
+                    .put()
+                    .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE_WITH_BOOKING.get()))
+                    .body(Mono.just(eventShowSeatsBookingDto), EventShowSeatsBookingDto.class)
+                    .retrieve()
+                    .bodyToMono(Integer.class).block();
             if (reservedBookingSeatCount != booking.getNumberOfSeats()) {
+                cancelBookingForEventShowSeats(booking.getId());
                 throw new SelectedSeatsUnavailableException();
             }
             return toReservedBookingDto(booking, bookingDto);
@@ -103,16 +129,27 @@ public class BookingService {
      */
     private Booking toReservedBooking(final BookingDto bookingDto) {
 
-        final double amount = pricingService.calculateBaseAmount(bookingDto);
-        return new Booking(null,
-            LocalDateTime.now(),
-            BookingStatus.RESERVED,
-            bookingDto.getEventShowSeatIds().size(),
-            amount,
-            amount,
-            bookingDto.getOfferCode(),
-            User.builder().id(bookingDto.getUserId()).build(),
-            EventShow.builder().id(bookingDto.getEventShowId()).build());
+
+        final Double amount = WebClientBuilder.get().build()
+                .post()
+                .uri(Environment.property(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()))
+                .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
+                .retrieve()
+                .bodyToMono(Double.class).block();
+
+        final Booking booking = new Booking();
+        booking.setReservationTime(LocalDateTime.now());
+        booking.setBookingStatus(BookingStatus.RESERVED);
+        booking.setNumberOfSeats(bookingDto.getEventShowSeatIds().size());
+        booking.setAmount(amount);
+        booking.setFinalAmount(amount);
+        booking.setOfferCode(bookingDto.getOfferCode());
+        booking.setEventShowId(bookingDto.getEventShowId());
+        booking.setUsername(bookingDto.getUsername());
+        booking.setPhoneNumber(bookingDto.getPhoneNumber());
+        booking.setEmailId(bookingDto.getEmailId());
+
+        return booking;
     }
 
     /**
@@ -124,38 +161,66 @@ public class BookingService {
     @Transactional(rollbackOn = {Throwable.class})
     public BookingDto confirm(final BookingDto bookingDto) {
 
-        if (!bookingRepository.existsById(bookingDto.getBookingId())) {
-            throw new BookingExpiredException();
-        }
-        if (!eventShowSeatRepository.areSeatsReserved(bookingDto.getEventShowSeatIds(), bookingDto.getBookingId(), bookingDto
-            .getEventShowSeatIds().size())) {
-            throw new SelectedSeatsUnavailableException();
-        }
+        validateBooking(bookingDto);
 
-        final int countOfBookedSeats = eventShowSeatRepository.bookSeats(bookingDto.getEventShowSeatIds(), bookingDto.getEventShowSeatIds().size(), bookingDto.getBookingId());
-
-        if (countOfBookedSeats != bookingDto.getEventShowSeatIds().size()) {
-            throw new SelectedSeatsUnavailableException();
-        }
-
-        final double baseAmount = pricingService.calculateBaseAmount(bookingDto);
-        final double finalAmount = pricingService.calculateFinalAmount(bookingDto);
-
-        paymentRepository.save(
-            Payment.builder()
-                .amount(finalAmount)
-                .booking(Booking.builder().id(bookingDto.getBookingId()).build())
-                .paymentMethod(DEFAULT_PAYMENT_METHOD)
-                .paymentStatus(PaymentStatus.SUCCESS)
-                .build());
         final Booking booking = bookingRepository.findById(bookingDto.getBookingId()).orElseThrow(BookingExpiredException::new);
+
+        final EventShowSeatsBookingDto eventShowSeatsBookingDto = new EventShowSeatsBookingDto();
+        eventShowSeatsBookingDto.setBookingId(booking.getId());
+        eventShowSeatsBookingDto.setSeatIds(bookingDto.getEventShowSeatIds());
+
+        if (!WebClientBuilder.get().build()
+                .post()
+                .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_RESERVED.get()))
+                .body(Mono.just(eventShowSeatsBookingDto), EventShowSeatsBookingDto.class)
+                .retrieve()
+                .bodyToMono(Boolean.class).block()) {
+            throw new SelectedSeatsUnavailableException();
+        }
+
+        final double baseAmount = WebClientBuilder.get().build()
+                .post()
+                .uri(Environment.property(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()))
+                .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
+                .retrieve()
+                .bodyToMono(Double.class).block();
+
+        bookingDto.setAmount(baseAmount);
+        bookingDto.setFinalAmount(baseAmount);
+
+        final BookingPriceInfo bookingPriceInfo = toBookingPriceInfo(bookingDto);
+
+        final double finalAmount = WebClientBuilder.get().build()
+                .post()
+                .uri(Environment.property(ApiPropertyKey.PRICING_CALCULATE.get()))
+                .body(Mono.just(bookingPriceInfo), BookingPriceInfo.class)
+                .retrieve()
+                .bodyToMono(Double.class).block();
+
+        final Payment payment = new Payment();
+        payment.setAmount(finalAmount);
+        payment.setBooking(booking);
+        payment.setPaymentStatus(PaymentStatus.SUCCESS);
+        paymentRepository.save(payment);
 
         booking.setAmount(baseAmount);
         booking.setFinalAmount(finalAmount);
         booking.setBookingStatus(BookingStatus.CONFIRMED);
-        booking.setBookingTime(LocalDateTime.now());
+        booking.setBookingTime(bookingPriceInfo.getBookingTime());
 
         final Booking bookingUpdated = bookingRepository.save(booking);
+
+        final int countOfBookedSeats = WebClientBuilder.get().build()
+                .post()
+                .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()))
+                .body(Mono.just(eventShowSeatsBookingDto), EventShowSeatsBookingDto.class)
+                .retrieve()
+                .bodyToMono(Integer.class).block();
+
+        if (countOfBookedSeats != bookingDto.getEventShowSeatIds().size()) {
+            cancelBookingForEventShowSeats(booking.getId());
+            throw new SelectedSeatsUnavailableException();
+        }
 
         bookingDto.setAmount(baseAmount);
         bookingDto.setFinalAmount(finalAmount);
@@ -167,24 +232,154 @@ public class BookingService {
     }
 
     /**
+     * To booking price info.
+     *
+     * @param bookingDto the booking dto
+     * @return the booking price info
+     */
+    private BookingPriceInfo toBookingPriceInfo(final BookingDto bookingDto) {
+
+        final BookingPriceInfo bookingPriceInfo = new BookingPriceInfo();
+        bookingPriceInfo.setOfferCode(bookingDto.getOfferCode());
+        bookingPriceInfo.setBaseAmount(bookingDto.getAmount());
+        bookingPriceInfo.setFinalAmount(bookingDto.getFinalAmount());
+        bookingPriceInfo.setNumberOfSeats(bookingDto.getEventShowSeatIds().size());
+        bookingPriceInfo.setCityId(bookingDto.getCityId());
+        bookingPriceInfo.setEventVenueId(bookingDto.getEventVenueId());
+        bookingPriceInfo.setShowStartTime(bookingDto.getShowStartTime());
+        bookingPriceInfo.setBookingTime(LocalDateTime.now());
+        return bookingPriceInfo;
+    }
+
+    /**
      * Cancel.
      *
-     * @param bookingId the booking id
+     * @param bookingDto the booking dto
      * @return true, if successful
      */
     @Transactional(rollbackOn = {Throwable.class})
-    public boolean cancel(final Long bookingId) {
-        final Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new BookingNotFoundException(bookingId));
+    public boolean cancel(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
+        validateBooking(bookingDto);
+
+        final Booking booking = bookingRepository.findById(bookingDto.getBookingId()).orElseThrow(() -> new BookingNotFoundException(bookingDto.getBookingId()));
         booking.setBookingStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
-        eventShowSeatRepository.cancelByBookingId(bookingId);
-        final Payment payment = paymentRepository.findSuccessfulPaymentByBookingId(bookingId);
+        final Payment payment = paymentRepository.findSuccessfulPaymentByBookingId(bookingDto.getBookingId());
         if (payment == null) {
-            throw new SuccessfulPaymentNotFoundForBookingException(bookingId);
+            throw new SuccessfulPaymentNotFoundForBookingException(bookingDto.getBookingId());
         }
         payment.setPaymentStatus(PaymentStatus.REFUNDED);
         paymentRepository.save(payment);
 
+        cancelBookingForEventShowSeats(bookingDto.getBookingId());
+
         return true;
+    }
+
+    /**
+     * Cancel booking for event show seats.
+     *
+     * @param bookingId the booking id
+     * @return the response spec
+     */
+    private ResponseSpec cancelBookingForEventShowSeats(final Long bookingId) {
+
+        return WebClientBuilder.get().build()
+        .post()
+        .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_CANCEL.get()))
+        .body(Mono.just(bookingId), Long.class)
+        .retrieve().onStatus(status -> HttpStatus.OK.value() != status.value(),
+                             response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
+    }
+
+    /**
+     * Validate booking.
+     *
+     * @param bookingDto the booking dto
+     */
+    private void validateBooking(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
+
+        validateUser(bookingDto);
+
+        validateEventShow(bookingDto);
+
+        validateCity(bookingDto);
+
+        validateEventShowSeats(bookingDto);
+
+    }
+
+    /**
+     * Validate city.
+     *
+     * @param bookingDto the booking dto
+     */
+    private void validateCity(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
+        if (bookingDto.getCityId() == null) {
+            throw new BookingServiceException("The city id cannot be null.");
+        }
+
+        WebClientBuilder.get().build()
+        .get()
+        .uri(Environment.property(ApiPropertyKey.GET_CITY_BY_ID.get(bookingDto.getCityId())))
+        .retrieve()
+        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+                  response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
+
+    }
+
+    /**
+     * Validate user.
+     *
+     * @param bookingDto the booking dto
+     */
+    private void validateUser(final BookingDto bookingDto) {
+
+        if (StringUtils.isBlank(bookingDto.getUsername()) || StringUtils.isBlank(bookingDto.getPassword())) {
+            throw new BookingServiceException("User is not authenticated.");
+        }
+
+        final BasicUserDto basicUserDto = new BasicUserDto();
+        basicUserDto.setUsername(bookingDto.getUsername());
+        basicUserDto.setPassword(bookingDto.getPassword());
+
+        WebClientBuilder.get().build()
+        .post()
+        .uri(Environment.property(ApiPropertyKey.AUTHENTICATE_USER.get()))
+        .body(Mono.just(basicUserDto), BasicUserDto.class)
+        .retrieve()
+        .onStatus(status -> HttpStatus.OK.value() != status.value(),
+                  response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
+    }
+
+    /**
+     * Validate event show.
+     *
+     * @param bookingDto the booking dto
+     */
+    private void validateEventShow(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
+        if (bookingDto.getEventShowId() == null) {
+            throw new BookingServiceException("The event show id cannot be null.");
+        }
+
+        WebClientBuilder.get().build()
+        .get()
+        .uri(Environment.property(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get(bookingDto.getEventShowId())))
+        .retrieve()
+        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+                  response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
+
+    }
+
+
+    /**
+     * Validate event show seats.
+     *
+     * @param bookingDto the booking dto
+     */
+    private void validateEventShowSeats(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
+        if (CollectionUtils.isEmpty(bookingDto.getEventShowSeatIds())) {
+            throw new BookingServiceException("At least select one seat to reserve.");
+        }
     }
 }

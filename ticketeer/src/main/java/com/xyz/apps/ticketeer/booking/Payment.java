@@ -18,7 +18,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -34,8 +33,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Builder
 public class Payment extends com.xyz.apps.ticketeer.model.Entity {
+
+    // @TODO - Connect with actual payment gateway interface.
+    /** The default payment method. */
+    private static final String DEFAULT_PAYMENT_METHOD = "UPI";
 
     /** The id. */
     @Id
@@ -55,7 +57,7 @@ public class Payment extends com.xyz.apps.ticketeer.model.Entity {
     /** The payment method. */
     @NotNull(message = "Payment method cannot be null.")
     @Column(nullable = false)
-    private String paymentMethod;
+    private String paymentMethod = DEFAULT_PAYMENT_METHOD;
 
     /** The transaction id. */
     @NotNull(message = "Transaction ID cannot be null.")

@@ -18,10 +18,10 @@ import org.apache.commons.lang3.ArrayUtils;
 public enum ApiPropertyKey {
 
     /** The get city by id. */
-    GET_CITY_BY_ID("api.city.getById"),
+    GET_CITY_BY_ID("api.external.city.getById"),
 
     /** The get event venue by id. */
-    GET_EVENT_VENUE_BY_ID("api.eventvenue.getById");
+    GET_EVENT_VENUE_BY_ID("api.external.eventvenue.getById");
 
     /** The key. */
     private String key;

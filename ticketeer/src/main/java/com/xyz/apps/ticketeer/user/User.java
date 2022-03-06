@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -28,7 +27,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Builder
 public class User extends com.xyz.apps.ticketeer.model.Entity {
     /** The id. */
     @Id

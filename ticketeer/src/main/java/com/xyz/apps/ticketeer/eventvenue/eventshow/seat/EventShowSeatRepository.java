@@ -3,10 +3,13 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventshow;
+package com.xyz.apps.ticketeer.eventvenue.eventshow.seat;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -83,6 +86,21 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
            nativeQuery = true)
     public int reserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatCount") final int seatsCount);
 
+    /** The unreserve seats query. */
+    static final String UNRESERVE_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'AVAILABLE', ess.reservation_time = null where ess.id in :ids "
+            + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.id in :ids and ess1.seat_reservation_status = 'RESERVED') = :seatsCount";
+    /**
+     * Unreserve seats.
+     *
+     * @param ids the ids
+     * @param seatsCount the seats count
+     * @return the int
+     */
+    @Modifying
+    @Query(value = UNRESERVE_SEATS_QUERY,
+           nativeQuery = true)
+    public int unreserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatCount") final int seatsCount);
+
     /** The book seats query. */
     static final String BOOK_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'BOOKED' where ess.booking_id = :bookingId and ess.id in :ids "
             + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.booking_id = :bookingId and ess1.id in :ids and ess1.seat_reservation_status = 'RESERVED') = :seatsCount";
@@ -127,4 +145,6 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      */
     @Query("select sum(ess.amount) from EventShowSeat ess where ess.id in :ids")
     public double findTotalAmount(@Param("ids") final Collection<Long> ids);
+
+    public int unreserveSeats(@NotEmpty(message = "The seat ids cannot be empty.") Set<Long> seatIds, int size);
 }

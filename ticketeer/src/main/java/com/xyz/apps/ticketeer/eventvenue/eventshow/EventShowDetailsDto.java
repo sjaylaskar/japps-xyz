@@ -3,7 +3,9 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventshow;
+package com.xyz.apps.ticketeer.eventvenue.eventshow;
+
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatRowPriceDtoList;
 
 import lombok.Getter;
 import lombok.Setter;

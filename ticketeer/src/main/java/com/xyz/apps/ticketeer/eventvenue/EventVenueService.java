@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,17 @@ public class EventVenueService {
     @Autowired
     private AuditoriumSeatRepository auditoriumSeatRepository;
 
-    public EventVenue add(final EventVenueDetailsDto eventVenueDetailsDto) {
+    /** The event venue model mapper. */
+    @Autowired
+    private EventVenueModelMapper eventVenueModelMapper;
+
+    /**
+     * Adds the.
+     *
+     * @param eventVenueDetailsDto the event venue details dto
+     * @return the event venue dto
+     */
+    public EventVenueDto add(final EventVenueDetailsDto eventVenueDetailsDto) {
         Objects.requireNonNull(eventVenueDetailsDto, "The event venue details cannot be null.");
         final EventVenue eventVenue = eventVenueRepository.save(toEventVenue(eventVenueDetailsDto));
 
@@ -56,7 +68,7 @@ public class EventVenueService {
             }
         }
 
-        return eventVenue;
+        return eventVenueModelMapper.toDto(eventVenue);
     }
 
     /**
@@ -124,5 +136,15 @@ public class EventVenueService {
 
         private int seatsPerRow;
 
+    }
+
+    /**
+     * Finds the by id.
+     *
+     * @param id the id
+     * @return the event venue dto
+     */
+    public EventVenueDto findById(@NotNull(message = "The event venue id cannot be null.") final Long id) {
+        return eventVenueModelMapper.toDto(eventVenueRepository.findById(id).orElseThrow(() -> new EventVenueNotFoundException(id)));
     }
 }

@@ -12,7 +12,7 @@ package com.xyz.apps.ticketeer.booking;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class BookingExpiredException extends RuntimeException {
+public class BookingExpiredException extends BookingServiceException {
 
     /**
      *

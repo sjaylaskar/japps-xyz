@@ -1,8 +1,8 @@
 /*
-* Id: Booking.java 15-Feb-2022 3:14:35 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: Booking.java 15-Feb-2022 3:14:35 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.booking;
 
 import java.time.LocalDateTime;
@@ -14,22 +14,18 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.eventshow.EventShow;
-import com.xyz.apps.ticketeer.user.User;
-
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 
 /**
  * The Booking.
@@ -41,7 +37,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Builder
+@Validated
 public class Booking extends com.xyz.apps.ticketeer.model.Entity {
 
     /** The id. */
@@ -66,7 +62,6 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
     @Column(nullable = false)
     @NotNull(message = "Number of seats cannot be null.")
     @Min(value = 0, message = "Number of seats must be at least 0.")
-    @Builder.Default
     private Integer numberOfSeats = 0;
 
     /** The amount. */
@@ -83,103 +78,27 @@ public class Booking extends com.xyz.apps.ticketeer.model.Entity {
     private String offerCode;
 
     /** The user. */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "userId", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    @Column(nullable = false)
+    @NotBlank(message = "The username cannot be null.")
+    private String username;
 
     /** The event show. */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "eventShowId", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private EventShow eventShow;
+    @Column(nullable = false)
+    @NotNull(message = "The event show id cannot be null.")
+    private Long eventShowId;
+
+    @Column(nullable = false)
+    @NotNull(message = "The city id cannot be null.")
+    private Long cityId;
 
     /** The phone number. */
-    @Column(nullable = false, unique = true, length = 15)
+    @Column(nullable = false, length = 15)
     @Size(min = 10, max = 15, message = "The phone number must be be at least 10 and at most 15 characters.")
-    @NotNull(message = "The phone number cannot be null.")
+    @NotBlank(message = "The phone number cannot be empty.")
     private String phoneNumber;
 
-    /**
-     * Instantiates a new booking.
-     */
-    public Booking() {
-
-    }
-
-    /**
-     * Instantiates a new booking.
-     *
-     * @param bookingTime the booking time
-     * @param reservationTime the reservation time
-     * @param bookingStatus the booking status
-     * @param numberOfSeats the number of seats
-     * @param amount the amount
-     * @param finalAmount the final amount
-     * @param offerCode the offer code
-     * @param user the user
-     * @param eventShow the event show
-     */
-    public Booking(final LocalDateTime bookingTime,
-                   final LocalDateTime reservationTime,
-                   final BookingStatus bookingStatus,
-                   final Integer numberOfSeats,
-                   @NotNull(message = "Amount cannot be null.")
-                   final Double amount,
-                   @NotNull(message = "Amount cannot be null.")
-                   final Double finalAmount,
-                   final String offerCode,
-                   final User user,
-                   final EventShow eventShow) {
-
-        this.bookingTime = bookingTime;
-        this.reservationTime = reservationTime;
-        this.bookingStatus = bookingStatus;
-        this.numberOfSeats = numberOfSeats;
-        this.amount = amount;
-        this.finalAmount = finalAmount;
-        this.offerCode = offerCode;
-        this.user = user;
-        this.eventShow = eventShow;
-    }
-
-    /**
-     * Instantiates a new booking.
-     *
-     * @param id the id
-     * @param bookingTime the booking time
-     * @param reservationTime the reservation time
-     * @param bookingStatus the booking status
-     * @param numberOfSeats the number of seats
-     * @param amount the amount
-     * @param finalAmount the final amount
-     * @param offerCode the offer code
-     * @param user the user
-     * @param eventShow the event show
-     * @param phoneNumber the phone number
-     */
-    Booking(final Long id,
-            final LocalDateTime bookingTime,
-            final LocalDateTime reservationTime,
-            final BookingStatus bookingStatus,
-            final Integer numberOfSeats,
-            final Double amount,
-            final Double finalAmount,
-            final String offerCode,
-            final User user,
-            final EventShow eventShow,
-            final String phoneNumber) {
-
-        this.id = id;
-        this.bookingTime = bookingTime;
-        this.reservationTime = reservationTime;
-        this.bookingStatus = bookingStatus;
-        this.numberOfSeats = numberOfSeats;
-        this.amount = amount;
-        this.finalAmount = finalAmount;
-        this.offerCode = offerCode;
-        this.user = user;
-        this.eventShow = eventShow;
-        this.phoneNumber = phoneNumber;
-    }
+    @Column(nullable = false)
+    @Email(message = "Invalid email id.")
+    @NotBlank(message = "The email id cannot be empty.")
+    private String emailId;
 }

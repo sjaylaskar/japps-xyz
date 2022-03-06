@@ -3,10 +3,9 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.eventshow;
+package com.xyz.apps.ticketeer.eventvenue.eventshow;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -15,6 +14,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +40,7 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequestMapping("eventshow")
 @Log4j2
+@Validated
 public class EventShowController {
 
     /** The event show service. */
@@ -152,57 +153,25 @@ public class EventShowController {
     }
 
     /**
-     * Gets the event show seats by event show id.
+     * Gets the by id.
      *
-     * @param eventShowId the event show id
-     * @return the event show seats by event show id
+     * @param id the id
+     * @return the by id
      */
-    @GetMapping("/seats/{eventShowId}")
-    public ResponseEntity<?> getEventShowSeatsByEventShowId(@PathVariable("eventShowId") final Long eventShowId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable("id") @NotNull(message = "The event show id cannot be null") final Long id) {
 
         try {
-            log.info("Event show: " + eventShowId);
-            final EventShowSeatDtoList eventShowSeatDtoList = eventShowService.findEventShowSeatsByEventShowId(eventShowId);
-            if (DtoList.isNotEmpty(eventShowSeatDtoList)) {
-                log.info("Event show seats: " + eventShowSeatDtoList);
-                return ResponseEntity
-                    .status(HttpStatus.FOUND)
-                    .body(eventShowSeatDtoList);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No seats found for show: " + eventShowId);
-            }
+            log.info("Event show: " + id);
+            return ResponseEntity.status(HttpStatus.FOUND)
+                .body(eventShowService.findById(id));
+        } catch (final EventShowNotFoundException eventShowNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventShowNotFoundException));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find seats for event show: "
-                    + eventShowId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
-        }
-    }
-
-    /**
-     * Calculate seats total amount.
-     *
-     * @param seatIds the seat ids
-     * @return the response entity
-     */
-    @PostMapping("/calculate")
-    public ResponseEntity<?> calculateSeatsTotalAmount(@RequestBody final Set<Long> seatIds) {
-
-        try {
-            log.info("Seats IDs: " + seatIds);
-            final Double amount = eventShowService.calculateSeatsTotalAmount(seatIds);
-            log.info("Seats total amount: " + amount);
-            return ResponseEntity
-                .status(HttpStatus.FOUND)
-                .body(amount);
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find amount for event show seats: "
-                    + seatIds + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to find event show for id: " + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 }

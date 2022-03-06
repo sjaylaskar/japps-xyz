@@ -5,8 +5,12 @@
 */
 package com.xyz.apps.ticketeer.user;
 
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * The user service.
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
  * @version 1.0
  */
 @Service
+@Validated
 public class UserService {
 
     /** The user repository. */
@@ -68,5 +73,23 @@ public class UserService {
     private boolean exists(final User user) {
 
         return userRepository.existsById(user.getId());
+    }
+
+    /**
+     * Authenticate.
+     *
+     * @param basicUserDto the basic user dto
+     * @return true, if successful
+     */
+    public boolean authenticate(@NotNull(message = "The user cannot be null.") final BasicUserDto basicUserDto) {
+        if (StringUtils.isNotBlank(basicUserDto.getUsername())
+            && StringUtils.isNotBlank(basicUserDto.getPassword())) {
+            final User user = userRepository.findByUsernameAndPassword(basicUserDto.getUsername(), basicUserDto.getPassword());
+            if (user != null) {
+                return true;
+            }
+            throw new InvalidUserException();
+        }
+        throw new UserServiceException("Username and Password cannot be blank.");
     }
 }

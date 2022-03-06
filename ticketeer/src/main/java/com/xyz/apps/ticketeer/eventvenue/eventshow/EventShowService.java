@@ -3,17 +3,15 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.eventshow;
+package com.xyz.apps.ticketeer.eventvenue.eventshow;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,10 @@ import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.EventVenue;
 import com.xyz.apps.ticketeer.eventvenue.EventVenueRepository;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeat;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeatRepository;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatRowPriceDto;
 
 
 /**
@@ -70,9 +72,9 @@ public class EventShowService {
     @Autowired
     private AuditoriumSeatRepository auditoriumSeatRepository;
 
-    /** The event show seat model mapper. */
+    /** The event show model mapper. */
     @Autowired
-    private EventShowSeatModelMapper eventShowSeatModelMapper;
+    private EventShowModelMapper eventShowModelMapper;
 
     /**
      * Adds the event show.
@@ -113,6 +115,19 @@ public class EventShowService {
         }
 
         throw new EventShowNotFoundException(id);
+    }
+
+    /**
+     * Finds the event show by id.
+     *
+     * @param id the id
+     */
+    public EventShowDto findById(@NotNull(message = "The event show id cannot be null.") final Long id) {
+
+        Objects.requireNonNull(id, "The event show id cannot be null.");
+
+        return eventShowModelMapper.toDto(eventShowRepository.findById(id).orElseThrow(() -> new EventShowNotFoundException(id)));
+
     }
 
     /**
@@ -187,45 +202,5 @@ public class EventShowService {
 
         final List<Event> events = eventShowRepository.findEventsByCityId(cityId);
         return (CollectionUtils.isNotEmpty(events)) ? eventService.findAllByEvents(events) : null;
-    }
-
-    /**
-     * Finds the event show seats by event show id.
-     *
-     * @param eventShowId the event show id
-     * @return the event show seat dto list
-     */
-    public EventShowSeatDtoList findEventShowSeatsByEventShowId(final Long eventShowId) {
-        return EventShowSeatDtoList.of(eventShowSeatModelMapper.toDtos(eventShowSeatRepository.findByEventShowId(eventShowId)));
-    }
-
-    /**
-     * Finds the all event show seats by ids.
-     *
-     * @param seatIds the seat ids
-     * @return the event show seats
-     */
-    public List<EventShowSeat> findAllEventShowSeatsByIds(final Set<Long> seatIds) {
-        return eventShowSeatRepository.findAllById(seatIds);
-    }
-
-    /**
-     * Calculate seats total amount.
-     *
-     * @param eventShowSeatIds the event show seat ids
-     * @return the amount
-     */
-    public Double calculateSeatsTotalAmount(@NotEmpty(message = "The event show seat ids cannot be null or empty.") final Set<Long> eventShowSeatIds) {
-        if (CollectionUtils.isNotEmpty(eventShowSeatIds)) {
-            final List<EventShowSeat> eventShowSeats = findAllEventShowSeatsByIds(eventShowSeatIds);
-            if (CollectionUtils.isNotEmpty(eventShowSeats)) {
-                if (eventShowSeats.size() != eventShowSeatIds.size()) {
-                    final Set<Long> eventShowSeatIdsFound = eventShowSeats.stream().map(EventShowSeat::getId).collect(Collectors.toSet());
-                    throw new EventShowSeatsNotFoundException(eventShowSeatIds.stream().filter(eventShowSeatId -> !eventShowSeatIdsFound.contains(eventShowSeatId)).collect(Collectors.toSet()));
-                }
-                return eventShowSeatRepository.findTotalAmount(eventShowSeatIds);
-            }
-        }
-        return 0d;
     }
 }

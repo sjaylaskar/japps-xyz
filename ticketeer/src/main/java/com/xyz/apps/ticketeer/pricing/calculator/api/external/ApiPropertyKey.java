@@ -18,7 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
 public enum ApiPropertyKey {
 
     /** The get platform convenience fee percentage. */
-    GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE("api.conveniencefee.percentage");
+    GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE("api.external.conveniencefee.percentage");
 
     /** The key. */
     private String key;

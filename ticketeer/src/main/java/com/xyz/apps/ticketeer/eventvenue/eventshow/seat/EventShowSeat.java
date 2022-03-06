@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventshow;
+package com.xyz.apps.ticketeer.eventvenue.eventshow.seat;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +23,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.xyz.apps.ticketeer.booking.Booking;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.EventShow;
 
 import lombok.Getter;
 import lombok.Setter;

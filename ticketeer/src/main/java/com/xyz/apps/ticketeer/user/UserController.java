@@ -5,10 +5,13 @@
 */
 package com.xyz.apps.ticketeer.user;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +32,7 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequestMapping("user")
 @Log4j2
+@Validated
 public class UserController {
 
     /** The user service. */
@@ -109,6 +113,25 @@ public class UserController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to delete user: " + userDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Authenticate.
+     *
+     * @param basicUserDto the basic user dto
+     * @return the response entity
+     */
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticate(@RequestBody @NotNull(message = "The user cannot be null.") final BasicUserDto basicUserDto) {
+        try {
+            log.info(basicUserDto.getUsername());
+            return ResponseEntity.ok().body(userService.authenticate(basicUserDto));
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 }

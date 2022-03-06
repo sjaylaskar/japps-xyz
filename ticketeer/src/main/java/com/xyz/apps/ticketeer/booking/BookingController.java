@@ -34,6 +34,12 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+    /**
+     * Reserve.
+     *
+     * @param bookingDto the booking dto
+     * @return the response entity
+     */
     @PostMapping("/reserve")
     public ResponseEntity<?> reserve(@RequestBody final BookingDto bookingDto) {
 
@@ -59,6 +65,12 @@ public class BookingController {
         }
     }
 
+    /**
+     * Confirm.
+     *
+     * @param bookingDto the booking dto
+     * @return the response entity
+     */
     @PutMapping("/confirm")
     public ResponseEntity<?> confirm(@RequestBody final BookingDto bookingDto) {
 
@@ -95,7 +107,7 @@ public class BookingController {
 
         try {
             log.info("Booking: " + bookingDto);
-            final boolean isBookingCancelled = bookingService.cancel(bookingDto.getBookingId());
+            final boolean isBookingCancelled = bookingService.cancel(bookingDto);
             if (isBookingCancelled) {
                 log.info("Booking cancelled: " + bookingDto);
                 return ResponseEntity
