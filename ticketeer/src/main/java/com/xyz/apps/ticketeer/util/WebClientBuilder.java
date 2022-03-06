@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
  * @author Subhajoy Laskar
  * @version 1.0
  */
+@Component(value = "appWebClientBuilder")
 public final class WebClientBuilder {
 
     /**

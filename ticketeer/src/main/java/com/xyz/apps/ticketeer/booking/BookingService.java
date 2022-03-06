@@ -264,8 +264,8 @@ public class BookingService {
 
         final Booking booking = bookingRepository.findById(bookingDto.getBookingId()).orElseThrow(() -> new BookingNotFoundException(bookingDto.getBookingId()));
         booking.setBookingStatus(BookingStatus.CANCELLED);
-        bookingRepository.save(booking);
-        final Payment payment = paymentRepository.findSuccessfulPaymentByBookingId(bookingDto.getBookingId());
+        final Booking bookingCancelled = bookingRepository.save(booking);
+        final Payment payment = paymentRepository.findSuccessfulPaymentByBooking(bookingCancelled);
         if (payment == null) {
             throw new SuccessfulPaymentNotFoundForBookingException(bookingDto.getBookingId());
         }

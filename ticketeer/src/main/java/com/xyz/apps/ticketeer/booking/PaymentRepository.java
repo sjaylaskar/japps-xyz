@@ -7,7 +7,6 @@ package com.xyz.apps.ticketeer.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -26,7 +25,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
      * @param bookingId the booking id
      * @return the payment
      */
-    @Query("select pt from Payment pt where pt.bookingId = :bookingId and pt.paymentStatus = com.xyz.apps.ticketeer.booking.PaymentStatus.SUCCESS")
-    public Payment findSuccessfulPaymentByBookingId(@Param("bookingId") final Long bookingId);
+    @Query("select pt from Payment pt where pt.booking = :booking and pt.paymentStatus = com.xyz.apps.ticketeer.booking.PaymentStatus.SUCCESS")
+    public Payment findSuccessfulPaymentByBooking(final Booking booking);
 
 }

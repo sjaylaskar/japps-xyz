@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-@Component
+@Component(value = "appRestTemplate")
 public final class RestTemplate {
 
     /**

@@ -101,4 +101,15 @@ public class Booking extends com.xyz.apps.ticketeer.model.general.Entity {
     @Email(message = "Invalid email id.")
     @NotBlank(message = "The email id cannot be empty.")
     private String emailId;
+
+    /**
+     * Id.
+     *
+     * @param id the id
+     * @return the booking
+     */
+    public Booking id(final Long id) {
+        this.id = id;
+        return this;
+    }
 }

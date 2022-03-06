@@ -14,12 +14,8 @@ import org.springframework.stereotype.Component;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-@Component
+@Component(value = "appEnvironment")
 public final class Environment {
-
-    /** The environment. */
-    @Autowired
-    private org.springframework.core.env.Environment environment;
 
     /**
      * Instantiates a new environment.
@@ -27,6 +23,10 @@ public final class Environment {
     private Environment() {
 
     }
+
+    /** The environment. */
+    @Autowired
+    private org.springframework.core.env.Environment environment;
 
     /** The instance. */
     private static final Environment instance = new Environment();
