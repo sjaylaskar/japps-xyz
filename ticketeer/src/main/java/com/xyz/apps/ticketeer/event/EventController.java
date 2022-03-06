@@ -5,8 +5,6 @@
 */
 package com.xyz.apps.ticketeer.event;
 
-import java.util.List;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -15,6 +13,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +37,7 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequestMapping("event")
 @Log4j2
+@Validated
 public class EventController {
 
     /** The event service. */
@@ -186,10 +186,10 @@ public class EventController {
      * @param eventId the event id
      * @return the event details by event id
      */
-    @PostMapping("/details-all")
-    public ResponseEntity<?> getEventDetailsByEventIds(@RequestBody final List<Long> eventIds) {
+    @GetMapping("/search/city/{cityId}")
+    public ResponseEntity<?> getByCityId(@NotNull(message = "The city id cannot be null.") @PathVariable("cityId") final Long cityId) {
         try {
-            final EventDetailsDtoList eventDetailsDtoList = eventService.findEventDetailsByEventId(eventIds);
+            final EventDetailsDtoList eventDetailsDtoList = eventService.findEventDetailsByCityId(cityId);
             return ResponseEntity
                     .status(HttpStatus.FOUND)
                     .body(eventDetailsDtoList);

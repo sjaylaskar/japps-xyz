@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventvenue.eventshow.api.external;
+package com.xyz.apps.ticketeer.event.api.external;
 
 import java.text.MessageFormat;
 
@@ -18,10 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
 public enum ApiPropertyKey {
 
     /** The get city by id. */
-    GET_CITY_BY_ID("api.external.city.getById"),
-
-    /** The get city by id. */
-    GET_EVENT_BY_ID("api.external.event.getById");
+    GET_EVENT_SHOWS_BY_CITY_ID("api.external.eventshow.city.getByCityId");
 
     /** The key. */
     private String key;

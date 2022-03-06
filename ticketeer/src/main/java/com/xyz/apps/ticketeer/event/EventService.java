@@ -21,11 +21,19 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.event.api.external.ApiPropertyKey;
+import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDto;
+import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDtoList;
+import com.xyz.apps.ticketeer.util.Environment;
 import com.xyz.apps.ticketeer.util.MongoTemplate;
+import com.xyz.apps.ticketeer.util.WebClientBuilder;
+
+import reactor.core.publisher.Mono;
 
 /**
  * The event service.
@@ -113,7 +121,7 @@ public class EventService {
      * @param eventIds the event ids
      * @return the event details dto list
      */
-    public EventDetailsDtoList findEventDetailsByEventId(@NotNull(message = "The event id cannot be null.") final List<Long> eventIds) {
+    public EventDetailsDtoList findEventDetailsByEventIds(@NotNull(message = "The event id cannot be null.") final List<Long> eventIds) {
         final List<EventDetails> eventDetailsList = MongoTemplate.get().find(new Query().addCriteria(Criteria.where("eventId").in(eventIds)), EventDetails.class);
         if (CollectionUtils.isNotEmpty(eventDetailsList)) {
             return EventDetailsDtoList.of(eventDetailsModelMapper.toDtos(eventDetailsList));
@@ -244,5 +252,27 @@ public class EventService {
                     .queryText(TextCriteria.forDefaultLanguage()
                         .matchingAny(text.split(StringUtils.SPACE)));
         }
+    }
+
+    /**
+     * Finds the event details by city id.
+     *
+     * @param cityId the city id
+     * @return the event details dto list
+     */
+    public EventDetailsDtoList findEventDetailsByCityId(@NotNull(message = "The city id cannot be null.") final Long cityId) {
+        final EventShowDtoList eventShowDtoList = WebClientBuilder.get().build()
+        .get()
+        .uri(Environment.property(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get(cityId)))
+        .retrieve()
+        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+                  response -> Mono.error(new EventServiceException(response.bodyToMono(String.class).block())))
+        .bodyToMono(EventShowDtoList.class).block();
+
+        if (eventShowDtoList != null && CollectionUtils.isNotEmpty(eventShowDtoList.getDtos())) {
+            return findEventDetailsByEventIds(eventShowDtoList.getDtos().stream().map(EventShowDto::getEventId).toList());
+        }
+
+        throw new EventServiceException("No events found for city: " + cityId);
     }
 }
