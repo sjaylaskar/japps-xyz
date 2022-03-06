@@ -7,8 +7,12 @@ package com.xyz.apps.ticketeer.location;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -21,15 +25,20 @@ import lombok.extern.log4j.Log4j2;
  */
 @Service
 @Log4j2
+@Validated
 public class CityService {
 
     /** The city repository. */
     @Autowired
     private CityRepository cityRepository;
 
-    /** The country repository. */
+    /** The country service. */
     @Autowired
-    private CountryRepository countryRepository;
+    private CountryService countryService;
+
+    /** The city model mapper. */
+    @Autowired
+    private CityModelMapper cityModelMapper;
 
     /**
      * Adds the city.
@@ -37,8 +46,8 @@ public class CityService {
      * @param city the city
      * @return the city
      */
-    public City add(final City city) {
-        return cityRepository.save(city);
+    public CityDto add(@NotNull(message = "The city cannot be null.") final CityDto cityDto) {
+        return cityModelMapper.toDto(cityRepository.save(cityModelMapper.toEntity(cityDto)));
     }
 
     /**
@@ -47,8 +56,8 @@ public class CityService {
      * @param cities the cities
      * @return the list of cities.
      */
-    public List<City> addAll(final List<City> cities) {
-        return cityRepository.saveAll(cities);
+    public CityDtoList addAll(@NotNull(message = "The city list cannot be null.") final CityDtoList cityDtoList) {
+        return CityDtoList.of(cityModelMapper.toDtos(cityRepository.saveAll(cityModelMapper.toEntities(cityDtoList.dtos()))));
     }
 
     /**
@@ -57,8 +66,11 @@ public class CityService {
      * @param city the city
      * @return the city
      */
-    public City update(final City city) {
-        return cityRepository.save(city);
+    public CityDto update(@NotNull(message = "The city cannot be null") final CityDto cityDto) {
+        if (cityRepository.existsById(cityDto.getId())) {
+            return cityModelMapper.toDto(cityRepository.save(cityModelMapper.toEntity(cityDto)));
+        }
+        throw new CityNotFoundException(cityDto);
     }
 
     /**
@@ -66,9 +78,12 @@ public class CityService {
      *
      * @param city the city
      */
-    public void delete(final City city) {
+    public void delete(@NotNull(message = "City cannot be null.") final CityDto cityDto) {
+        if (cityRepository.existsById(cityDto.getId())) {
+            cityRepository.delete(cityModelMapper.toEntity(cityDto));
+        }
 
-        cityRepository.delete(city);
+        throw new CityNotFoundException(cityDto);
     }
 
     /**
@@ -77,8 +92,10 @@ public class CityService {
      * @param id the id
      */
     public void deleteById(final Long id) {
-
-        cityRepository.deleteById(id);
+        if (cityRepository.existsById(id)) {
+            cityRepository.deleteById(id);
+        }
+        throw new CityNotFoundException(id);
     }
 
     /**
@@ -87,8 +104,11 @@ public class CityService {
      * @param code the code
      */
     public void deleteByCode(final String code) {
-
-        cityRepository.deleteByCode(code);
+        final CityDto cityDto = findByCode(code);
+        if (cityDto != null) {
+            cityRepository.deleteByCode(code);
+        }
+        throw new CityNotFoundException(code);
     }
 
     /**
@@ -97,9 +117,8 @@ public class CityService {
      * @param id the id
      * @return the city
      */
-    public City findById(final Long id) {
-
-        return cityRepository.findById(id).orElse(null);
+    public CityDto findById(final Long id) {
+        return cityModelMapper.toDto(cityRepository.findById(id).orElseThrow(() -> new CityNotFoundException(id)));
     }
 
     /**
@@ -108,9 +127,12 @@ public class CityService {
      * @param code the code
      * @return the city
      */
-    public City findByCode(final String code) {
-
-        return cityRepository.findByCode(code);
+    public CityDto findByCode(final String code) {
+        final City city = cityRepository.findByCode(code);
+        if (city != null) {
+            return cityModelMapper.toDto(city);
+        }
+        throw new CityNotFoundException(code);
     }
 
     /**
@@ -119,9 +141,12 @@ public class CityService {
      * @param name the name
      * @return the cities
      */
-    public List<City> findByName(final String name) {
-
-        return cityRepository.findByName(name);
+    public CityDtoList findByName(final String name) {
+        final List<City> cities = cityRepository.findByName(name);
+        if (CollectionUtils.isNotEmpty(cities)) {
+            return CityDtoList.of(cityModelMapper.toDtos(cities));
+        }
+        throw new CityNotFoundException(name);
     }
 
     /**
@@ -131,13 +156,18 @@ public class CityService {
      * @return the list of cities
      * @throws CountryNotFoundException in case the country is not found
      */
-    public List<City> findByCountry(final Long countryId) throws CountryNotFoundException {
-        final Country country = countryRepository.findById(countryId).orElse(null);
-        if (country == null) {
+    public CityDtoList findByCountry(final Long countryId) throws CountryNotFoundException {
+        final CountryDto countryDto = countryService.findById(countryId);
+        if (countryDto == null) {
             log.error("Country not found for id: " + countryId);
             throw new CountryNotFoundException(countryId);
         }
-        return cityRepository.findByCountry(country);
+        final List<City> cities = cityRepository.findByCountry(countryService.toCountry(countryDto));
+        if (CollectionUtils.isNotEmpty(cities)) {
+            return CityDtoList.of(cityModelMapper.toDtos(cities));
+        }
+
+        throw new CityServiceException("No cities found for country id: " + countryId);
     }
 
     /**
@@ -146,13 +176,18 @@ public class CityService {
      * @param countryCode the country code
      * @return the list of cities
      */
-    public List<City> findByCountryCode(final String countryCode) {
-        final Country country = countryRepository.findByCode(countryCode);
-        if (country == null) {
-            log.error("Country not found for code: " + countryCode);
+    public CityDtoList findByCountryCode(final String countryCode) {
+        final CountryDto countryDto = countryService.findByCode(countryCode);
+        if (countryDto == null) {
+            log.error("Country not found for id: " + countryCode);
             throw new CountryNotFoundException(countryCode);
         }
-        return cityRepository.findByCountryCode(countryCode);
+        final List<City> cities = cityRepository.findByCountryCode(countryCode);
+        if (CollectionUtils.isNotEmpty(cities)) {
+            return CityDtoList.of(cityModelMapper.toDtos(cities));
+        }
+
+        throw new CityServiceException("No cities found for country code: " + countryCode);
     }
 
     /**
@@ -160,8 +195,11 @@ public class CityService {
      *
      * @return the list
      */
-    public List<City> findAll() {
-
-        return cityRepository.findAll();
+    public CityDtoList findAll() {
+        final List<City> cities = cityRepository.findAll();
+        if (CollectionUtils.isNotEmpty(cities)) {
+            return CityDtoList.of(cityModelMapper.toDtos(cities));
+        }
+        throw new CityServiceException("No cities found.");
     }
 }

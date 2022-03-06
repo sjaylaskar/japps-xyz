@@ -43,4 +43,15 @@ public class Country extends com.xyz.apps.ticketeer.model.general.Entity {
     @Column(unique = true, nullable = false)
     @NotNull(message = "Country name is required.")
     private String name;
+
+    /**
+     * Id.
+     *
+     * @param id the id
+     * @return the country
+     */
+    public Country id(final Long id) {
+        this.id = id;
+        return this;
+    }
 }

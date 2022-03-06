@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.event;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -149,6 +151,48 @@ public class EventController {
             return ResponseEntity
                     .status(HttpStatus.FOUND)
                     .body(eventDto);
+        } catch (final EventNotFoundException eventNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
+                + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Gets the event details by event id.
+     *
+     * @param eventId the event id
+     * @return the event details by event id
+     */
+    @GetMapping("/details/{eventId}")
+    public ResponseEntity<?> getEventDetailsByEventId(@PathVariable("eventId") final Long eventId) {
+        try {
+            final EventDetailsDto eventDetailsDto = eventService.findEventDetailsByEventId(eventId);
+            return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(eventDetailsDto);
+        } catch (final EventNotFoundException eventNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
+                + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Gets the event details by event id.
+     *
+     * @param eventId the event id
+     * @return the event details by event id
+     */
+    @PostMapping("/details-all")
+    public ResponseEntity<?> getEventDetailsByEventIds(@RequestBody final List<Long> eventIds) {
+        try {
+            final EventDetailsDtoList eventDetailsDtoList = eventService.findEventDetailsByEventId(eventIds);
+            return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(eventDetailsDtoList);
         } catch (final EventNotFoundException eventNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
         } catch (final Exception exception) {

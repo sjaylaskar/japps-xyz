@@ -7,9 +7,8 @@ package com.xyz.apps.ticketeer.eventvenue.eventshow.seat;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-import javax.validation.constraints.NotEmpty;
+import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -35,6 +34,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      *
      * @param bookingId the booking id
      */
+    @Transactional
     @Modifying
     @Query("update EventShowSeat ess set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventshow.SeatReservationStatus.AVAILABLE, ess.bookingId = null where ess.bookingId = :bookingId")
     public void cancelByBookingId(@Param("bookingId") final Long bookingId);
@@ -81,6 +81,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @param seatsCount the seats count
      * @return the int
      */
+    @Transactional
     @Modifying
     @Query(value = RESERVE_SEATS_QUERY,
            nativeQuery = true)
@@ -96,6 +97,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @param seatsCount the seats count
      * @return the int
      */
+    @Transactional
     @Modifying
     @Query(value = UNRESERVE_SEATS_QUERY,
            nativeQuery = true)
@@ -112,6 +114,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @param bookingId the booking id
      * @return the int
      */
+    @Transactional
     @Modifying
     @Query(value = BOOK_SEATS_QUERY,
            nativeQuery = true)
@@ -130,6 +133,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      * @param bookingId the booking id
      * @return the int
      */
+    @Transactional
     @Modifying
     @Query(value = FILL_BOOKING_FOR_RESERVED_SEATS_QUERY,
            nativeQuery = true)
@@ -145,6 +149,4 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      */
     @Query("select sum(ess.amount) from EventShowSeat ess where ess.id in :ids")
     public double findTotalAmount(@Param("ids") final Collection<Long> ids);
-
-    public int unreserveSeats(@NotEmpty(message = "The seat ids cannot be empty.") Set<Long> seatIds, int size);
 }

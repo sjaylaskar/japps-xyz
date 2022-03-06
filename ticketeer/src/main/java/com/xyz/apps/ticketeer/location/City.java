@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class City extends com.xyz.apps.ticketeer.model.general.Entity {
 
     /** The city id. */

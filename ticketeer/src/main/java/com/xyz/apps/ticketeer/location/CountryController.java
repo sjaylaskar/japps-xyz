@@ -5,9 +5,6 @@
  */
 package com.xyz.apps.ticketeer.location;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.xyz.apps.ticketeer.model.general.DtoList;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -44,10 +39,6 @@ public class CountryController {
     @Autowired
     private CountryService countryService;
 
-    /** The country model mapper. */
-    @Autowired
-    private CountryModelMapper countryModelMapper;
-
     /**
      * Adds the country.
      *
@@ -59,12 +50,11 @@ public class CountryController {
 
         try {
             log.info("CountryDto: " + countryDto);
-            final Country country = countryModelMapper.toEntity(countryDto);
-            final Country countryAdded = countryService.add(country);
+            final CountryDto countryAdded = countryService.add(countryDto);
             log.info("Country added: " + countryAdded);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(countryModelMapper.toDto(countryAdded));
+                .body(countryAdded);
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -85,12 +75,11 @@ public class CountryController {
 
         try {
             log.info("CountryDto list: " + countryDtoList);
-            final List<Country> countries = countryModelMapper.toEntities(countryDtoList.dtos());
-            final List<Country> countriesAdded = countryService.addAll(countries);
+            final CountryDtoList countriesAdded = countryService.addAll(countryDtoList);
             log.info("Countries added: " + countriesAdded);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(CountryDtoList.of(countryModelMapper.toDtos(countriesAdded)));
+                .body(countriesAdded);
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -110,12 +99,15 @@ public class CountryController {
 
         try {
             log.info("CountryDto: " + countryDto);
-            final Country country = countryModelMapper.toEntity(countryDto);
-            final Country countryUpdated = countryService.update(country);
+            final CountryDto countryUpdated = countryService.update(countryDto);
             log.info("Country updated: " + countryUpdated);
             return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(countryModelMapper.toDto(countryUpdated));
+                .body(countryUpdated);
+        } catch (final CountryNotFoundException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -134,10 +126,13 @@ public class CountryController {
 
         try {
             log.info("CountryDto: " + countryDto);
-            final Country country = countryModelMapper.toEntity(countryDto);
-            countryService.delete(country);
+            countryService.delete(countryDto);
             log.info("Country deleted: " + countryDto);
             return ResponseEntity.accepted().body("Deleted country: " + countryDto);
+        } catch (final CountryNotFoundException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -160,6 +155,10 @@ public class CountryController {
             countryService.deleteById(id);
             log.info("Country deleted: " + id);
             return ResponseEntity.accepted().body("Deleted country: " + id);
+        } catch (final CountryNotFoundException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -182,6 +181,10 @@ public class CountryController {
             countryService.deleteByCode(code);
             log.info("Country deleted: " + code);
             return ResponseEntity.accepted().body("Deleted country: " + code);
+        } catch (final CountryNotFoundException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -203,6 +206,10 @@ public class CountryController {
             countryService.deleteByName(name);
             log.info("Country deleted: " + name);
             return ResponseEntity.accepted().body("Deleted country: " + name);
+        } catch (final CountryNotFoundException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -221,11 +228,13 @@ public class CountryController {
     public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
         try {
-            final CountryDto countryDto = countryModelMapper.toDto(countryService.findById(id));
-            return (countryDto != null)
-                ? ResponseEntity.status(HttpStatus.FOUND)
-                    .body(countryDto)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Country: " + id + " not found.");
+            final CountryDto countryDto = countryService.findById(id);
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .body(countryDto);
+        } catch (final CountryNotFoundException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find country: "
                 + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
@@ -242,12 +251,14 @@ public class CountryController {
     public ResponseEntity<?> getByCode(@PathVariable("code") final String code) {
 
         try {
-            final CountryDto countryDto = countryModelMapper.toDto(countryService.findByCode(code));
-            return (countryDto != null)
-                ? ResponseEntity
+            final CountryDto countryDto = countryService.findByCode(code);
+            return ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(countryDto)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Country: " + code + " not found.");
+                    .body(countryDto);
+        } catch (final CountryNotFoundException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find country: "
                 + code + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
@@ -264,12 +275,14 @@ public class CountryController {
     public ResponseEntity<?> getByName(@PathVariable("name") final String name) {
 
         try {
-            final CountryDto countryDto = countryModelMapper.toDto(countryService.findByName(name));
-            return (countryDto != null)
-                ? ResponseEntity
+            final CountryDto countryDto = countryService.findByName(name);
+            return ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(countryDto)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Country: " + name + " not found.");
+                    .body(countryDto);
+        } catch (final CountryNotFoundException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find country: "
                 + name + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
@@ -285,12 +298,14 @@ public class CountryController {
     @GetMapping("/all")
     public ResponseEntity<?> all() {
         try {
-            final CountryDtoList countryDtoList = CountryDtoList.of(countryService.findAll().stream().map(countryModelMapper::toDto).collect(Collectors.toList()));
-            return (DtoList.isNotEmpty(countryDtoList))
-                ? ResponseEntity
+            final CountryDtoList countryDtoList = countryService.findAll();
+            return ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(countryDtoList)
-                : ResponseEntity.status(HttpStatus.NO_CONTENT).body("No cities found.");
+                    .body(countryDtoList);
+        } catch (final CountryNotFoundException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities. Error: "
                 + ExceptionUtils.getRootCauseMessage(exception));

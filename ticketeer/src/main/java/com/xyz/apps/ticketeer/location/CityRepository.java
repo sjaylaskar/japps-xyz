@@ -62,7 +62,7 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param countryCode the country code
      * @return the list
      */
-    @Query(value = "select * from City c Join Country cn on c.country_id = cn.id where cn.code = :countryCode",
+    @Query(value = "select * from City c join Country cn on c.country_id = cn.id where cn.code = :countryCode",
            nativeQuery = true)
     List<City> findByCountryCode(final String countryCode);
 

@@ -12,19 +12,12 @@ package com.xyz.apps.ticketeer.location;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class CountryNotFoundException extends RuntimeException {
+public class CountryNotFoundException extends CountryServiceException {
 
     /**
      *
      */
     private static final long serialVersionUID = -2299273285227837285L;
-
-    /**
-     * Instantiates a new country not found exception.
-     */
-    public CountryNotFoundException() {
-        super();
-    }
 
     /**
      * Instantiates a new country not found exception.
@@ -38,10 +31,10 @@ public class CountryNotFoundException extends RuntimeException {
     /**
      * Instantiates a new country not found exception.
      *
-     * @param countryCode the country code
+     * @param countryCodeOrName the country code
      */
-    public CountryNotFoundException(final String countryCode) {
-        super("Country not found for code: " + countryCode);
+    public CountryNotFoundException(final String countryCodeOrName) {
+        super("Country not found: " + countryCodeOrName);
     }
 
 }

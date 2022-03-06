@@ -43,8 +43,12 @@ public class CityDtoList extends DtoList<CityDto> {
      */
     static CityDtoList of(final List<CityDto> cityDtos) {
         if (CollectionUtils.isEmpty(cityDtos)) {
-            return new CityDtoList();
+            return of();
         }
         return new CityDtoList(cityDtos);
+    }
+
+    static CityDtoList of() {
+        return new CityDtoList();
     }
 }

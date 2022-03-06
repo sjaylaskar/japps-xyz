@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 
 /**
- * The PlatformConvenienceFeeRepository.
+ * The platform convenience fee repository.
  *
  * @author Subhajoy Laskar
  * @version 1.0

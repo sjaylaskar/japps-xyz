@@ -5,6 +5,9 @@
 */
 package com.xyz.apps.ticketeer.event;
 
+import java.util.Collection;
+
+import com.xyz.apps.ticketeer.util.CollectionUtil;
 
 /**
  * The event not found exception.
@@ -24,6 +27,15 @@ public class EventNotFoundException extends EventServiceException {
      */
     public EventNotFoundException(final Long id) {
         super("Event not found for id: " + id);
+    }
+
+    /**
+     * Instantiates a new event not found exception.
+     *
+     * @param eventIds the event ids
+     */
+    public EventNotFoundException(final Collection<Long> eventIds) {
+        super("Event shows not found for ids: " + CollectionUtil.stringify(eventIds));
     }
 
 }

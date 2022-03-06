@@ -7,8 +7,14 @@ package com.xyz.apps.ticketeer.location;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import com.xyz.apps.ticketeer.model.general.DtoList;
 
 
 /**
@@ -18,11 +24,16 @@ import org.springframework.stereotype.Service;
  * @version 1.0
  */
 @Service
+@Validated
 public class CountryService {
 
     /** The country repository. */
     @Autowired
     private CountryRepository countryRepository;
+
+    /** The country model mapper. */
+    @Autowired
+    private CountryModelMapper countryModelMapper;
 
     /**
      * Adds the country.
@@ -30,9 +41,9 @@ public class CountryService {
      * @param country the country
      * @return the country
      */
-    public Country add(final Country country) {
+    public CountryDto add(@NotNull(message = "The country cannot be null.") final CountryDto countryDto) {
 
-        return countryRepository.save(country);
+        return countryModelMapper.toDto(countryRepository.save(countryModelMapper.toEntity(countryDto)));
     }
 
     /**
@@ -41,8 +52,14 @@ public class CountryService {
      * @param countries the countries
      * @return the list of countries
      */
-    public List<Country> addAll(final List<Country> countries) {
-        return countryRepository.saveAll(countries);
+    public CountryDtoList addAll(@NotNull(message = "The country list cannot be null.") final CountryDtoList countryDtoList) {
+
+        if (DtoList.isNotEmpty(countryDtoList)) {
+            return CountryDtoList.of(countryModelMapper.toDtos(countryRepository.saveAll(countryModelMapper.toEntities(
+                countryDtoList.dtos()))));
+        }
+
+        throw new CountryServiceException("The country list cannot be empty.");
     }
 
     /**
@@ -51,9 +68,13 @@ public class CountryService {
      * @param country the country
      * @return the country
      */
-    public Country update(final Country country) {
+    public CountryDto update(@NotNull(message = "The country cannot be null.") final CountryDto countryDto) {
 
-        return countryRepository.save(country);
+        if (countryRepository.existsById(countryDto.getId())) {
+            return countryModelMapper.toDto(countryRepository.save(countryModelMapper.toEntity(countryDto)));
+        }
+
+        throw new CountryNotFoundException(countryDto.getId());
     }
 
     /**
@@ -61,9 +82,12 @@ public class CountryService {
      *
      * @param country the country
      */
-    public void delete(final Country country) {
+    public void delete(@NotNull(message = "The country cannot be null.") final CountryDto countryDto) {
 
-        countryRepository.delete(country);
+        if (countryRepository.existsById(countryDto.getId())) {
+            countryRepository.delete(countryModelMapper.toEntity(countryDto));
+        }
+        throw new CountryNotFoundException(countryDto.getId());
     }
 
     /**
@@ -73,7 +97,10 @@ public class CountryService {
      */
     public void deleteById(final Long id) {
 
-        countryRepository.deleteById(id);
+        if (countryRepository.existsById(id)) {
+            countryRepository.deleteById(id);
+        }
+        throw new CountryNotFoundException(id);
     }
 
     /**
@@ -83,7 +110,11 @@ public class CountryService {
      */
     public void deleteByCode(final String code) {
 
-        countryRepository.deleteByCode(code);
+        final CountryDto countryDto = findByCode(code);
+        if (countryDto != null) {
+            countryRepository.deleteByCode(code);
+        }
+        throw new CountryNotFoundException(code);
     }
 
     /**
@@ -93,7 +124,11 @@ public class CountryService {
      */
     public void deleteByName(final String name) {
 
-        countryRepository.deleteByName(name);
+        final CountryDto countryDto = findByName(name);
+        if (countryDto != null) {
+            countryRepository.deleteByName(name);
+        }
+        throw new CountryNotFoundException(name);
     }
 
     /**
@@ -102,9 +137,10 @@ public class CountryService {
      * @param id the id
      * @return the country
      */
-    public Country findById(final Long id) {
+    public CountryDto findById(final Long id) {
 
-        return countryRepository.findById(id).orElse(null);
+        return countryModelMapper.toDto(
+            countryRepository.findById(id).orElseThrow(() -> new CountryNotFoundException(id)));
     }
 
     /**
@@ -113,9 +149,13 @@ public class CountryService {
      * @param code the code
      * @return the country
      */
-    public Country findByCode(final String code) {
+    public CountryDto findByCode(final String code) {
 
-        return countryRepository.findByCode(code);
+        final Country country = countryRepository.findByCode(code);
+        if (country != null) {
+            return countryModelMapper.toDto(country);
+        }
+        throw new CountryNotFoundException(code);
     }
 
     /**
@@ -124,9 +164,12 @@ public class CountryService {
      * @param name the name
      * @return the country
      */
-    public Country findByName(final String name) {
-
-        return countryRepository.findByName(name);
+    public CountryDto findByName(final String name) {
+        final Country country = countryRepository.findByName(name);
+        if (country != null) {
+            return countryModelMapper.toDto(country);
+        }
+        throw new CountryNotFoundException(name);
     }
 
     /**
@@ -134,9 +177,22 @@ public class CountryService {
      *
      * @return the list
      */
-    public List<Country> findAll() {
+    public CountryDtoList findAll() {
 
-        return countryRepository.findAll();
+        final List<Country> countries = countryRepository.findAll();
+        if (CollectionUtils.isNotEmpty(countries)) {
+            return CountryDtoList.of(countryModelMapper.toDtos(countries));
+        }
+        throw new CountryServiceException("No countries found.");
     }
 
+    /**
+     * To country.
+     *
+     * @param countryDto the country dto
+     * @return the country
+     */
+    public Country toCountry(final CountryDto countryDto) {
+        return countryModelMapper.toEntity(countryDto);
+    }
 }

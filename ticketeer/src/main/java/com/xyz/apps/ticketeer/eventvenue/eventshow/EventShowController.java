@@ -104,7 +104,7 @@ public class EventShowController {
             log.info("Event city: " + cityId);
             final EventShowDtoList eventShowDtoList = eventShowService.findByCityId(cityId);
             if (DtoList.isNotEmpty(eventShowDtoList)) {
-                log.info("Events found: " + eventShowDtoList + " in city: " + cityId);
+                log.info("Event shows found: " + eventShowDtoList + " in city: " + cityId);
                 return ResponseEntity
                     .status(HttpStatus.FOUND)
                     .body(eventShowDtoList);
@@ -116,7 +116,7 @@ public class EventShowController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find events for city: " + cityId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to find event shows for city: " + cityId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 

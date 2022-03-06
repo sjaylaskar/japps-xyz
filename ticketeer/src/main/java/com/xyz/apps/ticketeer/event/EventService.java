@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -18,12 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import com.xyz.apps.ticketeer.util.MongoTemplate;
 
 /**
  * The event service.
@@ -32,6 +34,7 @@ import org.springframework.stereotype.Service;
  * @version 1.0
  */
 @Service
+@Validated
 public class EventService {
 
     /** The event repository. */
@@ -49,10 +52,6 @@ public class EventService {
     /** The event details model mapper. */
     @Autowired
     private EventDetailsModelMapper eventDetailsModelMapper;
-
-    /** The mongo template. */
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     /**
      * Adds the event.
@@ -95,12 +94,40 @@ public class EventService {
     }
 
     /**
+     * Finds the event details by event id.
+     *
+     * @param eventId the event id
+     * @return the event details dto
+     */
+    public EventDetailsDto findEventDetailsByEventId(@NotNull(message = "The event id cannot be null.") final Long eventId) {
+        final EventDetails eventDetails = MongoTemplate.get().findOne(new Query().addCriteria(Criteria.where("eventId").is(eventId)), EventDetails.class);
+        if (eventDetails != null) {
+            return eventDetailsModelMapper.toDto(eventDetails);
+        }
+        throw new EventNotFoundException(eventId);
+    }
+
+    /**
+     * Finds the event details by event id.
+     *
+     * @param eventIds the event ids
+     * @return the event details dto list
+     */
+    public EventDetailsDtoList findEventDetailsByEventId(@NotNull(message = "The event id cannot be null.") final List<Long> eventIds) {
+        final List<EventDetails> eventDetailsList = MongoTemplate.get().find(new Query().addCriteria(Criteria.where("eventId").in(eventIds)), EventDetails.class);
+        if (CollectionUtils.isNotEmpty(eventDetailsList)) {
+            return EventDetailsDtoList.of(eventDetailsModelMapper.toDtos(eventDetailsList));
+        }
+        throw new EventNotFoundException(eventIds);
+    }
+
+    /**
      * Adds the event.
      *
      * @param eventDetailsDto the event details dto
      * @return the event details dto
      */
-    @Transactional(rollbackOn = {Throwable.class})
+    @Transactional(noRollbackFor = {Throwable.class})
     public EventDetailsDto add(@NotNull(message = "Event details to add cannot be null")
     final  EventDetailsDto eventDetailsDto) {
         final Event event = add(eventModelMapper.toEntity(EventDto.of(eventDetailsDto)));
@@ -121,7 +148,7 @@ public class EventService {
      * @param eventDetailsDtoList the event details dto list
      * @return the event details dto list
      */
-    @Transactional(rollbackOn = {Throwable.class})
+    @Transactional(noRollbackFor = {Throwable.class})
     public EventDetailsDtoList addAll(@NotNull(message = "Event details list to add cannot be null or empty") final EventDetailsDtoList eventDetailsDtoList) {
         final List<Event> events = addAll(eventModelMapper.toEntities(eventDetailsDtoList.dtos().stream().map(EventDto::of).toList()));
         if (CollectionUtils.isEmpty(events)) {
@@ -143,7 +170,7 @@ public class EventService {
      * @return the event details dto list
      */
     public EventDetailsDtoList findAllByEvents(final List<Event> events) {
-        return toEventDetailsDtoList(mongoTemplate.find(new Query().addCriteria(Criteria.where("eventId").in(events.stream().map(Event::getId).toList())), EventDetails.class));
+        return toEventDetailsDtoList(MongoTemplate.get().find(new Query().addCriteria(Criteria.where("eventId").in(events.stream().map(Event::getId).toList())), EventDetails.class));
     }
 
     /**
@@ -166,10 +193,10 @@ public class EventService {
      * @return the event details dto list
      */
     public EventDetailsDtoList searchByText(final String text, final int pageNumber, final int pageSize) {
-        List<EventDetails> eventDetailsList = mongoTemplate.find(SearchQuery.scoreSortedPageableQuery(SearchQuery.phrase(text), pageNumber, pageSize), EventDetails.class);
+        List<EventDetails> eventDetailsList = MongoTemplate.get().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.phrase(text), pageNumber, pageSize), EventDetails.class);
 
         if (CollectionUtils.isEmpty(eventDetailsList)) {
-            eventDetailsList = mongoTemplate.find(SearchQuery.scoreSortedPageableQuery(SearchQuery.any(text), pageNumber, pageSize), EventDetails.class);
+            eventDetailsList = MongoTemplate.get().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.any(text), pageNumber, pageSize), EventDetails.class);
         }
         return (CollectionUtils.isNotEmpty(eventDetailsList))
                 ? EventDetailsDtoList.of(eventDetailsModelMapper.toDtos(eventDetailsList))

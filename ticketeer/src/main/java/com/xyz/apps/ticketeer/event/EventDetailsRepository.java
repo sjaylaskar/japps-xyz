@@ -5,8 +5,6 @@
 */
 package com.xyz.apps.ticketeer.event;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 
@@ -17,7 +15,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @version 1.0
  */
 public interface EventDetailsRepository extends MongoRepository<EventDetails, Long> {
-
-    List<EventDetails> findAllByEventId(List<Long> list);
 
 }

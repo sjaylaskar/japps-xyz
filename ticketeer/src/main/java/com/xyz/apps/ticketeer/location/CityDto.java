@@ -30,5 +30,5 @@ public class CityDto extends Dto<City> {
     private String name;
 
     /** The country. */
-    private Country country;
+    private Long countryId;
 }
