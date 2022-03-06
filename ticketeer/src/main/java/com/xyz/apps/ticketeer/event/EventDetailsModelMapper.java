@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.AbstractModelMapper;
+import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
 
 
 /**

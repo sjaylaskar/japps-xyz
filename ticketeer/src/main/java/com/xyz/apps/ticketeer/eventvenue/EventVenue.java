@@ -10,12 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import com.xyz.apps.ticketeer.location.City;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +27,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class EventVenue extends com.xyz.apps.ticketeer.model.Entity {
+public class EventVenue extends com.xyz.apps.ticketeer.model.general.Entity {
 
     /** The id. */
     @Id
@@ -49,27 +45,12 @@ public class EventVenue extends com.xyz.apps.ticketeer.model.Entity {
     private Integer numberOfAuditoriums;
 
     /** The city. */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "cityId", nullable = false)
-    private City city;
+    @Column(nullable = false)
+    @NotNull(message = "The city id cannot be null.")
+    private Long cityId;
 
-    /**
-     * Instantiates a new event venue.
-     *
-     * @param name the name
-     * @param numberOfAuditoriums the number of auditoriums
-     * @param city the city
-     */
-    public EventVenue(final String name, final Integer numberOfAuditoriums, final City city) {
-        this.name = name;
-        this.numberOfAuditoriums = numberOfAuditoriums;
-        this.city = city;
-    }
-
-    /**
-     * Instantiates a new event venue.
-     */
-    public EventVenue() {
-
+    public EventVenue id(final Long id) {
+        this.id = id;
+        return this;
     }
 }

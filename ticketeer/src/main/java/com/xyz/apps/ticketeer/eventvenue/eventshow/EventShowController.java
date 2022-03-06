@@ -5,11 +5,8 @@
  */
 package com.xyz.apps.ticketeer.eventvenue.eventshow;
 
-import java.util.List;
-
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,8 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xyz.apps.ticketeer.event.EventDetailsDtoList;
-import com.xyz.apps.ticketeer.model.DtoList;
+import com.xyz.apps.ticketeer.model.general.DtoList;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -47,10 +43,6 @@ public class EventShowController {
     @Autowired
     private EventShowService eventShowService;
 
-    /** The event show model mapper. */
-    @Autowired
-    private EventShowModelMapper eventShowModelMapper;
-
     /**
      * Adds the event show.
      *
@@ -62,11 +54,11 @@ public class EventShowController {
 
         try {
             log.info("Event show: " + eventShowDetailsDto);
-            final EventShow eventShowAdded = eventShowService.add(eventShowDetailsDto);
+            final EventShowDto eventShowAdded = eventShowService.add(eventShowDetailsDto);
             log.info("Event show added: " + eventShowAdded);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(eventShowModelMapper.toDto(eventShowAdded));
+                .body(eventShowAdded);
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -76,6 +68,12 @@ public class EventShowController {
         }
     }
 
+    /**
+     * Delete.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") @NotNull(message = "The event show id cannot be null") final Long id) {
 
@@ -99,20 +97,20 @@ public class EventShowController {
      * @param cityId the city id
      * @return the response entity
      */
-    @GetMapping("/search/events/city/{cityId}")
-    public ResponseEntity<?> searchEventsByCity(@PathVariable("cityId") final Long cityId) {
+    @GetMapping("/city/{cityId}")
+    public ResponseEntity<?> getByCityId(@PathVariable("cityId") final Long cityId) {
 
         try {
             log.info("Event city: " + cityId);
-            final EventDetailsDtoList eventDetailsDtoList = eventShowService.searchEventsByCity(cityId);
-            if (DtoList.isNotEmpty(eventDetailsDtoList)) {
-                log.info("Events found: " + eventDetailsDtoList + " in city: " + cityId);
+            final EventShowDtoList eventShowDtoList = eventShowService.findByCityId(cityId);
+            if (DtoList.isNotEmpty(eventShowDtoList)) {
+                log.info("Events found: " + eventShowDtoList + " in city: " + cityId);
                 return ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(eventDetailsDtoList);
+                    .body(eventShowDtoList);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No events found for city: " + cityId);
+                    .body("No event shows found for city: " + cityId);
             }
         } catch (final Exception exception) {
             log.error(exception);
@@ -133,12 +131,12 @@ public class EventShowController {
 
         try {
             log.info("Event show search criteria: " + eventShowSearchCriteria);
-            final List<EventShow> eventShowsFound = eventShowService.search(eventShowSearchCriteria);
-            if (CollectionUtils.isNotEmpty(eventShowsFound)) {
-                log.info("Event shows found: " + eventShowsFound);
+            final EventShowDtoList eventShowDtoList = eventShowService.search(eventShowSearchCriteria);
+            if (DtoList.isNotEmpty(eventShowDtoList)) {
+                log.info("Event shows found: " + eventShowDtoList);
                 return ResponseEntity
                     .status(HttpStatus.FOUND)
-                    .body(EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowsFound)));
+                    .body(eventShowDtoList);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No event shows found by given search criteria");

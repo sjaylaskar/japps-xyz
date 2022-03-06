@@ -40,14 +40,14 @@ public class PricingController {
     /**
      * Calculate.
      *
-     * @param bookingPriceInfo the booking price info
+     * @param bookingPriceInfoDto the booking price info dto
      * @return the response entity
      */
     @PostMapping("/calculate")
-    public ResponseEntity<?> calculate(@RequestBody @NotNull(message = "The booking price info cannot be null.") final BookingPriceInfo bookingPriceInfo) {
+    public ResponseEntity<?> calculate(@RequestBody @NotNull(message = "The booking price info cannot be null.") final BookingPriceInfoDto bookingPriceInfoDto) {
         try {
-            log.info("Booking price info: " + bookingPriceInfo);
-            final Double amount = pricingService.calculateFinalAmount(bookingPriceInfo);
+            log.info("Booking price info: " + bookingPriceInfoDto);
+            final Double amount = pricingService.calculateFinalAmount(bookingPriceInfoDto);
             log.info("Amount: " + amount);
             return ResponseEntity
                 .status(HttpStatus.OK)

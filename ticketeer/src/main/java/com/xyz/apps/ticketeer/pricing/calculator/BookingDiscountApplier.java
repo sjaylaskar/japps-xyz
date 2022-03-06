@@ -7,7 +7,7 @@ package com.xyz.apps.ticketeer.pricing.calculator;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import com.xyz.apps.ticketeer.pricing.calculator.discount.DiscountDto;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.Discount;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.DiscountType;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.InvalidOfferCodeException;
 
@@ -31,7 +31,7 @@ public class BookingDiscountApplier {
     private BookingPriceInfo bookingPriceInfo;
 
     /** The discount. */
-    private DiscountDto discount;
+    private Discount discount;
 
     /**
      * Instantiates a new booking discount applier.
@@ -39,7 +39,7 @@ public class BookingDiscountApplier {
      * @param bookingPriceInfo the booking price info
      * @param discount the discount
      */
-    public BookingDiscountApplier(final BookingPriceInfo bookingPriceInfo, final DiscountDto discount) {
+    public BookingDiscountApplier(final BookingPriceInfo bookingPriceInfo, final Discount discount) {
 
         this.bookingPriceInfo = bookingPriceInfo;
         this.discount = discount;

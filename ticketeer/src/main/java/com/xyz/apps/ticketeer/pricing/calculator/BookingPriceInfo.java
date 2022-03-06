@@ -8,6 +8,8 @@ package com.xyz.apps.ticketeer.pricing.calculator;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.xyz.apps.ticketeer.model.general.AbstractModel;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,7 +23,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BookingPriceInfo {
+public class BookingPriceInfo extends AbstractModel {
 
     /** The offer code. */
     private String offerCode;

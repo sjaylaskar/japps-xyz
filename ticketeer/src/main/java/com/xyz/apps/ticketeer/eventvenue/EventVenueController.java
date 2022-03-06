@@ -37,9 +37,6 @@ public class EventVenueController {
     @Autowired
     private EventVenueService eventVenueService;
 
-    @Autowired
-    private EventVenueModelMapper eventVenueModelMapper;
-
     /**
      * Adds the event venue.
      *

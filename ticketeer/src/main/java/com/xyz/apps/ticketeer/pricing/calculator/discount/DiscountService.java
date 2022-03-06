@@ -21,8 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.model.DtoList;
-import com.xyz.apps.ticketeer.model.DtoListEmptyException;
+import com.xyz.apps.ticketeer.model.general.DtoList;
+import com.xyz.apps.ticketeer.model.general.DtoListEmptyException;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.util.Environment;
 import com.xyz.apps.ticketeer.util.MongoTemplate;
@@ -334,5 +334,15 @@ public class DiscountService {
             .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
                       response -> Mono.error(new DiscountServiceException("Invalid event venue id: " + eventVenueId)));
         });
+    }
+
+    /**
+     * To discount.
+     *
+     * @param discountDto the discount dto
+     * @return the discount
+     */
+    public Discount toDiscount(final DiscountDto discountDto) {
+        return discountModelMapper.toEntity(discountDto);
     }
 }

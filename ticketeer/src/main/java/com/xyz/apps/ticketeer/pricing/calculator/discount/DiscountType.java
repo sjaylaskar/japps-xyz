@@ -5,6 +5,9 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The discount type.
@@ -18,5 +21,16 @@ public enum DiscountType {
     PERCENTAGE,
 
     /** The amount. */
-    AMOUNT
+    AMOUNT;
+
+    public static DiscountType of(final String discountType) {
+
+
+        return Arrays.asList(values())
+            .stream()
+            .filter(value -> StringUtils.equalsIgnoreCase(value.name(), discountType))
+            .findFirst()
+            .orElseThrow(() -> new InvalidDiscountTypeException(discountType));
+
+    }
 }

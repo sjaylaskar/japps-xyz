@@ -21,12 +21,18 @@ public enum BookingStatus {
     CONFIRMED,
     CANCELLED;
 
+    /**
+     * Of.
+     *
+     * @param bookingStatus the booking status
+     * @return the booking status
+     */
     public static BookingStatus of(final String bookingStatus) {
         return
         Arrays.asList(values())
         .stream()
         .filter(value -> StringUtils.equalsIgnoreCase(value.name(), bookingStatus))
         .findFirst()
-        .orElse(null);
+        .orElseThrow(() -> new InvalidBookingStatusException(bookingStatus));
     }
 }

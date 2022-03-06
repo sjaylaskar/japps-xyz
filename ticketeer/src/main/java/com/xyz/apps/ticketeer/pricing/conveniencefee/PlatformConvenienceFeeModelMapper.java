@@ -7,7 +7,7 @@ package com.xyz.apps.ticketeer.pricing.conveniencefee;
 
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.AbstractModelMapper;
+import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
 
 
 /**

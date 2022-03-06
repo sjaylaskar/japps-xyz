@@ -5,8 +5,6 @@
  */
 package com.xyz.apps.ticketeer.eventvenue.eventshow;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,23 +13,24 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.event.Event;
-import com.xyz.apps.ticketeer.event.EventDetailsDtoList;
-import com.xyz.apps.ticketeer.event.EventRepository;
-import com.xyz.apps.ticketeer.event.EventService;
-import com.xyz.apps.ticketeer.eventvenue.Auditorium;
-import com.xyz.apps.ticketeer.eventvenue.AuditoriumRepository;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeatRepository;
-import com.xyz.apps.ticketeer.eventvenue.EventVenue;
-import com.xyz.apps.ticketeer.eventvenue.EventVenueRepository;
+import com.xyz.apps.ticketeer.eventvenue.EventVenueService;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeat;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatRowPriceDto;
+import com.xyz.apps.ticketeer.util.Environment;
+import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
+import com.xyz.apps.ticketeer.util.WebClientBuilder;
+
+import reactor.core.publisher.Mono;
 
 
 /**
@@ -52,21 +51,9 @@ public class EventShowService {
     @Autowired
     private EventShowSeatRepository eventShowSeatRepository;
 
-    /** The event service. */
+    /** The event venue service. */
     @Autowired
-    private EventService eventService;
-
-    /** The event repository. */
-    @Autowired
-    private EventRepository eventRepository;
-
-    /** The event venue repository. */
-    @Autowired
-    private EventVenueRepository eventVenueRepository;
-
-    /** The auditorium repository. */
-    @Autowired
-    private AuditoriumRepository auditoriumRepository;
+    private EventVenueService eventVenueService;
 
     /** The auditorium seat repository. */
     @Autowired
@@ -82,9 +69,12 @@ public class EventShowService {
      * @param eventShowDetailsDto the event show details dto
      * @return the event show
      */
-    public EventShow add(final EventShowDetailsDto eventShowDetailsDto) {
+    @Transactional(rollbackFor = {Throwable.class})
+    public EventShowDto add(@NotNull(message = "The event show details cannot be null.") final EventShowDetailsDto eventShowDetailsDto) {
 
         Objects.requireNonNull(eventShowDetailsDto, "The event show details cannot be null.");
+
+        validate(eventShowDetailsDto);
 
         final EventShow eventShow = eventShowRepository.save(toEventShow(eventShowDetailsDto));
 
@@ -98,7 +88,71 @@ public class EventShowService {
                     .toList());
         }
 
-        return eventShow;
+        return eventShowModelMapper.toDto(eventShow);
+    }
+
+    /**
+     * Validate.
+     *
+     * @param eventShowDetailsDto the event show details dto
+     */
+    private void validate(@NotNull(message = "The event show details cannot be null.") final EventShowDetailsDto eventShowDetailsDto) {
+
+        validateCity(eventShowDetailsDto.getCityId());
+
+        validateEventId(eventShowDetailsDto.getEventId());
+
+        validateEventVenueId(eventShowDetailsDto.getEventVenueId());
+
+        validateAuditoriumId(eventShowDetailsDto.getAuditoriumId());
+    }
+
+    /**
+     * Validate city.
+     *
+     * @param cityId the city id
+     */
+    private void validateCity(@NotNull(message = "The city id cannot be null") final Long cityId) {
+
+        WebClientBuilder.get().build()
+        .get()
+        .uri(Environment.property(ApiPropertyKey.GET_CITY_BY_ID.get(cityId)))
+        .retrieve()
+        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+                  response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));
+
+    }
+
+    /**
+     * Validate event id.
+     *
+     * @param eventId the event id
+     */
+    private void validateEventId(final Long eventId) {
+        WebClientBuilder.get().build()
+        .get()
+        .uri(Environment.property(ApiPropertyKey.GET_EVENT_BY_ID.get(eventId)))
+        .retrieve()
+        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+                  response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));
+    }
+
+    /**
+     * Validate event venue id.
+     *
+     * @param eventVenueId the event venue id
+     */
+    private void validateEventVenueId(final Long eventVenueId) {
+         eventVenueService.findById(eventVenueId);
+    }
+
+    /**
+     * Validate auditorium id.
+     *
+     * @param auditoriumId the auditorium id
+     */
+    private void validateAuditoriumId(final Long auditoriumId) {
+        eventVenueService.findAuditoriumById(auditoriumId);
     }
 
     /**
@@ -121,6 +175,7 @@ public class EventShowService {
      * Finds the event show by id.
      *
      * @param id the id
+     * @return the event show dto
      */
     public EventShowDto findById(@NotNull(message = "The event show id cannot be null.") final Long id) {
 
@@ -154,9 +209,10 @@ public class EventShowService {
                     SeatReservationStatus.AVAILABLE,
                     eventShow,
                     auditoriumSeat,
+                    null,
                     null))
                 .toList()
-            : null;
+            : List.of();
     }
 
     /**
@@ -167,40 +223,30 @@ public class EventShowService {
      */
     private EventShow toEventShow(final EventShowDetailsDto eventShowDetailsDto) {
 
-        final Event event = eventRepository.getById(eventShowDetailsDto.getEventId());
-        final EventVenue eventVenue = eventVenueRepository.getById(eventShowDetailsDto.getEventVenueId());
-        final Auditorium auditorium = auditoriumRepository.getById(eventShowDetailsDto.getAuditoriumId());
-
-        return new EventShow(
-            LocalDate.parse(eventShowDetailsDto.getDate()),
-            LocalTime.parse(eventShowDetailsDto.getStartTime()),
-            LocalTime.parse(eventShowDetailsDto.getEndTime()),
-            event, eventVenue, auditorium);
+        return eventShowModelMapper.toEntity(eventShowDetailsDto.toEventShowDto());
     }
 
     /**
      * Search.
      *
      * @param eventShowSearchCriteria the event show search criteria
-     * @return the list
+     * @return the {@link EventShowDtoList}
      */
-    public List<EventShow> search(final EventShowSearchCriteria eventShowSearchCriteria) {
-
-        return eventShowRepository.findByEventShowSearchCriteria(
+    public EventShowDtoList search(final EventShowSearchCriteria eventShowSearchCriteria) {
+        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowRepository.findByEventShowSearchCriteria(
             eventShowSearchCriteria.getCityId(),
             eventShowSearchCriteria.getEventId(),
-            LocalDate.parse(eventShowSearchCriteria.getDate()));
+            LocalDateTimeFormatUtil.parseLocalDate(eventShowSearchCriteria.getDate()))));
     }
 
     /**
-     * Search events by city.
+     * Finds the by city id.
      *
      * @param cityId the city id
-     * @return the event details dto list
+     * @return the event show dto list
      */
-    public EventDetailsDtoList searchEventsByCity(final Long cityId) {
+    public EventShowDtoList findByCityId(@NotNull(message = "The city id cannot be null.") final Long cityId) {
 
-        final List<Event> events = eventShowRepository.findEventsByCityId(cityId);
-        return (CollectionUtils.isNotEmpty(events)) ? eventService.findAllByEvents(events) : null;
+        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowRepository.findByCityId(cityId)));
     }
 }

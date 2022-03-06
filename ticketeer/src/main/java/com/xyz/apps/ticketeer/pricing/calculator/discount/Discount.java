@@ -38,7 +38,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Discount extends com.xyz.apps.ticketeer.model.Entity {
+public class Discount extends com.xyz.apps.ticketeer.model.general.Entity {
 
     /** The id. */
     @MongoId

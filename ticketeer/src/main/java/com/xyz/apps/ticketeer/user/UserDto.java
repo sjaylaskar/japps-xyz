@@ -5,7 +5,7 @@
 */
 package com.xyz.apps.ticketeer.user;
 
-import com.xyz.apps.ticketeer.model.Dto;
+import com.xyz.apps.ticketeer.model.general.Dto;
 
 import lombok.Getter;
 import lombok.Setter;

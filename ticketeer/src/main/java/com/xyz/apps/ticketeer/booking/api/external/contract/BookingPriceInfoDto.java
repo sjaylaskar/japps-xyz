@@ -5,9 +5,6 @@
 */
 package com.xyz.apps.ticketeer.booking.api.external.contract;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,7 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BookingPriceInfo {
+public class BookingPriceInfoDto {
 
     /** The offer code. */
     private String offerCode;
@@ -39,12 +36,12 @@ public class BookingPriceInfo {
     private Long eventVenueId;
 
     /** The show start time. */
-    private LocalTime showStartTime;
+    private String showStartTime;
 
     /** The final amount. */
     private Double finalAmount;
 
     /** The booking date. */
-    private LocalDateTime bookingTime;
+    private String bookingTime;
 
 }

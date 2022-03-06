@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 
@@ -44,12 +45,17 @@ public class EventVenueService {
     @Autowired
     private EventVenueModelMapper eventVenueModelMapper;
 
+    /** The auditorium model mapper. */
+    @Autowired
+    private AuditoriumModelMapper auditoriumModelMapper;
+
     /**
      * Adds the.
      *
      * @param eventVenueDetailsDto the event venue details dto
      * @return the event venue dto
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public EventVenueDto add(final EventVenueDetailsDto eventVenueDetailsDto) {
         Objects.requireNonNull(eventVenueDetailsDto, "The event venue details cannot be null.");
         final EventVenue eventVenue = eventVenueRepository.save(toEventVenue(eventVenueDetailsDto));
@@ -98,9 +104,11 @@ public class EventVenueService {
      * @return the event venue
      */
     private EventVenue toEventVenue(final EventVenueDetailsDto eventVenueDetailsDto) {
-        return new EventVenue(eventVenueDetailsDto.getName(),
-                              eventVenueDetailsDto.getNumberOfAuditoriums(),
-                              eventVenueDetailsDto.getCity());
+        final EventVenue eventVenue = new EventVenue();
+        eventVenue.setName(eventVenueDetailsDto.getName());
+        eventVenue.setCityId(eventVenueDetailsDto.getCityId());
+        eventVenue.setNumberOfAuditoriums(eventVenueDetailsDto.getNumberOfAuditoriums());
+        return eventVenue;
     }
 
     /**
@@ -146,5 +154,15 @@ public class EventVenueService {
      */
     public EventVenueDto findById(@NotNull(message = "The event venue id cannot be null.") final Long id) {
         return eventVenueModelMapper.toDto(eventVenueRepository.findById(id).orElseThrow(() -> new EventVenueNotFoundException(id)));
+    }
+
+    /**
+     * Finds the auditorium by id.
+     *
+     * @param auditoriumId the auditorium id
+     * @return the auditorium dto
+     */
+    public AuditoriumDto findAuditoriumById(@NotNull(message = "The event venue id cannot be null.") final Long auditoriumId) {
+        return auditoriumModelMapper.toDto(auditoriumRepository.findById(auditoriumId).orElseThrow(() -> new AuditoriumNotFoundException(auditoriumId)));
     }
 }

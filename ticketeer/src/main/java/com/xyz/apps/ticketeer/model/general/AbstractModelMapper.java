@@ -3,7 +3,7 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.model;
+package com.xyz.apps.ticketeer.model.general;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <E> the element type
  * @param <D> the generic type
  */
-public abstract class AbstractModelMapper<E extends Entity, D extends Dto<E>> {
+public abstract class AbstractModelMapper<E extends AbstractModel, D extends Dto<E>> {
 
     /** The entity type class. */
     private Class<E> entityTypeClass;

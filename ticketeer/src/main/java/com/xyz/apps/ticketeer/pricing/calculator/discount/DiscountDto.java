@@ -5,13 +5,10 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.xyz.apps.ticketeer.model.Dto;
-import com.xyz.apps.ticketeer.pricing.calculator.DiscountStrategy;
-import com.xyz.apps.ticketeer.pricing.calculator.ShowTimeType;
+import com.xyz.apps.ticketeer.model.general.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +27,7 @@ public class DiscountDto extends Dto<Discount> {
 
     private String offerCode;
 
-    private DiscountStrategy discountStrategy;
+    private String discountStrategy;
 
     private Set<Long> applicableCityIds = new HashSet<>();
 
@@ -42,13 +39,13 @@ public class DiscountDto extends Dto<Discount> {
 
     private Integer nthSeat;
 
-    private ShowTimeType showTimeType;
+    private String showTimeType;
 
-    private DiscountType discountType;
+    private String discountType;
 
     private Double value = 0d;
 
-    private LocalDateTime startTime;
+    private String startTime;
 
-    private LocalDateTime endTime;
+    private String endTime;
 }

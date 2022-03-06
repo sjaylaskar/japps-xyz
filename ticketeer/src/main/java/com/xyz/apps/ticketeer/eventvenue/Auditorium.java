@@ -29,7 +29,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Auditorium extends com.xyz.apps.ticketeer.model.Entity {
+public class Auditorium extends com.xyz.apps.ticketeer.model.general.Entity {
 
     /** The id. */
     @Id
@@ -71,5 +71,10 @@ public class Auditorium extends com.xyz.apps.ticketeer.model.Entity {
      */
     public Auditorium() {
 
+    }
+
+    public Auditorium id(final Long id) {
+        this.id = id;
+        return this;
     }
 }

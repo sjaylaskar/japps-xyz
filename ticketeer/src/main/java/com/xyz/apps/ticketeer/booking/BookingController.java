@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.booking;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,7 @@ public class BookingController {
         try {
             log.info("Booking: " + bookingDto);
             final BookingDto bookingDtoUpdated = bookingService.reserve(bookingDto);
-            if (bookingDtoUpdated.isReserved()) {
+            if (BooleanUtils.isTrue(bookingDtoUpdated.getIsReserved())) {
                 log.info("Booking reserved: " + bookingDtoUpdated);
                 return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -77,7 +78,7 @@ public class BookingController {
         try {
             log.info("Booking: " + bookingDto);
             final BookingDto bookingDtoUpdated = bookingService.confirm(bookingDto);
-            if (bookingDtoUpdated.isConfirmed()) {
+            if (BooleanUtils.isTrue(bookingDtoUpdated.getIsConfirmed())) {
                 log.info("Booking confirmed: " + bookingDtoUpdated);
                 return ResponseEntity
                     .status(HttpStatus.ACCEPTED)

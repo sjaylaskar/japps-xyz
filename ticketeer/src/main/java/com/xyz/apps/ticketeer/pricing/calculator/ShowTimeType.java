@@ -6,11 +6,20 @@
 package com.xyz.apps.ticketeer.pricing.calculator;
 
 import java.time.LocalTime;
+import java.util.Arrays;
+
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 
 /**
  * The show time type.
+ */
+
+/**
+ * Gets the range end time.
+ *
+ * @return the range end time
  */
 @Getter
 public enum ShowTimeType {
@@ -62,5 +71,22 @@ public enum ShowTimeType {
      */
     String rangeString() {
         return rangeStartTime + " and " + rangeEndTime;
+    }
+
+    /**
+     * Of.
+     *
+     * @param showTimeType the show time type
+     * @return the show time type
+     */
+    public static ShowTimeType of(final String showTimeType) {
+
+
+        return Arrays.asList(values())
+            .stream()
+            .filter(value -> StringUtils.equalsIgnoreCase(value.name(), showTimeType))
+            .findFirst()
+            .orElseThrow(() -> new InvalidShowTimeTypeException(showTimeType));
+
     }
 }

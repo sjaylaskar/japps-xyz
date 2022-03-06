@@ -5,13 +5,7 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.eventshow;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
-import com.xyz.apps.ticketeer.event.Event;
-import com.xyz.apps.ticketeer.eventvenue.Auditorium;
-import com.xyz.apps.ticketeer.eventvenue.EventVenue;
-import com.xyz.apps.ticketeer.model.Dto;
+import com.xyz.apps.ticketeer.model.general.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,20 +24,23 @@ import lombok.ToString;
 public class EventShowDto extends Dto<EventShow> {
 
     /** The date. */
-    private LocalDate date;
+    private String date;
 
     /** The start time. */
-    private LocalTime startTime;
+    private String startTime;
 
     /** The end time. */
-    private LocalTime endTime;
+    private String endTime;
+
+    /** The city id. */
+    private Long cityId;
 
     /** The event venue. */
-    private EventVenue eventVenue;
+    private Long eventVenueId;
 
     /** The auditorium. */
-    private Auditorium auditorium;
+    private Long auditoriumId;
 
     /** The event. */
-    private Event event;
+    private Long eventId;
 }

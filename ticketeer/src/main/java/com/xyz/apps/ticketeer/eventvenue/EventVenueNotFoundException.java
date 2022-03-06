@@ -12,7 +12,7 @@ package com.xyz.apps.ticketeer.eventvenue;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class EventVenueNotFoundException extends RuntimeException {
+public class EventVenueNotFoundException extends EventVenueServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -4218140171803098203L;

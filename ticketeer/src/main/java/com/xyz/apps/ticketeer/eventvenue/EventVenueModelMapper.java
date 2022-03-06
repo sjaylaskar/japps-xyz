@@ -7,7 +7,7 @@ package com.xyz.apps.ticketeer.eventvenue;
 
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.AbstractModelMapper;
+import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
 
 /**
  * The event venue model mapper.
@@ -22,6 +22,4 @@ public class EventVenueModelMapper extends AbstractModelMapper<EventVenue, Event
 
         super(EventVenue.class, EventVenueDto.class);
     }
-
-
 }

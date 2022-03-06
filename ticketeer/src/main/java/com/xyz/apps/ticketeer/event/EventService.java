@@ -85,6 +85,16 @@ public class EventService {
     }
 
     /**
+     * Finds the by id.
+     *
+     * @param id the id
+     * @return the event dto
+     */
+    public EventDto findById(final Long id) {
+        return eventModelMapper.toDto(eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id)));
+    }
+
+    /**
      * Adds the event.
      *
      * @param eventDetailsDto the event details dto

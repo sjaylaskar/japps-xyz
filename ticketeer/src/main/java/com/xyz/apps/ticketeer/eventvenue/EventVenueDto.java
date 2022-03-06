@@ -5,8 +5,7 @@
 */
 package com.xyz.apps.ticketeer.eventvenue;
 
-import com.xyz.apps.ticketeer.location.City;
-import com.xyz.apps.ticketeer.model.Dto;
+import com.xyz.apps.ticketeer.model.general.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,5 +30,5 @@ public class EventVenueDto extends Dto<EventVenue> {
     private int numberOfAuditoriums;
 
     /** The city. */
-    private City city;
+    private Long cityId;
 }

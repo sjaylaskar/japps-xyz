@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
+import com.xyz.apps.ticketeer.pricing.calculator.PricingServiceException;
 
 /**
  * The discount service exception.
@@ -12,7 +13,7 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class DiscountServiceException extends RuntimeException {
+public class DiscountServiceException extends PricingServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -6237952517165449903L;

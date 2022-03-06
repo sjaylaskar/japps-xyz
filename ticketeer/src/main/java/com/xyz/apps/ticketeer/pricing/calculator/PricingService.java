@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.pricing.calculator.api.external.ApiPropertyKey;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.Discount;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.DiscountDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.DiscountService;
 import com.xyz.apps.ticketeer.util.Environment;
@@ -33,21 +34,27 @@ public class PricingService {
     @Autowired
     private DiscountService discountService;
 
+    /** The booking price info model mapper. */
+    @Autowired
+    private BookingPriceInfoModelMapper bookingPriceInfoModelMapper;
+
     /**
      * Calculate final amount.
      *
      * @param bookingPriceInfo the booking price info
      * @return the double
      */
-    public Double calculateFinalAmount(@NotNull(message = "The booking price info cannot be null.") final BookingPriceInfo bookingPriceInfo) {
+    public Double calculateFinalAmount(@NotNull(message = "The booking price info cannot be null.") final BookingPriceInfoDto bookingPriceInfoDto) {
+        final BookingPriceInfo bookingPriceInfo = bookingPriceInfoModelMapper.toEntity(bookingPriceInfoDto);
         if (bookingPriceInfo != null && bookingPriceInfo.getBaseAmount() != null) {
             if (bookingPriceInfo.getFinalAmount() == null || bookingPriceInfo.getFinalAmount().equals(0d)) {
                 bookingPriceInfo.setFinalAmount(bookingPriceInfo.getBaseAmount());
             }
 
             if (StringUtils.isNotBlank(bookingPriceInfo.getOfferCode())) {
-                final DiscountDto discount = discountService.findByOfferCode(bookingPriceInfo.getOfferCode());
-                if (discount != null) {
+                final DiscountDto discountDto = discountService.findByOfferCode(bookingPriceInfo.getOfferCode());
+                if (discountDto != null) {
+                    final Discount discount = discountService.toDiscount(discountDto);
                     discount.getDiscountStrategy().accept(new BookingDiscountApplier(bookingPriceInfo, discount));
                 }
             }

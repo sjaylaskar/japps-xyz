@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xyz.apps.ticketeer.model.DtoList;
+import com.xyz.apps.ticketeer.model.general.DtoList;
 
 import lombok.extern.log4j.Log4j2;
 

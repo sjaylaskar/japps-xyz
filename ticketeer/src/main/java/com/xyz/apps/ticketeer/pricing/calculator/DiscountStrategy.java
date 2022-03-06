@@ -1,11 +1,15 @@
 /*
-* Id: DiscountStrategy.java 03-Mar-2022 11:20:36 pm SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: DiscountStrategy.java 03-Mar-2022 11:20:36 pm SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.pricing.calculator;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
+
+import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * The discount strategy.
@@ -36,6 +40,7 @@ public enum DiscountStrategy {
      * @param bookingDiscountApplierConsumer the booking discount applier consumer
      */
     DiscountStrategy(final Consumer<BookingDiscountApplier> bookingDiscountApplierConsumer) {
+
         this.bookingDiscountApplierConsumer = bookingDiscountApplierConsumer;
     }
 
@@ -45,6 +50,22 @@ public enum DiscountStrategy {
      * @param bookingDiscountApplier the booking discount applier
      */
     void accept(final BookingDiscountApplier bookingDiscountApplier) {
+
         bookingDiscountApplierConsumer.accept(bookingDiscountApplier);
+    }
+
+    /**
+     * Of.
+     *
+     * @param strategy the strategy
+     * @return the discount strategy
+     */
+    public static DiscountStrategy of(final String strategy) {
+
+        return Arrays.asList(values())
+            .stream()
+            .filter(value -> StringUtils.equalsIgnoreCase(value.name(), strategy))
+            .findFirst()
+            .orElseThrow(() -> new InvalidDiscountStrategyException(strategy));
     }
 }

@@ -6,9 +6,9 @@
 package com.xyz.apps.ticketeer.booking;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -16,12 +16,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 
 import com.xyz.apps.ticketeer.booking.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.booking.api.external.contract.BasicUserDto;
-import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfo;
+import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookingDto;
 import com.xyz.apps.ticketeer.util.Environment;
 import com.xyz.apps.ticketeer.util.WebClientBuilder;
@@ -53,7 +54,7 @@ public class BookingService {
      * @param bookingDto the booking dto
      * @return the booking dto
      */
-    @Transactional(rollbackOn = {Throwable.class})
+    @Transactional(rollbackFor = {Throwable.class})
     public BookingDto reserve(final BookingDto bookingDto) {
 
         validateBooking(bookingDto);
@@ -116,7 +117,7 @@ public class BookingService {
         bookingDto.setAmount(booking.getAmount());
         bookingDto.setFinalAmount(booking.getFinalAmount());
         bookingDto.setReservationTime(booking.getReservationTime().toString());
-        bookingDto.setReserved(BookingStatus.RESERVED.equals(booking.getBookingStatus()));
+        bookingDto.setIsReserved(BookingStatus.RESERVED.equals(booking.getBookingStatus()));
         bookingDto.setBookingStatus(booking.getBookingStatus() != null ? booking.getBookingStatus().name() : null);
         return bookingDto;
     }
@@ -158,7 +159,7 @@ public class BookingService {
      * @param bookingDto the booking dto
      * @return the booking dto
      */
-    @Transactional(rollbackOn = {Throwable.class})
+    @Transactional(rollbackFor = {Throwable.class})
     public BookingDto confirm(final BookingDto bookingDto) {
 
         validateBooking(bookingDto);
@@ -188,12 +189,12 @@ public class BookingService {
         bookingDto.setAmount(baseAmount);
         bookingDto.setFinalAmount(baseAmount);
 
-        final BookingPriceInfo bookingPriceInfo = toBookingPriceInfo(bookingDto);
+        final BookingPriceInfoDto bookingPriceInfoDto = toBookingPriceInfo(bookingDto);
 
         final double finalAmount = WebClientBuilder.get().build()
                 .post()
                 .uri(Environment.property(ApiPropertyKey.PRICING_CALCULATE.get()))
-                .body(Mono.just(bookingPriceInfo), BookingPriceInfo.class)
+                .body(Mono.just(bookingPriceInfoDto), BookingPriceInfoDto.class)
                 .retrieve()
                 .bodyToMono(Double.class).block();
 
@@ -206,7 +207,7 @@ public class BookingService {
         booking.setAmount(baseAmount);
         booking.setFinalAmount(finalAmount);
         booking.setBookingStatus(BookingStatus.CONFIRMED);
-        booking.setBookingTime(bookingPriceInfo.getBookingTime());
+        booking.setBookingTime(LocalDateTime.parse(bookingPriceInfoDto.getBookingTime()));
 
         final Booking bookingUpdated = bookingRepository.save(booking);
 
@@ -226,7 +227,7 @@ public class BookingService {
         bookingDto.setFinalAmount(finalAmount);
         bookingDto.setBookingStatus(bookingUpdated.getBookingStatus() != null ? bookingUpdated.getBookingStatus().name() : null);
         bookingDto.setBookingTime(booking.getBookingTime().toString());
-        bookingDto.setConfirmed(BookingStatus.CONFIRMED.equals(booking.getBookingStatus()));
+        bookingDto.setIsConfirmed(BookingStatus.CONFIRMED.equals(booking.getBookingStatus()));
 
         return bookingDto;
     }
@@ -237,18 +238,18 @@ public class BookingService {
      * @param bookingDto the booking dto
      * @return the booking price info
      */
-    private BookingPriceInfo toBookingPriceInfo(final BookingDto bookingDto) {
+    private BookingPriceInfoDto toBookingPriceInfo(final BookingDto bookingDto) {
 
-        final BookingPriceInfo bookingPriceInfo = new BookingPriceInfo();
-        bookingPriceInfo.setOfferCode(bookingDto.getOfferCode());
-        bookingPriceInfo.setBaseAmount(bookingDto.getAmount());
-        bookingPriceInfo.setFinalAmount(bookingDto.getFinalAmount());
-        bookingPriceInfo.setNumberOfSeats(bookingDto.getEventShowSeatIds().size());
-        bookingPriceInfo.setCityId(bookingDto.getCityId());
-        bookingPriceInfo.setEventVenueId(bookingDto.getEventVenueId());
-        bookingPriceInfo.setShowStartTime(bookingDto.getShowStartTime());
-        bookingPriceInfo.setBookingTime(LocalDateTime.now());
-        return bookingPriceInfo;
+        final BookingPriceInfoDto bookingPriceInfoDto = new BookingPriceInfoDto();
+        bookingPriceInfoDto.setOfferCode(bookingDto.getOfferCode());
+        bookingPriceInfoDto.setBaseAmount(bookingDto.getAmount());
+        bookingPriceInfoDto.setFinalAmount(bookingDto.getFinalAmount());
+        bookingPriceInfoDto.setNumberOfSeats(bookingDto.getEventShowSeatIds().size());
+        bookingPriceInfoDto.setCityId(bookingDto.getCityId());
+        bookingPriceInfoDto.setEventVenueId(bookingDto.getEventVenueId());
+        bookingPriceInfoDto.setShowStartTime(bookingDto.getShowStartTime());
+        bookingPriceInfoDto.setBookingTime(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        return bookingPriceInfoDto;
     }
 
     /**
@@ -257,7 +258,7 @@ public class BookingService {
      * @param bookingDto the booking dto
      * @return true, if successful
      */
-    @Transactional(rollbackOn = {Throwable.class})
+    @Transactional(rollbackFor = {Throwable.class})
     public boolean cancel(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
         validateBooking(bookingDto);
 

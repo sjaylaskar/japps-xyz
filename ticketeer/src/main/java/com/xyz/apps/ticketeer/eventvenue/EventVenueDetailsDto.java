@@ -5,8 +5,6 @@
 */
 package com.xyz.apps.ticketeer.eventvenue;
 
-import com.xyz.apps.ticketeer.location.City;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -26,7 +24,7 @@ public class EventVenueDetailsDto {
     private String name;
 
     /** The event venue city. */
-    private City city;
+    private Long cityId;
 
     /** The number of auditoriums. */
     private int numberOfAuditoriums;

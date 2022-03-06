@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.data.mongodb.core.mapping.TextScore;
 
-import com.xyz.apps.ticketeer.model.Entity;
+import com.xyz.apps.ticketeer.model.general.Entity;
 
 import lombok.Getter;
 import lombok.Setter;

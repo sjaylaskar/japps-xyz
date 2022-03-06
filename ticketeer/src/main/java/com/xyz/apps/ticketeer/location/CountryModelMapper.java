@@ -7,7 +7,7 @@ package com.xyz.apps.ticketeer.location;
 
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.AbstractModelMapper;
+import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
 
 
 /**

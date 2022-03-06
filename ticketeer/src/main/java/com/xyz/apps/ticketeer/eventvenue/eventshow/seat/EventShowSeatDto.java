@@ -5,12 +5,7 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat;
 
-import java.time.LocalDateTime;
-
-import com.xyz.apps.ticketeer.booking.Booking;
-import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.EventShow;
-import com.xyz.apps.ticketeer.model.Dto;
+import com.xyz.apps.ticketeer.model.general.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,17 +27,17 @@ public class EventShowSeatDto extends Dto<EventShowSeat> {
     private Double amount;
 
     /** The seat reservation status. */
-    private SeatReservationStatus seatReservationStatus = SeatReservationStatus.AVAILABLE;
+    private String seatReservationStatus = SeatReservationStatus.AVAILABLE.name();
 
     /** The event show. */
-    private EventShow eventShow;
+    private Long eventShowId;
 
     /** The auditorium seat. */
-    private AuditoriumSeat auditoriumSeat;
+    private Long auditoriumSeatId;
 
     /** The reservation time. */
-    private LocalDateTime reservationTime;
+    private String reservationTime;
 
     /** The booking. */
-    private Booking booking;
+    private Long bookingId;
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import com.xyz.apps.ticketeer.model.DtoList;
+import com.xyz.apps.ticketeer.model.general.DtoList;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -27,7 +27,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class User extends com.xyz.apps.ticketeer.model.Entity {
+public class User extends com.xyz.apps.ticketeer.model.general.Entity {
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")

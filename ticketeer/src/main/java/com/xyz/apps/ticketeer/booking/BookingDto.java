@@ -5,7 +5,6 @@
  */
 package com.xyz.apps.ticketeer.booking;
 
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,7 +58,7 @@ public class BookingDto {
     private Long cityId;
 
     /** The show start time. */
-    private LocalTime showStartTime;
+    private String showStartTime;
 
     /** The user. */
     private String username;
@@ -74,9 +73,9 @@ public class BookingDto {
     private String emailId;
 
     /** The is reserved. */
-    private boolean isReserved;
+    private Boolean isReserved;
 
     /** The is confirmed. */
-    private boolean isConfirmed;
+    private Boolean isConfirmed;
 
 }

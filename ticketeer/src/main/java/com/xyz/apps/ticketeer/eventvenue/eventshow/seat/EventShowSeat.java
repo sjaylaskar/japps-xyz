@@ -20,8 +20,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.booking.Booking;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.EventShow;
 
@@ -40,7 +40,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
+@Validated
+public class EventShowSeat extends com.xyz.apps.ticketeer.model.general.Entity {
 
     /** The id. */
     @Id
@@ -74,9 +75,7 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
     private LocalDateTime reservationTime;
 
     /** The booking. */
-    @ManyToOne
-    @JoinColumn(name = "bookingId")
-    private Booking booking;
+    private Long bookingId;
 
     /**
      * Instantiates a new event show seat.
@@ -89,24 +88,22 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.model.Entity {
      * Instantiates a new event show seat.
      *
      * @param amount the amount
-     * @param seatReservationStatus the seat status
+     * @param seatReservationStatus the seat reservation status
      * @param eventShow the event show
      * @param auditoriumSeat the auditorium seat
-     * @param booking the booking
+     * @param reservationTime the reservation time
+     * @param bookingId the booking id
      */
-    public EventShowSeat(
-    @NotNull(message = "Seat price cannot be null.")
-    final Double amount,
-    @NotNull(message = "Seat reservation status cannot be null.")
-    final SeatReservationStatus seatReservationStatus,
-    final EventShow eventShow,
-    final AuditoriumSeat auditoriumSeat,
-    final Booking booking) {
+    public EventShowSeat(@NotNull(message = "Seat price cannot be null.") final Double amount, @NotNull(
+        message = "Seat reservation status cannot be null."
+    ) final SeatReservationStatus seatReservationStatus, final EventShow eventShow, final AuditoriumSeat auditoriumSeat,
+            final LocalDateTime reservationTime, final Long bookingId) {
 
         this.amount = amount;
         this.seatReservationStatus = seatReservationStatus;
         this.eventShow = eventShow;
         this.auditoriumSeat = auditoriumSeat;
-        this.booking = booking;
+        this.reservationTime = reservationTime;
+        this.bookingId = bookingId;
     }
 }

@@ -7,7 +7,7 @@ package com.xyz.apps.ticketeer.location;
 
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.AbstractModelMapper;
+import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
 
 /**
  * The city model mapper.
@@ -20,6 +20,8 @@ public class CityModelMapper extends AbstractModelMapper<City, CityDto> {
 
     public CityModelMapper() {
         super(City.class, CityDto.class);
+
+        //initMappings();
     }
 
 }
