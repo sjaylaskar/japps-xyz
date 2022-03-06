@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.pricing.api;
+package com.xyz.apps.ticketeer.pricing.calculator.discount.api.external;
 
 import java.text.MessageFormat;
 

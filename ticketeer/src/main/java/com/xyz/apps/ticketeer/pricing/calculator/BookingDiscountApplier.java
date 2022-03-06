@@ -3,13 +3,13 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.pricing;
+package com.xyz.apps.ticketeer.pricing.calculator;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import com.xyz.apps.ticketeer.pricing.discount.Discount;
-import com.xyz.apps.ticketeer.pricing.discount.DiscountType;
-import com.xyz.apps.ticketeer.pricing.discount.InvalidOfferCodeException;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.DiscountDto;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.DiscountType;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.InvalidOfferCodeException;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +31,7 @@ public class BookingDiscountApplier {
     private BookingPriceInfo bookingPriceInfo;
 
     /** The discount. */
-    private Discount discount;
+    private DiscountDto discount;
 
     /**
      * Instantiates a new booking discount applier.
@@ -39,7 +39,7 @@ public class BookingDiscountApplier {
      * @param bookingPriceInfo the booking price info
      * @param discount the discount
      */
-    public BookingDiscountApplier(final BookingPriceInfo bookingPriceInfo, final Discount discount) {
+    public BookingDiscountApplier(final BookingPriceInfo bookingPriceInfo, final DiscountDto discount) {
 
         this.bookingPriceInfo = bookingPriceInfo;
         this.discount = discount;

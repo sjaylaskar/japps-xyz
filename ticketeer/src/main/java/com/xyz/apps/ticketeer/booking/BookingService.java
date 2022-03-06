@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.xyz.apps.ticketeer.eventshow.EventShow;
 import com.xyz.apps.ticketeer.eventshow.EventShowSeatRepository;
-import com.xyz.apps.ticketeer.pricing.PricingService;
+import com.xyz.apps.ticketeer.pricing.calculator.PricingService;
 import com.xyz.apps.ticketeer.user.User;
 
 

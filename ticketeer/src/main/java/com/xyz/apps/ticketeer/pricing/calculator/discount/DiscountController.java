@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.pricing.discount;
+package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
 import javax.validation.constraints.NotBlank;
 
@@ -11,6 +11,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequestMapping("discount")
 @Log4j2
+@Validated
 public class DiscountController {
 
     /** The discount service. */
@@ -206,7 +208,7 @@ public class DiscountController {
      * @param offerCode the code
      * @return the discount by code
      */
-    @GetMapping(value = "code/{offerCode}")
+    @GetMapping(value = "offercode/{offerCode}")
     public ResponseEntity<?> getByOfferCode(@PathVariable("offerCode") @NotBlank(message = "The discount offer code to fetch cannot be blank.") final String offerCode) {
         try {
             final DiscountDto discountDtoFound = discountService.findByOfferCode(offerCode);
@@ -219,6 +221,70 @@ public class DiscountController {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
                 "Failed to find discount: "
                 + offerCode + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Gets the by city id.
+     *
+     * @param cityId the city id
+     * @return the by city id
+     */
+    @GetMapping(value = "city/{cityId}")
+    public ResponseEntity<?> getByCityId(@PathVariable("cityId") @NotBlank(message = "The city id cannot be blank.") final Long cityId) {
+        try {
+            final DiscountDtoList discountDtoListFound = discountService.findByCityId(cityId);
+            return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(discountDtoListFound);
+        } catch (final DiscountNotFoundException discountNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountNotFoundException));
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
+                "Failed to find discounts by city: "
+                + cityId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Gets the by event venue id.
+     *
+     * @param eventVenueId the event venue id
+     * @return the by event venue id
+     */
+    @GetMapping(value = "eventvenue/{eventVenueId}")
+    public ResponseEntity<?> getByEventVenueId(@PathVariable("eventVenueId") @NotBlank(message = "The event venue id cannot be blank.") final Long eventVenueId) {
+        try {
+            final DiscountDtoList discountDtoListFound = discountService.findByEventVenueId(eventVenueId);
+            return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(discountDtoListFound);
+        } catch (final DiscountServiceException discountServiceException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountServiceException));
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
+                "Failed to find discounts by city: "
+                + eventVenueId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * All.
+     *
+     * @return the response entity
+     */
+    @GetMapping(value = "all")
+    public ResponseEntity<?> all() {
+        try {
+            final DiscountDtoList discountDtoListFound = discountService.findAll();
+            return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body(discountDtoListFound);
+        } catch (final DiscountServiceException discountServiceException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountServiceException));
+        } catch (final Exception exception) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
+                "Failed to find discounts. Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 

@@ -10,10 +10,15 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotEmpty;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.event.Event;
 import com.xyz.apps.ticketeer.event.EventDetailsDtoList;
@@ -33,6 +38,7 @@ import com.xyz.apps.ticketeer.eventvenue.EventVenueRepository;
  * @author Subhajoy Laskar
  * @version 1.0
  */
+@Validated
 @Service
 public class EventShowService {
 
@@ -106,7 +112,7 @@ public class EventShowService {
             eventShowRepository.deleteById(id);
         }
 
-        throw new EventNotFoundException(id);
+        throw new EventShowNotFoundException(id);
     }
 
     /**
@@ -191,5 +197,35 @@ public class EventShowService {
      */
     public EventShowSeatDtoList findEventShowSeatsByEventShowId(final Long eventShowId) {
         return EventShowSeatDtoList.of(eventShowSeatModelMapper.toDtos(eventShowSeatRepository.findByEventShowId(eventShowId)));
+    }
+
+    /**
+     * Finds the all event show seats by ids.
+     *
+     * @param seatIds the seat ids
+     * @return the event show seats
+     */
+    public List<EventShowSeat> findAllEventShowSeatsByIds(final Set<Long> seatIds) {
+        return eventShowSeatRepository.findAllById(seatIds);
+    }
+
+    /**
+     * Calculate seats total amount.
+     *
+     * @param eventShowSeatIds the event show seat ids
+     * @return the amount
+     */
+    public Double calculateSeatsTotalAmount(@NotEmpty(message = "The event show seat ids cannot be null or empty.") final Set<Long> eventShowSeatIds) {
+        if (CollectionUtils.isNotEmpty(eventShowSeatIds)) {
+            final List<EventShowSeat> eventShowSeats = findAllEventShowSeatsByIds(eventShowSeatIds);
+            if (CollectionUtils.isNotEmpty(eventShowSeats)) {
+                if (eventShowSeats.size() != eventShowSeatIds.size()) {
+                    final Set<Long> eventShowSeatIdsFound = eventShowSeats.stream().map(EventShowSeat::getId).collect(Collectors.toSet());
+                    throw new EventShowSeatsNotFoundException(eventShowSeatIds.stream().filter(eventShowSeatId -> !eventShowSeatIdsFound.contains(eventShowSeatId)).collect(Collectors.toSet()));
+                }
+                return eventShowSeatRepository.findTotalAmount(eventShowSeatIds);
+            }
+        }
+        return 0d;
     }
 }

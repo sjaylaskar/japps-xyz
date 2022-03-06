@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.eventshow;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -75,8 +76,7 @@ public class EventShowController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id")
-    @NotNull(message = "The event show id cannot be null") final Long id) {
+    public ResponseEntity<?> delete(@PathVariable("id") @NotNull(message = "The event show id cannot be null") final Long id) {
 
         try {
             log.info("Event show: " + id);
@@ -127,7 +127,7 @@ public class EventShowController {
      * @param eventShowSearchCriteria the event show search criteria
      * @return the response entity
      */
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody final EventShowSearchCriteria eventShowSearchCriteria) {
 
         try {
@@ -178,6 +178,31 @@ public class EventShowController {
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to find seats for event show: "
                     + eventShowId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Calculate seats total amount.
+     *
+     * @param seatIds the seat ids
+     * @return the response entity
+     */
+    @PostMapping("/calculate")
+    public ResponseEntity<?> calculateSeatsTotalAmount(@RequestBody final Set<Long> seatIds) {
+
+        try {
+            log.info("Seats IDs: " + seatIds);
+            final Double amount = eventShowService.calculateSeatsTotalAmount(seatIds);
+            log.info("Seats total amount: " + amount);
+            return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .body(amount);
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to find amount for event show seats: "
+                    + seatIds + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 }

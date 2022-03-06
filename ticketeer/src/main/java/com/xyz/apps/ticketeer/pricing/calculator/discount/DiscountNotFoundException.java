@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.pricing.discount;
+package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
 
 /**
@@ -12,7 +12,7 @@ package com.xyz.apps.ticketeer.pricing.discount;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class DiscountNotFoundException extends RuntimeException {
+public class DiscountNotFoundException extends DiscountServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 9181617415120914091L;

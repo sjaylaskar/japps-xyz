@@ -7,12 +7,12 @@ package com.xyz.apps.ticketeer.eventshow;
 
 
 /**
- * The EventNotFoundException.
+ * The event show not found exception.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class EventNotFoundException extends RuntimeException {
+public class EventShowNotFoundException extends EventShowServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 2864961314454364365L;
@@ -22,7 +22,7 @@ public class EventNotFoundException extends RuntimeException {
      *
      * @param id the id
      */
-    public EventNotFoundException(final Long id) {
-        super("Event not found for id: " + id);
+    public EventShowNotFoundException(final Long id) {
+        super("Event show not found for id: " + id);
     }
 }

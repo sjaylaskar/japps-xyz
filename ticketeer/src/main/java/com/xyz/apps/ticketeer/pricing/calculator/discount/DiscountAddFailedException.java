@@ -3,18 +3,19 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.pricing.discount;
+package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotEmpty;
+
+import com.xyz.apps.ticketeer.util.CollectionUtil;
 
 
 /**
  * The discount add failed exception.
  */
-public class DiscountAddFailedException extends RuntimeException {
+public class DiscountAddFailedException extends DiscountServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 5312959845566550447L;
@@ -26,6 +27,6 @@ public class DiscountAddFailedException extends RuntimeException {
      */
     public DiscountAddFailedException(@NotEmpty(message = "No discounts specified.") final Collection<DiscountDto> discountDtos) {
 
-        super("Failed to add discount(s): " + discountDtos.stream().map(DiscountDto::toString).collect(Collectors.joining(",")));
+        super("Failed to add discount(s): " + CollectionUtil.stringify(discountDtos));
     }
 }

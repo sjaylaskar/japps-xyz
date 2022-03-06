@@ -3,7 +3,7 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.pricing.discount;
+package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -20,8 +20,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import com.mongodb.lang.NonNull;
-import com.xyz.apps.ticketeer.pricing.DiscountStrategy;
-import com.xyz.apps.ticketeer.pricing.ShowTimeType;
+import com.xyz.apps.ticketeer.pricing.calculator.DiscountStrategy;
+import com.xyz.apps.ticketeer.pricing.calculator.ShowTimeType;
 
 import lombok.Getter;
 import lombok.Setter;

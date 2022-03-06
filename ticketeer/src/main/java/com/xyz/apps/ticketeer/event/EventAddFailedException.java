@@ -6,9 +6,10 @@
 package com.xyz.apps.ticketeer.event;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotEmpty;
+
+import com.xyz.apps.ticketeer.util.CollectionUtil;
 
 /**
  * The event add failed exception.
@@ -24,6 +25,6 @@ public class EventAddFailedException extends RuntimeException {
      * @param eventDetailsDtos the event details dtos
      */
     public EventAddFailedException(@NotEmpty(message = "No events specified.") final Collection<EventDetailsDto> eventDetailsDtos) {
-        super("Failed to add event(s): " + eventDetailsDtos.stream().map(EventDetailsDto::toString).collect(Collectors.joining(",")));
+        super("Failed to add event(s): " + CollectionUtil.stringify(eventDetailsDtos));
     }
 }
