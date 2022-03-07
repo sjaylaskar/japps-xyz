@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.log4j.Log4j2;
@@ -102,7 +101,7 @@ public class CountryController {
             final CountryDto countryUpdated = countryService.update(countryDto);
             log.info("Country updated: " + countryUpdated);
             return ResponseEntity
-                .status(HttpStatus.OK)
+                .accepted()
                 .body(countryUpdated);
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
@@ -173,7 +172,6 @@ public class CountryController {
      * @param code the code
      */
     @DeleteMapping("/delete/code/{code}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> deleteByCode(@PathVariable final String code) {
 
         try {
@@ -229,7 +227,7 @@ public class CountryController {
 
         try {
             final CountryDto countryDto = countryService.findById(id);
-            return ResponseEntity.status(HttpStatus.FOUND)
+            return ResponseEntity.status(HttpStatus.OK)
                     .body(countryDto);
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
@@ -253,7 +251,7 @@ public class CountryController {
         try {
             final CountryDto countryDto = countryService.findByCode(code);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(countryDto);
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
@@ -277,7 +275,7 @@ public class CountryController {
         try {
             final CountryDto countryDto = countryService.findByName(name);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(countryDto);
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
@@ -300,7 +298,7 @@ public class CountryController {
         try {
             final CountryDtoList countryDtoList = countryService.findAll();
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(countryDtoList);
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity

@@ -23,6 +23,9 @@ import lombok.ToString;
 @ToString
 public class UserDto extends Dto<User> {
 
+    /** The id. */
+    private Long id;
+
     /** The username. */
     private String username;
 

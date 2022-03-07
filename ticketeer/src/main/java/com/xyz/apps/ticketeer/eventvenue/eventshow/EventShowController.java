@@ -106,7 +106,7 @@ public class EventShowController {
             if (DtoList.isNotEmpty(eventShowDtoList)) {
                 log.info("Event shows found: " + eventShowDtoList + " in city: " + cityId);
                 return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(eventShowDtoList);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -135,7 +135,7 @@ public class EventShowController {
             if (DtoList.isNotEmpty(eventShowDtoList)) {
                 log.info("Event shows found: " + eventShowDtoList);
                 return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(eventShowDtoList);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -161,7 +161,7 @@ public class EventShowController {
 
         try {
             log.info("Event show: " + id);
-            return ResponseEntity.status(HttpStatus.FOUND)
+            return ResponseEntity.status(HttpStatus.OK)
                 .body(eventShowService.findById(id));
         } catch (final EventShowNotFoundException eventShowNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventShowNotFoundException));

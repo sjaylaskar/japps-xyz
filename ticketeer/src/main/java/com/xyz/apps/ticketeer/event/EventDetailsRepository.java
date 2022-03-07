@@ -14,6 +14,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public interface EventDetailsRepository extends MongoRepository<EventDetails, Long> {
+public interface EventDetailsRepository extends MongoRepository<EventDetails, String> {
 
 }

@@ -48,14 +48,14 @@ public class BookingController {
 
         try {
             log.info("Booking: " + bookingDto);
-            final BookingDto bookingDtoUpdated = bookingService.reserve(bookingDto);
-            if (BooleanUtils.isTrue(bookingDtoUpdated.getIsReserved())) {
-                log.info("Booking reserved: " + bookingDtoUpdated);
+            final BookingDto bookingReserved = bookingService.reserve(bookingDto);
+            if (BooleanUtils.isTrue(bookingReserved.getIsReserved())) {
+                log.info("Booking reserved: " + bookingReserved);
                 return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(bookingDtoUpdated);
+                    .body(bookingReserved);
             } else {
-                log.error("Booking could not be reserved: " + bookingDtoUpdated);
+                log.error("Booking could not be reserved: " + bookingReserved);
                 return ResponseEntity
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body("The selected seats are no longer available! Please select new seats.");

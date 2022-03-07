@@ -10,7 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The abstract data transfer object.
+ * The data transfer object.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -20,5 +20,4 @@ import lombok.ToString;
 @ToString
 public class Dto<T extends AbstractModel> {
 
-    protected Long id;
 }

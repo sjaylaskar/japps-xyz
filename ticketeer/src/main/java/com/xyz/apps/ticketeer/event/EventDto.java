@@ -23,6 +23,9 @@ import lombok.ToString;
 @ToString
 public class EventDto extends Dto<Event> {
 
+    /** The id. */
+    private Long id;
+
     /** The name. */
     private String name;
 
@@ -34,7 +37,7 @@ public class EventDto extends Dto<Event> {
      */
     public static EventDto of(final EventDetailsDto eventDetailsDto) {
         final EventDto eventDto = new EventDto();
-        eventDto.setId(eventDetailsDto.getId());
+        eventDto.setId(eventDetailsDto.getEventId());
         eventDto.setName(eventDetailsDto.getName());
         return eventDto;
     }

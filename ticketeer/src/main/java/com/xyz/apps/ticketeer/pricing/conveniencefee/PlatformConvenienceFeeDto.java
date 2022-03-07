@@ -22,6 +22,9 @@ import lombok.ToString;
 @ToString
 public class PlatformConvenienceFeeDto extends Dto<PlatformConvenienceFee> {
 
+    /** The id. */
+    private Long id;
+
     /** The fee percentage. */
     private Double feePercentage = 0d;
 }

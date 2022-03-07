@@ -22,6 +22,9 @@ import lombok.ToString;
 @ToString
 public class CountryDto extends Dto<Country> {
 
+    /** The id. */
+    private Long id;
+
     /** The code. */
     private String code;
 

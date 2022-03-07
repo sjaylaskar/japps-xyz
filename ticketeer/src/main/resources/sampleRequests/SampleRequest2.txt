@@ -1,46 +1,107 @@
+http://localhost:8082/xyz/apps/ticketeer/api/country/add/all
 {
   "dtos": [
     {
-      "countryName": "India",
-      "description": "The nights of winter",
-      "duration": 120,
-      "eventType": "Movie",
-      "genre": "Sci-Fi",
-      "language": "English",
-      "movieCastNames": [
-        "RK", "HK", "SRK"
-      ],
-      "movieDirectorName": "Jay",
-      "name": "The nights of winter",
-      "releaseDate": "23-03-2022"
+      "code": "IN",
+      "name": "India"
     },
 {
-      "countryName": "UK",
-      "description": "The fall of dawn",
-      "duration": 150,
-      "eventType": "Movie",
-      "genre": "Science Fiction",
-      "language": "English",
-      "movieCastNames": [
-        "Arun", "Hritesh", "Sanak"
-      ],
-      "movieDirectorName": "Jay",
-      "name": "The fall of dawn",
-      "releaseDate": "23-03-2022"
+      "code": "NL",
+      "name": "Nederlands"
     },
 {
-      "countryName": "USA",
-      "description": "The Tester,
-      "duration": 150,
-      "eventType": "Movie",
-      "genre": "Biography",
-      "language": "English",
-      "movieCastNames": [
-        "Tom", "Hritesh", "Harry"
-      ],
-      "movieDirectorName": "Jay",
-      "name": "The Tester",
-      "releaseDate": "23-04-2022"
+      "code": "AUS",
+      "name": "Australia"
     }
   ]
+}
+
+http://localhost:8082/xyz/apps/ticketeer/api/city/add/all
+{
+  "dtos": [
+    {
+      "code": "HYD",
+      "countryId": 5,
+      "name": "Hyderabad"
+    },
+    {
+      "code": "SEC",
+      "countryId": 5,
+      "name": "Secunderabad"
+    },
+{
+      "code": "ROT",
+      "countryId": 6,
+      "name": "Rotterdam"
+    },
+{
+      "code": "SYD",
+      "countryId": 7,
+      "name": "Sydney"
+    }
+  ]
+}
+
+http://localhost:8082/xyz/apps/ticketeer/api/user/add
+{
+  "email": "jay@gmail2.com",
+  "firstname": "Jay",
+  "lastname": "Laskar",
+  "password": "jay12345",
+  "phoneNumber": "8860083691",
+  "username": "jaylaskar2"
+}
+
+http://localhost:8082/xyz/apps/ticketeer/api/event/add/all
+{
+    "dtos": [
+        {
+            "countryName": "India",
+            "description": "The nights of winter",
+            "duration": 120,
+            "eventType": "Movie",
+            "genre": "Sci-Fi",
+            "language": "English",
+            "movieCastNames": [
+                "RK",
+                "HK",
+                "SRK"
+            ],
+            "movieDirectorName": "Jay",
+            "name": "The nights of winter",
+            "releaseDate": "2022-03-23"
+        },
+        {
+            "countryName": "UK",
+            "description": "The fall of dawn",
+            "duration": 150,
+            "eventType": "Movie",
+            "genre": "Science Fiction",
+            "language": "English",
+            "movieCastNames": [
+                "Arun",
+                "Hritesh",
+                "Sanak"
+            ],
+            "movieDirectorName": "Jay",
+            "name": "The fall of dawn",
+            "releaseDate": "2022-03-23"
+        },
+        {
+            "countryName": "USA",
+            "description": "The Tester",
+            "duration": 150,
+            "eventType": "Movie",
+            "genre": "Biography",
+            "language": "English",
+            "movieCastNames": [
+                "Tom",
+                "Hritesh",
+                "Harry"
+            ],
+            "movieDirectorName": "Jay",
+            "name": "The Tester",
+            "releaseDate": "2022-04-23"
+        }
+    ]
 }

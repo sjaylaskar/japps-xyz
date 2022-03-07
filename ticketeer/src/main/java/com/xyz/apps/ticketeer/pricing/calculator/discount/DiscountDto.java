@@ -25,27 +25,42 @@ import lombok.ToString;
 @ToString
 public class DiscountDto extends Dto<Discount> {
 
+    /** The id. */
+    private String id;
+
+    /** The offer code. */
     private String offerCode;
 
+    /** The discount strategy. */
     private String discountStrategy;
 
+    /** The applicable city ids. */
     private Set<Long> applicableCityIds = new HashSet<>();
 
+    /** The applicable event venue ids. */
     private Set<Long> applicableEventVenueIds = new HashSet<>();
 
+    /** The min amount. */
     private Double minAmount = 0d;
 
+    /** The min seats. */
     private Integer minSeats = 0;
 
+    /** The nth seat. */
     private Integer nthSeat;
 
+    /** The show time type. */
     private String showTimeType;
 
+    /** The discount type. */
     private String discountType;
 
+    /** The value. */
     private Double value = 0d;
 
+    /** The start time. */
     private String startTime;
 
+    /** The end time. */
     private String endTime;
 }

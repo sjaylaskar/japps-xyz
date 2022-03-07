@@ -77,7 +77,7 @@ public class PlatformConvenienceFeeController {
             final PlatformConvenienceFeeDto platformConvenienceFeeDtoUpdated = platformConvenienceFeeService.update(platformConvenienceFeeDto);
             log.info("PlatformConvenienceFee updated: " + platformConvenienceFeeDtoUpdated);
             return ResponseEntity
-                .status(HttpStatus.OK)
+                .accepted()
                 .body(platformConvenienceFeeDtoUpdated);
         } catch (final Exception exception) {
             log.error(exception);
@@ -120,7 +120,7 @@ public class PlatformConvenienceFeeController {
         try {
             final Double percentage = platformConvenienceFeeService.findPercentage();
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(percentage);
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(

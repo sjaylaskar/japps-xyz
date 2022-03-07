@@ -103,7 +103,7 @@ public class DiscountController {
             final DiscountDto discountDtoUpdated = discountService.update(discountDto);
             log.info("Discount updated: " + discountDtoUpdated);
             return ResponseEntity
-                .status(HttpStatus.OK)
+                .accepted()
                 .body(discountDtoUpdated);
         } catch (final Exception exception) {
             log.error(exception);
@@ -127,7 +127,7 @@ public class DiscountController {
             final DiscountDtoList discountDtoListUpdated = discountService.updateAll(discountDtoList);
             log.info("Discounts updated: " + discountDtoListUpdated);
             return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .accepted()
                 .body(discountDtoListUpdated);
         } catch (final Exception exception) {
             log.error(exception);
@@ -143,7 +143,7 @@ public class DiscountController {
      * @param id the id
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable("id") final Long id) {
+    public ResponseEntity<?> deleteById(@PathVariable("id") final String id) {
 
         try {
             log.info("Discount id: " + id);
@@ -186,12 +186,12 @@ public class DiscountController {
      * @return the discount by id
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
+    public ResponseEntity<?> getById(@PathVariable("id") final String id) {
 
         try {
             final DiscountDto discountDtoFound = discountService.findById(id);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(discountDtoFound);
         } catch (final DiscountNotFoundException discountNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountNotFoundException));
@@ -213,7 +213,7 @@ public class DiscountController {
         try {
             final DiscountDto discountDtoFound = discountService.findByOfferCode(offerCode);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(discountDtoFound);
         } catch (final DiscountNotFoundException discountNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountNotFoundException));
@@ -235,7 +235,7 @@ public class DiscountController {
         try {
             final DiscountDtoList discountDtoListFound = discountService.findByCityId(cityId);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(discountDtoListFound);
         } catch (final DiscountNotFoundException discountNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountNotFoundException));
@@ -257,7 +257,7 @@ public class DiscountController {
         try {
             final DiscountDtoList discountDtoListFound = discountService.findByEventVenueId(eventVenueId);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(discountDtoListFound);
         } catch (final DiscountServiceException discountServiceException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountServiceException));
@@ -278,7 +278,7 @@ public class DiscountController {
         try {
             final DiscountDtoList discountDtoListFound = discountService.findAll();
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(discountDtoListFound);
         } catch (final DiscountServiceException discountServiceException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountServiceException));

@@ -10,7 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The abstract entity.
+ * The general entity.
  *
  * @author Subhajoy Laskar
  * @version 1.0

@@ -104,7 +104,7 @@ public class CityController {
             final CityDto cityUpdated = cityService.update(cityDto);
             log.info("City updated: " + cityUpdated);
             return ResponseEntity
-                .status(HttpStatus.OK)
+                .accepted()
                 .body(cityUpdated);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
@@ -198,7 +198,7 @@ public class CityController {
 
         try {
             final CityDto cityDto = cityService.findById(id);
-            return ResponseEntity.status(HttpStatus.FOUND)
+            return ResponseEntity.status(HttpStatus.OK)
                 .body(cityDto);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
@@ -222,7 +222,7 @@ public class CityController {
         try {
             final CityDto cityDto = cityService.findByCode(code);
             return ResponseEntity
-                .status(HttpStatus.FOUND)
+                .status(HttpStatus.OK)
                 .body(cityDto);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
@@ -246,7 +246,7 @@ public class CityController {
         try {
             final CityDtoList cityDtoList = cityService.findByName(name);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
@@ -269,7 +269,7 @@ public class CityController {
         try {
             final CityDtoList cityDtoList = cityService.findByCountryCode(countryCode);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
@@ -292,7 +292,7 @@ public class CityController {
         try {
             final CityDtoList cityDtoList = cityService.findByCountry(countryId);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
@@ -313,7 +313,7 @@ public class CityController {
         try {
             final CityDtoList cityDtoList = cityService.findAll();
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));

@@ -117,7 +117,7 @@ public class EventShowService extends GeneralService {
         .get()
         .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get(cityId)))
         .retrieve()
-        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+        .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));
 
     }
@@ -132,7 +132,7 @@ public class EventShowService extends GeneralService {
         .get()
         .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get(eventId)))
         .retrieve()
-        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+        .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));
     }
 
@@ -159,6 +159,7 @@ public class EventShowService extends GeneralService {
      *
      * @param id the id
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void delete(final Long id) {
 
         Objects.requireNonNull(id, "The event show id cannot be null.");

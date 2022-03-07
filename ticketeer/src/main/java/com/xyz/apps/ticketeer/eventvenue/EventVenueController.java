@@ -72,7 +72,7 @@ public class EventVenueController {
 
        try {
            final EventVenueDto eventVenueDto = eventVenueService.findById(id);
-           return ResponseEntity.status(HttpStatus.FOUND)
+           return ResponseEntity.status(HttpStatus.OK)
                    .body(eventVenueDto);
        } catch(final EventVenueNotFoundException eventVenueNotFoundException) {
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventVenueNotFoundException));

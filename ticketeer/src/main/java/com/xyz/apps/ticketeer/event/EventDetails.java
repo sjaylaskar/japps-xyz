@@ -38,7 +38,7 @@ public class EventDetails extends Entity {
 
     /** The id. */
     @MongoId
-    private Long id;
+    private String id;
 
     /** The event id. */
     @NotBlank(message = "The event id cannot be blank.")

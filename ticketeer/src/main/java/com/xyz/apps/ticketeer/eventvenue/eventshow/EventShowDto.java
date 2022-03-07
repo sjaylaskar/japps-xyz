@@ -23,6 +23,9 @@ import lombok.ToString;
 @ToString
 public class EventShowDto extends Dto<EventShow> {
 
+    /** The id. */
+    private Long id;
+
     /** The date. */
     private String date;
 

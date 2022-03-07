@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
- * The abstract model mapper.
+ * The general model mapper.
  *
  * @author Subhajoy Laskar
  * @version 1.0

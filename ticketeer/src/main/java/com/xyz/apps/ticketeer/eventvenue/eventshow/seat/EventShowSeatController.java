@@ -60,7 +60,7 @@ public class EventShowSeatController {
             if (DtoList.isNotEmpty(eventShowSeatDtoList)) {
                 log.info("Event show seats: " + eventShowSeatDtoList);
                 return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(eventShowSeatDtoList);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -89,7 +89,7 @@ public class EventShowSeatController {
             final Double amount = eventShowSeatService.calculateSeatsTotalAmount(seatIds);
             log.info("Seats total amount: " + amount);
             return ResponseEntity
-                .status(HttpStatus.FOUND)
+                .status(HttpStatus.OK)
                 .body(amount);
         } catch (final Exception exception) {
             log.error(exception);
@@ -158,7 +158,7 @@ public class EventShowSeatController {
         try {
             log.info("Seats IDs: " + seatIds);
             return ResponseEntity
-                .status(HttpStatus.OK)
+                .accepted()
                 .body(eventShowSeatService.reserveSeats(seatIds));
         } catch (final Exception exception) {
             log.error(exception);
@@ -181,7 +181,7 @@ public class EventShowSeatController {
         try {
             log.info("Seats IDs: " + seatIds);
             return ResponseEntity
-                .status(HttpStatus.OK)
+                .accepted()
                 .body(eventShowSeatService.unreserveSeats(seatIds));
         } catch (final Exception exception) {
             log.error(exception);
@@ -204,7 +204,7 @@ public class EventShowSeatController {
         try {
             log.info("Event show seats booking info: " + eventShowSeatsBookingDto);
             return ResponseEntity
-                .status(HttpStatus.OK)
+                .accepted()
                 .body(eventShowSeatService.bookSeats(eventShowSeatsBookingDto.getSeatIds(), eventShowSeatsBookingDto.getBookingId()));
         } catch (final Exception exception) {
             log.error(exception);
@@ -227,7 +227,7 @@ public class EventShowSeatController {
         try {
             log.info("Event show seats booking info: " + eventShowSeatsBookingDto);
             return ResponseEntity
-                .status(HttpStatus.OK)
+                .accepted()
                 .body(eventShowSeatService.fillBookingForReservedSeats(eventShowSeatsBookingDto.getSeatIds(), eventShowSeatsBookingDto.getBookingId()));
         } catch (final Exception exception) {
             log.error(exception);
@@ -250,7 +250,7 @@ public class EventShowSeatController {
         try {
             log.info("Booking id to cancel: " + bookingId);
             return ResponseEntity
-                .ok().build();
+                .accepted().build();
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity

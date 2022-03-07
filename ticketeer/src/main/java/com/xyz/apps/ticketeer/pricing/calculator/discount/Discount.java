@@ -44,7 +44,7 @@ public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
     @MongoId
-    private Long id;
+    private String id;
 
     /** The offer code. */
     @NonNull

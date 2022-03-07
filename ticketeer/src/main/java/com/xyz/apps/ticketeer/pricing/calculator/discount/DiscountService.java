@@ -7,13 +7,13 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -165,7 +165,7 @@ public class DiscountService extends GeneralService {
      *
      * @param id the id
      */
-    public void deleteById(@NotNull(message = "The discount id to delete cannot be null.") final Long id) {
+    public void deleteById(@NotBlank(message = "The discount id to delete cannot be null.") final String id) {
 
         validateDiscountExistsById(id);
 
@@ -178,10 +178,11 @@ public class DiscountService extends GeneralService {
      * @param discountDto the discount dto
      * @return the long
      */
-    private Long validateDiscountIdNotNull(final DiscountDto discountDto) {
+    private void validateDiscountIdNotNull(final DiscountDto discountDto) {
 
-        return Objects.requireNonNull(discountDto.getId(),
-            "The discount id to update cannot be null");
+        if (StringUtils.isBlank(discountDto.getId())) {
+            throw new DiscountServiceException("The discount id to update cannot be null");
+        }
     }
 
     /**
@@ -199,7 +200,7 @@ public class DiscountService extends GeneralService {
      *
      * @param discountDto the discount dto
      */
-    private void validateDiscountExistsById(final Long id) {
+    private void validateDiscountExistsById(final String id) {
 
         if (!discountRepository.existsById(id)) {
             throw new DiscountNotFoundException(id);
@@ -212,7 +213,7 @@ public class DiscountService extends GeneralService {
      * @param id the id
      * @return the discount dto
      */
-    public DiscountDto findById(@NotNull(message = "The discount id to delete cannot be null.") final Long id) {
+    public DiscountDto findById(@NotBlank(message = "The discount id to delete cannot be null.") final String id) {
         return discountModelMapper.toDto(discountRepository.findById(id).orElseThrow(() -> new DiscountNotFoundException(id)));
     }
 
@@ -315,7 +316,7 @@ public class DiscountService extends GeneralService {
         applicableCityIds
         .forEach(cityId -> {
             serviceBeansFetcher().webClientBuilder().build().get().uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get(cityId))).retrieve()
-            .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+            .onStatus(status -> HttpStatus.OK.value() != status.value(),
                       response -> Mono.error(new DiscountServiceException("Invalid city id: " + cityId)));
         });
     }
@@ -329,7 +330,7 @@ public class DiscountService extends GeneralService {
         applicableEventVenueIds
         .forEach(eventVenueId -> {
             serviceBeansFetcher().webClientBuilder().build().get().uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_VENUE_BY_ID.get(eventVenueId))).retrieve()
-            .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+            .onStatus(status -> HttpStatus.OK.value() != status.value(),
                       response -> Mono.error(new DiscountServiceException("Invalid event venue id: " + eventVenueId)));
         });
     }

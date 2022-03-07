@@ -263,7 +263,7 @@ public class EventService extends GeneralService {
         .get()
         .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get(cityId)))
         .retrieve()
-        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+        .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new EventServiceException(response.bodyToMono(String.class).block())))
         .bodyToMono(EventShowDtoList.class).block();
 

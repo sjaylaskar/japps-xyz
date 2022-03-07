@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,6 +69,31 @@ public class EventController {
     }
 
     /**
+     * Updates the.
+     *
+     * @param eventDetailsDto the event details dto
+     * @return the response entity
+     */
+    @PutMapping("/update")
+    public ResponseEntity<?> update(@RequestBody
+            @NotNull(message = "Event details cannot be null") final EventDetailsDto eventDetailsDto) {
+
+        try {
+            log.info("Event details: " + eventDetailsDto);
+            final EventDetailsDto eventDetailsDtoUpdated = eventService.update(eventDetailsDto);
+            log.info("Event update: " + eventDetailsDtoUpdated);
+            return ResponseEntity
+                .accepted()
+                .body(eventDetailsDtoUpdated);
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to update event: " + eventDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
      * Adds multiple events.
      *
      * @param eventDetailsDtoList the event details dto list
@@ -102,9 +128,9 @@ public class EventController {
             final EventDetailsDtoList eventDetailsDtoList = eventService.findAll();
             return (DtoList.isNotEmpty(eventDetailsDtoList))
                 ? ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(eventDetailsDtoList)
-                : ResponseEntity.status(HttpStatus.NO_CONTENT).body("No events found.");
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No events found.");
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
                 + ExceptionUtils.getRootCauseMessage(exception));
@@ -128,9 +154,9 @@ public class EventController {
             final EventDetailsDtoList eventDetailsDtoList = eventService.searchByText(text, pageNumber, pageSize);
             return (DtoList.isNotEmpty(eventDetailsDtoList))
                 ? ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(eventDetailsDtoList)
-                : ResponseEntity.status(HttpStatus.NO_CONTENT).body("No events found.");
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No events found.");
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
                 + ExceptionUtils.getRootCauseMessage(exception));
@@ -148,7 +174,7 @@ public class EventController {
         try {
             final EventDto eventDto = eventService.findById(id);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(eventDto);
         } catch (final EventNotFoundException eventNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
@@ -169,7 +195,7 @@ public class EventController {
         try {
             final EventDetailsDto eventDetailsDto = eventService.findEventDetailsByEventId(eventId);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(eventDetailsDto);
         } catch (final EventNotFoundException eventNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
@@ -190,7 +216,7 @@ public class EventController {
         try {
             final EventDetailsDtoList eventDetailsDtoList = eventService.findEventDetailsByCityId(cityId);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
+                    .status(HttpStatus.OK)
                     .body(eventDetailsDtoList);
         } catch (final EventNotFoundException eventNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));

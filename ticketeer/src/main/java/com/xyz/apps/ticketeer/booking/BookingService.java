@@ -288,7 +288,7 @@ public class BookingService extends GeneralService {
         .post()
         .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_CANCEL.get()))
         .body(Mono.just(bookingId), Long.class)
-        .retrieve().onStatus(status -> HttpStatus.OK.value() != status.value(),
+        .retrieve().onStatus(status -> HttpStatus.ACCEPTED.value() != status.value(),
                              response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
     }
 
@@ -323,7 +323,7 @@ public class BookingService extends GeneralService {
         .get()
         .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get(bookingDto.getCityId())))
         .retrieve()
-        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+        .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
 
     }
@@ -366,7 +366,7 @@ public class BookingService extends GeneralService {
         .get()
         .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get(bookingDto.getEventShowId())))
         .retrieve()
-        .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
+        .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
 
     }

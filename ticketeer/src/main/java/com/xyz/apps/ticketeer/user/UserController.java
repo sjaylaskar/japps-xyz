@@ -181,16 +181,16 @@ public class UserController {
     public ResponseEntity<?> all() {
 
         try {
-            return ResponseEntity.status(HttpStatus.FOUND).body(userService.findAll());
+            return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
         } catch (final UserServiceException exception) {
             log.error(exception);
             return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
+                .status(HttpStatus.NOT_FOUND)
                 .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
+                .status(HttpStatus.NOT_FOUND)
                 .body("Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
@@ -206,7 +206,7 @@ public class UserController {
 
         try {
             final UserDto userDto = userService.findById(id);
-            return ResponseEntity.status(HttpStatus.FOUND)
+            return ResponseEntity.status(HttpStatus.OK)
                 .body(userDto);
         } catch (final UserNotFoundException userNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(userNotFoundException));
