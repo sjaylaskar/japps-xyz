@@ -9,13 +9,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
-import com.xyz.apps.ticketeer.config.AppConfig;
-
 /**
  * The ticketeer application.
  */
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-public class TicketeerApplication implements AppConfig {
+public class TicketeerApplication {
 
 	/**
 	 * The main method.

@@ -5,12 +5,13 @@
  */
 package com.xyz.apps.ticketeer.event;
 
-import java.time.LocalDate;
+import javax.annotation.PostConstruct;
 
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
+import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
+import com.xyz.apps.ticketeer.general.model.ModelConverter;
 
 
 /**
@@ -20,7 +21,7 @@ import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
  * @version 1.0
  */
 @Component
-public class EventDetailsModelMapper extends AbstractModelMapper<EventDetails, EventDetailsDto> {
+public class EventDetailsModelMapper extends GeneralModelMapper<EventDetails, EventDetailsDto> {
 
     /**
      * Instantiates a new event details model mapper.
@@ -28,22 +29,21 @@ public class EventDetailsModelMapper extends AbstractModelMapper<EventDetails, E
     public EventDetailsModelMapper() {
         super(EventDetails.class, EventDetailsDto.class);
 
-        initMappings();
     }
 
     /**
      * Initializes the mappings.
      */
+    @PostConstruct
     private void initMappings() {
-
         final TypeMap<EventDetails, EventDetailsDto> eventDetailsToEventDetailsDtoMap = modelMapper.createTypeMap(EventDetails.class, EventDetailsDto.class);
         eventDetailsToEventDetailsDtoMap.addMappings(
-          mapper -> mapper.map(eventDetails -> eventDetails.getReleaseDate().toString(), EventDetailsDto::setReleaseDate)
+          mapper -> mapper.using(ModelConverter.LOCALDATE_TO_STRING_CONVERTER).map(EventDetails::getReleaseDate, EventDetailsDto::setReleaseDate)
         );
 
         final TypeMap<EventDetailsDto, EventDetails> eventDetailsDtoToEventDetailsMap = modelMapper.createTypeMap(EventDetailsDto.class, EventDetails.class);
         eventDetailsDtoToEventDetailsMap.addMappings(
-          mapper -> mapper.map(eventDetailsDto -> LocalDate.parse(eventDetailsDto.getReleaseDate()), EventDetails::setReleaseDate)
+          mapper -> mapper.using(ModelConverter.STRING_TO_LOCALDATE_CONVERTER).map(EventDetailsDto::getReleaseDate, EventDetails::setReleaseDate)
         );
     }
 

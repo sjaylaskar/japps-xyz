@@ -41,7 +41,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Validated
-public class EventShowSeat extends com.xyz.apps.ticketeer.model.general.Entity {
+public class EventShowSeat extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
     @Id

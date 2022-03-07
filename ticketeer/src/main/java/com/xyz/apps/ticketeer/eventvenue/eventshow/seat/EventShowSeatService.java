@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.general.service.GeneralService;
+
 /**
  * The event show seat service.
  *
@@ -25,7 +27,7 @@ import org.springframework.validation.annotation.Validated;
  */
 @Service
 @Validated
-public class EventShowSeatService {
+public class EventShowSeatService extends GeneralService {
 
     /** The event show seat repository. */
     @Autowired

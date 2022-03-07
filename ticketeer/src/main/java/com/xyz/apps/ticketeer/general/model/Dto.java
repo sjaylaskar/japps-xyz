@@ -1,16 +1,16 @@
 /*
-* Id: AbstractEntity.java 13-Feb-2022 6:12:57 pm SubhajoyLaskar
+* Id: AbstractDTO.java 14-Feb-2022 3:14:11 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.model.general;
+package com.xyz.apps.ticketeer.general.model;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The abstract entity.
+ * The abstract data transfer object.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -18,6 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Entity extends AbstractModel {
+public class Dto<T extends AbstractModel> {
 
+    protected Long id;
 }

@@ -7,7 +7,7 @@ package com.xyz.apps.ticketeer.event;
 
 import java.util.List;
 
-import com.xyz.apps.ticketeer.model.general.Dto;
+import com.xyz.apps.ticketeer.general.model.Dto;
 
 import lombok.Getter;
 import lombok.Setter;

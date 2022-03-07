@@ -5,7 +5,7 @@
 */
 package com.xyz.apps.ticketeer.eventvenue;
 
-import com.xyz.apps.ticketeer.model.general.Dto;
+import com.xyz.apps.ticketeer.general.model.Dto;
 
 import lombok.Getter;
 import lombok.Setter;

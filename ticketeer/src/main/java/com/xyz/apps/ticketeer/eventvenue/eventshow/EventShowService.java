@@ -26,9 +26,8 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeat;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatRowPriceDto;
-import com.xyz.apps.ticketeer.util.Environment;
+import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
-import com.xyz.apps.ticketeer.util.WebClientBuilder;
 
 import reactor.core.publisher.Mono;
 
@@ -41,7 +40,7 @@ import reactor.core.publisher.Mono;
  */
 @Validated
 @Service
-public class EventShowService {
+public class EventShowService extends GeneralService {
 
     /** The event show repository. */
     @Autowired
@@ -114,9 +113,9 @@ public class EventShowService {
      */
     private void validateCity(@NotNull(message = "The city id cannot be null") final Long cityId) {
 
-        WebClientBuilder.get().build()
+        serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(Environment.property(ApiPropertyKey.GET_CITY_BY_ID.get(cityId)))
+        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get(cityId)))
         .retrieve()
         .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
                   response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));
@@ -129,9 +128,9 @@ public class EventShowService {
      * @param eventId the event id
      */
     private void validateEventId(final Long eventId) {
-        WebClientBuilder.get().build()
+        serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(Environment.property(ApiPropertyKey.GET_EVENT_BY_ID.get(eventId)))
+        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get(eventId)))
         .retrieve()
         .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
                   response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));

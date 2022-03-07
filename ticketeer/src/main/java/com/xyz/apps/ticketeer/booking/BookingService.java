@@ -24,8 +24,8 @@ import com.xyz.apps.ticketeer.booking.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.booking.api.external.contract.BasicUserDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookingDto;
-import com.xyz.apps.ticketeer.util.Environment;
-import com.xyz.apps.ticketeer.util.WebClientBuilder;
+import com.xyz.apps.ticketeer.general.service.GeneralService;
+import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
 
 import reactor.core.publisher.Mono;
 
@@ -38,7 +38,7 @@ import reactor.core.publisher.Mono;
  */
 @Service
 @Validated
-public class BookingService {
+public class BookingService extends GeneralService {
 
     /** The booking repository. */
     @Autowired
@@ -59,23 +59,23 @@ public class BookingService {
 
         validateBooking(bookingDto);
 
-        if (WebClientBuilder.get().build()
+        if (serviceBeansFetcher().webClientBuilder().build()
                 .post()
-                .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_AVAILABLE.get()))
+                .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_AVAILABLE.get()))
                 .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
                 .retrieve()
                 .bodyToMono(Boolean.class).block()) {
 
-            int reservedBookingSeatCount = WebClientBuilder.get().build()
+            int reservedBookingSeatCount = serviceBeansFetcher().webClientBuilder().build()
                     .put()
-                    .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()))
+                    .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()))
                     .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
                     .retrieve()
                     .bodyToMono(Integer.class).block();
             if (reservedBookingSeatCount != bookingDto.getEventShowSeatIds().size()) {
-                WebClientBuilder.get().build()
+                serviceBeansFetcher().webClientBuilder().build()
                 .put()
-                .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_UNRESERVE.get()))
+                .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_UNRESERVE.get()))
                 .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
                 .retrieve()
                 .bodyToMono(Integer.class).block();
@@ -88,9 +88,9 @@ public class BookingService {
             eventShowSeatsBookingDto.setBookingId(booking.getId());
             eventShowSeatsBookingDto.setSeatIds(bookingDto.getEventShowSeatIds());
 
-            reservedBookingSeatCount = WebClientBuilder.get().build()
+            reservedBookingSeatCount = serviceBeansFetcher().webClientBuilder().build()
                     .put()
-                    .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE_WITH_BOOKING.get()))
+                    .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE_WITH_BOOKING.get()))
                     .body(Mono.just(eventShowSeatsBookingDto), EventShowSeatsBookingDto.class)
                     .retrieve()
                     .bodyToMono(Integer.class).block();
@@ -131,9 +131,9 @@ public class BookingService {
     private Booking toReservedBooking(final BookingDto bookingDto) {
 
 
-        final Double amount = WebClientBuilder.get().build()
+        final Double amount = serviceBeansFetcher().webClientBuilder().build()
                 .post()
-                .uri(Environment.property(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()))
+                .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()))
                 .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
                 .retrieve()
                 .bodyToMono(Double.class).block();
@@ -170,18 +170,18 @@ public class BookingService {
         eventShowSeatsBookingDto.setBookingId(booking.getId());
         eventShowSeatsBookingDto.setSeatIds(bookingDto.getEventShowSeatIds());
 
-        if (!WebClientBuilder.get().build()
+        if (!serviceBeansFetcher().webClientBuilder().build()
                 .post()
-                .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_RESERVED.get()))
+                .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_RESERVED.get()))
                 .body(Mono.just(eventShowSeatsBookingDto), EventShowSeatsBookingDto.class)
                 .retrieve()
                 .bodyToMono(Boolean.class).block()) {
             throw new SelectedSeatsUnavailableException();
         }
 
-        final double baseAmount = WebClientBuilder.get().build()
+        final double baseAmount = serviceBeansFetcher().webClientBuilder().build()
                 .post()
-                .uri(Environment.property(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()))
+                .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()))
                 .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
                 .retrieve()
                 .bodyToMono(Double.class).block();
@@ -191,9 +191,9 @@ public class BookingService {
 
         final BookingPriceInfoDto bookingPriceInfoDto = toBookingPriceInfo(bookingDto);
 
-        final double finalAmount = WebClientBuilder.get().build()
+        final double finalAmount = serviceBeansFetcher().webClientBuilder().build()
                 .post()
-                .uri(Environment.property(ApiPropertyKey.PRICING_CALCULATE.get()))
+                .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.PRICING_CALCULATE.get()))
                 .body(Mono.just(bookingPriceInfoDto), BookingPriceInfoDto.class)
                 .retrieve()
                 .bodyToMono(Double.class).block();
@@ -207,13 +207,13 @@ public class BookingService {
         booking.setAmount(baseAmount);
         booking.setFinalAmount(finalAmount);
         booking.setBookingStatus(BookingStatus.CONFIRMED);
-        booking.setBookingTime(LocalDateTime.parse(bookingPriceInfoDto.getBookingTime()));
+        booking.setBookingTime(LocalDateTimeFormatUtil.parseLocalDateTime(bookingPriceInfoDto.getBookingTime()));
 
         final Booking bookingUpdated = bookingRepository.save(booking);
 
-        final int countOfBookedSeats = WebClientBuilder.get().build()
+        final int countOfBookedSeats = serviceBeansFetcher().webClientBuilder().build()
                 .post()
-                .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()))
+                .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()))
                 .body(Mono.just(eventShowSeatsBookingDto), EventShowSeatsBookingDto.class)
                 .retrieve()
                 .bodyToMono(Integer.class).block();
@@ -285,9 +285,9 @@ public class BookingService {
      */
     private ResponseSpec cancelBookingForEventShowSeats(final Long bookingId) {
 
-        return WebClientBuilder.get().build()
+        return serviceBeansFetcher().webClientBuilder().build()
         .post()
-        .uri(Environment.property(ApiPropertyKey.EVENT_SHOW_SEATS_CANCEL.get()))
+        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_CANCEL.get()))
         .body(Mono.just(bookingId), Long.class)
         .retrieve().onStatus(status -> HttpStatus.OK.value() != status.value(),
                              response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
@@ -320,9 +320,9 @@ public class BookingService {
             throw new BookingServiceException("The city id cannot be null.");
         }
 
-        WebClientBuilder.get().build()
+        serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(Environment.property(ApiPropertyKey.GET_CITY_BY_ID.get(bookingDto.getCityId())))
+        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get(bookingDto.getCityId())))
         .retrieve()
         .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
                   response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
@@ -344,9 +344,9 @@ public class BookingService {
         basicUserDto.setUsername(bookingDto.getUsername());
         basicUserDto.setPassword(bookingDto.getPassword());
 
-        WebClientBuilder.get().build()
+        serviceBeansFetcher().webClientBuilder().build()
         .post()
-        .uri(Environment.property(ApiPropertyKey.AUTHENTICATE_USER.get()))
+        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.AUTHENTICATE_USER.get()))
         .body(Mono.just(basicUserDto), BasicUserDto.class)
         .retrieve()
         .onStatus(status -> HttpStatus.OK.value() != status.value(),
@@ -363,9 +363,9 @@ public class BookingService {
             throw new BookingServiceException("The event show id cannot be null.");
         }
 
-        WebClientBuilder.get().build()
+        serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(Environment.property(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get(bookingDto.getEventShowId())))
+        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get(bookingDto.getEventShowId())))
         .retrieve()
         .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
                   response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));

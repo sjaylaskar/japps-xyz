@@ -5,13 +5,15 @@
  */
 package com.xyz.apps.ticketeer.eventvenue.eventshow;
 
+import javax.annotation.PostConstruct;
+
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.eventvenue.Auditorium;
 import com.xyz.apps.ticketeer.eventvenue.EventVenue;
-import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
-import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
+import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
+import com.xyz.apps.ticketeer.general.model.ModelConverter;
 
 
 /**
@@ -21,7 +23,7 @@ import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
  * @version 1.0
  */
 @Component
-public class EventShowModelMapper extends AbstractModelMapper<EventShow, EventShowDto> {
+public class EventShowModelMapper extends GeneralModelMapper<EventShow, EventShowDto> {
 
     /**
      * Instantiates a new event show model mapper.
@@ -30,24 +32,24 @@ public class EventShowModelMapper extends AbstractModelMapper<EventShow, EventSh
 
         super(EventShow.class, EventShowDto.class);
 
-        initMappings();
     }
 
     /**
      * Initializes the mappings.
      */
+    @PostConstruct
     private void initMappings() {
 
         final TypeMap<EventShow, EventShowDto> eventShowToEventShowDtoMap = modelMapper.createTypeMap(EventShow.class, EventShowDto.class);
         eventShowToEventShowDtoMap
         .addMappings(
-          mapper -> mapper.map(eventShow -> LocalDateTimeFormatUtil.format(eventShow.getDate()), EventShowDto::setDate)
+          mapper -> mapper.using(ModelConverter.LOCALDATE_TO_STRING_CONVERTER).map(EventShow::getDate, EventShowDto::setDate)
         )
         .addMappings(
-            mapper -> mapper.map(eventShow -> LocalDateTimeFormatUtil.format(eventShow.getStartTime()), EventShowDto::setStartTime)
+            mapper -> mapper.using(ModelConverter.LOCALTIME_TO_STRING_CONVERTER).map(EventShow::getStartTime, EventShowDto::setStartTime)
         )
         .addMappings(
-            mapper -> mapper.map(eventShow -> LocalDateTimeFormatUtil.format(eventShow.getEndTime()), EventShowDto::setEndTime)
+            mapper -> mapper.using(ModelConverter.LOCALTIME_TO_STRING_CONVERTER).map(EventShow::getEndTime, EventShowDto::setEndTime)
         )
         .addMappings(
             mapper -> mapper.map(eventShow -> eventShow.getAuditorium().getId(), EventShowDto::setAuditoriumId)
@@ -59,13 +61,13 @@ public class EventShowModelMapper extends AbstractModelMapper<EventShow, EventSh
         final TypeMap<EventShowDto, EventShow> eventShowDtoToEventShowMap = modelMapper.createTypeMap(EventShowDto.class, EventShow.class);
         eventShowDtoToEventShowMap
         .addMappings(
-          mapper -> mapper.map(eventShowDto -> LocalDateTimeFormatUtil.parseLocalDate(eventShowDto.getDate()), EventShow::setDate)
+          mapper -> mapper.using(ModelConverter.STRING_TO_LOCALDATE_CONVERTER).map(EventShowDto::getDate, EventShow::setDate)
         )
         .addMappings(
-            mapper -> mapper.map(eventShowDto -> LocalDateTimeFormatUtil.parseLocalTime(eventShowDto.getStartTime()), EventShow::setStartTime)
+            mapper -> mapper.using(ModelConverter.STRING_TO_LOCALTIME_CONVERTER).map(EventShowDto::getStartTime, EventShow::setStartTime)
           )
         .addMappings(
-            mapper -> mapper.map(eventShowDto -> LocalDateTimeFormatUtil.parseLocalTime(eventShowDto.getEndTime()), EventShow::setEndTime)
+            mapper -> mapper.using(ModelConverter.STRING_TO_LOCALTIME_CONVERTER).map(EventShowDto::getEndTime, EventShow::setEndTime)
           )
         .addMappings(
             mapper -> mapper.map(eventShowDto -> new Auditorium().id(eventShowDto.getAuditoriumId()), EventShow::setAuditorium)

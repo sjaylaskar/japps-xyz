@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.model.general.DtoList;
+import com.xyz.apps.ticketeer.general.model.DtoList;
+import com.xyz.apps.ticketeer.general.service.GeneralService;
 
 
 /**
@@ -25,7 +26,7 @@ import com.xyz.apps.ticketeer.model.general.DtoList;
  */
 @Service
 @Validated
-public class CountryService {
+public class CountryService extends GeneralService {
 
     /** The country repository. */
     @Autowired

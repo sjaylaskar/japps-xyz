@@ -5,10 +5,12 @@
 */
 package com.xyz.apps.ticketeer.eventvenue;
 
+import javax.annotation.PostConstruct;
+
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
+import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 
 /**
  * The auditorium model mapper.
@@ -17,7 +19,7 @@ import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
  * @version 1.0
  */
 @Component
-public class AuditoriumModelMapper extends AbstractModelMapper<Auditorium, AuditoriumDto> {
+public class AuditoriumModelMapper extends GeneralModelMapper<Auditorium, AuditoriumDto> {
 
     /**
      * Instantiates a new auditorium model mapper.
@@ -26,12 +28,12 @@ public class AuditoriumModelMapper extends AbstractModelMapper<Auditorium, Audit
 
         super(Auditorium.class, AuditoriumDto.class);
 
-        initMappings();
     }
 
     /**
      * Initializes the mappings.
      */
+    @PostConstruct
     private void initMappings() {
 
         final TypeMap<Auditorium, AuditoriumDto> auditoriumToAuditoriumDtoMap = modelMapper.createTypeMap(Auditorium.class, AuditoriumDto.class);

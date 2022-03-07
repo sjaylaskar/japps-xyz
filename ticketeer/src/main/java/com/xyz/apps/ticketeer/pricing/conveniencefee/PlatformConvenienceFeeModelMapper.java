@@ -7,7 +7,7 @@ package com.xyz.apps.ticketeer.pricing.conveniencefee;
 
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
+import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 
 
 /**
@@ -17,7 +17,7 @@ import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
  * @version 1.0
  */
 @Component
-public class PlatformConvenienceFeeModelMapper extends AbstractModelMapper<PlatformConvenienceFee, PlatformConvenienceFeeDto> {
+public class PlatformConvenienceFeeModelMapper extends GeneralModelMapper<PlatformConvenienceFee, PlatformConvenienceFeeDto> {
 
     /**
      * Instantiates a new platform convenience fee model mapper.

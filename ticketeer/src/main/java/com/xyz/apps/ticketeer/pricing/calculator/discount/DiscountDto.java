@@ -8,7 +8,7 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.xyz.apps.ticketeer.model.general.Dto;
+import com.xyz.apps.ticketeer.general.model.Dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -5,10 +5,12 @@
  */
 package com.xyz.apps.ticketeer.location;
 
+import javax.annotation.PostConstruct;
+
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
+import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 
 
 /**
@@ -18,7 +20,7 @@ import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
  * @version 1.0
  */
 @Component
-public class CityModelMapper extends AbstractModelMapper<City, CityDto> {
+public class CityModelMapper extends GeneralModelMapper<City, CityDto> {
 
     /**
      * Instantiates a new city model mapper.
@@ -27,12 +29,12 @@ public class CityModelMapper extends AbstractModelMapper<City, CityDto> {
 
         super(City.class, CityDto.class);
 
-        initMappings();
     }
 
     /**
      * Initializes the mappings.
      */
+    @PostConstruct
     private void initMappings() {
 
         final TypeMap<City, CityDto> cityToCityDtoMap = modelMapper.createTypeMap(City.class, CityDto.class);

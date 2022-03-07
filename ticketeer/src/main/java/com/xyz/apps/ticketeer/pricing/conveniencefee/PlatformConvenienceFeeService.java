@@ -18,7 +18,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.util.MongoTemplate;
+import com.xyz.apps.ticketeer.general.service.GeneralService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -31,7 +31,7 @@ import lombok.extern.log4j.Log4j2;
 @Validated
 @Service
 @Log4j2
-public class PlatformConvenienceFeeService {
+public class PlatformConvenienceFeeService extends GeneralService {
 
     /** The platform convenience fee repository. */
     @Autowired
@@ -84,7 +84,7 @@ public class PlatformConvenienceFeeService {
      */
     private PlatformConvenienceFee find() {
 
-        final PlatformConvenienceFee platformConvenienceFee = MongoTemplate.get().findOne(new Query().with(Sort.by(Order.desc("updationTime"))).with(PageRequest.of(0, 1)),
+        final PlatformConvenienceFee platformConvenienceFee = serviceBeansFetcher().mongoTemplate().findOne(new Query().with(Sort.by(Order.desc("updationTime"))).with(PageRequest.of(0, 1)),
                                     PlatformConvenienceFee.class);
         if (platformConvenienceFee == null) {
             throw new PlatformConvenienceFeeNotFoundException();

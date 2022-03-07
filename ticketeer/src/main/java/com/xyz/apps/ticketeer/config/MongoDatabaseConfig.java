@@ -11,8 +11,6 @@ import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
-import com.xyz.apps.ticketeer.util.Environment;
-
 
 /**
  * The mongo database config.
@@ -21,7 +19,7 @@ import com.xyz.apps.ticketeer.util.Environment;
  * @version 1.0
  */
 @Configuration
-public class MongoDatabaseConfig {
+public class MongoDatabaseConfig extends EnvironmentConfig {
 
     /**
      * Mongo database factory.
@@ -30,7 +28,7 @@ public class MongoDatabaseConfig {
      */
     @Bean
     public MongoDatabaseFactory mongoDatabaseFactory() {
-        return new SimpleMongoClientDatabaseFactory(Environment.property("spring.data.mongodb.uri"));
+        return new SimpleMongoClientDatabaseFactory(environment.getProperty("spring.data.mongodb.uri"));
     }
 
     /**

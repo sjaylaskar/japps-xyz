@@ -26,7 +26,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Long> {
 
-    @Query("select evs from EventShowSeat evs where evs.eventShowId = :eventShowId")
+    @Query(value = "select ess from EventShowSeat ess where ess.event_show_id = :eventShowId",
+           nativeQuery = true)
     public List<EventShowSeat> findByEventShowId(@Param("eventShowId") final Long eventShowId);
 
     /**
@@ -36,7 +37,8 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      */
     @Transactional
     @Modifying
-    @Query("update EventShowSeat ess set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventshow.SeatReservationStatus.AVAILABLE, ess.bookingId = null where ess.bookingId = :bookingId")
+    @Query(value = "update EventShowSeat ess set ess.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.AVAILABLE.name(), ess.booking_id = null where ess.booking_id = :bookingId",
+           nativeQuery = true)
     public void cancelByBookingId(@Param("bookingId") final Long bookingId);
 
     /** The are seats available query. */
@@ -50,7 +52,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      */
     @Query(value = ARE_SEATS_AVAILABLE_QUERY,
            nativeQuery = true)
-    public boolean areSeatsAvailable(@Param("ids") final Collection<Long> ids, @Param("seatCount") final int seatsCount);
+    public boolean areSeatsAvailable(@Param("ids") final Collection<Long> ids, @Param("seatsCount") final int seatsCount);
 
     /** The are seats reserved query. */
     static final String ARE_SEATS_RESERVED_QUERY = "select case when count(ess.seat_reservation_status) = :seatsCount then true else false from event_show_seat ess"
@@ -69,7 +71,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
             nativeQuery = true)
      public boolean areSeatsReserved(@Param("ids") final Collection<Long> ids,
                                      @Param("bookingId") final Long bookingId,
-                                     @Param("seatCount") final int seatsCount);
+                                     @Param("seatsCount") final int seatsCount);
 
     /** The reserve seats query. */
     static final String RESERVE_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'RESERVED', ess.reservation_time = current_timestamp() where ess.id in :ids "
@@ -85,7 +87,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     @Modifying
     @Query(value = RESERVE_SEATS_QUERY,
            nativeQuery = true)
-    public int reserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatCount") final int seatsCount);
+    public int reserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatsCount") final int seatsCount);
 
     /** The unreserve seats query. */
     static final String UNRESERVE_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'AVAILABLE', ess.reservation_time = null where ess.id in :ids "
@@ -101,7 +103,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     @Modifying
     @Query(value = UNRESERVE_SEATS_QUERY,
            nativeQuery = true)
-    public int unreserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatCount") final int seatsCount);
+    public int unreserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatsCount") final int seatsCount);
 
     /** The book seats query. */
     static final String BOOK_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'BOOKED' where ess.booking_id = :bookingId and ess.id in :ids "
@@ -119,7 +121,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     @Query(value = BOOK_SEATS_QUERY,
            nativeQuery = true)
     public int bookSeats(@Param("ids") final Collection<Long> ids,
-            @Param("seatCount") final int seatsCount,
+            @Param("seatsCount") final int seatsCount,
             @Param("bookingId") final Long bookingId);
 
     /** The fill booking for reserved seats query. */
@@ -138,7 +140,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     @Query(value = FILL_BOOKING_FOR_RESERVED_SEATS_QUERY,
            nativeQuery = true)
     public int fillBookingForReservedSeats(@Param("ids") final Collection<Long> ids,
-            @Param("seatCount") final int seatsCount,
+            @Param("seatsCount") final int seatsCount,
             @Param("bookingId") final Long bookingId);
 
     /**

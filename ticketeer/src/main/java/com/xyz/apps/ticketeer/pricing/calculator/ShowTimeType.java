@@ -10,6 +10,8 @@ import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
+
 import lombok.Getter;
 
 /**
@@ -25,16 +27,16 @@ import lombok.Getter;
 public enum ShowTimeType {
 
     /** The morning. */
-    MORNING(LocalTime.parse("06:00"), LocalTime.parse("11:59")),
+    MORNING(LocalDateTimeFormatUtil.parseLocalTime("06:00"), LocalDateTimeFormatUtil.parseLocalTime("11:59")),
 
     /** The afternoon. */
-    AFTERNOON(LocalTime.parse("12:00"), LocalTime.parse("17:59")),
+    AFTERNOON(LocalDateTimeFormatUtil.parseLocalTime("12:00"), LocalDateTimeFormatUtil.parseLocalTime("17:59")),
 
     /** The evening. */
-    EVENING(LocalTime.parse("18:00"), LocalTime.parse("23:59")),
+    EVENING(LocalDateTimeFormatUtil.parseLocalTime("18:00"), LocalDateTimeFormatUtil.parseLocalTime("23:59")),
 
     /** The night. */
-    NIGHT(LocalTime.parse("00:00"), LocalTime.parse("05:59"));
+    NIGHT(LocalDateTimeFormatUtil.parseLocalTime("00:00"), LocalDateTimeFormatUtil.parseLocalTime("05:59"));
 
     /** The range start time. */
     private LocalTime rangeStartTime;

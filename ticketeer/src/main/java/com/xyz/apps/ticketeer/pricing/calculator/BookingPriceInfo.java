@@ -8,7 +8,7 @@ package com.xyz.apps.ticketeer.pricing.calculator;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import com.xyz.apps.ticketeer.model.general.AbstractModel;
+import com.xyz.apps.ticketeer.general.model.AbstractModel;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -7,7 +7,7 @@ package com.xyz.apps.ticketeer.user;
 
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
+import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 
 /**
  * The user model mapper.
@@ -16,7 +16,7 @@ import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
  * @version 1.0
  */
 @Component
-public class UserModelMapper extends AbstractModelMapper<User, UserDto> {
+public class UserModelMapper extends GeneralModelMapper<User, UserDto> {
 
     public UserModelMapper() {
 

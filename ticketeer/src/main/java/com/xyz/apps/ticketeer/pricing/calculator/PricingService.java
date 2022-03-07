@@ -12,12 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.pricing.calculator.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.Discount;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.DiscountDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.DiscountService;
-import com.xyz.apps.ticketeer.util.Environment;
-import com.xyz.apps.ticketeer.util.WebClientBuilder;
 
 
 /**
@@ -28,7 +27,7 @@ import com.xyz.apps.ticketeer.util.WebClientBuilder;
  */
 @Validated
 @Service
-public class PricingService {
+public class PricingService extends GeneralService {
 
     /** The discount service. */
     @Autowired
@@ -60,7 +59,7 @@ public class PricingService {
             }
 
             final Double platformConvenienceFeePercentage
-            = WebClientBuilder.get().build().get().uri(Environment.property(ApiPropertyKey.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE.get())).retrieve().bodyToMono(Double.class).block();
+            = serviceBeansFetcher().webClientBuilder().build().get().uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE.get())).retrieve().bodyToMono(Double.class).block();
 
             return bookingPriceInfo.getFinalAmount() * (1 + platformConvenienceFeePercentage / 100);
         }

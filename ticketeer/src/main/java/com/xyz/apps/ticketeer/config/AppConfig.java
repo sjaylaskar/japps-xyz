@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.xyz.apps.ticketeer.config.api.ApiPropertyKey;
-import com.xyz.apps.ticketeer.util.Environment;
 
 /**
  * The app config.
@@ -31,7 +30,7 @@ import com.xyz.apps.ticketeer.util.Environment;
 @EnableJpaRepositories(basePackages = "com")
 @EnableMongoRepositories(basePackages = "com")
 @EnableConfigurationProperties
-public interface AppConfig {
+public class AppConfig extends EnvironmentConfig {
 
     /**
      * Model mapper.
@@ -39,7 +38,7 @@ public interface AppConfig {
      * @return the model mapper
      */
     @Bean
-    public default ModelMapper modelMapper() {
+    public ModelMapper modelMapper() {
         final ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         return modelMapper;
@@ -51,7 +50,7 @@ public interface AppConfig {
      * @return the rest template
      */
     @Bean
-    public default RestTemplate restTemplate() {
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
@@ -61,8 +60,8 @@ public interface AppConfig {
      * @return the web client. builder
      */
     @Bean
-    public default WebClient.Builder webClientBuilder() {
+    public WebClient.Builder webClientBuilder() {
         return WebClient.builder()
-            .baseUrl(Environment.property(ApiPropertyKey.BASE_URL.get()));
+            .baseUrl(environment.getProperty(ApiPropertyKey.BASE_URL.get()));
     }
 }

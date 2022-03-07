@@ -29,9 +29,7 @@ import org.springframework.validation.annotation.Validated;
 import com.xyz.apps.ticketeer.event.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDto;
 import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDtoList;
-import com.xyz.apps.ticketeer.util.Environment;
-import com.xyz.apps.ticketeer.util.MongoTemplate;
-import com.xyz.apps.ticketeer.util.WebClientBuilder;
+import com.xyz.apps.ticketeer.general.service.GeneralService;
 
 import reactor.core.publisher.Mono;
 
@@ -43,7 +41,7 @@ import reactor.core.publisher.Mono;
  */
 @Service
 @Validated
-public class EventService {
+public class EventService extends GeneralService {
 
     /** The event repository. */
     @Autowired
@@ -108,7 +106,7 @@ public class EventService {
      * @return the event details dto
      */
     public EventDetailsDto findEventDetailsByEventId(@NotNull(message = "The event id cannot be null.") final Long eventId) {
-        final EventDetails eventDetails = MongoTemplate.get().findOne(new Query().addCriteria(Criteria.where("eventId").is(eventId)), EventDetails.class);
+        final EventDetails eventDetails = serviceBeansFetcher().mongoTemplate().findOne(new Query().addCriteria(Criteria.where("eventId").is(eventId)), EventDetails.class);
         if (eventDetails != null) {
             return eventDetailsModelMapper.toDto(eventDetails);
         }
@@ -122,7 +120,7 @@ public class EventService {
      * @return the event details dto list
      */
     public EventDetailsDtoList findEventDetailsByEventIds(@NotNull(message = "The event id cannot be null.") final List<Long> eventIds) {
-        final List<EventDetails> eventDetailsList = MongoTemplate.get().find(new Query().addCriteria(Criteria.where("eventId").in(eventIds)), EventDetails.class);
+        final List<EventDetails> eventDetailsList = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("eventId").in(eventIds)), EventDetails.class);
         if (CollectionUtils.isNotEmpty(eventDetailsList)) {
             return EventDetailsDtoList.of(eventDetailsModelMapper.toDtos(eventDetailsList));
         }
@@ -178,7 +176,7 @@ public class EventService {
      * @return the event details dto list
      */
     public EventDetailsDtoList findAllByEvents(final List<Event> events) {
-        return toEventDetailsDtoList(MongoTemplate.get().find(new Query().addCriteria(Criteria.where("eventId").in(events.stream().map(Event::getId).toList())), EventDetails.class));
+        return toEventDetailsDtoList(serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("eventId").in(events.stream().map(Event::getId).toList())), EventDetails.class));
     }
 
     /**
@@ -201,10 +199,10 @@ public class EventService {
      * @return the event details dto list
      */
     public EventDetailsDtoList searchByText(final String text, final int pageNumber, final int pageSize) {
-        List<EventDetails> eventDetailsList = MongoTemplate.get().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.phrase(text), pageNumber, pageSize), EventDetails.class);
+        List<EventDetails> eventDetailsList = serviceBeansFetcher().mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.phrase(text), pageNumber, pageSize), EventDetails.class);
 
         if (CollectionUtils.isEmpty(eventDetailsList)) {
-            eventDetailsList = MongoTemplate.get().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.any(text), pageNumber, pageSize), EventDetails.class);
+            eventDetailsList = serviceBeansFetcher().mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.any(text), pageNumber, pageSize), EventDetails.class);
         }
         return (CollectionUtils.isNotEmpty(eventDetailsList))
                 ? EventDetailsDtoList.of(eventDetailsModelMapper.toDtos(eventDetailsList))
@@ -261,9 +259,9 @@ public class EventService {
      * @return the event details dto list
      */
     public EventDetailsDtoList findEventDetailsByCityId(@NotNull(message = "The city id cannot be null.") final Long cityId) {
-        final EventShowDtoList eventShowDtoList = WebClientBuilder.get().build()
+        final EventShowDtoList eventShowDtoList = serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(Environment.property(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get(cityId)))
+        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get(cityId)))
         .retrieve()
         .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
                   response -> Mono.error(new EventServiceException(response.bodyToMono(String.class).block())))

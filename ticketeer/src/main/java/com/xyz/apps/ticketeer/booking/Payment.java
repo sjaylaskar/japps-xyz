@@ -33,7 +33,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Payment extends com.xyz.apps.ticketeer.model.general.Entity {
+public class Payment extends com.xyz.apps.ticketeer.general.model.Entity {
 
     // @TODO - Connect with actual payment gateway interface.
     /** The default payment method. */

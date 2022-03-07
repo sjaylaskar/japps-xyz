@@ -21,12 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.model.general.DtoList;
-import com.xyz.apps.ticketeer.model.general.DtoListEmptyException;
+import com.xyz.apps.ticketeer.general.model.DtoList;
+import com.xyz.apps.ticketeer.general.model.DtoListEmptyException;
+import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.external.ApiPropertyKey;
-import com.xyz.apps.ticketeer.util.Environment;
-import com.xyz.apps.ticketeer.util.MongoTemplate;
-import com.xyz.apps.ticketeer.util.WebClientBuilder;
 
 import reactor.core.publisher.Mono;
 
@@ -39,7 +37,7 @@ import reactor.core.publisher.Mono;
  */
 @Validated
 @Service
-public class DiscountService {
+public class DiscountService extends GeneralService {
 
     /** The discount repository. */
     @Autowired
@@ -243,7 +241,7 @@ public class DiscountService {
      */
     private Discount findDiscountByOfferCode(final String offerCode) {
 
-        return MongoTemplate.get().findOne(new Query().addCriteria(Criteria.where("offerCode").is(offerCode)),
+        return serviceBeansFetcher().mongoTemplate().findOne(new Query().addCriteria(Criteria.where("offerCode").is(offerCode)),
             Discount.class);
     }
 
@@ -254,7 +252,7 @@ public class DiscountService {
      * @return the discount dto list
      */
     public DiscountDtoList findByCityId(final Long cityId) {
-        final List<Discount> discounts = MongoTemplate.get().find(new Query().addCriteria(Criteria.where("applicableCityIds").in(cityId)), Discount.class);
+        final List<Discount> discounts = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("applicableCityIds").in(cityId)), Discount.class);
 
         if (CollectionUtils.isNotEmpty(discounts)) {
             return DiscountDtoList.of(discountModelMapper.toDtos(discounts));
@@ -270,7 +268,7 @@ public class DiscountService {
      * @return the discount dto list
      */
     public DiscountDtoList findByEventVenueId(final Long eventVenueId) {
-        final List<Discount> discounts = MongoTemplate.get().find(new Query().addCriteria(Criteria.where("applicableEventVenueIds").in(eventVenueId)), Discount.class);
+        final List<Discount> discounts = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("applicableEventVenueIds").in(eventVenueId)), Discount.class);
 
         if (CollectionUtils.isNotEmpty(discounts)) {
             return DiscountDtoList.of(discountModelMapper.toDtos(discounts));
@@ -316,7 +314,7 @@ public class DiscountService {
     private void validateApplicableCityIds(final Set<Long> applicableCityIds) {
         applicableCityIds
         .forEach(cityId -> {
-            WebClientBuilder.get().build().get().uri(Environment.property(ApiPropertyKey.GET_CITY_BY_ID.get(cityId))).retrieve()
+            serviceBeansFetcher().webClientBuilder().build().get().uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get(cityId))).retrieve()
             .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
                       response -> Mono.error(new DiscountServiceException("Invalid city id: " + cityId)));
         });
@@ -330,7 +328,7 @@ public class DiscountService {
     private void validateApplicableEventVenueIds(final Set<Long> applicableEventVenueIds) {
         applicableEventVenueIds
         .forEach(eventVenueId -> {
-            WebClientBuilder.get().build().get().uri(Environment.property(ApiPropertyKey.GET_EVENT_VENUE_BY_ID.get(eventVenueId))).retrieve()
+            serviceBeansFetcher().webClientBuilder().build().get().uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_VENUE_BY_ID.get(eventVenueId))).retrieve()
             .onStatus(status -> HttpStatus.FOUND.value() != status.value(),
                       response -> Mono.error(new DiscountServiceException("Invalid event venue id: " + eventVenueId)));
         });

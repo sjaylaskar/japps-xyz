@@ -5,13 +5,13 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import javax.annotation.PostConstruct;
 
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
+import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
+import com.xyz.apps.ticketeer.general.model.ModelConverter;
 
 
 /**
@@ -21,7 +21,7 @@ import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
  * @version 1.0
  */
 @Component
-public class BookingPriceInfoModelMapper extends AbstractModelMapper<BookingPriceInfo, BookingPriceInfoDto> {
+public class BookingPriceInfoModelMapper extends GeneralModelMapper<BookingPriceInfo, BookingPriceInfoDto> {
 
     /**
      * Instantiates a new booking price info model mapper.
@@ -29,30 +29,30 @@ public class BookingPriceInfoModelMapper extends AbstractModelMapper<BookingPric
     public BookingPriceInfoModelMapper() {
         super(BookingPriceInfo.class, BookingPriceInfoDto.class);
 
-        initMappings();
     }
 
     /**
      * Initializes the mappings.
      */
+    @PostConstruct
     private void initMappings() {
 
         final TypeMap<BookingPriceInfo, BookingPriceInfoDto> bookingPriceInfoToBookingPriceInfoDtoMap = modelMapper.createTypeMap(BookingPriceInfo.class, BookingPriceInfoDto.class);
         bookingPriceInfoToBookingPriceInfoDtoMap
         .addMappings(
-          mapper -> mapper.map(bookingPriceInfo -> bookingPriceInfo.getBookingTime().toString(), BookingPriceInfoDto::setBookingTime)
+          mapper -> mapper.using(ModelConverter.LOCALDATETIME_TO_STRING_CONVERTER).map(BookingPriceInfo::getBookingTime, BookingPriceInfoDto::setBookingTime)
         )
         .addMappings(
-            mapper -> mapper.map(bookingPriceInfo -> bookingPriceInfo.getShowStartTime().toString(), BookingPriceInfoDto::setShowStartTime)
+            mapper -> mapper.using(ModelConverter.LOCALTIME_TO_STRING_CONVERTER).map(BookingPriceInfo::getShowStartTime, BookingPriceInfoDto::setShowStartTime)
           );
 
         final TypeMap<BookingPriceInfoDto, BookingPriceInfo> eventDetailsDtoToEventDetailsMap = modelMapper.createTypeMap(BookingPriceInfoDto.class, BookingPriceInfo.class);
         eventDetailsDtoToEventDetailsMap
         .addMappings(
-          mapper -> mapper.map(bookingPriceInfoDto -> LocalDateTime.parse(bookingPriceInfoDto.getBookingTime()), BookingPriceInfo::setBookingTime)
+          mapper -> mapper.using(ModelConverter.STRING_TO_LOCALDATETIME_CONVERTER).map(BookingPriceInfoDto::getBookingTime, BookingPriceInfo::setBookingTime)
         )
         .addMappings(
-            mapper -> mapper.map(bookingPriceInfoDto -> LocalTime.parse(bookingPriceInfoDto.getShowStartTime()), BookingPriceInfo::setShowStartTime)
+            mapper -> mapper.using(ModelConverter.STRING_TO_LOCALTIME_CONVERTER).map(BookingPriceInfoDto::getShowStartTime, BookingPriceInfo::setShowStartTime)
         );
     }
 }

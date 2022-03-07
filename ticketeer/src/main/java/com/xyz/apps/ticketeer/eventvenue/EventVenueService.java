@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.xyz.apps.ticketeer.general.service.GeneralService;
+
 import lombok.AllArgsConstructor;
 
 /**
@@ -27,7 +29,7 @@ import lombok.AllArgsConstructor;
  * @version 1.0
  */
 @Service
-public class EventVenueService {
+public class EventVenueService extends GeneralService {
 
     /** The event venue repository. */
     @Autowired

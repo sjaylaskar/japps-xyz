@@ -7,7 +7,7 @@ package com.xyz.apps.ticketeer.location;
 
 import org.springframework.stereotype.Component;
 
-import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
+import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 
 
 /**
@@ -17,7 +17,7 @@ import com.xyz.apps.ticketeer.model.general.AbstractModelMapper;
  * @version 1.0
  */
 @Component
-public class CountryModelMapper extends AbstractModelMapper<Country, CountryDto> {
+public class CountryModelMapper extends GeneralModelMapper<Country, CountryDto> {
 
     public CountryModelMapper() {
 

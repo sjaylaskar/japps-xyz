@@ -27,7 +27,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class EventVenue extends com.xyz.apps.ticketeer.model.general.Entity {
+public class EventVenue extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
     @Id

@@ -24,8 +24,6 @@ public enum DiscountType {
     AMOUNT;
 
     public static DiscountType of(final String discountType) {
-
-
         return Arrays.asList(values())
             .stream()
             .filter(value -> StringUtils.equalsIgnoreCase(value.name(), discountType))

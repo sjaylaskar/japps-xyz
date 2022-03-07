@@ -34,7 +34,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Validated
-public class City extends com.xyz.apps.ticketeer.model.general.Entity {
+public class City extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The city id. */
     @Id
