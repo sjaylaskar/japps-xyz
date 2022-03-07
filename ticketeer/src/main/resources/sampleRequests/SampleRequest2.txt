@@ -1,0 +1,46 @@
+{
+  "dtos": [
+    {
+      "countryName": "India",
+      "description": "The nights of winter",
+      "duration": 120,
+      "eventType": "Movie",
+      "genre": "Sci-Fi",
+      "language": "English",
+      "movieCastNames": [
+        "RK", "HK", "SRK"
+      ],
+      "movieDirectorName": "Jay",
+      "name": "The nights of winter",
+      "releaseDate": "23-03-2022"
+    },
+{
+      "countryName": "UK",
+      "description": "The fall of dawn",
+      "duration": 150,
+      "eventType": "Movie",
+      "genre": "Science Fiction",
+      "language": "English",
+      "movieCastNames": [
+        "Arun", "Hritesh", "Sanak"
+      ],
+      "movieDirectorName": "Jay",
+      "name": "The fall of dawn",
+      "releaseDate": "23-03-2022"
+    },
+{
+      "countryName": "USA",
+      "description": "The Tester,
+      "duration": 150,
+      "eventType": "Movie",
+      "genre": "Biography",
+      "language": "English",
+      "movieCastNames": [
+        "Tom", "Hritesh", "Harry"
+      ],
+      "movieDirectorName": "Jay",
+      "name": "The Tester",
+      "releaseDate": "23-04-2022"
+    }
+  ]
+}

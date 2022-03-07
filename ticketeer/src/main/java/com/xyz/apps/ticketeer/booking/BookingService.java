@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.booking;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -248,7 +247,7 @@ public class BookingService extends GeneralService {
         bookingPriceInfoDto.setCityId(bookingDto.getCityId());
         bookingPriceInfoDto.setEventVenueId(bookingDto.getEventVenueId());
         bookingPriceInfoDto.setShowStartTime(bookingDto.getShowStartTime());
-        bookingPriceInfoDto.setBookingTime(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        bookingPriceInfoDto.setBookingTime(LocalDateTimeFormatUtil.format(LocalDateTime.now()));
         return bookingPriceInfoDto;
     }
 

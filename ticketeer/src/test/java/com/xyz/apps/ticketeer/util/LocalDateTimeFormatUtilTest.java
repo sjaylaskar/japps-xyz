@@ -7,9 +7,10 @@ package com.xyz.apps.ticketeer.util;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import org.junit.Test;
@@ -22,59 +23,62 @@ import org.junit.Test;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-class LocalDateTimeFormatUtilTest {
+public class LocalDateTimeFormatUtilTest {
 
     /**
      * Test method for {@link com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil#format(java.time.LocalDate)}.
      */
     @Test
-    void testFormatLocalDate() {
+    public void testFormatLocalDate() {
 
-        fail("Not yet implemented");
+        final LocalDate localDate = LocalDate.parse("2022-03-23", DateTimeFormatter.ISO_LOCAL_DATE);
+        assertEquals(localDate.format(DateTimeFormatter.ISO_LOCAL_DATE), LocalDateTimeFormatUtil.format(localDate));
     }
 
     /**
      * Test method for {@link com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil#format(java.time.LocalDateTime)}.
      */
     @Test
-    void testFormatLocalDateTime() {
+    public void testFormatLocalDateTime() {
 
-        fail("Not yet implemented");
+        final LocalDateTime localDateTime = LocalDateTime.parse("2022-03-23T10:30:40", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        assertEquals(localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), LocalDateTimeFormatUtil.format(localDateTime));
     }
 
     /**
      * Test method for {@link com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil#format(java.time.LocalTime)}.
      */
     @Test
-    void testFormatLocalTime() {
+    public void testFormatLocalTime() {
 
-        fail("Not yet implemented");
+        final LocalTime localTime = LocalTime.parse("00:00", DateTimeFormatter.ISO_LOCAL_TIME);
+        assertEquals(localTime.format(DateTimeFormatter.ISO_LOCAL_TIME), LocalDateTimeFormatUtil.format(localTime));
     }
 
     /**
      * Test method for {@link com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil#parseLocalDate(java.lang.String)}.
      */
     @Test
-    void testParseLocalDate() {
-        assertEquals(LocalDate.parse("23-03-2022", DateTimeFormatter.ISO_LOCAL_DATE), LocalDateTimeFormatUtil.parseLocalDate("23-03-2022"));
+    public void testParseLocalDate() {
+        assertEquals(LocalDate.parse("2022-03-23", DateTimeFormatter.ISO_LOCAL_DATE), LocalDateTimeFormatUtil.parseLocalDate("2022-03-23"));
     }
 
     /**
      * Test method for {@link com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil#parseLocalDateTime(java.lang.String)}.
      */
     @Test
-    void testParseLocalDateTime() {
+    public void testParseLocalDateTime() {
 
-        fail("Not yet implemented");
+        assertEquals(LocalDateTime.parse("2022-03-23T10:30", DateTimeFormatter.ISO_LOCAL_DATE_TIME), LocalDateTimeFormatUtil.parseLocalDateTime("2022-03-23T10:30"));
     }
 
     /**
      * Test method for {@link com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil#parseLocalTime(java.lang.String)}.
      */
     @Test
-    void testParseLocalTime() {
+    public void testParseLocalTime() {
 
-        fail("Not yet implemented");
+        assertEquals(LocalTime.parse("23:59", DateTimeFormatter.ISO_LOCAL_TIME), LocalDateTimeFormatUtil.parseLocalTime("23:59"));
     }
 
 }
