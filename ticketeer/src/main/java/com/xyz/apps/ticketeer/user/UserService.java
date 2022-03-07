@@ -13,6 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.general.service.GeneralService;
@@ -41,6 +42,7 @@ public class UserService extends GeneralService {
      * @param user the user
      * @return the event
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public User add(@NotNull(message = "The user cannot be null.") final User user) {
         return userRepository.save(user);
     }
@@ -51,6 +53,7 @@ public class UserService extends GeneralService {
      * @param user the user
      * @return the user
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public User update(@NotNull(message = "The user cannot be null.") final User user) {
         if (exists(user)) {
             return userRepository.save(user);
@@ -64,6 +67,7 @@ public class UserService extends GeneralService {
      * @param user the user
      * @return true, if successful
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public boolean delete(@NotNull(message = "The user cannot be null.") final User user) {
         if (exists(user)) {
             userRepository.delete(user);
@@ -120,6 +124,7 @@ public class UserService extends GeneralService {
      *
      * @param id the id
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void deleteById(@NotNull(message = "The user id cannot be null.") final Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);

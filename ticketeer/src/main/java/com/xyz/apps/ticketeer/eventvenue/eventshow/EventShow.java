@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.validation.annotation.Validated;
@@ -42,7 +43,8 @@ public class EventShow extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_show_seq")
+    @SequenceGenerator(initialValue = 1, name = "event_show_seq", allocationSize = 1)
     private Long id;
 
     /** The date. */

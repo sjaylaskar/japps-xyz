@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -35,6 +36,7 @@ public class User extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @SequenceGenerator(initialValue = 1, name = "user_seq", allocationSize = 1)
     private Long id;
 
     /** The username. */
@@ -66,6 +68,6 @@ public class User extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The phone number. */
     @Column(nullable = false, unique = true, length = 15)
     @NotBlank(message = "Phone number is mandatory.")
-    @Size(min = 10, max = 15, message = "The phone number must be between 8 and 15 characters.")
+    @Size(min = 10, max = 15, message = "The phone number must be between 10 and 15 characters.")
     private String phoneNumber;
 }

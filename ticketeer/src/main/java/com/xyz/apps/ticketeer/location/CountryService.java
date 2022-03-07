@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.general.model.DtoList;
@@ -42,6 +43,7 @@ public class CountryService extends GeneralService {
      * @param country the country
      * @return the country
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public CountryDto add(@NotNull(message = "The country cannot be null.") final CountryDto countryDto) {
 
         return countryModelMapper.toDto(countryRepository.save(countryModelMapper.toEntity(countryDto)));
@@ -53,6 +55,7 @@ public class CountryService extends GeneralService {
      * @param countries the countries
      * @return the list of countries
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public CountryDtoList addAll(@NotNull(message = "The country list cannot be null.") final CountryDtoList countryDtoList) {
 
         if (DtoList.isNotEmpty(countryDtoList)) {
@@ -69,6 +72,7 @@ public class CountryService extends GeneralService {
      * @param country the country
      * @return the country
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public CountryDto update(@NotNull(message = "The country cannot be null.") final CountryDto countryDto) {
 
         if (countryRepository.existsById(countryDto.getId())) {
@@ -83,6 +87,7 @@ public class CountryService extends GeneralService {
      *
      * @param country the country
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void delete(@NotNull(message = "The country cannot be null.") final CountryDto countryDto) {
 
         if (countryRepository.existsById(countryDto.getId())) {
@@ -96,6 +101,7 @@ public class CountryService extends GeneralService {
      *
      * @param id the id
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void deleteById(final Long id) {
 
         if (countryRepository.existsById(id)) {
@@ -109,6 +115,7 @@ public class CountryService extends GeneralService {
      *
      * @param code the code
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void deleteByCode(final String code) {
 
         final CountryDto countryDto = findByCode(code);
@@ -123,6 +130,7 @@ public class CountryService extends GeneralService {
      *
      * @param name the name
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void deleteByName(final String name) {
 
         final CountryDto countryDto = findByName(name);

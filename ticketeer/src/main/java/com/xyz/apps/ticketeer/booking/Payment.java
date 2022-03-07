@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -44,6 +45,7 @@ public class Payment extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq")
+    @SequenceGenerator(initialValue = 1, name = "payment_seq", allocationSize = 1)
     private Long id;
 
     @NotNull(message = "Payment amount cannot be null.")

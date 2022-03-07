@@ -7,6 +7,7 @@ package com.xyz.apps.ticketeer.eventvenue.eventshow;
 
 import javax.annotation.PostConstruct;
 
+import org.modelmapper.Converter;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
@@ -58,6 +59,8 @@ public class EventShowModelMapper extends GeneralModelMapper<EventShow, EventSho
             mapper -> mapper.map(eventShow -> eventShow.getEventVenue().getId(), EventShowDto::setEventVenueId)
         );
 
+        final Converter<Long, Auditorium> auditoriumIdToAuditoriumConverter = converter -> new Auditorium().id(converter.getSource());
+        final Converter<Long, EventVenue> eventVenueIdToEventVenueConverter = converter -> new EventVenue().id(converter.getSource());
         final TypeMap<EventShowDto, EventShow> eventShowDtoToEventShowMap = modelMapper.createTypeMap(EventShowDto.class, EventShow.class);
         eventShowDtoToEventShowMap
         .addMappings(
@@ -70,10 +73,10 @@ public class EventShowModelMapper extends GeneralModelMapper<EventShow, EventSho
             mapper -> mapper.using(ModelConverter.STRING_TO_LOCALTIME_CONVERTER).map(EventShowDto::getEndTime, EventShow::setEndTime)
           )
         .addMappings(
-            mapper -> mapper.map(eventShowDto -> new Auditorium().id(eventShowDto.getAuditoriumId()), EventShow::setAuditorium)
+            mapper -> mapper.using(auditoriumIdToAuditoriumConverter).map(EventShowDto::getAuditoriumId, EventShow::setAuditorium)
         )
         .addMappings(
-            mapper -> mapper.map(eventShowDto -> new EventVenue().id(eventShowDto.getEventVenueId()), EventShow::setEventVenue)
+            mapper -> mapper.using(eventVenueIdToEventVenueConverter).map(EventShowDto::getEventVenueId, EventShow::setEventVenue)
         );
     }
 

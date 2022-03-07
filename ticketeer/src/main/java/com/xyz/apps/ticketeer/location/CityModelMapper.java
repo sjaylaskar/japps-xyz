@@ -7,6 +7,7 @@ package com.xyz.apps.ticketeer.location;
 
 import javax.annotation.PostConstruct;
 
+import org.modelmapper.Converter;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
@@ -41,9 +42,10 @@ public class CityModelMapper extends GeneralModelMapper<City, CityDto> {
         cityToCityDtoMap.addMappings(
             mapper -> mapper.map(city -> city.getCountry().getId(), CityDto::setCountryId));
 
+        final Converter<Long, Country> countryIdToCountryConverter = converter -> new Country().id(converter.getSource());
         final TypeMap<CityDto, City> cityDtoToCityMap = modelMapper.createTypeMap(CityDto.class, City.class);
         cityDtoToCityMap.addMappings(
-            mapper -> mapper.map(cityDto -> new Country().id(cityDto.getCountryId()), City::setCountry));
+            mapper -> mapper.using(countryIdToCountryConverter).map(CityDto::getCountryId, City::setCountry));
     }
 
 }

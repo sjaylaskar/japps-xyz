@@ -11,8 +11,6 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.xyz.apps.ticketeer.general.model.DtoList;
 
-import lombok.ToString;
-
 
 /**
  * The user dto list.
@@ -20,7 +18,6 @@ import lombok.ToString;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-@ToString
 public class UserDtoList extends DtoList<UserDto> {
 
     /**

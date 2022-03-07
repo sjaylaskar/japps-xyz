@@ -13,14 +13,12 @@ import com.xyz.apps.ticketeer.general.model.DtoList;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * The event details dto list.
  */
 @Getter
 @Setter
-@ToString
 public class EventDetailsDtoList extends DtoList<EventDetailsDto> {
 
     /**

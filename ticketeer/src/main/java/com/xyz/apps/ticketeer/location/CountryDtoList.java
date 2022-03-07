@@ -11,13 +11,10 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.xyz.apps.ticketeer.general.model.DtoList;
 
-import lombok.ToString;
-
 
 /**
  * The country dto list.
  */
-@ToString
 public class CountryDtoList extends DtoList<CountryDto> {
 
     /**

@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -36,6 +37,7 @@ public class Country extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "country_seq")
+    @SequenceGenerator(initialValue = 1, name = "country_seq", allocationSize = 1)
     private Long id;
 
     /** The code. */

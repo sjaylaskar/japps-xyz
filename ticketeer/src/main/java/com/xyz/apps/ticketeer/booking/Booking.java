@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -43,6 +44,7 @@ public class Booking extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_seq")
+    @SequenceGenerator(initialValue = 1, name = "booking_seq", allocationSize = 1)
     private Long id;
 
     /** The booking time. */

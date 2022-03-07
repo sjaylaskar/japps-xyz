@@ -11,12 +11,9 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.xyz.apps.ticketeer.general.model.DtoList;
 
-import lombok.ToString;
-
 /**
  * The city dto list.
  */
-@ToString
 public class CityDtoList extends DtoList<CityDto> {
 
     /**

@@ -57,16 +57,18 @@ public class EventShowSeatModelMapper extends GeneralModelMapper<EventShowSeat, 
           );
 
         final Converter<String, SeatReservationStatus> stringToSeatReservationStatusConverter = converter -> SeatReservationStatus.of(converter.getSource());
+        final Converter<Long, EventShow> eventShowIdToEventShowConverter = converter -> new EventShow().id(converter.getSource());
+        final Converter<Long, AuditoriumSeat> auditoriumSeatIdToAuditoriumSeatConverter = converter -> new AuditoriumSeat().id(converter.getSource());
         final TypeMap<EventShowSeatDto, EventShowSeat> eventShowSeatDtoToEventShowSeatMap = modelMapper.createTypeMap(EventShowSeatDto.class, EventShowSeat.class);
         eventShowSeatDtoToEventShowSeatMap
         .addMappings(
           mapper -> mapper.using(stringToSeatReservationStatusConverter).map(EventShowSeatDto::getSeatReservationStatus, EventShowSeat::setSeatReservationStatus)
         )
         .addMappings(
-            mapper -> mapper.map(eventShowSeatDto -> new EventShow().id(eventShowSeatDto.getEventShowId()), EventShowSeat::setEventShow)
+            mapper -> mapper.using(eventShowIdToEventShowConverter).map(EventShowSeatDto::getEventShowId, EventShowSeat::setEventShow)
           )
         .addMappings(
-            mapper -> mapper.map(eventShowSeatDto -> new AuditoriumSeat().id(eventShowSeatDto.getAuditoriumSeatId()), EventShowSeat::setAuditoriumSeat)
+            mapper -> mapper.using(auditoriumSeatIdToAuditoriumSeatConverter).map(EventShowSeatDto::getAuditoriumSeatId, EventShowSeat::setAuditoriumSeat)
           )
         .addMappings(
             mapper -> mapper.using(ModelConverter.STRING_TO_LOCALDATETIME_CONVERTER).map(EventShowSeatDto::getReservationTime, EventShowSeat::setReservationTime)

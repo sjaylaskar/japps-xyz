@@ -7,6 +7,7 @@ package com.xyz.apps.ticketeer.eventvenue;
 
 import javax.annotation.PostConstruct;
 
+import org.modelmapper.Converter;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
@@ -42,10 +43,11 @@ public class AuditoriumModelMapper extends GeneralModelMapper<Auditorium, Audito
           mapper -> mapper.map(auditorium -> auditorium.getEventVenue().getId(), AuditoriumDto::setEventVenueId)
         );
 
+        final Converter<Long, EventVenue> eventVenueIdToEventVenueConverter = converter -> new EventVenue().id(converter.getSource());
         final TypeMap<AuditoriumDto, Auditorium> auditoriumDtoToAuditoriumMap = modelMapper.createTypeMap(AuditoriumDto.class, Auditorium.class);
         auditoriumDtoToAuditoriumMap
         .addMappings(
-          mapper -> mapper.map(auditoriumDto -> new EventVenue().id(auditoriumDto.getEventVenueId()), Auditorium::setEventVenue)
+          mapper -> mapper.using(eventVenueIdToEventVenueConverter).map(AuditoriumDto::getEventVenueId, Auditorium::setEventVenue)
         );
     }
 

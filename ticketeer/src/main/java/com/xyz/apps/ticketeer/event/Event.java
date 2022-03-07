@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +36,7 @@ public class Event extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
+    @SequenceGenerator(initialValue = 1, name = "event_seq", allocationSize = 1)
     private Long id;
 
     /** The name. */

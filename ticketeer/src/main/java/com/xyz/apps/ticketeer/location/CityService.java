@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.general.service.GeneralService;
@@ -48,6 +49,7 @@ public class CityService extends GeneralService {
      * @param city the city
      * @return the city
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public CityDto add(@NotNull(message = "The city cannot be null.") final CityDto cityDto) {
         return cityModelMapper.toDto(cityRepository.save(cityModelMapper.toEntity(cityDto)));
     }
@@ -58,8 +60,10 @@ public class CityService extends GeneralService {
      * @param cities the cities
      * @return the list of cities.
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public CityDtoList addAll(@NotNull(message = "The city list cannot be null.") final CityDtoList cityDtoList) {
-        return CityDtoList.of(cityModelMapper.toDtos(cityRepository.saveAll(cityModelMapper.toEntities(cityDtoList.dtos()))));
+        final List<City> entities = cityModelMapper.toEntities(cityDtoList.dtos());
+        return CityDtoList.of(cityModelMapper.toDtos(cityRepository.saveAll(entities)));
     }
 
     /**
@@ -68,6 +72,7 @@ public class CityService extends GeneralService {
      * @param city the city
      * @return the city
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public CityDto update(@NotNull(message = "The city cannot be null") final CityDto cityDto) {
         if (cityRepository.existsById(cityDto.getId())) {
             return cityModelMapper.toDto(cityRepository.save(cityModelMapper.toEntity(cityDto)));
@@ -80,6 +85,7 @@ public class CityService extends GeneralService {
      *
      * @param city the city
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void delete(@NotNull(message = "City cannot be null.") final CityDto cityDto) {
         if (cityRepository.existsById(cityDto.getId())) {
             cityRepository.delete(cityModelMapper.toEntity(cityDto));
@@ -93,6 +99,7 @@ public class CityService extends GeneralService {
      *
      * @param id the id
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void deleteById(final Long id) {
         if (cityRepository.existsById(id)) {
             cityRepository.deleteById(id);
@@ -105,6 +112,7 @@ public class CityService extends GeneralService {
      *
      * @param code the code
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void deleteByCode(final String code) {
         final CityDto cityDto = findByCode(code);
         if (cityDto != null) {
