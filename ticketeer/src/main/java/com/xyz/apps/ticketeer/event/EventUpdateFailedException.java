@@ -12,19 +12,19 @@ import javax.validation.constraints.NotEmpty;
 import com.xyz.apps.ticketeer.util.CollectionUtil;
 
 /**
- * The event add failed exception.
+ * The event update failed exception.
  */
-public class EventAddFailedException extends EventServiceException {
+public class EventUpdateFailedException extends EventServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 7104455762990834368L;
 
     /**
-     * Instantiates a new event add failed exception.
+     * Instantiates a new event update failed exception.
      *
      * @param eventDetailsDtos the event details dtos
      */
-    public EventAddFailedException(@NotEmpty(message = "No events specified.") final Collection<EventDetailsDto> eventDetailsDtos) {
-        super("Failed to add event(s): " + CollectionUtil.stringify(eventDetailsDtos));
+    public EventUpdateFailedException(@NotEmpty(message = "No events specified.") final Collection<EventDetailsDto> eventDetailsDtos) {
+        super("Failed to update event(s): " + CollectionUtil.stringify(eventDetailsDtos));
     }
 }

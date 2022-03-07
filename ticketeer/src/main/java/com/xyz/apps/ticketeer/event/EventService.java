@@ -60,22 +60,22 @@ public class EventService extends GeneralService {
     private EventDetailsModelMapper eventDetailsModelMapper;
 
     /**
-     * Adds the event.
+     * Saves the event.
      *
      * @param event the event
      * @return the event
      */
-    public Event add(final Event event) {
+    private Event save(final Event event) {
         return eventRepository.save(event);
     }
 
     /**
-     * Adds all events.
+     * Saves all events.
      *
      * @param events the events
      * @return the list of events
      */
-    public List<Event> addAll(final List<Event> events) {
+    private List<Event> saveAll(final List<Event> events) {
         return eventRepository.saveAll(events);
     }
 
@@ -106,11 +106,22 @@ public class EventService extends GeneralService {
      * @return the event details dto
      */
     public EventDetailsDto findEventDetailsByEventId(@NotNull(message = "The event id cannot be null.") final Long eventId) {
-        final EventDetails eventDetails = serviceBeansFetcher().mongoTemplate().findOne(new Query().addCriteria(Criteria.where("eventId").is(eventId)), EventDetails.class);
+        final EventDetails eventDetails = findEventDetails(eventId);
         if (eventDetails != null) {
             return eventDetailsModelMapper.toDto(eventDetails);
         }
         throw new EventNotFoundException(eventId);
+    }
+
+    /**
+     * Finds the event details.
+     *
+     * @param eventId the event id
+     * @return the event details
+     */
+    private EventDetails findEventDetails(final Long eventId) {
+
+        return serviceBeansFetcher().mongoTemplate().findOne(new Query().addCriteria(Criteria.where("eventId").is(eventId)), EventDetails.class);
     }
 
     /**
@@ -134,9 +145,9 @@ public class EventService extends GeneralService {
      * @return the event details dto
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public EventDetailsDto add(@NotNull(message = "Event details to add cannot be null")
+    public EventDetailsDto add(@NotNull(message = "Event details to add cannot be null.")
     final  EventDetailsDto eventDetailsDto) {
-        final Event event = add(eventModelMapper.toEntity(EventDto.of(eventDetailsDto)));
+        final Event event = save(eventModelMapper.toEntity(EventDto.of(eventDetailsDto)));
         if (event == null) {
             throw new EventAddFailedException(Arrays.asList(eventDetailsDto));
         }
@@ -149,6 +160,70 @@ public class EventService extends GeneralService {
     }
 
     /**
+     * Updates the.
+     *
+     * @param eventDetailsDto the event details dto
+     * @return the event details dto
+     */
+    @Transactional(rollbackFor = {Throwable.class})
+    public EventDetailsDto update(@NotNull(message = "Event details to update cannot be null.")
+    final  EventDetailsDto eventDetailsDto) {
+        if (eventDetailsDto.getEventId() == null) {
+            throw new EventServiceException("Event id is required to update event.");
+        }
+        if (eventRepository.existsById(eventDetailsDto.getEventId())) {
+            final Event event = save(eventModelMapper.toEntity(EventDto.of(eventDetailsDto)));
+            if (event == null) {
+                throw new EventUpdateFailedException(Arrays.asList(eventDetailsDto));
+            }
+            eventDetailsDto.setEventId(event.getId());
+            final EventDetailsDto eventDetailsDtoForEvent = findEventDetailsByEventId(eventDetailsDto.getEventId());
+            if (eventDetailsDtoForEvent != null) {
+                eventDetailsDto.setId(eventDetailsDtoForEvent.getId());
+                return saveEventDetails(eventDetailsDto);
+            } else {
+                return saveEventDetails(eventDetailsDto);
+            }
+        } else {
+            throw new EventNotFoundException(eventDetailsDto.getEventId());
+        }
+    }
+
+    /**
+     * Delete.
+     *
+     * @param eventId the event id
+     */
+    @Transactional(rollbackFor = {Throwable.class})
+    public void delete(@NotNull(message = "Event id cannot be null") final Long eventId) {
+        if (eventRepository.existsById(eventId)) {
+
+            final EventDetails eventDetails = findEventDetails(eventId);
+            if (eventDetails != null) {
+                eventDetailsRepository.deleteById(eventDetails.getId());
+            }
+
+            eventRepository.deleteById(eventId);
+        }
+        throw new EventNotFoundException(eventId);
+    }
+
+    /**
+     * Save event details.
+     *
+     * @param eventDetailsDto the event details dto
+     * @return the event details dto
+     */
+    private EventDetailsDto saveEventDetails(final EventDetailsDto eventDetailsDto) {
+
+        final EventDetails eventDetails = eventDetailsRepository.save(eventDetailsModelMapper.toEntity(eventDetailsDto));
+        if (eventDetails == null) {
+            throw new EventUpdateFailedException(Arrays.asList(eventDetailsDto));
+        }
+        return eventDetailsModelMapper.toDto(eventDetails);
+    }
+
+    /**
      * Adds multiple events.
      *
      * @param eventDetailsDtoList the event details dto list
@@ -156,7 +231,7 @@ public class EventService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public EventDetailsDtoList addAll(@NotNull(message = "Event details list to add cannot be null or empty") final EventDetailsDtoList eventDetailsDtoList) {
-        final List<Event> events = addAll(eventModelMapper.toEntities(eventDetailsDtoList.dtos().stream().map(EventDto::of).toList()));
+        final List<Event> events = saveAll(eventModelMapper.toEntities(eventDetailsDtoList.dtos().stream().map(EventDto::of).toList()));
         if (CollectionUtils.isEmpty(events)) {
             throw new EventAddFailedException(eventDetailsDtoList.dtos());
         }

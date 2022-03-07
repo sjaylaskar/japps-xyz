@@ -1,8 +1,8 @@
 /*
-* Id: EventController.java 15-Feb-2022 11:19:17 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: EventController.java 15-Feb-2022 11:19:17 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.event;
 
 import javax.validation.constraints.NotBlank;
@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xyz.apps.ticketeer.general.model.DtoList;
 
 import lombok.extern.log4j.Log4j2;
+
 
 /**
  * The event controller.
@@ -50,8 +52,9 @@ public class EventController {
      * @return the response entity
      */
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody
-            @NotNull(message = "Event details cannot be null") final EventDetailsDto eventDetailsDto) {
+    public ResponseEntity<?> add(@RequestBody @NotNull(
+        message = "Event details cannot be null"
+    ) final EventDetailsDto eventDetailsDto) {
 
         try {
             log.info("Event details: " + eventDetailsDto);
@@ -75,8 +78,9 @@ public class EventController {
      * @return the response entity
      */
     @PutMapping("/update")
-    public ResponseEntity<?> update(@RequestBody
-            @NotNull(message = "Event details cannot be null") final EventDetailsDto eventDetailsDto) {
+    public ResponseEntity<?> update(@RequestBody @NotNull(
+        message = "Event details cannot be null"
+    ) final EventDetailsDto eventDetailsDto) {
 
         try {
             log.info("Event details: " + eventDetailsDto);
@@ -85,11 +89,45 @@ public class EventController {
             return ResponseEntity
                 .accepted()
                 .body(eventDetailsDtoUpdated);
+        } catch (final EventNotFoundException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionUtils.getRootCauseMessage(exception));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to update event: " + eventDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+        }
+    }
+
+    /**
+     * Delete by event id.
+     *
+     * @param eventId the event id
+     * @return the response entity
+     */
+    @DeleteMapping("/delete/{eventId}")
+    public ResponseEntity<?> deleteByEventId(@RequestBody @NotNull(message = "Event id cannot be null") final Long eventId) {
+
+        try {
+            log.info("Event id to delete: " + eventId);
+            eventService.delete(eventId);
+            log.info("Event deleted: " + eventId);
+            return ResponseEntity
+                .accepted()
+                .body("Event deleted: " + eventId);
+        } catch (final EventNotFoundException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionUtils.getRootCauseMessage(exception));
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to delete event: " + eventId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
         }
     }
 
@@ -100,7 +138,9 @@ public class EventController {
      * @return the response entity
      */
     @PostMapping("/add/all")
-    public ResponseEntity<?> addAll(@RequestBody @NotNull(message = "Events list cannot be null or empty.") final EventDetailsDtoList eventDetailsDtoList) {
+    public ResponseEntity<?> addAll(@RequestBody @NotNull(
+        message = "Events list cannot be null or empty."
+    ) final EventDetailsDtoList eventDetailsDtoList) {
 
         try {
             log.info("Events list: " + eventDetailsDtoList);
@@ -124,6 +164,7 @@ public class EventController {
      */
     @GetMapping("/all")
     public ResponseEntity<?> all() {
+
         try {
             final EventDetailsDtoList eventDetailsDtoList = eventService.findAll();
             return (DtoList.isNotEmpty(eventDetailsDtoList))
@@ -150,6 +191,7 @@ public class EventController {
             @NotBlank(message = "Search text is required.") @RequestParam final String text,
             @RequestParam(defaultValue = "0") final Integer pageNumber,
             @RequestParam(defaultValue = "1") final Integer pageSize) {
+
         try {
             final EventDetailsDtoList eventDetailsDtoList = eventService.searchByText(text, pageNumber, pageSize);
             return (DtoList.isNotEmpty(eventDetailsDtoList))
@@ -171,11 +213,12 @@ public class EventController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
+
         try {
             final EventDto eventDto = eventService.findById(id);
             return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(eventDto);
+                .status(HttpStatus.OK)
+                .body(eventDto);
         } catch (final EventNotFoundException eventNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
         } catch (final Exception exception) {
@@ -192,11 +235,12 @@ public class EventController {
      */
     @GetMapping("/details/{eventId}")
     public ResponseEntity<?> getEventDetailsByEventId(@PathVariable("eventId") final Long eventId) {
+
         try {
             final EventDetailsDto eventDetailsDto = eventService.findEventDetailsByEventId(eventId);
             return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(eventDetailsDto);
+                .status(HttpStatus.OK)
+                .body(eventDetailsDto);
         } catch (final EventNotFoundException eventNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
         } catch (final Exception exception) {
@@ -212,12 +256,15 @@ public class EventController {
      * @return the event details by event id
      */
     @GetMapping("/search/city/{cityId}")
-    public ResponseEntity<?> getByCityId(@NotNull(message = "The city id cannot be null.") @PathVariable("cityId") final Long cityId) {
+    public ResponseEntity<?> getByCityId(@NotNull(message = "The city id cannot be null.") @PathVariable(
+        "cityId"
+    ) final Long cityId) {
+
         try {
             final EventDetailsDtoList eventDetailsDtoList = eventService.findEventDetailsByCityId(cityId);
             return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(eventDetailsDtoList);
+                .status(HttpStatus.OK)
+                .body(eventDetailsDtoList);
         } catch (final EventNotFoundException eventNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
         } catch (final Exception exception) {

@@ -25,6 +25,9 @@ import lombok.ToString;
 @ToString
 public class EventDetailsDto extends Dto<EventDetails> {
 
+    /** The id. */
+    private String id;
+
     /** The event id. */
     private Long eventId;
 
