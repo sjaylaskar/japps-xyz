@@ -25,6 +25,7 @@ import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookingDto;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
+import com.xyz.apps.ticketeer.util.StringUtil;
 
 import reactor.core.publisher.Mono;
 
@@ -321,7 +322,7 @@ public class BookingService extends GeneralService {
 
         serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get(bookingDto.getCityId())))
+        .uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), bookingDto.getCityId()))
         .retrieve()
         .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));
@@ -364,7 +365,7 @@ public class BookingService extends GeneralService {
 
         serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get(bookingDto.getEventShowId())))
+        .uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get()), bookingDto.getEventShowId()))
         .retrieve()
         .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new BookingServiceException(response.bodyToMono(String.class).block())));

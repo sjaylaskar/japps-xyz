@@ -5,10 +5,6 @@
 */
 package com.xyz.apps.ticketeer.booking.api.external;
 
-import java.text.MessageFormat;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 /**
  * The api property key.
  *
@@ -73,17 +69,5 @@ public enum ApiPropertyKey {
      */
     public String get() {
         return key;
-    }
-
-    /**
-     * Gets the url replacing all placeholders.
-     *
-     * @param placeHolderValues the place holder values
-     * @return the string
-     */
-    public String get(final Object ...placeHolderValues) {
-        return (ArrayUtils.isNotEmpty(placeHolderValues))
-                ? MessageFormat.format(get(), placeHolderValues)
-                : get();
     }
 }

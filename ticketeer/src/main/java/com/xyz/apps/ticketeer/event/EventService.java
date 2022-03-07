@@ -30,6 +30,7 @@ import com.xyz.apps.ticketeer.event.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDto;
 import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDtoList;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
+import com.xyz.apps.ticketeer.util.StringUtil;
 
 import reactor.core.publisher.Mono;
 
@@ -336,7 +337,7 @@ public class EventService extends GeneralService {
     public EventDetailsDtoList findEventDetailsByCityId(@NotNull(message = "The city id cannot be null.") final Long cityId) {
         final EventShowDtoList eventShowDtoList = serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get(cityId)))
+        .uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get()), cityId))
         .retrieve()
         .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new EventServiceException(response.bodyToMono(String.class).block())))

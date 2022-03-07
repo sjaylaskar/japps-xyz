@@ -5,10 +5,6 @@
 */
 package com.xyz.apps.ticketeer.event.api.external;
 
-import java.text.MessageFormat;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 /**
  * The api property key.
  *
@@ -18,7 +14,7 @@ import org.apache.commons.lang3.ArrayUtils;
 public enum ApiPropertyKey {
 
     /** The get city by id. */
-    GET_EVENT_SHOWS_BY_CITY_ID("api.external.eventshow.city.getByCityId");
+    GET_EVENT_SHOWS_BY_CITY_ID("api.external.eventshow.city.getByCityId/{0}");
 
     /** The key. */
     private String key;
@@ -42,15 +38,4 @@ public enum ApiPropertyKey {
         return key;
     }
 
-    /**
-     * Gets the url replacing all placeholders.
-     *
-     * @param placeHolderValues the place holder values
-     * @return the string
-     */
-    public String get(final Object ...placeHolderValues) {
-        return (ArrayUtils.isNotEmpty(placeHolderValues))
-                ? MessageFormat.format(get(), placeHolderValues)
-                : get();
-    }
 }

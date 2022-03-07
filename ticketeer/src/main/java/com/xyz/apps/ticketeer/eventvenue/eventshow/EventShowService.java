@@ -28,6 +28,7 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatRowPriceDto;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
+import com.xyz.apps.ticketeer.util.StringUtil;
 
 import reactor.core.publisher.Mono;
 
@@ -115,7 +116,7 @@ public class EventShowService extends GeneralService {
 
         serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get(cityId)))
+        .uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId))
         .retrieve()
         .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));
@@ -130,7 +131,7 @@ public class EventShowService extends GeneralService {
     private void validateEventId(final Long eventId) {
         serviceBeansFetcher().webClientBuilder().build()
         .get()
-        .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get(eventId)))
+        .uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId))
         .retrieve()
         .onStatus(status -> HttpStatus.OK.value() != status.value(),
                   response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));

@@ -25,6 +25,7 @@ import com.xyz.apps.ticketeer.general.model.DtoList;
 import com.xyz.apps.ticketeer.general.model.DtoListEmptyException;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.external.ApiPropertyKey;
+import com.xyz.apps.ticketeer.util.StringUtil;
 
 import reactor.core.publisher.Mono;
 
@@ -315,7 +316,7 @@ public class DiscountService extends GeneralService {
     private void validateApplicableCityIds(final Set<Long> applicableCityIds) {
         applicableCityIds
         .forEach(cityId -> {
-            serviceBeansFetcher().webClientBuilder().build().get().uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get(cityId))).retrieve()
+            serviceBeansFetcher().webClientBuilder().build().get().uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId)).retrieve()
             .onStatus(status -> HttpStatus.OK.value() != status.value(),
                       response -> Mono.error(new DiscountServiceException("Invalid city id: " + cityId)));
         });
@@ -329,7 +330,7 @@ public class DiscountService extends GeneralService {
     private void validateApplicableEventVenueIds(final Set<Long> applicableEventVenueIds) {
         applicableEventVenueIds
         .forEach(eventVenueId -> {
-            serviceBeansFetcher().webClientBuilder().build().get().uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_VENUE_BY_ID.get(eventVenueId))).retrieve()
+            serviceBeansFetcher().webClientBuilder().build().get().uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_VENUE_BY_ID.get()), eventVenueId)).retrieve()
             .onStatus(status -> HttpStatus.OK.value() != status.value(),
                       response -> Mono.error(new DiscountServiceException("Invalid event venue id: " + eventVenueId)));
         });
