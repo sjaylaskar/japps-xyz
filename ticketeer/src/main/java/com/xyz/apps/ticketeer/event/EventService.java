@@ -133,7 +133,7 @@ public class EventService extends GeneralService {
      * @param eventDetailsDto the event details dto
      * @return the event details dto
      */
-    @Transactional(noRollbackFor = {Throwable.class})
+    @Transactional(rollbackFor = {Throwable.class})
     public EventDetailsDto add(@NotNull(message = "Event details to add cannot be null")
     final  EventDetailsDto eventDetailsDto) {
         final Event event = add(eventModelMapper.toEntity(EventDto.of(eventDetailsDto)));
@@ -154,7 +154,7 @@ public class EventService extends GeneralService {
      * @param eventDetailsDtoList the event details dto list
      * @return the event details dto list
      */
-    @Transactional(noRollbackFor = {Throwable.class})
+    @Transactional(rollbackFor = {Throwable.class})
     public EventDetailsDtoList addAll(@NotNull(message = "Event details list to add cannot be null or empty") final EventDetailsDtoList eventDetailsDtoList) {
         final List<Event> events = addAll(eventModelMapper.toEntities(eventDetailsDtoList.dtos().stream().map(EventDto::of).toList()));
         if (CollectionUtils.isEmpty(events)) {

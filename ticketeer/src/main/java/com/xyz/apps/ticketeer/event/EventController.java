@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.event;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -75,7 +74,7 @@ public class EventController {
      * @return the response entity
      */
     @PostMapping("/add/all")
-    public ResponseEntity<?> addAll(@RequestBody @NotEmpty(message = "Events list cannot be null or empty.") final EventDetailsDtoList eventDetailsDtoList) {
+    public ResponseEntity<?> addAll(@RequestBody @NotNull(message = "Events list cannot be null or empty.") final EventDetailsDtoList eventDetailsDtoList) {
 
         try {
             log.info("Events list: " + eventDetailsDtoList);
