@@ -5,8 +5,11 @@
 */
 package com.xyz.apps.ticketeer.user;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,13 +31,17 @@ public class UserService extends GeneralService {
     @Autowired
     private UserRepository userRepository;
 
+    /** The user mapper. */
+    @Autowired
+    private UserModelMapper userModelMapper;
+
     /**
      * Adds the user.
      *
      * @param user the user
      * @return the event
      */
-    public User add(final User user) {
+    public User add(@NotNull(message = "The user cannot be null.") final User user) {
         return userRepository.save(user);
     }
 
@@ -44,7 +51,7 @@ public class UserService extends GeneralService {
      * @param user the user
      * @return the user
      */
-    public User update(final User user) {
+    public User update(@NotNull(message = "The user cannot be null.") final User user) {
         if (exists(user)) {
             return userRepository.save(user);
         }
@@ -57,7 +64,7 @@ public class UserService extends GeneralService {
      * @param user the user
      * @return true, if successful
      */
-    public boolean delete(final User user) {
+    public boolean delete(@NotNull(message = "The user cannot be null.") final User user) {
         if (exists(user)) {
             userRepository.delete(user);
             return true;
@@ -72,7 +79,7 @@ public class UserService extends GeneralService {
      * @param user the user
      * @return true, if successful
      */
-    private boolean exists(final User user) {
+    private boolean exists(@NotNull(message = "The user cannot be null.") final User user) {
 
         return userRepository.existsById(user.getId());
     }
@@ -93,5 +100,40 @@ public class UserService extends GeneralService {
             throw new InvalidUserException();
         }
         throw new UserServiceException("Username and Password cannot be blank.");
+    }
+
+    /**
+     * Finds the all.
+     *
+     * @return the user dto list
+     */
+    public UserDtoList findAll() {
+        final List<User> users = userRepository.findAll();
+        if (CollectionUtils.isNotEmpty(users)) {
+            return UserDtoList.of(userModelMapper.toDtos(users));
+        }
+        throw new UserServiceException("No users found.");
+    }
+
+    /**
+     * Delete by id.
+     *
+     * @param id the id
+     */
+    public void deleteById(@NotNull(message = "The user id cannot be null.") final Long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        }
+        throw new UserNotFoundException(id);
+    }
+
+    /**
+     * Finds the by id.
+     *
+     * @param id the id
+     * @return the user dto
+     */
+    public UserDto findById(@NotNull(message = "The user id cannot be null.") final Long id) {
+        return userModelMapper.toDto(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
     }
 }

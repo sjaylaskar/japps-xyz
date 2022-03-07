@@ -10,7 +10,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +30,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class Country extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
@@ -35,13 +39,14 @@ public class Country extends com.xyz.apps.ticketeer.general.model.Entity {
     private Long id;
 
     /** The code. */
-    @Column(unique = true, nullable = false)
-    @NotNull(message = "Country code is required.")
+    @Column(unique = true, nullable = false, length = 15)
+    @NotBlank(message = "Country code is required.")
+    @Size(min = 2, max = 15, message = "The country code must be between 2 and 15 characters.")
     private String code;
 
     /** The name. */
     @Column(unique = true, nullable = false)
-    @NotNull(message = "Country name is required.")
+    @NotBlank(message = "Country name is required.")
     private String name;
 
     /**

@@ -18,6 +18,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+import org.springframework.validation.annotation.Validated;
 
 import com.mongodb.lang.NonNull;
 import com.xyz.apps.ticketeer.pricing.calculator.DiscountStrategy;
@@ -38,6 +39,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
@@ -70,11 +72,13 @@ public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The min seats. */
     @NonNull
     @NotNull(message = "The min seats must not be null and be at least 0.")
+    @Min(value = 0)
     private Integer minSeats = 0;
 
     /** The nth seat. */
     @NonNull
     @NotNull(message = "The nth seat must not be null and be at least 0.")
+    @Min(value = 0)
     private Integer nthSeat;
 
     /** The show time type. */
@@ -88,8 +92,8 @@ public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
     private DiscountType discountType;
 
     /** The value. */
+    @NonNull
     @NotNull(message = "The value of the discount cannot be null")
-    @Min(value = 0, message = "The value of the discount must be at least 0.")
     private Double value = 0d;
 
     /** The start date. */

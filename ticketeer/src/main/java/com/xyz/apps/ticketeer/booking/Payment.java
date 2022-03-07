@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class Payment extends com.xyz.apps.ticketeer.general.model.Entity {
 
     // @TODO - Connect with actual payment gateway interface.

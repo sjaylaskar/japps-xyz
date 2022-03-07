@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+import org.springframework.validation.annotation.Validated;
 
 import com.mongodb.lang.NonNull;
 
@@ -28,6 +29,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class PlatformConvenienceFee extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */

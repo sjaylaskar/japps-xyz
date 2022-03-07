@@ -10,6 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+
+import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +29,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class Event extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
@@ -35,5 +39,6 @@ public class Event extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The name. */
     @Column(nullable = false)
+    @NotBlank(message = "The event name cannot be blank.")
     private String name;
 }

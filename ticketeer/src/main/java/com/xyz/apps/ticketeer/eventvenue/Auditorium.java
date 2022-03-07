@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -38,7 +39,7 @@ public class Auditorium extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The name. */
     @Column(unique = true, nullable = false)
-    @NotNull(message = "Auditorium name is required.")
+    @NotBlank(message = "Auditorium name is required.")
     private String name;
 
     /** The number of seats. */

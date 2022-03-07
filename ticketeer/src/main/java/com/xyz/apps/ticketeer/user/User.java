@@ -11,7 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +30,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class User extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The id. */
     @Id
@@ -34,18 +38,20 @@ public class User extends com.xyz.apps.ticketeer.general.model.Entity {
     private Long id;
 
     /** The username. */
-    @Column(nullable = false, unique = true)
-    @NotNull(message = "Username is mandatory.")
+    @Column(nullable = false, unique = true, length = 15)
+    @NotBlank(message = "Username is mandatory.")
+    @Size(min = 8, max = 15, message = "The username must be between 8 and 15 characters.")
     private String username;
 
     /** The password. */
-    @Column(nullable = false)
-    @NotNull(message = "Password is mandatory.")
+    @Column(nullable = false, length = 15)
+    @NotBlank(message = "Password is mandatory.")
+    @Size(min = 8, max = 15, message = "The password must be between 8 and 15 characters.")
     private String password;
 
     /** The firstname. */
     @Column(nullable = false)
-    @NotNull(message = "First name is mandatory.")
+    @NotBlank(message = "First name is mandatory.")
     private String firstname;
 
     /** The lastname. */
@@ -54,11 +60,12 @@ public class User extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The email. */
     @Column(nullable = false, unique = true)
     @Email(message = "Not a valid email id.")
-    @NotNull(message = "Email id is mandatory.")
+    @NotBlank(message = "Email id is mandatory.")
     private String email;
 
     /** The phone number. */
-    @Column(nullable = false, unique = true)
-    @NotNull(message = "Phone number is mandatory.")
+    @Column(nullable = false, unique = true, length = 15)
+    @NotBlank(message = "Phone number is mandatory.")
+    @Size(min = 10, max = 15, message = "The phone number must be between 8 and 15 characters.")
     private String phoneNumber;
 }

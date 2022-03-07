@@ -12,7 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -42,13 +44,14 @@ public class City extends com.xyz.apps.ticketeer.general.model.Entity {
     private Long id;
 
     /** The code. */
-    @Column(unique = true, nullable = false)
-    @NotNull(message = "City code is required.")
+    @Column(unique = true, nullable = false, length = 10)
+    @NotBlank(message = "City code is required.")
+    @Size(min = 2, max = 10, message = "The city code must be between 2 and 10 characters.")
     private String code;
 
     /** The name. */
     @Column(nullable = false)
-    @NotNull(message = "City name is required.")
+    @NotBlank(message = "City name is required.")
     private String name;
 
     @ManyToOne(optional = false)

@@ -8,10 +8,13 @@ package com.xyz.apps.ticketeer.event;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.data.mongodb.core.mapping.TextScore;
+import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.general.model.Entity;
 
@@ -30,6 +33,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class EventDetails extends Entity {
 
     /** The id. */
@@ -37,10 +41,12 @@ public class EventDetails extends Entity {
     private Long id;
 
     /** The event id. */
+    @NotBlank(message = "The event id cannot be blank.")
     private Long eventId;
 
     /** The name. */
     @TextIndexed(weight = 5)
+    @NotBlank(message = "The event name cannot be blank.")
     private String name;
 
     /** The description. */
@@ -48,6 +54,7 @@ public class EventDetails extends Entity {
     private String description;
 
     /** The event type. */
+    @NotBlank(message = "The event type cannot be blank.")
     private String eventType;
 
     /** The language. */
@@ -76,6 +83,7 @@ public class EventDetails extends Entity {
     @TextIndexed(weight = 1.74f)
     private String countryName;
 
+    /** The score. */
     @TextScore
     private Float score;
 }
