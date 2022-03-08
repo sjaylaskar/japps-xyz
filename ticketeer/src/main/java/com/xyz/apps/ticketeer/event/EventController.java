@@ -67,7 +67,7 @@ public class EventController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add event: " + eventDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add event: " + eventDetailsDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -93,12 +93,12 @@ public class EventController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(ExceptionUtils.getRootCauseMessage(exception));
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update event: " + eventDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to update event: " + eventDetailsDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -127,7 +127,7 @@ public class EventController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete event: " + eventId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete event: " + eventId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -153,7 +153,7 @@ public class EventController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add events: " + eventDetailsDtoList + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add events: " + eventDetailsDtoList + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -174,7 +174,7 @@ public class EventController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No events found.");
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
-                + ExceptionUtils.getRootCauseMessage(exception));
+                + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -201,7 +201,7 @@ public class EventController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("No events found.");
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
-                + ExceptionUtils.getRootCauseMessage(exception));
+                + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -220,10 +220,10 @@ public class EventController {
                 .status(HttpStatus.OK)
                 .body(eventDto);
         } catch (final EventNotFoundException eventNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
-                + ExceptionUtils.getRootCauseMessage(exception));
+                + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -242,10 +242,10 @@ public class EventController {
                 .status(HttpStatus.OK)
                 .body(eventDetailsDto);
         } catch (final EventNotFoundException eventNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
-                + ExceptionUtils.getRootCauseMessage(exception));
+                + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -266,10 +266,10 @@ public class EventController {
                 .status(HttpStatus.OK)
                 .body(eventDetailsDtoList);
         } catch (final EventNotFoundException eventNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find events. Error: "
-                + ExceptionUtils.getRootCauseMessage(exception));
+                + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 }

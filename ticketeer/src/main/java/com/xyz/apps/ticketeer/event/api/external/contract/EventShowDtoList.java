@@ -8,6 +8,8 @@ package com.xyz.apps.ticketeer.event.api.external.contract;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,6 +20,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EventShowDtoList {
 
     private List<EventShowDto> dtos = new ArrayList<>();

@@ -67,7 +67,7 @@ public class UserController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add user: " + userDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add user: " + userDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -96,7 +96,7 @@ public class UserController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update user: " + userDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to update user: " + userDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -122,7 +122,7 @@ public class UserController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete user: " + userDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete user: " + userDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -141,12 +141,12 @@ public class UserController {
             log.info("User deleted: " + id);
             return ResponseEntity.accepted().body("Deleted user with id: " + id);
         } catch (final UserNotFoundException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(exception));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete user with id: " + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete user with id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -168,7 +168,7 @@ public class UserController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body("Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -186,12 +186,12 @@ public class UserController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(ExceptionUtils.getRootCauseMessage(exception));
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body("Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -209,10 +209,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK)
                 .body(userDto);
         } catch (final UserNotFoundException userNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(userNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(userNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find user: "
-                + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 }

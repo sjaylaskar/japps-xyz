@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import com.xyz.apps.ticketeer.config.api.ApiPropertyKey;
 
@@ -51,7 +52,9 @@ public class AppConfig extends EnvironmentConfig {
      */
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(environment.getProperty(ApiPropertyKey.BASE_URL.get())));
+        return restTemplate;
     }
 
     /**

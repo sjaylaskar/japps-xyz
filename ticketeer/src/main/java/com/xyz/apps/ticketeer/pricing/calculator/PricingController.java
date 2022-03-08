@@ -56,7 +56,7 @@ public class PricingController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to calculate amount. Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to calculate amount. Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 }

@@ -13,15 +13,17 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.EventVenueService;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.external.ApiPropertyKey;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.api.external.contract.CityDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.api.external.contract.EventDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeat;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus;
@@ -29,8 +31,6 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatRowPriceDto;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
 import com.xyz.apps.ticketeer.util.StringUtil;
-
-import reactor.core.publisher.Mono;
 
 
 /**
@@ -114,13 +114,12 @@ public class EventShowService extends GeneralService {
      */
     private void validateCity(@NotNull(message = "The city id cannot be null") final Long cityId) {
 
-        serviceBeansFetcher().webClientBuilder().build()
-        .get()
-        .uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId))
-        .retrieve()
-        .onStatus(status -> HttpStatus.OK.value() != status.value(),
-                  response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));
-
+        try {
+            serviceBeansFetcher().restTemplate().getForEntity(
+                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new EventShowServiceException(exception.getResponseBodyAsString());
+        }
     }
 
     /**
@@ -129,12 +128,12 @@ public class EventShowService extends GeneralService {
      * @param eventId the event id
      */
     private void validateEventId(final Long eventId) {
-        serviceBeansFetcher().webClientBuilder().build()
-        .get()
-        .uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId))
-        .retrieve()
-        .onStatus(status -> HttpStatus.OK.value() != status.value(),
-                  response -> Mono.error(new EventShowServiceException(response.bodyToMono(String.class).block())));
+        try {
+            serviceBeansFetcher().restTemplate().getForEntity(
+                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId), EventDto.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new EventShowServiceException(exception.getResponseBodyAsString());
+        }
     }
 
     /**

@@ -64,7 +64,7 @@ public class BookingController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to reserve booking: " + bookingDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to reserve booking: " + bookingDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -95,7 +95,7 @@ public class BookingController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to confirm booking: " + bookingDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to confirm booking: " + bookingDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -126,7 +126,7 @@ public class BookingController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to cancel booking: " + bookingDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to cancel booking: " + bookingDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 }

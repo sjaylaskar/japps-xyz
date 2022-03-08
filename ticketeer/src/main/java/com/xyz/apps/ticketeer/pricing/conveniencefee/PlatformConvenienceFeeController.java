@@ -59,7 +59,7 @@ public class PlatformConvenienceFeeController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add platformConvenienceFee: " + platformConvenienceFeeDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add platformConvenienceFee: " + platformConvenienceFeeDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -83,7 +83,7 @@ public class PlatformConvenienceFeeController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update platformConvenienceFee: " + platformConvenienceFeeDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to update platformConvenienceFee: " + platformConvenienceFeeDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -105,7 +105,7 @@ public class PlatformConvenienceFeeController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete platformConvenienceFee with id: " + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete platformConvenienceFee with id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -124,7 +124,7 @@ public class PlatformConvenienceFeeController {
                     .body(percentage);
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find platform convenience fee percentage. Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                "Failed to find platform convenience fee percentage. Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 }

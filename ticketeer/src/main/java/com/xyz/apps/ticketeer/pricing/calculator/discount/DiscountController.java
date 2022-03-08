@@ -61,7 +61,7 @@ public class DiscountController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add discount: " + discountDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add discount: " + discountDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -85,7 +85,7 @@ public class DiscountController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add discounts: " + discountDtoList + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add discounts: " + discountDtoList + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -109,7 +109,7 @@ public class DiscountController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update discount: " + discountDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to update discount: " + discountDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -133,7 +133,7 @@ public class DiscountController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update discounts: " + discountDtoList + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to update discounts: " + discountDtoList + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -154,7 +154,7 @@ public class DiscountController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete discount with id: " + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete discount with id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -175,7 +175,7 @@ public class DiscountController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete discount: " + offerCode + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete discount: " + offerCode + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -194,11 +194,11 @@ public class DiscountController {
                     .status(HttpStatus.OK)
                     .body(discountDtoFound);
         } catch (final DiscountNotFoundException discountNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
                 "Failed to find discount: "
-                + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -216,11 +216,11 @@ public class DiscountController {
                     .status(HttpStatus.OK)
                     .body(discountDtoFound);
         } catch (final DiscountNotFoundException discountNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
                 "Failed to find discount: "
-                + offerCode + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + offerCode + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -238,11 +238,11 @@ public class DiscountController {
                     .status(HttpStatus.OK)
                     .body(discountDtoListFound);
         } catch (final DiscountNotFoundException discountNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
                 "Failed to find discounts by city: "
-                + cityId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + cityId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -260,11 +260,11 @@ public class DiscountController {
                     .status(HttpStatus.OK)
                     .body(discountDtoListFound);
         } catch (final DiscountServiceException discountServiceException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountServiceException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountServiceException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
                 "Failed to find discounts by city: "
-                + eventVenueId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + eventVenueId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -281,15 +281,10 @@ public class DiscountController {
                     .status(HttpStatus.OK)
                     .body(discountDtoListFound);
         } catch (final DiscountServiceException discountServiceException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(discountServiceException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountServiceException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find discounts. Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                "Failed to find discounts. Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
-
-    // @TODO:
-    // find by city
-    // find by event venue
-    // find all
 }

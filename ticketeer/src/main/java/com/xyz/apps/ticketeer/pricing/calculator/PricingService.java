@@ -9,8 +9,10 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.pricing.calculator.api.external.ApiPropertyKey;
@@ -58,10 +60,15 @@ public class PricingService extends GeneralService {
                 }
             }
 
-            final Double platformConvenienceFeePercentage
-            = serviceBeansFetcher().webClientBuilder().build().get().uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE.get())).retrieve().bodyToMono(Double.class).block();
+            ResponseEntity<Double> platformConvenienceFeeResponseEntity = null;
+            try {
+                platformConvenienceFeeResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
+                    serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE.get()), Double.class);
+            } catch (final HttpStatusCodeException exception) {
+                throw new PricingServiceException(exception.getResponseBodyAsString());
+            }
 
-            return bookingPriceInfo.getFinalAmount() * (1 + platformConvenienceFeePercentage / 100);
+            return bookingPriceInfo.getFinalAmount() * (1 + platformConvenienceFeeResponseEntity.getBody() / 100);
         }
 
         return 0d;

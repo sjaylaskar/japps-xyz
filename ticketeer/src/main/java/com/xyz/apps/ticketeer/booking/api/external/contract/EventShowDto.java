@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.event.api.external.contract;
+package com.xyz.apps.ticketeer.booking.api.external.contract;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

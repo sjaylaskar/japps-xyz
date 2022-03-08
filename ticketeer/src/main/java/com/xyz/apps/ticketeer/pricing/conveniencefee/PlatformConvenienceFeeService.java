@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -101,7 +100,7 @@ public class PlatformConvenienceFeeService extends GeneralService {
         try {
             return find().getFeePercentage();
         } catch (final Exception exception) {
-            log.error(ExceptionUtils.getRootCauseMessage(exception));
+            log.error(exception);
             return 0d;
         }
     }

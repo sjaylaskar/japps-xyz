@@ -14,7 +14,7 @@ package com.xyz.apps.ticketeer.event.api.external;
 public enum ApiPropertyKey {
 
     /** The get city by id. */
-    GET_EVENT_SHOWS_BY_CITY_ID("api.external.eventshow.city.getByCityId/{0}");
+    GET_EVENT_SHOWS_BY_CITY_ID("api.external.eventshow.city.getByCityId");
 
     /** The key. */
     private String key;

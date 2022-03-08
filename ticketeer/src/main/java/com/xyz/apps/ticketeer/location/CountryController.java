@@ -59,7 +59,7 @@ public class CountryController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to add country: "
-                    + countryDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + countryDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -83,7 +83,7 @@ public class CountryController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add countries: " + countryDtoList + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add countries: " + countryDtoList + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -106,12 +106,12 @@ public class CountryController {
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionUtils.getRootCauseMessage(exception));
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update country: " + countryDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to update country: " + countryDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -131,12 +131,12 @@ public class CountryController {
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionUtils.getRootCauseMessage(exception));
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete country: " + countryDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete country: " + countryDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -157,12 +157,12 @@ public class CountryController {
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionUtils.getRootCauseMessage(exception));
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete country: " + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete country: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -182,12 +182,12 @@ public class CountryController {
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionUtils.getRootCauseMessage(exception));
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete country: " + code + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete country: " + code + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -207,12 +207,12 @@ public class CountryController {
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionUtils.getRootCauseMessage(exception));
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete country: " + name + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete country: " + name + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -232,10 +232,10 @@ public class CountryController {
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionUtils.getRootCauseMessage(exception));
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find country: "
-                + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -256,10 +256,10 @@ public class CountryController {
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionUtils.getRootCauseMessage(exception));
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find country: "
-                + code + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + code + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -280,10 +280,10 @@ public class CountryController {
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionUtils.getRootCauseMessage(exception));
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find country: "
-                + name + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + name + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
 
     }
@@ -303,10 +303,10 @@ public class CountryController {
         } catch (final CountryNotFoundException exception) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionUtils.getRootCauseMessage(exception));
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities. Error: "
-                + ExceptionUtils.getRootCauseMessage(exception));
+                + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 }

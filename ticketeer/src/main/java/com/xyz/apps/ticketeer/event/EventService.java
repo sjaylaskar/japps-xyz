@@ -1,8 +1,8 @@
 /*
-* Id: EventService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: EventService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.event;
 
 import java.util.Arrays;
@@ -21,10 +21,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.event.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDto;
@@ -32,7 +33,6 @@ import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDtoList;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.util.StringUtil;
 
-import reactor.core.publisher.Mono;
 
 /**
  * The event service.
@@ -67,6 +67,7 @@ public class EventService extends GeneralService {
      * @return the event
      */
     private Event save(final Event event) {
+
         return eventRepository.save(event);
     }
 
@@ -77,6 +78,7 @@ public class EventService extends GeneralService {
      * @return the list of events
      */
     private List<Event> saveAll(final List<Event> events) {
+
         return eventRepository.saveAll(events);
     }
 
@@ -97,6 +99,7 @@ public class EventService extends GeneralService {
      * @return the event dto
      */
     public EventDto findById(final Long id) {
+
         return eventModelMapper.toDto(eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id)));
     }
 
@@ -107,6 +110,7 @@ public class EventService extends GeneralService {
      * @return the event details dto
      */
     public EventDetailsDto findEventDetailsByEventId(@NotNull(message = "The event id cannot be null.") final Long eventId) {
+
         final EventDetails eventDetails = findEventDetails(eventId);
         if (eventDetails != null) {
             return eventDetailsModelMapper.toDto(eventDetails);
@@ -122,7 +126,8 @@ public class EventService extends GeneralService {
      */
     private EventDetails findEventDetails(final Long eventId) {
 
-        return serviceBeansFetcher().mongoTemplate().findOne(new Query().addCriteria(Criteria.where("eventId").is(eventId)), EventDetails.class);
+        return serviceBeansFetcher().mongoTemplate().findOne(new Query().addCriteria(Criteria.where("eventId").is(eventId)),
+            EventDetails.class);
     }
 
     /**
@@ -131,8 +136,12 @@ public class EventService extends GeneralService {
      * @param eventIds the event ids
      * @return the event details dto list
      */
-    public EventDetailsDtoList findEventDetailsByEventIds(@NotNull(message = "The event id cannot be null.") final List<Long> eventIds) {
-        final List<EventDetails> eventDetailsList = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("eventId").in(eventIds)), EventDetails.class);
+    public EventDetailsDtoList findEventDetailsByEventIds(@NotNull(
+        message = "The event id cannot be null."
+    ) final List<Long> eventIds) {
+
+        final List<EventDetails> eventDetailsList = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria
+            .where("eventId").in(eventIds)), EventDetails.class);
         if (CollectionUtils.isNotEmpty(eventDetailsList)) {
             return EventDetailsDtoList.of(eventDetailsModelMapper.toDtos(eventDetailsList));
         }
@@ -146,8 +155,8 @@ public class EventService extends GeneralService {
      * @return the event details dto
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public EventDetailsDto add(@NotNull(message = "Event details to add cannot be null.")
-    final  EventDetailsDto eventDetailsDto) {
+    public EventDetailsDto add(@NotNull(message = "Event details to add cannot be null.") final EventDetailsDto eventDetailsDto) {
+
         final Event event = save(eventModelMapper.toEntity(EventDto.of(eventDetailsDto)));
         if (event == null) {
             throw new EventAddFailedException(Arrays.asList(eventDetailsDto));
@@ -167,8 +176,10 @@ public class EventService extends GeneralService {
      * @return the event details dto
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public EventDetailsDto update(@NotNull(message = "Event details to update cannot be null.")
-    final  EventDetailsDto eventDetailsDto) {
+    public EventDetailsDto update(@NotNull(
+        message = "Event details to update cannot be null."
+    ) final EventDetailsDto eventDetailsDto) {
+
         if (eventDetailsDto.getEventId() == null) {
             throw new EventServiceException("Event id is required to update event.");
         }
@@ -197,6 +208,7 @@ public class EventService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public void delete(@NotNull(message = "Event id cannot be null") final Long eventId) {
+
         if (eventRepository.existsById(eventId)) {
 
             final EventDetails eventDetails = findEventDetails(eventId);
@@ -231,14 +243,19 @@ public class EventService extends GeneralService {
      * @return the event details dto list
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public EventDetailsDtoList addAll(@NotNull(message = "Event details list to add cannot be null or empty") final EventDetailsDtoList eventDetailsDtoList) {
-        final List<Event> events = saveAll(eventModelMapper.toEntities(eventDetailsDtoList.dtos().stream().map(EventDto::of).toList()));
+    public EventDetailsDtoList addAll(@NotNull(
+        message = "Event details list to add cannot be null or empty"
+    ) final EventDetailsDtoList eventDetailsDtoList) {
+
+        final List<Event> events = saveAll(eventModelMapper.toEntities(eventDetailsDtoList.dtos().stream().map(EventDto::of)
+            .toList()));
         if (CollectionUtils.isEmpty(events)) {
             throw new EventAddFailedException(eventDetailsDtoList.dtos());
         }
         final Iterator<Event> eventIterator = events.iterator();
         eventDetailsDtoList.dtos().forEach(eventDetailsDto -> eventDetailsDto.setEventId(eventIterator.next().getId()));
-        final List<EventDetails> eventDetails = eventDetailsRepository.saveAll(eventDetailsModelMapper.toEntities(eventDetailsDtoList.dtos()));
+        final List<EventDetails> eventDetails = eventDetailsRepository.saveAll(eventDetailsModelMapper.toEntities(
+            eventDetailsDtoList.dtos()));
         if (CollectionUtils.isEmpty(eventDetails)) {
             throw new EventAddFailedException(eventDetailsDtoList.dtos());
         }
@@ -252,7 +269,9 @@ public class EventService extends GeneralService {
      * @return the event details dto list
      */
     public EventDetailsDtoList findAllByEvents(final List<Event> events) {
-        return toEventDetailsDtoList(serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("eventId").in(events.stream().map(Event::getId).toList())), EventDetails.class));
+
+        return toEventDetailsDtoList(serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("eventId")
+            .in(events.stream().map(Event::getId).toList())), EventDetails.class));
     }
 
     /**
@@ -275,14 +294,17 @@ public class EventService extends GeneralService {
      * @return the event details dto list
      */
     public EventDetailsDtoList searchByText(final String text, final int pageNumber, final int pageSize) {
-        List<EventDetails> eventDetailsList = serviceBeansFetcher().mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.phrase(text), pageNumber, pageSize), EventDetails.class);
+
+        List<EventDetails> eventDetailsList = serviceBeansFetcher().mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(
+            SearchQuery.phrase(text), pageNumber, pageSize), EventDetails.class);
 
         if (CollectionUtils.isEmpty(eventDetailsList)) {
-            eventDetailsList = serviceBeansFetcher().mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.any(text), pageNumber, pageSize), EventDetails.class);
+            eventDetailsList = serviceBeansFetcher().mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.any(
+                text), pageNumber, pageSize), EventDetails.class);
         }
         return (CollectionUtils.isNotEmpty(eventDetailsList))
-                ? EventDetailsDtoList.of(eventDetailsModelMapper.toDtos(eventDetailsList))
-                : null;
+            ? EventDetailsDtoList.of(eventDetailsModelMapper.toDtos(eventDetailsList))
+            : null;
     }
 
     /**
@@ -299,8 +321,9 @@ public class EventService extends GeneralService {
          * @return the query
          */
         private static Query scoreSortedPageableQuery(final TextQuery textQuery, final int pageNumber, final int pageSize) {
+
             return textQuery.sortByScore().includeScore()
-                    .with(PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Order.desc("score"))));
+                .with(PageRequest.of(pageNumber, pageSize).withSort(Sort.by(Order.desc("score"))));
         }
 
         /**
@@ -310,9 +333,10 @@ public class EventService extends GeneralService {
          * @return the text query
          */
         private static TextQuery phrase(final String text) {
+
             return TextQuery
-                    .queryText(TextCriteria.forDefaultLanguage()
-                        .matchingPhrase(text));
+                .queryText(TextCriteria.forDefaultLanguage()
+                    .matchingPhrase(text));
         }
 
         /**
@@ -322,9 +346,10 @@ public class EventService extends GeneralService {
          * @return the text query
          */
         private static TextQuery any(final String text) {
+
             return TextQuery
-                    .queryText(TextCriteria.forDefaultLanguage()
-                        .matchingAny(text.split(StringUtils.SPACE)));
+                .queryText(TextCriteria.forDefaultLanguage()
+                    .matchingAny(text.split(StringUtils.SPACE)));
         }
     }
 
@@ -335,18 +360,23 @@ public class EventService extends GeneralService {
      * @return the event details dto list
      */
     public EventDetailsDtoList findEventDetailsByCityId(@NotNull(message = "The city id cannot be null.") final Long cityId) {
-        final EventShowDtoList eventShowDtoList = serviceBeansFetcher().webClientBuilder().build()
-        .get()
-        .uri(StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get()), cityId))
-        .retrieve()
-        .onStatus(status -> HttpStatus.OK.value() != status.value(),
-                  response -> Mono.error(new EventServiceException(response.bodyToMono(String.class).block())))
-        .bodyToMono(EventShowDtoList.class).block();
 
-        if (eventShowDtoList != null && CollectionUtils.isNotEmpty(eventShowDtoList.getDtos())) {
-            return findEventDetailsByEventIds(eventShowDtoList.getDtos().stream().map(EventShowDto::getEventId).toList());
+        ResponseEntity<EventShowDtoList> eventShowDtoListResponseEntity = null;
+        try {
+        eventShowDtoListResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
+            StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get()),
+                cityId), EventShowDtoList.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new EventNotFoundException(exception.getResponseBodyAsString());
         }
 
-        throw new EventServiceException("No events found for city: " + cityId);
+        final EventShowDtoList eventShowDtoList = eventShowDtoListResponseEntity.getBody();
+
+        if (eventShowDtoList == null || CollectionUtils.isEmpty(eventShowDtoList.getDtos())) {
+            throw EventNotFoundException.forCityId(cityId);
+        }
+
+        return findEventDetailsByEventIds(eventShowDtoList.getDtos().stream().map(EventShowDto::getEventId).toList());
+
     }
 }

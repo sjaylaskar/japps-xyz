@@ -71,7 +71,7 @@ public class EventShowSeatController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to find seats for event show: "
-                    + eventShowId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + eventShowId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -96,7 +96,7 @@ public class EventShowSeatController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to find amount for event show seats: "
-                    + seatIds + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + seatIds + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -119,7 +119,7 @@ public class EventShowSeatController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to check if seats are available: "
-                    + seatIds + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + seatIds + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -142,7 +142,7 @@ public class EventShowSeatController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to check if seats are reserved: "
-                    + eventShowSeatsBookingDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + eventShowSeatsBookingDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -165,7 +165,7 @@ public class EventShowSeatController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to reserve seats: "
-                    + seatIds + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + seatIds + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -188,7 +188,7 @@ public class EventShowSeatController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to unreserve seats: "
-                    + seatIds + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + seatIds + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -211,7 +211,7 @@ public class EventShowSeatController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to book seats: "
-                    + eventShowSeatsBookingDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + eventShowSeatsBookingDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -234,7 +234,7 @@ public class EventShowSeatController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to fill booking for seats: "
-                    + eventShowSeatsBookingDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + eventShowSeatsBookingDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -256,7 +256,7 @@ public class EventShowSeatController {
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body("Failed to cancel booking: "
-                    + bookingId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                    + bookingId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 }

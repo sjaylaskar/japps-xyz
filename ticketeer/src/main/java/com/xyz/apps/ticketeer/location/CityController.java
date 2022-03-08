@@ -62,7 +62,7 @@ public class CityController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add city: " + cityDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add city: " + cityDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -86,7 +86,7 @@ public class CityController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add cities: " + cityDtoList + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add cities: " + cityDtoList + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -107,12 +107,12 @@ public class CityController {
                 .accepted()
                 .body(cityUpdated);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update city: " + cityDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to update city: " + cityDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -130,12 +130,12 @@ public class CityController {
             log.info("City deleted: " + cityDto);
             return ResponseEntity.accepted().body("Deleted city: " + cityDto);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete city: " + cityDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete city: " + cityDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -153,12 +153,12 @@ public class CityController {
             log.info("City deleted: " + id);
             return ResponseEntity.accepted().body("Deleted city with id: " + id);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete city with id: " + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete city with id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -178,12 +178,12 @@ public class CityController {
             log.info("City deleted: " + code);
             return ResponseEntity.accepted().body("Deleted city: " + code);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete city: " + code + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to delete city: " + code + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -201,10 +201,10 @@ public class CityController {
             return ResponseEntity.status(HttpStatus.OK)
                 .body(cityDto);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
-                + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -225,10 +225,10 @@ public class CityController {
                 .status(HttpStatus.OK)
                 .body(cityDto);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
-                + code + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + code + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -249,10 +249,10 @@ public class CityController {
                     .status(HttpStatus.OK)
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
-                + name + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + name + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -272,10 +272,10 @@ public class CityController {
                     .status(HttpStatus.OK)
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
-                + countryCode + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + countryCode + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -295,10 +295,10 @@ public class CityController {
                     .status(HttpStatus.OK)
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
-                + countryId + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                + countryId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -316,10 +316,10 @@ public class CityController {
                     .status(HttpStatus.OK)
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(cityNotFoundException));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities. Error: "
-                + ExceptionUtils.getRootCauseMessage(exception));
+                + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 }

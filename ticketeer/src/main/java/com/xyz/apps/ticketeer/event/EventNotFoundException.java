@@ -35,7 +35,27 @@ public class EventNotFoundException extends EventServiceException {
      * @param eventIds the event ids
      */
     public EventNotFoundException(final Collection<Long> eventIds) {
-        super("Event shows not found for ids: " + CollectionUtil.stringify(eventIds));
+        super("Events not found for ids: " + CollectionUtil.stringify(eventIds));
+    }
+
+    /**
+     * Instantiates a new event not found exception.
+     *
+     * @param message the message
+     */
+    public EventNotFoundException(final String message) {
+
+        super(message);
+    }
+
+    /**
+     * For no events for city.
+     *
+     * @param cityId the city id
+     * @return the event not found exception
+     */
+    public static EventNotFoundException forCityId(final Long cityId) {
+        return new EventNotFoundException("No events found for city: " + cityId);
     }
 
 }

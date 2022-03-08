@@ -57,7 +57,7 @@ public class EventVenueController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add event venue: " + eventVenueDetailsDto + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+                .body("Failed to add event venue: " + eventVenueDetailsDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -75,10 +75,10 @@ public class EventVenueController {
            return ResponseEntity.status(HttpStatus.OK)
                    .body(eventVenueDto);
        } catch(final EventVenueNotFoundException eventVenueNotFoundException) {
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCauseMessage(eventVenueNotFoundException));
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventVenueNotFoundException).getLocalizedMessage());
        } catch (final Exception exception) {
            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
-               + id + ". Error: " + ExceptionUtils.getRootCauseMessage(exception));
+               + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
        }
    }
 }
