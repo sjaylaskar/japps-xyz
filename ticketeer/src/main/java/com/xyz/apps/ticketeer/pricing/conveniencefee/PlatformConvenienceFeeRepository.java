@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.pricing.conveniencefee;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 
@@ -14,6 +15,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public interface PlatformConvenienceFeeRepository extends MongoRepository<PlatformConvenienceFee, String> {
+public interface PlatformConvenienceFeeRepository extends MongoRepository<PlatformConvenienceFee, ObjectId> {
 
 }

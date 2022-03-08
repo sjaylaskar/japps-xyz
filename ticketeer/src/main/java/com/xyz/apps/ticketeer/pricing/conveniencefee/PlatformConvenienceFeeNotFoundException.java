@@ -5,7 +5,6 @@
 */
 package com.xyz.apps.ticketeer.pricing.conveniencefee;
 
-
 /**
  * The platform convenience fee not found exception.
  *

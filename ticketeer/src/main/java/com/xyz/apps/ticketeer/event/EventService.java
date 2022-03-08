@@ -183,22 +183,21 @@ public class EventService extends GeneralService {
         if (eventDetailsDto.getEventId() == null) {
             throw new EventServiceException("Event id is required to update event.");
         }
-        if (eventRepository.existsById(eventDetailsDto.getEventId())) {
-            final Event event = save(eventModelMapper.toEntity(EventDto.of(eventDetailsDto)));
-            if (event == null) {
-                throw new EventUpdateFailedException(Arrays.asList(eventDetailsDto));
-            }
-            eventDetailsDto.setEventId(event.getId());
-            final EventDetailsDto eventDetailsDtoForEvent = findEventDetailsByEventId(eventDetailsDto.getEventId());
-            if (eventDetailsDtoForEvent != null) {
-                eventDetailsDto.setId(eventDetailsDtoForEvent.getId());
-                return saveEventDetails(eventDetailsDto);
-            } else {
-                return saveEventDetails(eventDetailsDto);
-            }
-        } else {
+        if (!eventRepository.existsById(eventDetailsDto.getEventId())) {
             throw new EventNotFoundException(eventDetailsDto.getEventId());
         }
+
+        final Event event = save(eventModelMapper.toEntity(EventDto.of(eventDetailsDto)));
+        if (event == null) {
+            throw new EventUpdateFailedException(Arrays.asList(eventDetailsDto));
+        }
+        eventDetailsDto.setEventId(event.getId());
+        final EventDetailsDto eventDetailsDtoForEvent = findEventDetailsByEventId(eventDetailsDto.getEventId());
+        if (eventDetailsDtoForEvent != null) {
+            eventDetailsDto.setId(eventDetailsDtoForEvent.getId());
+        }
+
+        return saveEventDetails(eventDetailsDto);
     }
 
     /**
@@ -363,9 +362,9 @@ public class EventService extends GeneralService {
 
         ResponseEntity<EventShowDtoList> eventShowDtoListResponseEntity = null;
         try {
-        eventShowDtoListResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-            StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get()),
-                cityId), EventShowDtoList.class);
+            eventShowDtoListResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
+                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get()),
+                    cityId), EventShowDtoList.class);
         } catch (final HttpStatusCodeException exception) {
             throw new EventNotFoundException(exception.getResponseBodyAsString());
         }

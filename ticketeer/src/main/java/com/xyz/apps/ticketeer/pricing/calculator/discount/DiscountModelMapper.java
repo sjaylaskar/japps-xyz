@@ -43,6 +43,9 @@ public class DiscountModelMapper extends GeneralModelMapper<Discount, DiscountDt
         final TypeMap<Discount, DiscountDto> discountToDiscountDtoMap = modelMapper.createTypeMap(Discount.class, DiscountDto.class);
         discountToDiscountDtoMap
         .addMappings(
+            mapper -> mapper.using(ModelConverter.OBJECTID_TO_STRING_CONVERTER).map(Discount::getId, DiscountDto::setId)
+          )
+        .addMappings(
           mapper -> mapper.using(ModelConverter.ENUM_TO_NAME_CONVERTER).map(Discount::getDiscountStrategy, DiscountDto::setDiscountStrategy)
         )
         .addMappings(
@@ -64,6 +67,9 @@ public class DiscountModelMapper extends GeneralModelMapper<Discount, DiscountDt
         final TypeMap<DiscountDto, Discount> discountDtoToDiscountMap = modelMapper.createTypeMap(DiscountDto.class, Discount.class);
         discountDtoToDiscountMap
         .addMappings(
+            mapper -> mapper.using(ModelConverter.STRING_TO_OBJECTID_CONVERTER).map(DiscountDto::getId, Discount::setId)
+          )
+        .addMappings(
           mapper -> mapper.using(stringToDiscountStrategyConverter).map(DiscountDto::getDiscountStrategy, Discount::setDiscountStrategy)
         )
         .addMappings(
@@ -79,6 +85,4 @@ public class DiscountModelMapper extends GeneralModelMapper<Discount, DiscountDt
             mapper -> mapper.using(ModelConverter.STRING_TO_LOCALDATETIME_CONVERTER).map(DiscountDto::getEndTime, Discount::setEndTime)
           );
     }
-
-
 }

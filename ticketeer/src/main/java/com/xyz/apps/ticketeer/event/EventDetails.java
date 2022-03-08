@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -38,7 +39,7 @@ public class EventDetails extends Entity {
 
     /** The id. */
     @MongoId
-    private String id;
+    private ObjectId id;
 
     /** The event id. */
     @NotBlank(message = "The event id cannot be blank.")

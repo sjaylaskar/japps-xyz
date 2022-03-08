@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.validation.annotation.Validated;
@@ -44,7 +45,7 @@ public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
     @MongoId
-    private String id;
+    private ObjectId id;
 
     /** The offer code. */
     @NonNull

@@ -12,6 +12,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,7 +84,7 @@ public class EventShowService extends GeneralService {
                 eventShowDetailsDto.getSeatRowPriceDtoList()
                     .getSeatRowPriceDtos()
                     .stream()
-                    .map(seatRowPriceDto -> toEventShowSeatList(seatRowPriceDto, eventShow))
+                    .map(seatRowPriceDto -> toEventShowSeatList(seatRowPriceDto, eventShow, eventShowDetailsDto.getAuditoriumId()))
                     .flatMap(List::stream)
                     .toList());
         }
@@ -180,17 +181,18 @@ public class EventShowService extends GeneralService {
      *
      * @param seatRowPriceDto the seat row price dto
      * @param eventShow the event show
+     * @param auditoriumId the auditorium id
      * @return the list
      */
     private List<EventShowSeat> toEventShowSeatList(final SeatRowPriceDto seatRowPriceDto,
-            final EventShow eventShow) {
+            final EventShow eventShow, final Long auditoriumId) {
 
         final List<Character> seatRows = new ArrayList<>();
         for (char row = seatRowPriceDto.getStartRow(); row <= seatRowPriceDto.getEndRow(); row++) {
             seatRows.add(row);
         }
 
-        final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.findBySeatRowIn(seatRows);
+        final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.findBySeatRowIn(auditoriumId, seatRows);
 
         return (CollectionUtils.isNotEmpty(auditoriumSeats))
             ? auditoriumSeats
@@ -226,7 +228,9 @@ public class EventShowService extends GeneralService {
         return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowRepository.findByEventShowSearchCriteria(
             eventShowSearchCriteria.getCityId(),
             eventShowSearchCriteria.getEventId(),
-            LocalDateTimeFormatUtil.parseLocalDate(eventShowSearchCriteria.getDate()))));
+            StringUtils.isNotBlank(eventShowSearchCriteria.getDate())
+            ? LocalDateTimeFormatUtil.parseLocalDate(eventShowSearchCriteria.getDate())
+            : null)));
     }
 
     /**

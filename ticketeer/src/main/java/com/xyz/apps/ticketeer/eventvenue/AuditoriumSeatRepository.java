@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -27,5 +29,7 @@ public interface AuditoriumSeatRepository extends JpaRepository<AuditoriumSeat, 
      * @param seatRows the seat rows
      * @return the list of {@link AuditoriumSeat}
      */
-    public List<AuditoriumSeat> findBySeatRowIn(final Collection<Character> seatRows);
+    @Query(value = "select * from auditorium_seat aust where aust.auditorium_id = :auditoriumId and aust.seat_row in :seatRows",
+           nativeQuery = true)
+    public List<AuditoriumSeat> findBySeatRowIn(@Param("auditoriumId") final Long auditoriumId, @Param("seatRows") final Collection<Character> seatRows);
 }

@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Long> {
 
-    @Query(value = "select ess from EventShowSeat ess where ess.event_show_id = :eventShowId",
+    @Query(value = "select * from event_show_seat ess where ess.event_show_id = :eventShowId",
            nativeQuery = true)
     public List<EventShowSeat> findByEventShowId(@Param("eventShowId") final Long eventShowId);
 
@@ -37,7 +37,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      */
     @Transactional
     @Modifying
-    @Query(value = "update EventShowSeat ess set ess.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.AVAILABLE.name(), ess.booking_id = null where ess.booking_id = :bookingId",
+    @Query(value = "update event_show_seat ess set ess.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.AVAILABLE.name(), ess.booking_id = null where ess.booking_id = :bookingId",
            nativeQuery = true)
     public void cancelByBookingId(@Param("bookingId") final Long bookingId);
 
@@ -74,7 +74,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
                                      @Param("seatsCount") final int seatsCount);
 
     /** The reserve seats query. */
-    static final String RESERVE_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'RESERVED', ess.reservation_time = current_timestamp() where ess.id in :ids "
+    static final String RESERVE_SEATS_QUERY = "update event_show_seat ess set ess.seat_reservation_status = 'RESERVED', ess.reservation_time = current_timestamp() where ess.id in :ids "
             + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.id in :ids and ess1.seat_reservation_status = 'AVAILABLE') = :seatsCount";
     /**
      * Reserve seats.
@@ -90,7 +90,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     public int reserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatsCount") final int seatsCount);
 
     /** The unreserve seats query. */
-    static final String UNRESERVE_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'AVAILABLE', ess.reservation_time = null where ess.id in :ids "
+    static final String UNRESERVE_SEATS_QUERY = "update event_show_seat ess set ess.seat_reservation_status = 'AVAILABLE', ess.reservation_time = null where ess.id in :ids "
             + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.id in :ids and ess1.seat_reservation_status = 'RESERVED') = :seatsCount";
     /**
      * Unreserve seats.
@@ -106,7 +106,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     public int unreserveSeats(@Param("ids") final Collection<Long> ids, @Param("seatsCount") final int seatsCount);
 
     /** The book seats query. */
-    static final String BOOK_SEATS_QUERY = "update EventShowSeat ess set ess.seat_reservation_status = 'BOOKED' where ess.booking_id = :bookingId and ess.id in :ids "
+    static final String BOOK_SEATS_QUERY = "update event_show_seat ess set ess.seat_reservation_status = 'BOOKED' where ess.booking_id = :bookingId and ess.id in :ids "
             + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.booking_id = :bookingId and ess1.id in :ids and ess1.seat_reservation_status = 'RESERVED') = :seatsCount";
     /**
      * Book seats.
@@ -125,7 +125,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
             @Param("bookingId") final Long bookingId);
 
     /** The fill booking for reserved seats query. */
-    static final String FILL_BOOKING_FOR_RESERVED_SEATS_QUERY = "update EventShowSeat ess set ess.booking_id = :bookingId where ess.id in :ids "
+    static final String FILL_BOOKING_FOR_RESERVED_SEATS_QUERY = "update event_show_seat ess set ess.booking_id = :bookingId where ess.id in :ids "
             + "and (select count(ess1.seat_reservation_status) from event_show_seat ess1 where ess1.booking_id = :bookingId and ess1.id in :ids and ess1.seat_reservation_status = 'RESERVED') = :seatsCount";
     /**
      * Fill booking for reserved seats.

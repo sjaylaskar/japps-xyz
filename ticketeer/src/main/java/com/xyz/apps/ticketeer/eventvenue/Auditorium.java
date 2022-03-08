@@ -43,7 +43,7 @@ public class Auditorium extends com.xyz.apps.ticketeer.general.model.Entity {
     private Long id;
 
     /** The name. */
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     @NotBlank(message = "Auditorium name is required.")
     private String name;
 

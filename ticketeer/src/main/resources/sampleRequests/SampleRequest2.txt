@@ -21,22 +21,22 @@ http://localhost:8082/xyz/apps/ticketeer/api/city/add/all
   "dtos": [
     {
       "code": "HYD",
-      "countryId": 5,
+      "countryId": 1,
       "name": "Hyderabad"
     },
     {
       "code": "SEC",
-      "countryId": 5,
+      "countryId": 1,
       "name": "Secunderabad"
     },
 {
       "code": "ROT",
-      "countryId": 6,
+      "countryId": 2,
       "name": "Rotterdam"
     },
 {
       "code": "SYD",
-      "countryId": 7,
+      "countryId": 3,
       "name": "Sydney"
     }
   ]
@@ -111,23 +111,202 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventvenue/add
   "auditoriumDetailsDtoList": {
     "auditoriumDetailsDtos": [
       {
-        "name": "A",
+        "name": "Audi A",
         "numberOfRows": 10,
         "seatsPerRow": 20
       },
 {
-        "name": "B",
+        "name": "Audi B",
         "numberOfRows": 10,
         "seatsPerRow": 20
       },
 {
-        "name": "C",
+        "name": "Audi C",
         "numberOfRows": 20,
         "seatsPerRow": 11
       }
     ]
   },
-  "cityId": 1,
-   "name": "Sarath City PVR 1"
+  "cityId": 5,
+   "name": "Sarath City PVR 1",
   "numberOfAuditoriums": 3
+}
+
+{
+  "auditoriumDetailsDtoList": {
+    "auditoriumDetailsDtos": [
+      {
+        "name": "Audi 1",
+        "numberOfRows": 10,
+        "seatsPerRow": 20
+      },
+{
+        "name": "Audi 2",
+        "numberOfRows": 10,
+        "seatsPerRow": 20
+      },
+{
+        "name": "Audi 3",
+        "numberOfRows": 20,
+        "seatsPerRow": 11
+      },
+{
+        "name": "Audi 4",
+        "numberOfRows": 30,
+        "seatsPerRow": 10
+      }
+    ]
+  },
+  "cityId": 5,
+   "name": "Inorbit PVR 1",
+  "numberOfAuditoriums": 4
+}
+
+{
+  "auditoriumDetailsDtoList": {
+    "auditoriumDetailsDtos": [
+      {
+        "name": "Audi 1",
+        "numberOfRows": 10,
+        "seatsPerRow": 20
+      },
+{
+        "name": "Audi 2",
+        "numberOfRows": 10,
+        "seatsPerRow": 20
+      },
+{
+        "name": "Audi 3",
+        "numberOfRows": 20,
+        "seatsPerRow": 11
+      }
+    ]
+  },
+  "cityId": 8,
+   "name": "Sydney Inox",
+  "numberOfAuditoriums": 3
+}
+
+http://localhost:8082/xyz/apps/ticketeer/api/platformconveniencefee/add
+{
+  "feePercentage": 1
+}
+
+http://localhost:8082/xyz/apps/ticketeer/api/eventshow/add
+{
+  "auditoriumId": 1,
+  "cityId": 5,
+  "date": "2022-03-24",
+  "endTime": "15:45",
+  "eventId": 1,
+  "eventVenueId": 1,
+  "seatRowPriceDtoList": {
+    "seatRowPriceDtos": [
+      {
+        "amount": 100,
+        "endRow": "E",
+        "startRow": "A"
+      },
+{
+        "amount": 200,
+        "endRow": "H",
+        "startRow": "F"
+      },
+{
+        "amount": 300,
+        "endRow": "J",
+        "startRow": "I"
+      }
+    ]
+  },
+  "startTime": "13:00"
+}
+
+{
+  "auditoriumId": 1,
+  "cityId": 5,
+  "date": "2022-03-24",
+  "endTime": "18:15",
+  "eventId": 1,
+  "eventVenueId": 1,
+  "seatRowPriceDtoList": {
+    "seatRowPriceDtos": [
+      {
+        "amount": 200,
+        "endRow": "E",
+        "startRow": "A"
+      },
+{
+        "amount": 300,
+        "endRow": "G",
+        "startRow": "F"
+      },
+{
+        "amount": 350,
+        "endRow": "J",
+        "startRow": "H"
+      }
+    ]
+  },
+  "startTime": "16:00"
+}
+
+
+{
+  "auditoriumId": 5,
+  "cityId": 5,
+  "date": "2022-03-24",
+  "endTime": "16:15",
+  "eventId": 1,
+  "eventVenueId": 2,
+  "seatRowPriceDtoList": {
+    "seatRowPriceDtos": [
+      {
+        "amount": 200,
+        "endRow": "E",
+        "startRow": "A"
+      },
+{
+        "amount": 300,
+        "endRow": "G",
+        "startRow": "F"
+      },
+{
+        "amount": 350,
+        "endRow": "J",
+        "startRow": "H"
+      }
+    ]
+  },
+  "startTime": "14:00"
+}
+
+
+{
+  "auditoriumId": 10,
+  "cityId": 8,
+  "date": "2022-03-26",
+  "endTime": "12:15",
+  "eventId": 3,
+  "eventVenueId": 3,
+  "seatRowPriceDtoList": {
+    "seatRowPriceDtos": [
+      {
+        "amount": 500,
+        "endRow": "J",
+        "startRow": "A"
+      },
+{
+        "amount": 550,
+        "endRow": "N",
+        "startRow": "K"
+      },
+{
+        "amount": 700,
+        "endRow": "T",
+        "startRow": "O"
+      }
+    ]
+  },
+  "startTime": "10:00"
 }

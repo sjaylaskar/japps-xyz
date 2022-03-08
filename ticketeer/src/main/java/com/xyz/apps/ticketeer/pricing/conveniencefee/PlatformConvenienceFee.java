@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +35,7 @@ public class PlatformConvenienceFee extends com.xyz.apps.ticketeer.general.model
 
     /** The id. */
     @MongoId
-    private String id;
+    private ObjectId id;
 
     /** The percentage of ticket amount. */
     @NonNull

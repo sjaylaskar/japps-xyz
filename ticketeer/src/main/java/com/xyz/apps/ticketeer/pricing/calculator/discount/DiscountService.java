@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -178,7 +179,7 @@ public class DiscountService extends GeneralService {
 
         validateDiscountExistsById(id);
 
-        discountRepository.deleteById(id);
+        discountRepository.deleteById(new ObjectId(id));
     }
 
     /**
@@ -211,7 +212,7 @@ public class DiscountService extends GeneralService {
      */
     private void validateDiscountExistsById(final String id) {
 
-        if (!discountRepository.existsById(id)) {
+        if (!discountRepository.existsById(new ObjectId(id))) {
             throw new DiscountNotFoundException(id);
         }
     }
@@ -223,7 +224,7 @@ public class DiscountService extends GeneralService {
      * @return the discount dto
      */
     public DiscountDto findById(@NotBlank(message = "The discount id to delete cannot be null.") final String id) {
-        return discountModelMapper.toDto(discountRepository.findById(id).orElseThrow(() -> new DiscountNotFoundException(id)));
+        return discountModelMapper.toDto(discountRepository.findById(new ObjectId(id)).orElseThrow(() -> new DiscountNotFoundException(id)));
     }
 
     /**

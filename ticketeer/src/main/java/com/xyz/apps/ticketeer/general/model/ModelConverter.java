@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.modelmapper.Converter;
 
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
@@ -48,4 +50,10 @@ public final class ModelConverter {
 
     /** The enum to name converter. */
     public static final Converter<Enum<?>, String> ENUM_TO_NAME_CONVERTER = converter -> converter.getSource().name();
+
+    /** The string to object id converter. */
+    public static final Converter<String, ObjectId> STRING_TO_OBJECTID_CONVERTER = converter -> (StringUtils.isNotBlank(converter.getSource())) ? new ObjectId(converter.getSource()) : null;
+
+    /** The object id to string converter. */
+    public static final Converter<ObjectId, String> OBJECTID_TO_STRING_CONVERTER = converter -> converter.getSource().toHexString();
 }

@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,6 @@ import org.springframework.stereotype.Repository;
  * @version 1.0
  */
 @Repository
-public interface DiscountRepository extends MongoRepository<Discount, String> {
+public interface DiscountRepository extends MongoRepository<Discount, ObjectId> {
 
 }

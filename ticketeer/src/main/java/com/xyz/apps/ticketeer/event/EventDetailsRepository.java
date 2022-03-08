@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.event;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 
@@ -14,6 +15,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public interface EventDetailsRepository extends MongoRepository<EventDetails, String> {
+public interface EventDetailsRepository extends MongoRepository<EventDetails, ObjectId> {
 
 }

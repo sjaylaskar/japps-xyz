@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EventShowRepository extends JpaRepository<EventShow, Long> {
     @Query(
-        value = "select distinct es.* from event_show es "
+        value = "select distinct * from event_show es "
             + "where "
             + "(:cityId is null or es.city_id = :cityId)"
             + "and (:eventId is null or es.event_id = :eventId) "

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -115,9 +116,9 @@ public class PlatformConvenienceFeeService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public void deleteById(final String id) {
-        if (!platformConvenienceFeeRepository.existsById(id)) {
+        if (!platformConvenienceFeeRepository.existsById(new ObjectId(id))) {
             throw new PlatformConvenienceFeeNotFoundException(id);
         }
-        platformConvenienceFeeRepository.deleteById(id);
+        platformConvenienceFeeRepository.deleteById(new ObjectId(id));
     }
 }
