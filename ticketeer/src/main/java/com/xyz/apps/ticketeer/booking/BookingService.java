@@ -11,8 +11,11 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +31,6 @@ import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookin
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
 import com.xyz.apps.ticketeer.util.StringUtil;
-
-import reactor.core.publisher.Mono;
 
 
 /**
@@ -61,26 +62,13 @@ public class BookingService extends GeneralService {
 
         validateBooking(bookingDto);
 
-        if (serviceBeansFetcher().webClientBuilder().build()
-            .post()
-            .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_AVAILABLE.get()))
-            .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
-            .retrieve()
-            .bodyToMono(Boolean.class).block()) {
+        if (BooleanUtils.isTrue(areEventShowSeatsAvailable(bookingDto))) {
 
-            int reservedBookingSeatCount = serviceBeansFetcher().webClientBuilder().build()
-                .put()
-                .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()))
-                .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
-                .retrieve()
-                .bodyToMono(Integer.class).block();
+            Integer reservedBookingSeatCount = reserveSeats(bookingDto);
             if (reservedBookingSeatCount != bookingDto.getEventShowSeatIds().size()) {
-                serviceBeansFetcher().webClientBuilder().build()
-                    .put()
-                    .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_UNRESERVE.get()))
-                    .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
-                    .retrieve()
-                    .bodyToMono(Integer.class).block();
+
+                unreserveSeats(bookingDto);
+
                 throw new SelectedSeatsUnavailableException();
             }
 
@@ -90,12 +78,7 @@ public class BookingService extends GeneralService {
             eventShowSeatsBookingDto.setBookingId(booking.getId());
             eventShowSeatsBookingDto.setSeatIds(bookingDto.getEventShowSeatIds());
 
-            reservedBookingSeatCount = serviceBeansFetcher().webClientBuilder().build()
-                .put()
-                .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE_WITH_BOOKING.get()))
-                .body(Mono.just(eventShowSeatsBookingDto), EventShowSeatsBookingDto.class)
-                .retrieve()
-                .bodyToMono(Integer.class).block();
+            reservedBookingSeatCount = reserveSeatsWithBooking(eventShowSeatsBookingDto);
             if (reservedBookingSeatCount != booking.getNumberOfSeats()) {
                 cancelBookingForEventShowSeats(booking.getId());
                 throw new SelectedSeatsUnavailableException();
@@ -104,6 +87,190 @@ public class BookingService extends GeneralService {
         }
 
         throw new SelectedSeatsUnavailableException();
+    }
+
+    /**
+     * Confirm.
+     *
+     * @param bookingDto the booking dto
+     * @return the booking dto
+     */
+    @Transactional(rollbackFor = {Throwable.class})
+    public BookingDto confirm(final BookingDto bookingDto) {
+
+        validateBooking(bookingDto);
+
+        final Booking booking = bookingRepository.findById(bookingDto.getBookingId()).orElseThrow(BookingExpiredException::new);
+
+        final EventShowSeatsBookingDto eventShowSeatsBookingDto = new EventShowSeatsBookingDto();
+        eventShowSeatsBookingDto.setBookingId(booking.getId());
+        eventShowSeatsBookingDto.setSeatIds(bookingDto.getEventShowSeatIds());
+
+
+        if (!areEventShowSeatsReserved(eventShowSeatsBookingDto)) {
+            throw new SelectedSeatsUnavailableException();
+        }
+
+        final double baseAmount = calculateEventShowSeatsAmount(bookingDto);
+
+        bookingDto.setAmount(baseAmount);
+        bookingDto.setFinalAmount(baseAmount);
+
+        final BookingPriceInfoDto bookingPriceInfoDto = toBookingPriceInfo(bookingDto);
+
+        final double finalAmount = calculateFinalBookingAmount(bookingPriceInfoDto);
+
+        final Payment payment = new Payment();
+        payment.setAmount(finalAmount);
+        payment.setBooking(booking);
+        payment.setPaymentStatus(PaymentStatus.SUCCESS);
+        paymentRepository.save(payment);
+
+        booking.setAmount(baseAmount);
+        booking.setFinalAmount(finalAmount);
+        booking.setBookingStatus(BookingStatus.CONFIRMED);
+        booking.setBookingTime(LocalDateTimeFormatUtil.parseLocalDateTime(bookingPriceInfoDto.getBookingTime()));
+
+        final Booking bookingUpdated = bookingRepository.save(booking);
+
+        final int countOfBookedSeats = bookSeats(eventShowSeatsBookingDto);
+
+        if (countOfBookedSeats != bookingDto.getEventShowSeatIds().size()) {
+            cancelBookingForEventShowSeats(booking.getId());
+            throw new SelectedSeatsUnavailableException();
+        }
+
+        bookingDto.setAmount(baseAmount);
+        bookingDto.setFinalAmount(finalAmount);
+        bookingDto.setBookingStatus(bookingUpdated.getBookingStatus() != null ? bookingUpdated.getBookingStatus().name() : null);
+        bookingDto.setBookingTime(booking.getBookingTime().toString());
+        bookingDto.setIsConfirmed(BookingStatus.CONFIRMED.equals(booking.getBookingStatus()));
+
+        return bookingDto;
+    }
+
+    /**
+     * Cancel.
+     *
+     * @param bookingDto the booking dto
+     * @return true, if successful
+     */
+    @Transactional(rollbackFor = {Throwable.class})
+    public boolean cancel(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
+
+        validateBooking(bookingDto);
+
+        final Booking booking = bookingRepository.findById(bookingDto.getBookingId()).orElseThrow(
+            () -> new BookingNotFoundException(bookingDto.getBookingId()));
+        booking.setBookingStatus(BookingStatus.CANCELLED);
+        final Booking bookingCancelled = bookingRepository.save(booking);
+        final Payment payment = paymentRepository.findSuccessfulPaymentByBooking(bookingCancelled);
+        if (payment == null) {
+            throw new SuccessfulPaymentNotFoundForBookingException(bookingDto.getBookingId());
+        }
+        payment.setPaymentStatus(PaymentStatus.REFUNDED);
+        paymentRepository.save(payment);
+
+        cancelBookingForEventShowSeats(bookingDto.getBookingId());
+
+        return true;
+    }
+
+    /**
+     * Reserve seats with booking.
+     *
+     * @param eventShowSeatsBookingDto the event show seats booking dto
+     * @return the count of seats reserved.
+     */
+    private Integer reserveSeatsWithBooking(final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
+
+        ResponseEntity<Integer> eventShowSeatsBookingReservedCountResponseEntity = null;
+        try {
+            eventShowSeatsBookingReservedCountResponseEntity = serviceBeansFetcher().restTemplate().exchange(
+                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE_WITH_BOOKING.get()),
+                HttpMethod.PUT,
+                new HttpEntity<EventShowSeatsBookingDto>(eventShowSeatsBookingDto),
+                Integer.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        return hasBodyResponseEntity(eventShowSeatsBookingReservedCountResponseEntity) ? eventShowSeatsBookingReservedCountResponseEntity.getBody() : 0;
+    }
+
+    /**
+     * Are event show seats available.
+     *
+     * @param bookingDto the booking dto
+     * @return {@code true}, if event show seats are available.
+     */
+    private Boolean areEventShowSeatsAvailable(final BookingDto bookingDto) {
+
+        ResponseEntity<Boolean> eventShowSeatsAreAvailableResponseEntity = null;
+        try {
+            eventShowSeatsAreAvailableResponseEntity = serviceBeansFetcher().restTemplate().postForEntity(
+                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_AVAILABLE.get()), bookingDto.getEventShowSeatIds(), Boolean.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        return hasBodyResponseEntity(eventShowSeatsAreAvailableResponseEntity) ? eventShowSeatsAreAvailableResponseEntity.getBody() : false;
+    }
+
+    /**
+     * Unreserve seats.
+     *
+     * @param bookingDto the booking dto
+     */
+    private void unreserveSeats(final BookingDto bookingDto) {
+
+        try {
+            serviceBeansFetcher().restTemplate().put(
+                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_UNRESERVE.get()), bookingDto.getEventShowSeatIds());
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+    }
+
+    /**
+     * Reserve seats.
+     *
+     * @param bookingDto the booking dto
+     * @return the count of seats reserved.
+     */
+    private Integer reserveSeats(final BookingDto bookingDto) {
+
+        ResponseEntity<Integer> eventShowSeatsReservedCountResponseEntity = null;
+        try {
+            eventShowSeatsReservedCountResponseEntity = serviceBeansFetcher().restTemplate().exchange(
+                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()),
+                HttpMethod.PUT,
+                new HttpEntity<Set<Long>>(bookingDto.getEventShowSeatIds()),
+                Integer.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        return hasBodyResponseEntity(eventShowSeatsReservedCountResponseEntity) ? eventShowSeatsReservedCountResponseEntity.getBody() : 0;
+    }
+
+    /**
+     * Are event show seats reserved.
+     *
+     * @param eventShowSeatsBookingDto the event show seats booking dto
+     * @return {@code true}, if event show seats are reserved for booking.
+     */
+    private Boolean areEventShowSeatsReserved(final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
+
+        ResponseEntity<Boolean> eventShowSeatsAreReservedResponseEntity = null;
+        try {
+            eventShowSeatsAreReservedResponseEntity = serviceBeansFetcher().restTemplate().postForEntity(
+                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_RESERVED.get()), eventShowSeatsBookingDto, Boolean.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        return hasBodyResponseEntity(eventShowSeatsAreReservedResponseEntity) ? eventShowSeatsAreReservedResponseEntity.getBody() : false;
     }
 
     /**
@@ -132,15 +299,7 @@ public class BookingService extends GeneralService {
      */
     private Booking toReservedBooking(final BookingDto bookingDto) {
 
-        ResponseEntity<Double> eventShowSeatsAmountResponseEntity = null;
-        try {
-            eventShowSeatsAmountResponseEntity = serviceBeansFetcher().restTemplate().postForEntity(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()), bookingDto.getEventShowSeatIds(), Double.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-
-        final Double amount = eventShowSeatsAmountResponseEntity.getBody();
+        final Double amount = calculateEventShowSeatsAmount(bookingDto);
 
         final Booking booking = new Booking();
         booking.setReservationTime(LocalDateTime.now());
@@ -158,82 +317,71 @@ public class BookingService extends GeneralService {
     }
 
     /**
-     * Confirm.
+     * Calculate event show seats amount.
      *
      * @param bookingDto the booking dto
-     * @return the booking dto
+     * @return the amount
      */
-    @Transactional(rollbackFor = {Throwable.class})
-    public BookingDto confirm(final BookingDto bookingDto) {
+    private Double calculateEventShowSeatsAmount(final BookingDto bookingDto) {
 
-        validateBooking(bookingDto);
-
-        final Booking booking = bookingRepository.findById(bookingDto.getBookingId()).orElseThrow(BookingExpiredException::new);
-
-        final EventShowSeatsBookingDto eventShowSeatsBookingDto = new EventShowSeatsBookingDto();
-        eventShowSeatsBookingDto.setBookingId(booking.getId());
-        eventShowSeatsBookingDto.setSeatIds(bookingDto.getEventShowSeatIds());
-
-        if (!serviceBeansFetcher().webClientBuilder().build()
-            .post()
-            .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_RESERVED.get()))
-            .body(Mono.just(eventShowSeatsBookingDto), EventShowSeatsBookingDto.class)
-            .retrieve()
-            .bodyToMono(Boolean.class).block()) {
-            throw new SelectedSeatsUnavailableException();
+        ResponseEntity<Double> eventShowSeatsAmountResponseEntity = null;
+        try {
+            eventShowSeatsAmountResponseEntity = serviceBeansFetcher().restTemplate().postForEntity(
+                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()), bookingDto.getEventShowSeatIds(), Double.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
         }
 
-        final double baseAmount = serviceBeansFetcher().webClientBuilder().build()
-            .post()
-            .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()))
-            .body(Mono.just(bookingDto.getEventShowSeatIds()), Set.class)
-            .retrieve()
-            .bodyToMono(Double.class).block();
-
-        bookingDto.setAmount(baseAmount);
-        bookingDto.setFinalAmount(baseAmount);
-
-        final BookingPriceInfoDto bookingPriceInfoDto = toBookingPriceInfo(bookingDto);
-
-        final double finalAmount = serviceBeansFetcher().webClientBuilder().build()
-            .post()
-            .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.PRICING_CALCULATE.get()))
-            .body(Mono.just(bookingPriceInfoDto), BookingPriceInfoDto.class)
-            .retrieve()
-            .bodyToMono(Double.class).block();
-
-        final Payment payment = new Payment();
-        payment.setAmount(finalAmount);
-        payment.setBooking(booking);
-        payment.setPaymentStatus(PaymentStatus.SUCCESS);
-        paymentRepository.save(payment);
-
-        booking.setAmount(baseAmount);
-        booking.setFinalAmount(finalAmount);
-        booking.setBookingStatus(BookingStatus.CONFIRMED);
-        booking.setBookingTime(LocalDateTimeFormatUtil.parseLocalDateTime(bookingPriceInfoDto.getBookingTime()));
-
-        final Booking bookingUpdated = bookingRepository.save(booking);
-
-        final int countOfBookedSeats = serviceBeansFetcher().webClientBuilder().build()
-            .put()
-            .uri(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()))
-            .body(Mono.just(eventShowSeatsBookingDto), EventShowSeatsBookingDto.class)
-            .retrieve()
-            .bodyToMono(Integer.class).block();
-
-        if (countOfBookedSeats != bookingDto.getEventShowSeatIds().size()) {
-            cancelBookingForEventShowSeats(booking.getId());
-            throw new SelectedSeatsUnavailableException();
+        if (hasBodyResponseEntity(eventShowSeatsAmountResponseEntity)) {
+            throw new BookingServiceException("Failed to calculate seats amount for booking: " + bookingDto);
         }
 
-        bookingDto.setAmount(baseAmount);
-        bookingDto.setFinalAmount(finalAmount);
-        bookingDto.setBookingStatus(bookingUpdated.getBookingStatus() != null ? bookingUpdated.getBookingStatus().name() : null);
-        bookingDto.setBookingTime(booking.getBookingTime().toString());
-        bookingDto.setIsConfirmed(BookingStatus.CONFIRMED.equals(booking.getBookingStatus()));
+        return eventShowSeatsAmountResponseEntity.getBody();
+    }
 
-        return bookingDto;
+    /**
+     * Calculate final booking amount.
+     *
+     * @param bookingPriceInfoDto the booking price info dto
+     * @return the amount
+     */
+    private Double calculateFinalBookingAmount(final BookingPriceInfoDto bookingPriceInfoDto) {
+
+        ResponseEntity<Double> bookingFinalAmountResponseEntity = null;
+        try {
+            bookingFinalAmountResponseEntity = serviceBeansFetcher().restTemplate().postForEntity(
+                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.PRICING_CALCULATE.get()), bookingPriceInfoDto, Double.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        if (hasBodyResponseEntity(bookingFinalAmountResponseEntity)) {
+            throw new BookingServiceException("Failed to calculate final amount for booking.");
+        }
+
+        return bookingFinalAmountResponseEntity.getBody();
+    }
+
+    /**
+     * Book seats.
+     *
+     * @param eventShowSeatsBookingDto the event show seats booking dto
+     * @return the count of booked seats
+     */
+    private Integer bookSeats(final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
+
+        ResponseEntity<Integer> eventShowSeatsBookedCountResponseEntity = null;
+        try {
+            eventShowSeatsBookedCountResponseEntity = serviceBeansFetcher().restTemplate().exchange(
+                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()),
+                HttpMethod.PUT,
+                new HttpEntity<EventShowSeatsBookingDto>(eventShowSeatsBookingDto),
+                Integer.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        return hasBodyResponseEntity(eventShowSeatsBookedCountResponseEntity) ? eventShowSeatsBookedCountResponseEntity.getBody() : 0;
     }
 
     /**
@@ -254,33 +402,6 @@ public class BookingService extends GeneralService {
         bookingPriceInfoDto.setShowStartTime(bookingDto.getShowStartTime());
         bookingPriceInfoDto.setBookingTime(LocalDateTimeFormatUtil.format(LocalDateTime.now()));
         return bookingPriceInfoDto;
-    }
-
-    /**
-     * Cancel.
-     *
-     * @param bookingDto the booking dto
-     * @return true, if successful
-     */
-    @Transactional(rollbackFor = {Throwable.class})
-    public boolean cancel(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
-
-        validateBooking(bookingDto);
-
-        final Booking booking = bookingRepository.findById(bookingDto.getBookingId()).orElseThrow(
-            () -> new BookingNotFoundException(bookingDto.getBookingId()));
-        booking.setBookingStatus(BookingStatus.CANCELLED);
-        final Booking bookingCancelled = bookingRepository.save(booking);
-        final Payment payment = paymentRepository.findSuccessfulPaymentByBooking(bookingCancelled);
-        if (payment == null) {
-            throw new SuccessfulPaymentNotFoundForBookingException(bookingDto.getBookingId());
-        }
-        payment.setPaymentStatus(PaymentStatus.REFUNDED);
-        paymentRepository.save(payment);
-
-        cancelBookingForEventShowSeats(bookingDto.getBookingId());
-
-        return true;
     }
 
     /**
@@ -392,5 +513,16 @@ public class BookingService extends GeneralService {
         if (CollectionUtils.isEmpty(bookingDto.getEventShowSeatIds())) {
             throw new BookingServiceException("At least select one seat to reserve.");
         }
+    }
+
+    /**
+     * Indicates if has body response entity.
+     *
+     * @param <T> the generic type
+     * @param responseEntity the response entity
+     * @return true, if successful
+     */
+    private static <T> boolean hasBodyResponseEntity(final ResponseEntity<T> responseEntity) {
+        return responseEntity != null && responseEntity.hasBody();
     }
 }
