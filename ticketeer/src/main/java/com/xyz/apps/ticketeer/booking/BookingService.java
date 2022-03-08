@@ -477,7 +477,7 @@ public class BookingService extends GeneralService {
                 serviceBeansFetcher().environment().getProperty(ApiPropertyKey.AUTHENTICATE_USER.get()), basicUserDto,
                 Boolean.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw new BookingServiceException("User is not authorized.");
         }
     }
 
@@ -492,8 +492,9 @@ public class BookingService extends GeneralService {
             throw new BookingServiceException("The event show id cannot be null.");
         }
 
+        ResponseEntity<EventShowDto> eventShowDtoResponseEntity = null;
         try {
-            serviceBeansFetcher().restTemplate().getForEntity(
+            eventShowDtoResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
                 StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get()),
                     bookingDto.getEventShowId()),
                 EventShowDto.class);
@@ -501,6 +502,10 @@ public class BookingService extends GeneralService {
             throw new BookingServiceException(exception.getResponseBodyAsString());
         }
 
+        if (eventShowDtoResponseEntity == null || !eventShowDtoResponseEntity.hasBody()) {
+            throw new BookingServiceException("Invalid event show id: " + bookingDto.getEventShowId());
+        }
+        bookingDto.setShowStartTime(eventShowDtoResponseEntity.getBody().getStartTime());
     }
 
     /**

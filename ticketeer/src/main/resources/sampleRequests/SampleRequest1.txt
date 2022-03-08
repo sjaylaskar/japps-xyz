@@ -83,3 +83,26 @@ http://localhost:8082/xyz/apps/ticketeer/api/country/add
     "name" : "India"
 }
 
+/reserve
+{
+  "amount": 0,
+  "bookingId": 0,
+  "bookingStatus": "string",
+  "bookingTime": "string",
+  "cityId": 0,
+  "emailId": "string",
+  "eventShowId": 0,
+  "eventShowSeatIds": [
+    0
+  ],
+  "eventVenueId": 0,
+  "finalAmount": 0,
+  "isConfirmed": true,
+  "isReserved": true,
+  "offerCode": "string",
+  "password": "string",
+  "phoneNumber": "string",
+  "reservationTime": "string",
+  "showStartTime": "string",
+  "username": "string"
+}

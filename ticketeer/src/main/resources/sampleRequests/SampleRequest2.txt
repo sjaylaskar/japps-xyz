@@ -127,7 +127,7 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventvenue/add
       }
     ]
   },
-  "cityId": 5,
+  "cityId": 1,
    "name": "Sarath City PVR 1",
   "numberOfAuditoriums": 3
 }
@@ -157,7 +157,7 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventvenue/add
       }
     ]
   },
-  "cityId": 5,
+  "cityId": 1,
    "name": "Inorbit PVR 1",
   "numberOfAuditoriums": 4
 }
@@ -182,9 +182,29 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventvenue/add
       }
     ]
   },
-  "cityId": 8,
+  "cityId": 3,
    "name": "Sydney Inox",
   "numberOfAuditoriums": 3
+}
+
+{
+  "auditoriumDetailsDtoList": {
+    "auditoriumDetailsDtos": [
+      {
+        "name": "Audi 1",
+        "numberOfRows": 10,
+        "seatsPerRow": 20
+      },
+{
+        "name": "Audi 2",
+        "numberOfRows": 8,
+        "seatsPerRow": 10
+      }
+    ]
+  },
+  "cityId": 2,
+   "name": "Rotterdam PVR",
+  "numberOfAuditoriums": 2
 }
 
 http://localhost:8082/xyz/apps/ticketeer/api/platformconveniencefee/add
@@ -195,7 +215,7 @@ http://localhost:8082/xyz/apps/ticketeer/api/platformconveniencefee/add
 http://localhost:8082/xyz/apps/ticketeer/api/eventshow/add
 {
   "auditoriumId": 1,
-  "cityId": 5,
+  "cityId": 1,
   "date": "2022-03-24",
   "endTime": "15:45",
   "eventId": 1,
@@ -224,7 +244,7 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventshow/add
 
 {
   "auditoriumId": 1,
-  "cityId": 5,
+  "cityId": 1,
   "date": "2022-03-24",
   "endTime": "18:15",
   "eventId": 1,
@@ -253,8 +273,8 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventshow/add
 
 
 {
-  "auditoriumId": 5,
-  "cityId": 5,
+  "auditoriumId": 6,
+  "cityId": 1,
   "date": "2022-03-24",
   "endTime": "16:15",
   "eventId": 1,
@@ -263,18 +283,18 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventshow/add
     "seatRowPriceDtos": [
       {
         "amount": 200,
-        "endRow": "E",
+        "endRow": "K",
         "startRow": "A"
       },
 {
         "amount": 300,
-        "endRow": "G",
-        "startRow": "F"
+        "endRow": "O",
+        "startRow": "L"
       },
 {
         "amount": 350,
-        "endRow": "J",
-        "startRow": "H"
+        "endRow": "T",
+        "startRow": "P"
       }
     ]
   },
@@ -283,30 +303,90 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventshow/add
 
 
 {
-  "auditoriumId": 10,
-  "cityId": 8,
+  "auditoriumId": 9,
+  "cityId": 3,
   "date": "2022-03-26",
   "endTime": "12:15",
-  "eventId": 3,
+  "eventId": 2,
   "eventVenueId": 3,
   "seatRowPriceDtoList": {
     "seatRowPriceDtos": [
       {
         "amount": 500,
-        "endRow": "J",
+        "endRow": "E",
         "startRow": "A"
       },
 {
         "amount": 550,
-        "endRow": "N",
-        "startRow": "K"
+        "endRow": "G",
+        "startRow": "F"
       },
 {
         "amount": 700,
-        "endRow": "T",
-        "startRow": "O"
+        "endRow": "J",
+        "startRow": "H"
       }
     ]
   },
   "startTime": "10:00"
 }
+
+{
+  "auditoriumId": 12,
+  "cityId": 2,
+  "date": "2022-03-26",
+  "endTime": "14:15",
+  "eventId": 2,
+  "eventVenueId": 4,
+  "seatRowPriceDtoList": {
+    "seatRowPriceDtos": [
+      {
+        "amount": 500,
+        "endRow": "D",
+        "startRow": "A"
+      },
+{
+        "amount": 550,
+        "endRow": "G",
+        "startRow": "E"
+      },
+{
+        "amount": 700,
+        "endRow": "H",
+        "startRow": "H"
+      }
+    ]
+  },
+  "startTime": "12:00"
+}
+
+http://localhost:8082/xyz/apps/ticketeer/api/eventshow/search
+{
+"cityId": 1,
+"date": "2022-03-24",
+"eventId": 1
+}
+{
+  "cityId": 1,
+"eventId": 2
+}
+
+booking/reserve:
+
+{
+  
+  "cityId": 1,
+  "emailId": "jaylaskar@gmail.com",
+  "eventShowId": 3,
+  "eventShowSeatIds": [
+    550,
+551,
+552,
+553
+  ],
+  "eventVenueId": 2,  
+  "password": "jay12345",
+  "phoneNumber": "8860083692",
+  "username": "jaylaskar"
+}
+

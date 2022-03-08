@@ -31,25 +31,25 @@ public final class ModelConverter {
     }
 
     /** The localdate to string converter. */
-    public static final Converter<LocalDate, String> LOCALDATE_TO_STRING_CONVERTER = converter -> LocalDateTimeFormatUtil.format(converter.getSource());
+    public static final Converter<LocalDate, String> LOCALDATE_TO_STRING_CONVERTER = converter -> (converter.getSource() != null) ? LocalDateTimeFormatUtil.format(converter.getSource()) : null;
 
     /** The localdatetime to string converter. */
-    public static final Converter<LocalDateTime, String> LOCALDATETIME_TO_STRING_CONVERTER = converter -> LocalDateTimeFormatUtil.format(converter.getSource());
+    public static final Converter<LocalDateTime, String> LOCALDATETIME_TO_STRING_CONVERTER = converter -> (converter.getSource() != null) ? LocalDateTimeFormatUtil.format(converter.getSource()) : null;
 
     /** The localtime to string converter. */
-    public static final Converter<LocalTime, String> LOCALTIME_TO_STRING_CONVERTER = converter -> LocalDateTimeFormatUtil.format(converter.getSource());
+    public static final Converter<LocalTime, String> LOCALTIME_TO_STRING_CONVERTER = converter -> (converter.getSource() != null) ? LocalDateTimeFormatUtil.format(converter.getSource()) : null;
 
     /** The string to localdate converter. */
-    public static final Converter<String, LocalDate> STRING_TO_LOCALDATE_CONVERTER = converter -> LocalDateTimeFormatUtil.parseLocalDate(converter.getSource());
+    public static final Converter<String, LocalDate> STRING_TO_LOCALDATE_CONVERTER = converter -> (StringUtils.isNotBlank(converter.getSource())) ? LocalDateTimeFormatUtil.parseLocalDate(converter.getSource()) : null;
 
     /** The string to localdatetime converter. */
-    public static final Converter<String, LocalDateTime> STRING_TO_LOCALDATETIME_CONVERTER = converter -> LocalDateTimeFormatUtil.parseLocalDateTime(converter.getSource());
+    public static final Converter<String, LocalDateTime> STRING_TO_LOCALDATETIME_CONVERTER = converter -> (StringUtils.isNotBlank(converter.getSource())) ? LocalDateTimeFormatUtil.parseLocalDateTime(converter.getSource()) : null;
 
     /** The string to localtime converter. */
-    public static final Converter<String, LocalTime> STRING_TO_LOCALTIME_CONVERTER = converter -> LocalDateTimeFormatUtil.parseLocalTime(converter.getSource());
+    public static final Converter<String, LocalTime> STRING_TO_LOCALTIME_CONVERTER = converter -> (StringUtils.isNotBlank(converter.getSource())) ? LocalDateTimeFormatUtil.parseLocalTime(converter.getSource()) : null;
 
     /** The enum to name converter. */
-    public static final Converter<Enum<?>, String> ENUM_TO_NAME_CONVERTER = converter -> converter.getSource().name();
+    public static final Converter<Enum<?>, String> ENUM_TO_NAME_CONVERTER = converter -> (converter.getSource() != null) ? converter.getSource().name() : null;
 
     /** The string to object id converter. */
     public static final Converter<String, ObjectId> STRING_TO_OBJECTID_CONVERTER = converter -> (StringUtils.isNotBlank(converter.getSource())) ? new ObjectId(converter.getSource()) : null;
