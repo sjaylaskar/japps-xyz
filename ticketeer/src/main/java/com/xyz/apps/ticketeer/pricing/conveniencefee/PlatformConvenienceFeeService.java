@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.general.service.GeneralService;
@@ -46,6 +47,7 @@ public class PlatformConvenienceFeeService extends GeneralService {
      * @param platformConvenienceFeeDto the platform convenience fee dto
      * @return the platform convenience fee dto
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public PlatformConvenienceFeeDto add(@NotNull(message = "The platform convenience fee to add cannot be null.") final PlatformConvenienceFeeDto platformConvenienceFeeDto) {
         final PlatformConvenienceFee platformConvenienceFee = platformConvenienceFeeRepository.save(platformConvenienceFeeModelMapper.toEntity(platformConvenienceFeeDto));
 
@@ -62,6 +64,7 @@ public class PlatformConvenienceFeeService extends GeneralService {
      * @param platformConvenienceFeeDto the platform convenience fee dto
      * @return the platform convenience fee dto
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public PlatformConvenienceFeeDto update(@NotNull(message = "The platform convenience fee to update cannot be null.") final PlatformConvenienceFeeDto platformConvenienceFeeDto) {
         final PlatformConvenienceFee platformConvenienceFee = find();
         platformConvenienceFee.setFeePercentage(platformConvenienceFeeDto.getFeePercentage());
@@ -110,7 +113,8 @@ public class PlatformConvenienceFeeService extends GeneralService {
      *
      * @param id the id
      */
-    public void deleteById(final Long id) {
+    @Transactional(rollbackFor = {Throwable.class})
+    public void deleteById(final String id) {
         if (!platformConvenienceFeeRepository.existsById(id)) {
             throw new PlatformConvenienceFeeNotFoundException(id);
         }

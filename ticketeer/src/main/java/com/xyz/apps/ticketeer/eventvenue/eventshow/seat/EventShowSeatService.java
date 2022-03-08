@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.general.service.GeneralService;
@@ -93,6 +94,7 @@ public class EventShowSeatService extends GeneralService {
      * @param seatIds the seat ids
      * @return the number of reserved seats.
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public int reserveSeats(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds) {
         return eventShowSeatRepository.reserveSeats(seatIds, seatIds.size());
     }
@@ -115,6 +117,7 @@ public class EventShowSeatService extends GeneralService {
      * @param bookingId the booking id
      * @return the number of booked seats.
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public int bookSeats(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds, @NotNull(message = "The booking id cannot be null.") final Long bookingId) {
         return eventShowSeatRepository.bookSeats(seatIds, seatIds.size(), bookingId);
     }
@@ -126,6 +129,7 @@ public class EventShowSeatService extends GeneralService {
      * @param bookingId the booking id
      * @return the number of reserved seats.
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public int fillBookingForReservedSeats(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds, @NotNull(message = "The booking id cannot be null.") final Long bookingId) {
         return eventShowSeatRepository.fillBookingForReservedSeats(seatIds, seatIds.size(), bookingId);
     }
@@ -135,6 +139,7 @@ public class EventShowSeatService extends GeneralService {
      *
      * @param bookingId the booking id
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void cancelByBookingId(@NotNull(message = "The booking id cannot be null.") final Long bookingId) {
         eventShowSeatRepository.cancelByBookingId(bookingId);
     }
@@ -145,6 +150,7 @@ public class EventShowSeatService extends GeneralService {
      * @param seatIds the seat ids
      * @return the number of seats unreserved
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public int unreserveSeats(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds) {
         return eventShowSeatRepository.unreserveSeats(seatIds, seatIds.size());
     }

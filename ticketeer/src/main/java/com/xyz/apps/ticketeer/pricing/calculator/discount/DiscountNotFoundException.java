@@ -5,6 +5,9 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.discount;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The discount not found exception.
@@ -22,7 +25,7 @@ public class DiscountNotFoundException extends DiscountServiceException {
      *
      * @param id the id
      */
-    public DiscountNotFoundException(final Long id) {
+    public DiscountNotFoundException(final String id) {
         super("Discount not found for id: " + id);
     }
 
@@ -31,11 +34,29 @@ public class DiscountNotFoundException extends DiscountServiceException {
      *
      * @param offerCode the offer code
      */
-    public DiscountNotFoundException(final String offerCode) {
+    public DiscountNotFoundException(final OfferCode offerCode) {
         super("Invalid offer code: " + offerCode);
     }
 
     public DiscountNotFoundException() {
         super("No discounts found.");
+    }
+
+    /**
+     * The offer code.
+     */
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    static final class OfferCode {
+
+        /** The offer code. */
+        private String offerCode;
+
+        @Override
+        public String toString() {
+
+            return offerCode;
+        }
     }
 }

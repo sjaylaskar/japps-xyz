@@ -17,6 +17,9 @@ public class PlatformConvenienceFeeAddFailedException extends RuntimeException {
     /** The serial version UID. */
     private static final long serialVersionUID = 1496514246888966594L;
 
+    /**
+     * Instantiates a new platform convenience fee add failed exception.
+     */
     public PlatformConvenienceFeeAddFailedException() {
         super("Failed to update the platform convenience fee.");
     }

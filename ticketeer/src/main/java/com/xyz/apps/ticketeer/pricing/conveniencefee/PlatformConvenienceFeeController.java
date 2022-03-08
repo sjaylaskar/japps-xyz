@@ -94,7 +94,7 @@ public class PlatformConvenienceFeeController {
      * @return the response entity
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable("id") final Long id) {
+    public ResponseEntity<?> deleteById(@PathVariable("id") final String id) {
 
         try {
             log.info("PlatformConvenienceFee id: " + id);

@@ -34,7 +34,7 @@ public class PlatformConvenienceFee extends com.xyz.apps.ticketeer.general.model
 
     /** The id. */
     @MongoId
-    private Long id;
+    private String id;
 
     /** The percentage of ticket amount. */
     @NonNull

@@ -29,7 +29,7 @@ public class PlatformConvenienceFeeNotFoundException extends RuntimeException {
      *
      * @param id the id
      */
-    public PlatformConvenienceFeeNotFoundException(final Long id) {
+    public PlatformConvenienceFeeNotFoundException(final String id) {
         super("The platform convenience fee with id: " + id +  " is not found.");
     }
 }

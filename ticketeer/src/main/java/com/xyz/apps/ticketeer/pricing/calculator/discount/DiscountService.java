@@ -18,12 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.general.model.DtoList;
 import com.xyz.apps.ticketeer.general.model.DtoListEmptyException;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.DiscountNotFoundException.OfferCode;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.external.contract.CityDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.external.contract.EventVenueDto;
@@ -54,6 +56,7 @@ public class DiscountService extends GeneralService {
      * @param discountDto the discount dto
      * @return the discount dto
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public DiscountDto add(@NotNull(message = "The discount to add cannot be null.") final DiscountDto discountDto) {
 
         validateDetails(discountDto);
@@ -73,6 +76,7 @@ public class DiscountService extends GeneralService {
      * @param discountDtoList the discount dto list
      * @return the discount dto list
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public DiscountDtoList addAll(@NotNull(
         message = "The discounts list to add cannot be null."
     ) final DiscountDtoList discountDtoList) {
@@ -98,6 +102,7 @@ public class DiscountService extends GeneralService {
      * @param discountDto the discount dto
      * @return the discount dto
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public DiscountDto update(@NotNull(message = "The discount to update cannot be null.") final DiscountDto discountDto) {
 
         validateDiscountIdNotNull(discountDto);
@@ -122,6 +127,7 @@ public class DiscountService extends GeneralService {
      * @param discountDtoList the discount dto list
      * @return the discount dto list
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public DiscountDtoList updateAll(@NotNull(
         message = "The discounts list to update cannot be null."
     ) final DiscountDtoList discountDtoList) {
@@ -150,6 +156,7 @@ public class DiscountService extends GeneralService {
      *
      * @param offerCode the offer code
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void deleteByOfferCode(@NotBlank(message = "The discount offer code to delete cannot be blank.") final String offerCode) {
 
         final Discount discount = findDiscountByOfferCode(offerCode);
@@ -166,6 +173,7 @@ public class DiscountService extends GeneralService {
      *
      * @param id the id
      */
+    @Transactional(rollbackFor = {Throwable.class})
     public void deleteById(@NotBlank(message = "The discount id to delete cannot be null.") final String id) {
 
         validateDiscountExistsById(id);
@@ -229,7 +237,7 @@ public class DiscountService extends GeneralService {
         final Discount discount = findDiscountByOfferCode(offerCode);
 
         if (discount == null) {
-            throw new DiscountNotFoundException(offerCode);
+            throw new DiscountNotFoundException(new OfferCode(offerCode));
         }
 
         return discountModelMapper.toDto(discount);

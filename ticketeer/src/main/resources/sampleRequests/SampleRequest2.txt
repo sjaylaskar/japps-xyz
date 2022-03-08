@@ -105,3 +105,29 @@ http://localhost:8082/xyz/apps/ticketeer/api/event/add/all
         }
     ]
 }
+
+http://localhost:8082/xyz/apps/ticketeer/api/eventvenue/add
+{
+  "auditoriumDetailsDtoList": {
+    "auditoriumDetailsDtos": [
+      {
+        "name": "A",
+        "numberOfRows": 10,
+        "seatsPerRow": 20
+      },
+{
+        "name": "B",
+        "numberOfRows": 10,
+        "seatsPerRow": 20
+      },
+{
+        "name": "C",
+        "numberOfRows": 20,
+        "seatsPerRow": 11
+      }
+    ]
+  },
+  "cityId": 1,
+   "name": "Sarath City PVR 1"
+  "numberOfAuditoriums": 3
+}

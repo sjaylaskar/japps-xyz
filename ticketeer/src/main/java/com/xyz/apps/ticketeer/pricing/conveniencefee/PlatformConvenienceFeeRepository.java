@@ -14,6 +14,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public interface PlatformConvenienceFeeRepository extends MongoRepository<PlatformConvenienceFee, Long> {
+public interface PlatformConvenienceFeeRepository extends MongoRepository<PlatformConvenienceFee, String> {
 
 }
