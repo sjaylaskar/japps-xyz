@@ -10,7 +10,9 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -29,7 +31,8 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param code the code
      * @return the city
      */
-    City findByCode(final String code);
+    @Query("select c from City c where c.code = :code")
+    City findByCode(@Param("code") final String code);
 
     /**
      * Finds the cities by name.
@@ -37,7 +40,8 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param name the name
      * @return the citites
      */
-    List<City> findByName(final String name);
+    @Query("select c from City c where c.name = :name")
+    List<City> findByName(@Param("name") final String name);
 
     /**
      * Finds the cities by country.
@@ -54,7 +58,9 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param code the code
      */
     @Transactional
-    void deleteByCode(final String code);
+    @Modifying
+    @Query("delete from City c where c.code = :code")
+    void deleteByCode(@Param("code") final String code);
 
     /**
      * Finds the by country code.
@@ -62,8 +68,8 @@ public interface CityRepository extends JpaRepository<City, Long> {
      * @param countryCode the country code
      * @return the list
      */
-    @Query(value = "select * from City c join Country cn on c.country_id = cn.id where cn.code = :countryCode",
+    @Query(value = "select distinct c.* from City c join Country cn on c.country_id = cn.id where cn.code = :countryCode",
            nativeQuery = true)
-    List<City> findByCountryCode(final String countryCode);
+    List<City> findByCountryCode(@Param("countryCode") final String countryCode);
 
 }

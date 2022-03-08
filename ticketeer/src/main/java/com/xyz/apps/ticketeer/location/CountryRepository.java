@@ -8,6 +8,9 @@ package com.xyz.apps.ticketeer.location;
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -26,7 +29,8 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
      * @param code the code
      * @return the country
      */
-    Country findByCode(final String code);
+    @Query("select c from Country c where c.code = :code")
+    Country findByCode(@Param("code") final String code);
 
     /**
      * Finds the Country by name.
@@ -34,7 +38,8 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
      * @param name the name
      * @return the country
      */
-    Country findByName(final String name);
+    @Query("select c from Country c where c.name = :name")
+    Country findByName(@Param("name") final String name);
 
     /**
      * Delete by code.
@@ -42,7 +47,9 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
      * @param code the code
      */
     @Transactional
-    void deleteByCode(final String code);
+    @Modifying
+    @Query("delete from Country c where c.code = :code")
+    void deleteByCode(@Param("code") final String code);
 
     /**
      * Delete by name.
@@ -50,6 +57,8 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
      * @param name the name
      */
     @Transactional
-    void deleteByName(final String name);
+    @Modifying
+    @Query("delete from Country c where c.name = :name")
+    void deleteByName(@Param("name") final String name);
 
 }
