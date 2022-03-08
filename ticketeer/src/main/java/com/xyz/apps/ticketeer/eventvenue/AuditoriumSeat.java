@@ -16,6 +16,8 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.validation.annotation.Validated;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -31,6 +33,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class AuditoriumSeat extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */

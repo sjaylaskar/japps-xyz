@@ -126,10 +126,10 @@ public class UserService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public void deleteById(@NotNull(message = "The user id cannot be null.") final Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
         }
-        throw new UserNotFoundException(id);
+        userRepository.deleteById(id);
     }
 
     /**

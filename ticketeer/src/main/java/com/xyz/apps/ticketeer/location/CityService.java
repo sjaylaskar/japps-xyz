@@ -74,10 +74,10 @@ public class CityService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public CityDto update(@NotNull(message = "The city cannot be null") final CityDto cityDto) {
-        if (cityRepository.existsById(cityDto.getId())) {
-            return cityModelMapper.toDto(cityRepository.save(cityModelMapper.toEntity(cityDto)));
+        if (!cityRepository.existsById(cityDto.getId())) {
+            throw new CityNotFoundException(cityDto);
         }
-        throw new CityNotFoundException(cityDto);
+        return cityModelMapper.toDto(cityRepository.save(cityModelMapper.toEntity(cityDto)));
     }
 
     /**
@@ -87,11 +87,10 @@ public class CityService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public void delete(@NotNull(message = "City cannot be null.") final CityDto cityDto) {
-        if (cityRepository.existsById(cityDto.getId())) {
-            cityRepository.delete(cityModelMapper.toEntity(cityDto));
+        if (!cityRepository.existsById(cityDto.getId())) {
+            throw new CityNotFoundException(cityDto);
         }
-
-        throw new CityNotFoundException(cityDto);
+        cityRepository.delete(cityModelMapper.toEntity(cityDto));
     }
 
     /**
@@ -101,10 +100,10 @@ public class CityService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public void deleteById(final Long id) {
-        if (cityRepository.existsById(id)) {
-            cityRepository.deleteById(id);
+        if (!cityRepository.existsById(id)) {
+            throw new CityNotFoundException(id);
         }
-        throw new CityNotFoundException(id);
+        cityRepository.deleteById(id);
     }
 
     /**
@@ -115,10 +114,10 @@ public class CityService extends GeneralService {
     @Transactional(rollbackFor = {Throwable.class})
     public void deleteByCode(final String code) {
         final CityDto cityDto = findByCode(code);
-        if (cityDto != null) {
-            cityRepository.deleteByCode(code);
+        if (cityDto == null) {
+            throw new CityNotFoundException(code);
         }
-        throw new CityNotFoundException(code);
+        cityRepository.deleteByCode(code);
     }
 
     /**

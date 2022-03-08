@@ -17,6 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 
@@ -29,6 +30,7 @@ import lombok.AllArgsConstructor;
  * @version 1.0
  */
 @Service
+@Validated
 public class EventVenueService extends GeneralService {
 
     /** The event venue repository. */
@@ -51,6 +53,10 @@ public class EventVenueService extends GeneralService {
     @Autowired
     private AuditoriumModelMapper auditoriumModelMapper;
 
+    /** The event venue validation service. */
+    @Autowired
+    private EventVenueValidationService eventVenueValidationService;
+
     /**
      * Adds the.
      *
@@ -58,8 +64,11 @@ public class EventVenueService extends GeneralService {
      * @return the event venue dto
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public EventVenueDto add(final EventVenueDetailsDto eventVenueDetailsDto) {
+    public EventVenueDto add(@NotNull(message = "The event venue details cannot be null.") final EventVenueDetailsDto eventVenueDetailsDto) {
         Objects.requireNonNull(eventVenueDetailsDto, "The event venue details cannot be null.");
+
+        eventVenueValidationService.validateCity(eventVenueDetailsDto.getCityId());
+
         final EventVenue eventVenue = eventVenueRepository.save(toEventVenue(eventVenueDetailsDto));
 
         if (eventVenue != null) {

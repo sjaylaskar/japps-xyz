@@ -16,21 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeat;
 import com.xyz.apps.ticketeer.eventvenue.AuditoriumSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.EventVenueService;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.api.external.ApiPropertyKey;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.api.external.contract.CityDto;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.api.external.contract.EventDto;
+import com.xyz.apps.ticketeer.eventvenue.EventVenueValidationService;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeat;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.EventShowSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatRowPriceDto;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
-import com.xyz.apps.ticketeer.util.StringUtil;
 
 
 /**
@@ -62,6 +58,10 @@ public class EventShowService extends GeneralService {
     /** The event show model mapper. */
     @Autowired
     private EventShowModelMapper eventShowModelMapper;
+
+    /** The event venue validation service. */
+    @Autowired
+    private EventVenueValidationService eventVenueValidationService;
 
     /**
      * Adds the event show.
@@ -114,12 +114,7 @@ public class EventShowService extends GeneralService {
      */
     private void validateCity(@NotNull(message = "The city id cannot be null") final Long cityId) {
 
-        try {
-            serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new EventShowServiceException(exception.getResponseBodyAsString());
-        }
+        eventVenueValidationService.validateCity(cityId);
     }
 
     /**
@@ -127,13 +122,9 @@ public class EventShowService extends GeneralService {
      *
      * @param eventId the event id
      */
-    private void validateEventId(final Long eventId) {
-        try {
-            serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId), EventDto.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new EventShowServiceException(exception.getResponseBodyAsString());
-        }
+    private void validateEventId(@NotNull(message = "The event id cannot be null") final Long eventId) {
+
+        eventVenueValidationService.validateEventId(eventId);
     }
 
     /**
@@ -164,11 +155,10 @@ public class EventShowService extends GeneralService {
 
         Objects.requireNonNull(id, "The event show id cannot be null.");
 
-        if (eventShowRepository.existsById(id)) {
-            eventShowRepository.deleteById(id);
+        if (!eventShowRepository.existsById(id)) {
+            throw new EventShowNotFoundException(id);
         }
-
-        throw new EventShowNotFoundException(id);
+        eventShowRepository.deleteById(id);
     }
 
     /**

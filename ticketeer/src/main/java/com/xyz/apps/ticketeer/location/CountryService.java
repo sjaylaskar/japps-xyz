@@ -75,11 +75,10 @@ public class CountryService extends GeneralService {
     @Transactional(rollbackFor = {Throwable.class})
     public CountryDto update(@NotNull(message = "The country cannot be null.") final CountryDto countryDto) {
 
-        if (countryRepository.existsById(countryDto.getId())) {
-            return countryModelMapper.toDto(countryRepository.save(countryModelMapper.toEntity(countryDto)));
+        if (!countryRepository.existsById(countryDto.getId())) {
+            throw new CountryNotFoundException(countryDto.getId());
         }
-
-        throw new CountryNotFoundException(countryDto.getId());
+        return countryModelMapper.toDto(countryRepository.save(countryModelMapper.toEntity(countryDto)));
     }
 
     /**
@@ -90,10 +89,10 @@ public class CountryService extends GeneralService {
     @Transactional(rollbackFor = {Throwable.class})
     public void delete(@NotNull(message = "The country cannot be null.") final CountryDto countryDto) {
 
-        if (countryRepository.existsById(countryDto.getId())) {
-            countryRepository.delete(countryModelMapper.toEntity(countryDto));
+        if (!countryRepository.existsById(countryDto.getId())) {
+            throw new CountryNotFoundException(countryDto.getId());
         }
-        throw new CountryNotFoundException(countryDto.getId());
+        countryRepository.delete(countryModelMapper.toEntity(countryDto));
     }
 
     /**
@@ -104,10 +103,10 @@ public class CountryService extends GeneralService {
     @Transactional(rollbackFor = {Throwable.class})
     public void deleteById(final Long id) {
 
-        if (countryRepository.existsById(id)) {
-            countryRepository.deleteById(id);
+        if (!countryRepository.existsById(id)) {
+            throw new CountryNotFoundException(id);
         }
-        throw new CountryNotFoundException(id);
+        countryRepository.deleteById(id);
     }
 
     /**
@@ -119,10 +118,11 @@ public class CountryService extends GeneralService {
     public void deleteByCode(final String code) {
 
         final CountryDto countryDto = findByCode(code);
-        if (countryDto != null) {
-            countryRepository.deleteByCode(code);
+        if (countryDto == null) {
+            throw new CountryNotFoundException(code);
         }
-        throw new CountryNotFoundException(code);
+
+        countryRepository.deleteByCode(code);
     }
 
     /**
@@ -134,10 +134,10 @@ public class CountryService extends GeneralService {
     public void deleteByName(final String name) {
 
         final CountryDto countryDto = findByName(name);
-        if (countryDto != null) {
-            countryRepository.deleteByName(name);
+        if (countryDto == null) {
+            throw new CountryNotFoundException(name);
         }
-        throw new CountryNotFoundException(name);
+        countryRepository.deleteByName(name);
     }
 
     /**

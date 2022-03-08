@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventvenue.eventshow.api.external;
+package com.xyz.apps.ticketeer.eventvenue.api.external;
 
 /**
  * The api property key.

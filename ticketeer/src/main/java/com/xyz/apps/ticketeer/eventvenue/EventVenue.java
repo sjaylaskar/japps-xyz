@@ -12,7 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +31,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Validated
 public class EventVenue extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
@@ -38,6 +42,7 @@ public class EventVenue extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The name. */
     @Column(nullable = false)
+    @NotEmpty(message = "The event venue name is mandatory.")
     private String name;
 
     /** The number of auditoriums. */
