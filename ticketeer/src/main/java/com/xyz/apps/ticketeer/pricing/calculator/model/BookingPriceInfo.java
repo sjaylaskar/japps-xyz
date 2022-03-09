@@ -3,9 +3,13 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.booking.api.external.contract;
+package com.xyz.apps.ticketeer.pricing.calculator.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import com.xyz.apps.ticketeer.general.model.AbstractModel;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +24,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class BookingPriceInfoDto {
+public class BookingPriceInfo extends AbstractModel {
 
     /** The offer code. */
     private String offerCode;
@@ -45,15 +48,15 @@ public class BookingPriceInfoDto {
     private Long eventShowId;
 
     /** The show date. */
-    private String showDate;
+    private LocalDate showDate;
 
     /** The show start time. */
-    private String showStartTime;
+    private LocalTime showStartTime;
 
     /** The final amount. */
     private Double finalAmount;
 
     /** The booking date. */
-    private String bookingTime;
+    private LocalDateTime bookingTime;
 
 }

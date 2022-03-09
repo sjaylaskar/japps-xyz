@@ -3,9 +3,11 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.booking.api.external.contract;
+package com.xyz.apps.ticketeer.pricing.calculator.api.internal.contract;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.xyz.apps.ticketeer.general.model.Dto;
+import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BookingPriceInfoDto {
+public class BookingPriceInfoDto extends Dto<BookingPriceInfo> {
 
     /** The offer code. */
     private String offerCode;

@@ -3,10 +3,11 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventvenue.api.external.contract;
+package com.xyz.apps.ticketeer.event.api.internal.contract;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsDto;
+import com.xyz.apps.ticketeer.event.model.Event;
+import com.xyz.apps.ticketeer.general.model.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EventDto {
+public class EventDto extends Dto<Event> {
 
     /** The id. */
     private Long id;
