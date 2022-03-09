@@ -25,6 +25,7 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventSh
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatDetailsDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatDetailsDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatDtoList;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatNumbersDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeat;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatRepository;
@@ -109,7 +110,7 @@ public class EventShowSeatService extends GeneralService {
      * @param eventShowSeatIds the event show seat ids
      * @return the seat numbers by ids.
      */
-    public List<String> findSeatNumbersByIds(@NotEmpty(
+    public EventShowSeatNumbersDto findSeatNumbersByIds(@NotEmpty(
         message = "The event show seat ids cannot be null or empty."
     ) final Set<Long> eventShowSeatIds) {
 
@@ -124,8 +125,8 @@ public class EventShowSeatService extends GeneralService {
                 eventShowSeatId -> !eventShowSeatIdsFound.contains(eventShowSeatId)).collect(Collectors.toSet()));
         }
 
-        return eventVenueService.findSeatNumbersByAuditoriumSeatIds(eventShowSeats.stream().map(eventShowSeat -> eventShowSeat
-            .getAuditoriumSeat().getId()).toList());
+        return EventShowSeatNumbersDto.of(eventVenueService.findSeatNumbersByAuditoriumSeatIds(eventShowSeats.stream().map(eventShowSeat -> eventShowSeat
+            .getAuditoriumSeat().getId()).toList()));
     }
 
     /**

@@ -56,8 +56,11 @@ public class BookingDetailsDto {
     /** The booking status. */
     private String bookingStatus;
 
-    /** The amount. */
-    private Double amount;
+    /** The base amount. */
+    private Double baseAmount;
+
+    /** The final amount. */
+    private Double finalAmount;
 
     /** The offer code. */
     private String offerCode;
@@ -70,4 +73,7 @@ public class BookingDetailsDto {
 
     /** The email id. */
     private String emailId;
+
+    /** The is confirmed. */
+    private Boolean isConfirmed;
 }

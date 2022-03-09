@@ -58,7 +58,7 @@ public class EventShowSeatController {
     private EventShowSeatService eventShowSeatService;
 
     /**
-     * Gets the seat numbers by seat ids delimited by semi-colon
+     * Gets the seat numbers by seat ids delimited by comma.
      *
      * @param eventShowSeatIds the event show seat ids
      * @return the seat numbers by seat ids

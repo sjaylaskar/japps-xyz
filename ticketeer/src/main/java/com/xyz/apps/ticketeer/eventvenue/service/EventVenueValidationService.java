@@ -7,16 +7,11 @@ package com.xyz.apps.ticketeer.eventvenue.service;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.client.HttpStatusCodeException;
 
-import com.xyz.apps.ticketeer.eventvenue.api.external.ApiPropertyKey;
-import com.xyz.apps.ticketeer.eventvenue.api.external.contract.CityDto;
-import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDto;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowServiceException;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
-import com.xyz.apps.ticketeer.util.StringUtil;
 
 
 /**
@@ -29,18 +24,18 @@ import com.xyz.apps.ticketeer.util.StringUtil;
 @Validated
 public class EventVenueValidationService extends GeneralService {
 
+    /** The event venue external api handler service. */
+    @Autowired
+    private EventVenueExternalApiHandlerService eventVenueExternalApiHandlerService;
+
     /**
      * Validate city.
      *
      * @param cityId the city id
      */
     public void validateCity(@NotNull(message = "The city id cannot be null") final Long cityId) {
-
-        try {
-            serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new EventShowServiceException(exception.getResponseBodyAsString());
+        if (eventVenueExternalApiHandlerService.findCity(cityId) == null) {
+            throw new EventVenueServiceException("Invalid city id: " + cityId);
         }
     }
 
@@ -50,11 +45,9 @@ public class EventVenueValidationService extends GeneralService {
      * @param eventId the event id
      */
     public void validateEventId(@NotNull(message = "The event id cannot be null") final Long eventId) {
-        try {
-            serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId), EventDto.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new EventShowServiceException(exception.getResponseBodyAsString());
+        if (eventVenueExternalApiHandlerService.findEvent(eventId) == null) {
+            throw new EventVenueServiceException("Invalid event id: " + eventId);
         }
     }
+
 }

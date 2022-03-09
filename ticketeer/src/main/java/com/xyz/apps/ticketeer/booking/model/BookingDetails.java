@@ -72,6 +72,11 @@ public class BookingDetails extends Entity {
     @NotBlank(message = "The event venue auditorium name cannot be null.")
     private String auditoriumName;
 
+    /** The city name. */
+    @NonNull
+    @NotBlank(message = "The city name cannot be null.")
+    private String cityName;
+
     /** The seats. */
     @NonNull
     @NotEmpty(message = "Seat numbers be empty.")

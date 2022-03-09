@@ -18,6 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.eventvenue.api.external.contract.CityDto;
+import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDto;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDto;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDetailedInfoDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDetailsDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDtoList;
@@ -30,6 +35,7 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatRepos
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeat;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeatRepository;
+import com.xyz.apps.ticketeer.eventvenue.service.EventVenueExternalApiHandlerService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueValidationService;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
@@ -69,6 +75,10 @@ public class EventShowService extends GeneralService {
     /** The event venue validation service. */
     @Autowired
     private EventVenueValidationService eventVenueValidationService;
+
+    /** The external api handler service. */
+    @Autowired
+    private EventVenueExternalApiHandlerService externalApiHandlerService;
 
     /**
      * Adds the event show.
@@ -178,7 +188,34 @@ public class EventShowService extends GeneralService {
 
         Objects.requireNonNull(id, "The event show id cannot be null.");
 
-        return eventShowModelMapper.toDto(eventShowRepository.findById(id).orElseThrow(() -> new EventShowNotFoundException(id)));
+        return eventShowModelMapper.toDto(findEventShowById(id));
+
+    }
+
+    /**
+     * Finds the event show by id.
+     *
+     * @param id the id
+     * @return the event show
+     */
+    private EventShow findEventShowById(final Long id) {
+
+        return eventShowRepository.findById(id).orElseThrow(() -> new EventShowNotFoundException(id));
+    }
+
+    /**
+     * Finds the detailed info by id.
+     *
+     * @param id the id
+     * @return the event show detailed info dto
+     */
+    public EventShowDetailedInfoDto findDetailedInfoById(@NotNull(message = "The event show id cannot be null.") final Long id) {
+        final EventShowDto eventShowDto = findById(id);
+        final EventVenueDto eventVenueDto = eventVenueService.findById(eventShowDto.getEventVenueId());
+        final AuditoriumDto auditoriumDto = eventVenueService.findAuditoriumById(eventShowDto.getAuditoriumId());
+        final EventDto eventDto = externalApiHandlerService.findEvent(eventShowDto.getEventId());
+        final CityDto cityDto = externalApiHandlerService.findCity(eventShowDto.getCityId());
+        return EventShowDetailedInfoDto.of(eventShowDto, eventDto.getName(), cityDto.getName(), eventVenueDto.getName(), auditoriumDto.getName());
 
     }
 

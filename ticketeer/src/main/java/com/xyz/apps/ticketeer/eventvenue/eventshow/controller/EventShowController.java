@@ -183,4 +183,27 @@ public class EventShowController {
                 .body("Failed to find event show for id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
+
+    /**
+     * Gets the details by id.
+     *
+     * @param id the id
+     * @return the details by id
+     */
+    @GetMapping("/details/{id}")
+    public ResponseEntity<?> getDetailsById(@PathVariable("id") @NotNull(message = "The event show id cannot be null") final Long id) {
+
+        try {
+            log.info("Event show: " + id);
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(eventShowService.findDetailedInfoById(id));
+        } catch (final EventShowNotFoundException eventShowNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventShowNotFoundException).getLocalizedMessage());
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to find event show for id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        }
+    }
 }

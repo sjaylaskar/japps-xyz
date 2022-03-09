@@ -19,9 +19,28 @@ public class BookingNotFoundException extends BookingServiceException {
     /**
      * Instantiates a new booking not found exception.
      *
+     * @param message the message
+     */
+    public BookingNotFoundException(final String message) {
+        super(message);
+    }
+
+    /**
+     * Instantiates a new booking not found exception.
+     *
      * @param bookingId the booking id
      */
     public BookingNotFoundException(final Long bookingId) {
         super("Booking not found for id: " + bookingId);
+    }
+
+    /**
+     * For username.
+     *
+     * @param username the username
+     * @return the booking not found exception
+     */
+    public static BookingNotFoundException forUsername(final String username) {
+        return new BookingNotFoundException("No booking(s) found for username: " + username);
     }
 }

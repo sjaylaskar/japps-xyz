@@ -33,7 +33,7 @@ public class BookingDetailsDtoList {
     /**
      * Instantiates a new booking details dto list.
      */
-    BookingDetailsDtoList() {
+    public BookingDetailsDtoList() {
 
     }
 
@@ -42,7 +42,7 @@ public class BookingDetailsDtoList {
      *
      * @param bookings the booking details dtos
      */
-    BookingDetailsDtoList(final List<BookingDetailsDto> bookings) {
+    public BookingDetailsDtoList(final List<BookingDetailsDto> bookings) {
         this.bookings.addAll(bookings);
     }
 }

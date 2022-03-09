@@ -30,11 +30,12 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
            nativeQuery = true)
     public List<EventShowSeat> findByEventShowId(@Param("eventShowId") final Long eventShowId);
 
-
+    /** The cancel booked seats query. */
     static final String CANCEL_BOOKED_SEATS_QUERY = "update EventShowSeat ess"
         + " set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.AVAILABLE.name(),"
         + " ess.bookingId = null,"
-        + " ess.bookingTime = null"
+        + " ess.bookingTime = null,"
+        + " ess.reservationTime = null"
         + " where ess.bookingId = :bookingId";
     /**
      * Cancel by booking id.

@@ -46,8 +46,14 @@ public enum ApiPropertyKey {
     /** The event show seats cancel. */
     EVENT_SHOW_SEATS_CANCEL("api.external.eventshow.seats.cancel"),
 
+    /** The event show seat numbers. */
+    EVENT_SHOW_SEAT_NUMBERS("api.external.eventshow.seats.seat-numbers"),
+
     /** The pricing calculate. */
-    PRICING_CALCULATE("api.external.pricing.calculate");
+    PRICING_CALCULATE("api.external.pricing.calculate"),
+
+    /** The event show detailed info. */
+    EVENT_SHOW_DETAILED_INFO("api.external.eventshow.details.getById");
 
     /** The key. */
     private String key;
