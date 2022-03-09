@@ -25,7 +25,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
      * @param bookingId the booking id
      * @return the payment
      */
-    @Query("select pt from Payment pt where pt.booking = :booking and pt.paymentStatus = com.xyz.apps.ticketeer.booking.PaymentStatus.SUCCESS")
+    @Query("select pt from Payment pt where pt.booking = :booking and pt.paymentStatus = com.xyz.apps.ticketeer.booking.model.PaymentStatus.SUCCESS")
     public Payment findSuccessfulPaymentByBooking(final Booking booking);
 
 }

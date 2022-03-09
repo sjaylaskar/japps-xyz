@@ -32,7 +32,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
 
 
     static final String CANCEL_BOOKED_SEATS_QUERY = "update EventShowSeat ess"
-        + " set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.AVAILABLE.name(),"
+        + " set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.AVAILABLE.name(),"
         + " ess.bookingId = null,"
         + " ess.bookingTime = null"
         + " where ess.bookingId = :bookingId";
@@ -48,7 +48,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
 
     /** The are seats available query. */
     static final String ARE_SEATS_AVAILABLE_QUERY = "select case when count(ess.seatReservationStatus) = :seatsCount then true else false end from EventShowSeat ess"
-        + " where ess.id in :ids and ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.AVAILABLE";
+        + " where ess.id in :ids and ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.AVAILABLE";
     /**
      * Are seats available.
      *
@@ -62,7 +62,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     /** The are seats reserved query. */
     static final String ARE_SEATS_RESERVED_QUERY = "select case when count(ess.seatReservationStatus) = :seatsCount then true else false end from EventShowSeat ess"
             + " where ess.id in :ids"
-            + " and ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.RESERVED"
+            + " and ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.RESERVED"
             + " and ess.bookingId = :bookingId ";
     /**
      * Are seats reserved.
@@ -83,12 +83,12 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
         + "    select count(ess.seat_reservation_status) count_avail_status"
         + "    from event_show_seat ess"
         + "    where ess.id in :ids"
-        + "    and ess.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.AVAILABLE.name()"
+        + "    and ess.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.AVAILABLE.name()"
         + "  ) ess2"
-        + " set ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.RESERVED.name(),"
+        + " set ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.RESERVED.name(),"
         + " ess1.reservation_time = java.util.LocalDateTime.now()"
         + " where ess1.id in :ids"
-        + " and ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.AVAILABLE.name()"
+        + " and ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.AVAILABLE.name()"
         + " and ess2.count_avail_status = :seatsCount";
 
     /**
@@ -105,7 +105,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
 
     /** The unreserve seats query. */
     static final String UNRESERVE_SEATS_QUERY = "update EventShowSeat ess"
-        + " set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.AVAILABLE,"
+        + " set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.AVAILABLE,"
         + " ess.reservationTime = null"
         + " where ess.id in :ids";
 
@@ -128,13 +128,13 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
             + "    from event_show_seat ess"
             + "    where ess.booking_id = :bookingId"
             + "    and ess.id in :ids"
-            + "    and ess.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.RESERVED.name()"
+            + "    and ess.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.RESERVED.name()"
             + "  ) ess2"
-            + " set ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.BOOKED.name(),"
+            + " set ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.BOOKED.name(),"
             + " ess1.booking_time = java.util.LocalDateTime.now()"
             + " where ess1.booking_id = :bookingId"
             + " and ess1.id in :ids"
-            + " and ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.RESERVED.name()"
+            + " and ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.RESERVED.name()"
             + " and ess2.count_reserved_status = :seatsCount";
 
     /**
@@ -158,11 +158,11 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
             + "    select count(ess.seat_reservation_status) count_reserved_status"
             + "    from event_show_seat ess"
             + "    where ess.id in :ids"
-            + "    and ess.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.RESERVED.name()"
+            + "    and ess.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.RESERVED.name()"
             + "  ) ess2"
             + " set ess1.booking_id = :bookingId"
             + " where ess1.id in :ids"
-            + " and ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.SeatReservationStatus.RESERVED.name()"
+            + " and ess1.seat_reservation_status = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.RESERVED.name()"
             + " and ess2.count_reserved_status = :seatsCount";
 
     /**

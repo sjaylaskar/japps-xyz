@@ -145,6 +145,9 @@ public class BookingService extends GeneralService {
 
         // TODO - save booking details.
         // Controller -> getById, getByUserId. (CONFIRMED and CANCELLED).
+        // TEST reserve, confirm, cancel, same-seat-contention, getById, getByUserId
+        // Discount add, booking amount on offer code, getDiscount by city, venue, etc.
+        // Documents (2).
 
         final int countOfBookedSeats = bookSeats(eventShowSeatsBookingDto);
 
