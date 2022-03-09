@@ -27,6 +27,8 @@ import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.CityDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDetailedInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatMinimalDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatMinimalDtoList;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatNumbersDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookingDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingDto;
@@ -359,5 +361,43 @@ public class BookingExternalApiHandlerService extends GeneralService {
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException("User is not authenticated.");
         }
+    }
+
+    /**
+     * Finds the event show seat ids by event show id.
+     *
+     * @param eventShowId the event show id
+     * @return the event show seat minimal dto list
+     */
+    public Set<Long> findEventShowSeatIdsByEventShowId(@NotNull(message = "The event show id cannot be null.") final Long eventShowId) {
+        ResponseEntity<EventShowSeatMinimalDtoList> eventShowSeatMinimalDtosResponseEntity = null;
+        try {
+            eventShowSeatMinimalDtosResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
+                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID.get()), eventShowId),
+                EventShowSeatMinimalDtoList.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatMinimalDtosResponseEntity)) {
+            throw new BookingServiceException("Could not find seats for event show id: " + eventShowId);
+        }
+
+        return getSeatIds(eventShowId, eventShowSeatMinimalDtosResponseEntity);
+    }
+
+    /**
+     * Gets the seat ids.
+     *
+     * @param eventShowId the event show id
+     * @param eventShowSeatMinimalDtosResponseEntity the event show seat minimal dtos response entity
+     * @return the seat ids
+     */
+    private Set<Long> getSeatIds(final Long eventShowId, final ResponseEntity<EventShowSeatMinimalDtoList> eventShowSeatMinimalDtosResponseEntity) {
+        if (CollectionUtils.isEmpty(eventShowSeatMinimalDtosResponseEntity.getBody().getEventShowSeatMinimalDtos())) {
+            throw new BookingServiceException("Could not find seats for event show id: " + eventShowId);
+        }
+
+        return eventShowSeatMinimalDtosResponseEntity.getBody().getEventShowSeatMinimalDtos().stream().map(EventShowSeatMinimalDto::getId).collect(Collectors.toSet());
     }
 }

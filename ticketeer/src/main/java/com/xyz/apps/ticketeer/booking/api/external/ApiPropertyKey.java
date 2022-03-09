@@ -53,7 +53,10 @@ public enum ApiPropertyKey {
     PRICING_CALCULATE("api.external.pricing.calculate"),
 
     /** The event show detailed info. */
-    EVENT_SHOW_DETAILED_INFO("api.external.eventshow.details.getById");
+    EVENT_SHOW_DETAILED_INFO("api.external.eventshow.details.getById"),
+
+    /** The event show seats by event show id. */
+    EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID("api.external.eventshow.seats.event-show.getByEventShowId");
 
     /** The key. */
     private String key;

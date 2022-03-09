@@ -7,6 +7,7 @@ package com.xyz.apps.ticketeer.booking.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -145,8 +146,7 @@ public class BookingService extends GeneralService {
         if (bookingDto.getBookingId() == null) {
             throw new BookingExpiredException();
         }
-        validateEventShowSeats(bookingDto);
-        validateUser(bookingDto);
+        validateBooking(bookingDto);
         final BookingResult bookingReservationResult = new BookingResult();
         try {
             return confirm(bookingDto, bookingReservationResult);
@@ -443,13 +443,13 @@ public class BookingService extends GeneralService {
      */
     private void validateBooking(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
 
-        validateEventShowSeats(bookingDto);
-
         validateUser(bookingDto);
 
         validateEventShow(bookingDto);
 
         validateCity(bookingDto);
+
+        validateEventShowSeats(bookingDto);
     }
 
     /**
@@ -499,6 +499,11 @@ public class BookingService extends GeneralService {
 
         if (bookingDto.getEventShowSeatIds().size() > MAX_SEATS_PER_BOOKING) {
             throw new BookingServiceException("Maximum seats allowed per booking is: " + MAX_SEATS_PER_BOOKING);
+        }
+        final Set<Long> eventShowSeatIds = bookingExternalApiHandlerService.findEventShowSeatIdsByEventShowId(bookingDto.getEventShowId());
+
+        if (!bookingDto.getEventShowSeatIds().stream().allMatch(eventShowSeatId -> eventShowSeatIds.contains(eventShowSeatId))) {
+            throw new BookingServiceException("Invalid seats selected.");
         }
     }
 }

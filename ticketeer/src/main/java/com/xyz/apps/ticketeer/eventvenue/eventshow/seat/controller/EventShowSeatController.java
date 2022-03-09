@@ -126,7 +126,7 @@ public class EventShowSeatController {
      * @param eventShowId the event show id
      * @return the event show seats by event show id
      */
-    @GetMapping("/with-bookings/event-show/{eventShowId}")
+    @GetMapping("/event-show-id/{eventShowId}")
     public ResponseEntity<?> getEventShowSeatsByEventShowId(@PathVariable("eventShowId") @NotNull(
         message = "The event show id cannot be null."
     ) final Long eventShowId) {
