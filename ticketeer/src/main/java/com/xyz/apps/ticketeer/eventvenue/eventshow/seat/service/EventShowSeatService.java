@@ -88,7 +88,7 @@ public class EventShowSeatService extends GeneralService {
             eventShowWithAuditoriumDto
                 .getAuditoriumId());
 
-        if (auditoriumSeatDtoList == null || CollectionUtils.isNotEmpty(auditoriumSeatDtoList.getAuditoriumSeatDtos())) {
+        if (auditoriumSeatDtoList == null || CollectionUtils.isEmpty(auditoriumSeatDtoList.getAuditoriumSeatDtos())) {
             throw new EventShowServiceException("No seats found for event show: " + eventShowWithAuditoriumDto);
         }
 

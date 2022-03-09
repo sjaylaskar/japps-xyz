@@ -371,7 +371,7 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventshow/search
 "eventId": 2
 }
 
-booking/reserve:
+http://localhost:8082/xyz/apps/ticketeer/api/v1/booking/reserve
 
 {
   
@@ -390,3 +390,48 @@ booking/reserve:
   "username": "jaylaskar"
 }
 
+
+http://localhost:8082/xyz/apps/ticketeer/api/v1/booking/confirm
+{
+  "bookingId" : 3,
+  "cityId": 1,
+  "emailId": "jaylaskar@gmail.com",
+  "eventShowId": 3,
+  "eventShowSeatIds": [
+    401,
+402,
+403
+  ],
+  "eventVenueId": 2,  
+  "password": "jay12345",
+  "phoneNumber": "8860083692",
+  "username": "jaylaskar"
+}
+
+
+
+Discounts:
+
+{
+  "dtos": [
+    {
+      "applicableCityIds": [
+        0
+      ],
+      "applicableEventVenueIds": [
+        0
+      ],
+      "discountStrategy": "string",
+      "discountType": "string",
+      "endTime": "string",
+      "id": "string",
+      "minAmount": 0,
+      "minSeats": 0,
+      "nthSeat": 0,
+      "offerCode": "string",
+      "showTimeType": "string",
+      "startTime": "string",
+      "value": 0
+    }
+  ]
+}

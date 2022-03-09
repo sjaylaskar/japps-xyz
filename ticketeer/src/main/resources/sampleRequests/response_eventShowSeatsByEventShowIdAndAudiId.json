@@ -1,0 +1,487 @@
+{
+  "eventShowId": 5,
+  "auditoriumId": 12,
+  "auditoriumName": "Audi 2",
+  "eventShowDetailsDtos": [
+    {
+      "id": 821,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 1"
+    },
+    {
+      "id": 822,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 2"
+    },
+    {
+      "id": 823,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 3"
+    },
+    {
+      "id": 824,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 4"
+    },
+    {
+      "id": 825,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 5"
+    },
+    {
+      "id": 826,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 6"
+    },
+    {
+      "id": 827,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 7"
+    },
+    {
+      "id": 828,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 8"
+    },
+    {
+      "id": 829,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 9"
+    },
+    {
+      "id": 830,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "A 10"
+    },
+    {
+      "id": 831,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 1"
+    },
+    {
+      "id": 832,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 2"
+    },
+    {
+      "id": 833,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 3"
+    },
+    {
+      "id": 834,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 4"
+    },
+    {
+      "id": 835,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 5"
+    },
+    {
+      "id": 836,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 6"
+    },
+    {
+      "id": 837,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 7"
+    },
+    {
+      "id": 838,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 8"
+    },
+    {
+      "id": 839,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 9"
+    },
+    {
+      "id": 840,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "B 10"
+    },
+    {
+      "id": 841,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 1"
+    },
+    {
+      "id": 842,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 2"
+    },
+    {
+      "id": 843,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 3"
+    },
+    {
+      "id": 844,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 4"
+    },
+    {
+      "id": 845,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 5"
+    },
+    {
+      "id": 846,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 6"
+    },
+    {
+      "id": 847,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 7"
+    },
+    {
+      "id": 848,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 8"
+    },
+    {
+      "id": 849,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 9"
+    },
+    {
+      "id": 850,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "C 10"
+    },
+    {
+      "id": 851,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 1"
+    },
+    {
+      "id": 852,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 2"
+    },
+    {
+      "id": 853,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 3"
+    },
+    {
+      "id": 854,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 4"
+    },
+    {
+      "id": 855,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 5"
+    },
+    {
+      "id": 856,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 6"
+    },
+    {
+      "id": 857,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 7"
+    },
+    {
+      "id": 858,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 8"
+    },
+    {
+      "id": 859,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 9"
+    },
+    {
+      "id": 860,
+      "amount": 500,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "D 10"
+    },
+    {
+      "id": 861,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 1"
+    },
+    {
+      "id": 862,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 2"
+    },
+    {
+      "id": 863,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 3"
+    },
+    {
+      "id": 864,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 4"
+    },
+    {
+      "id": 865,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 5"
+    },
+    {
+      "id": 866,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 6"
+    },
+    {
+      "id": 867,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 7"
+    },
+    {
+      "id": 868,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 8"
+    },
+    {
+      "id": 869,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 9"
+    },
+    {
+      "id": 870,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "E 10"
+    },
+    {
+      "id": 871,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 1"
+    },
+    {
+      "id": 872,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 2"
+    },
+    {
+      "id": 873,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 3"
+    },
+    {
+      "id": 874,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 4"
+    },
+    {
+      "id": 875,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 5"
+    },
+    {
+      "id": 876,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 6"
+    },
+    {
+      "id": 877,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 7"
+    },
+    {
+      "id": 878,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 8"
+    },
+    {
+      "id": 879,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 9"
+    },
+    {
+      "id": 880,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "F 10"
+    },
+    {
+      "id": 881,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 1"
+    },
+    {
+      "id": 882,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 2"
+    },
+    {
+      "id": 883,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 3"
+    },
+    {
+      "id": 884,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 4"
+    },
+    {
+      "id": 885,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 5"
+    },
+    {
+      "id": 886,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 6"
+    },
+    {
+      "id": 887,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 7"
+    },
+    {
+      "id": 888,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 8"
+    },
+    {
+      "id": 889,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 9"
+    },
+    {
+      "id": 890,
+      "amount": 550,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "G 10"
+    },
+    {
+      "id": 891,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 1"
+    },
+    {
+      "id": 892,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 2"
+    },
+    {
+      "id": 893,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 3"
+    },
+    {
+      "id": 894,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 4"
+    },
+    {
+      "id": 895,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 5"
+    },
+    {
+      "id": 896,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 6"
+    },
+    {
+      "id": 897,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 7"
+    },
+    {
+      "id": 898,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 8"
+    },
+    {
+      "id": 899,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 9"
+    },
+    {
+      "id": 900,
+      "amount": 700,
+      "seatReservationStatus": "AVAILABLE",
+      "seatNumber": "H 10"
+    }
+  ]
+}
