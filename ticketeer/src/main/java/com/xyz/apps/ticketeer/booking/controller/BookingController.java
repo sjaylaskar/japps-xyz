@@ -29,6 +29,8 @@ import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.CancelBookingDto;
 import com.xyz.apps.ticketeer.booking.service.BookingNotFoundException;
 import com.xyz.apps.ticketeer.booking.service.BookingService;
+import com.xyz.apps.ticketeer.booking.service.BookingServiceException;
+import com.xyz.apps.ticketeer.booking.service.SelectedSeatsUnavailableException;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -72,6 +74,10 @@ public class BookingController {
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body("The selected seats are no longer available! Please select new seats.");
             }
+        } catch(final SelectedSeatsUnavailableException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -103,6 +109,10 @@ public class BookingController {
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body("Payment unsuccessful. Please try again!");
             }
+        } catch(final BookingServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -134,6 +144,12 @@ public class BookingController {
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body("Booking cancellation unsuccesful. Please try again!");
             }
+        } catch (final BookingNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        } catch(final BookingServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -161,6 +177,10 @@ public class BookingController {
                 .body(bookingService.findByUsernameAndId(username, bookingId));
         } catch (final BookingNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        } catch(final BookingServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -185,6 +205,10 @@ public class BookingController {
                 .body(bookingService.findByUsername(username));
         } catch (final BookingNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        } catch(final BookingServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity

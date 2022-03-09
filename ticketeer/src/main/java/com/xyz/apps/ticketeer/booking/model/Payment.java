@@ -17,7 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
@@ -41,6 +40,9 @@ public class Payment extends com.xyz.apps.ticketeer.general.model.Entity {
     // @TODO - Connect with actual payment gateway interface.
     /** The default payment method. */
     private static final String DEFAULT_PAYMENT_METHOD = "UPI";
+
+    /** The default transaction id. */
+    public static final String DEFAULT_TRANSACTION_ID_PREFIX = "TICKTEER_";
 
     /** The id. */
     @Id
@@ -66,8 +68,6 @@ public class Payment extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The transaction id. */
     @NotNull(message = "Transaction ID cannot be null.")
     @Column(nullable = false, unique = true)
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String transactionId;
 
     /** The payment status. */

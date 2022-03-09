@@ -7,7 +7,9 @@ package com.xyz.apps.ticketeer.booking.model;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -19,4 +21,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookingDetailsRepository extends MongoRepository<BookingDetails, ObjectId> {
 
+    /**
+     * Delete by booking id.
+     *
+     * @param bookingId the booking id
+     */
+    @Transactional
+    @Query(delete = true)
+    public Long deleteByBookingId(final Long bookingId);
 }

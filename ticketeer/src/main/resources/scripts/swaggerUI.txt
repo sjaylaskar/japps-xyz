@@ -1,1 +1,1 @@
-http://localhost:8082/xyz/apps/ticketeer/api/swagger-ui/index.html#/
+http://localhost:8082/xyz/apps/ticketeer/api/v1/swagger-ui/index.html

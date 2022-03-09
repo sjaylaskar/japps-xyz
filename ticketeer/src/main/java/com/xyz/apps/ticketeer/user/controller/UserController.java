@@ -170,7 +170,7 @@ public class UserController {
     ) final BasicUserDto basicUserDto) {
 
         try {
-            log.info(basicUserDto.getUsername());
+            log.info("User: " + basicUserDto.getUsername());
             return ResponseEntity.ok().body(userService.authenticate(basicUserDto));
         } catch (final Exception exception) {
             log.error(exception);

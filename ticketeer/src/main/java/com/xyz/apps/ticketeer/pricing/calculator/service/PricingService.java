@@ -5,6 +5,9 @@
  */
 package com.xyz.apps.ticketeer.pricing.calculator.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.general.service.GeneralService;
+import com.xyz.apps.ticketeer.general.service.ServiceUtil;
 import com.xyz.apps.ticketeer.pricing.calculator.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.pricing.calculator.api.internal.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
@@ -22,6 +26,7 @@ import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountService;
 import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfo;
 import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfoModelMapper;
+import com.xyz.apps.ticketeer.pricing.conveniencefee.service.PlatformConvenienceFeeNotFoundException;
 
 
 /**
@@ -71,9 +76,27 @@ public class PricingService extends GeneralService {
                 throw new PricingServiceException(exception.getResponseBodyAsString());
             }
 
-            return bookingPriceInfo.getFinalAmount() * (1 + platformConvenienceFeeResponseEntity.getBody() / 100);
+            if (ServiceUtil.notHasBodyResponseEntity(platformConvenienceFeeResponseEntity)) {
+                throw new PlatformConvenienceFeeNotFoundException();
+            }
+
+            final Double platformConvenienceFeePercentage = platformConvenienceFeeResponseEntity.getBody();
+
+            return rounded(bookingPriceInfo.getFinalAmount() * (1 + platformConvenienceFeePercentage / 100));
         }
 
         return 0d;
+    }
+
+    /**
+     * Rounded.
+     *
+     * @param amount the amount
+     * @return the rounded value
+     */
+    private static double rounded(final double amount) {
+        return (new BigDecimal(Double.toString(amount))
+                .setScale(2, RoundingMode.HALF_UP))
+                .doubleValue();
     }
 }
