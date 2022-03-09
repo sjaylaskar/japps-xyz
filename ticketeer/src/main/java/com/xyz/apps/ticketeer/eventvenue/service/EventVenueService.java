@@ -11,9 +11,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +23,16 @@ import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDetailsDto;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDto;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatDetailsDto;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatDto;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatDtoList;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDetailsDto;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDto;
 import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumRepository;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeat;
+import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeatModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.model.EventVenue;
 import com.xyz.apps.ticketeer.eventvenue.model.EventVenueModelMapper;
@@ -68,6 +74,10 @@ public class EventVenueService extends GeneralService {
     /** The event venue validation service. */
     @Autowired
     private EventVenueValidationService eventVenueValidationService;
+
+    /** The auditorium seat model mapper. */
+    @Autowired
+    private AuditoriumSeatModelMapper auditoriumSeatModelMapper;
 
     /**
      * Adds the.
@@ -180,12 +190,59 @@ public class EventVenueService extends GeneralService {
     }
 
     /**
+     * Finds the auditorium seat by id.
+     *
+     * @param auditoriumSeatId the auditorium seat id
+     * @return the auditorium seat details dto
+     */
+    public AuditoriumSeatDetailsDto findAuditoriumSeatById(@NotNull(message = "The auditorium seat id cannot be null.") final Long auditoriumSeatId) {
+          final AuditoriumSeat auditoriumSeat = auditoriumSeatRepository.findById(auditoriumSeatId)
+                  .orElseThrow(() -> new EventVenueServiceException("Auditorium seat with id: " + auditoriumSeatId + " not found."));
+          return auditoriumSeatModelMapper.toDto(auditoriumSeat);
+    }
+
+    /**
+     * Finds the seat numbers by auditorium seat ids.
+     *
+     * @param auditoriumSeatIds the auditorium seat ids
+     * @return the list
+     */
+    public List<String> findSeatNumbersByAuditoriumSeatIds(@NotEmpty(message = "The auditorium seat ids cannot be empty.") final List<Long> auditoriumSeatIds) {
+        final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.findAllById(auditoriumSeatIds);
+        if (CollectionUtils.isEmpty(auditoriumSeats) || auditoriumSeats.size() != auditoriumSeatIds.size()) {
+            throw new EventVenueServiceException("Auditorium seats not found.");
+        }
+
+        return auditoriumSeats
+                .stream()
+                .map(auditoriumSeat -> String.valueOf(auditoriumSeat.getSeatRow()) + StringUtils.SPACE + auditoriumSeat.getSeatNumber()).toList();
+    }
+
+    /**
      * Finds the auditorium by id.
      *
      * @param auditoriumId the auditorium id
      * @return the auditorium dto
      */
-    public AuditoriumDto findAuditoriumById(@NotNull(message = "The event venue id cannot be null.") final Long auditoriumId) {
+    public AuditoriumDto findAuditoriumById(@NotNull(message = "The auditorium id cannot be null.") final Long auditoriumId) {
         return auditoriumModelMapper.toDto(auditoriumRepository.findById(auditoriumId).orElseThrow(() -> new AuditoriumNotFoundException(auditoriumId)));
+    }
+
+    /**
+     * Finds the auditorium seats by auditorium id.
+     *
+     * @param auditoriumId the auditorium id
+     * @return the auditorium seat dto list
+     */
+    public AuditoriumSeatDtoList findAuditoriumSeatsByAuditoriumId(@NotNull(message = "The auditorium id cannot be null.") final Long auditoriumId) {
+        final AuditoriumDto auditoriumDto = findAuditoriumById(auditoriumId);
+        final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.findByAuditoriumId(auditoriumDto.getId());
+
+        if (CollectionUtils.isEmpty(auditoriumSeats)) {
+            throw new EventVenueServiceException("No auditorium seats found for auditorium id: " + auditoriumId);
+        }
+        return AuditoriumSeatDtoList.of(auditoriumDto.getId(), auditoriumDto.getName(),
+            auditoriumSeats.stream().map(auditoriumSeat -> AuditoriumSeatDto.of(auditoriumSeat.getId(), auditoriumSeat.getSeatRow(), auditoriumSeat.getSeatNumber()))
+            .toList());
     }
 }

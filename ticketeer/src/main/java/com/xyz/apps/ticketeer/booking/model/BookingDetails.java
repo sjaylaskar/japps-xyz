@@ -74,6 +74,6 @@ public class BookingDetails extends Entity {
 
     /** The seats. */
     @NonNull
-    @NotEmpty(message = "Seats cannot be empty.")
-    private List<String> seats;
+    @NotEmpty(message = "Seat numbers be empty.")
+    private List<String> seatNumbers;
 }

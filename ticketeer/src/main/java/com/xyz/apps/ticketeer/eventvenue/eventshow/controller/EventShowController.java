@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDetailsDto;
@@ -132,9 +133,13 @@ public class EventShowController {
      * @param eventShowSearchCriteria the event show search criteria
      * @return the response entity
      */
-    @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody final EventShowSearchCriteria eventShowSearchCriteria) {
+    @GetMapping("/search")
+    public ResponseEntity<?> search(
+            @RequestParam final Long cityId,
+            @RequestParam final Long eventId,
+            @RequestParam final String date) {
 
+        final EventShowSearchCriteria eventShowSearchCriteria = EventShowSearchCriteria.of(cityId, eventId, date);
         try {
             log.info("Event show search criteria: " + eventShowSearchCriteria);
             final EventShowDtoList eventShowDtoList = eventShowService.search(eventShowSearchCriteria);

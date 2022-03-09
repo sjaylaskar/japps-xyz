@@ -32,4 +32,14 @@ public interface AuditoriumSeatRepository extends JpaRepository<AuditoriumSeat, 
     @Query(value = "select * from auditorium_seat aust where aust.auditorium_id = :auditoriumId and aust.seat_row in :seatRows",
            nativeQuery = true)
     public List<AuditoriumSeat> findBySeatRowIn(@Param("auditoriumId") final Long auditoriumId, @Param("seatRows") final Collection<Character> seatRows);
+
+    /**
+     * Finds the by auditorium id.
+     *
+     * @param auditoriumId the auditorium id
+     * @return the list of {@link AuditoriumSeat}
+     */
+    @Query(value = "select * from auditorium_seat aust where aust.auditorium_id = :auditoriumId",
+            nativeQuery = true)
+    public List<AuditoriumSeat> findByAuditoriumId(@Param("auditoriumId") final Long auditoriumId);
 }

@@ -143,6 +143,9 @@ public class BookingService extends GeneralService {
 
         final Booking bookingUpdated = bookingRepository.save(booking);
 
+        // TODO - save booking details.
+        // Controller -> getById, getByUserId. (CONFIRMED and CANCELLED).
+
         final int countOfBookedSeats = bookSeats(eventShowSeatsBookingDto);
 
         if (countOfBookedSeats != bookingDto.getEventShowSeatIds().size()) {

@@ -28,4 +28,20 @@ public class EventShowSearchCriteria {
 
     /** The date. */
     private String date;
+
+    /**
+     * Of.
+     *
+     * @param cityId the city id
+     * @param eventId the event id
+     * @param date the date
+     * @return the event show search criteria
+     */
+    public static EventShowSearchCriteria of(final Long cityId, final Long eventId, final String date) {
+        final EventShowSearchCriteria eventShowSearchCriteria = new EventShowSearchCriteria();
+        eventShowSearchCriteria.setCityId(cityId);
+        eventShowSearchCriteria.setEventId(eventId);
+        eventShowSearchCriteria.setDate(date);
+        return eventShowSearchCriteria;
+    }
 }

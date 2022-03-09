@@ -1,12 +1,16 @@
 /*
-* Id: EventShowSeatController.java 06-Mar-2022 4:52:07 pm SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: EventShowSeatController.java 06-Mar-2022 4:52:07 pm SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.controller;
 
+import java.util.Arrays;
 import java.util.Set;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -22,14 +26,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowWithAuditoriumDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsBookingDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.EventShowSeatService;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.EventShowSeatsNotFoundException;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowServiceException;
 import com.xyz.apps.ticketeer.general.model.DtoList;
 
 import lombok.extern.log4j.Log4j2;
+
 
 /**
  * The event show seat controller.
@@ -49,13 +58,78 @@ public class EventShowSeatController {
     private EventShowSeatService eventShowSeatService;
 
     /**
+     * Gets the seat numbers by seat ids delimited by semi-colon
+     *
+     * @param eventShowSeatIds the event show seat ids
+     * @return the seat numbers by seat ids
+     */
+    @GetMapping("/seat-numbers/{eventShowSeatIds}")
+    public ResponseEntity<?> getSeatNumbersBySeatIds(@PathVariable("eventShowSeatIds") @NotBlank final String eventShowSeatIds) {
+
+        try {
+            log.info("Event show seat ids: " + eventShowSeatIds);
+            final String[] eventShowSeatIdsArray = eventShowSeatIds.split(",");
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(eventShowSeatService.findSeatNumbersByIds(
+                    Arrays.asList(eventShowSeatIdsArray).stream().map(Long::valueOf).collect(
+                        Collectors.toSet())));
+        } catch (PatternSyntaxException | NumberFormatException exception) {
+            log.error(exception);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                "Invalid format for event show seat ids. Please send comma-separated integers as path variable.");
+        } catch (final EventShowSeatsNotFoundException exception) {
+            log.error(exception);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to find seat numbers for ids: "
+                    + eventShowSeatIds + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Gets the event show seats by event show id and auditorium idget event show seats by event show id.
+     *
+     * @param eventShowId the event show id
+     * @param auditoriumId the auditorium id
+     * @return the event show seats by event show id and auditorium idget event show seats by event show id
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> getEventShowSeatsByEventShowIdAndAuditoriumIdgetEventShowSeatsByEventShowId(
+            @RequestParam("eventShowId") @NotNull(message = "The event show id cannot be null.") final Long eventShowId,
+            @RequestParam("eventShowId") @NotNull(message = "The auditorium id cannot be null.") final Long auditoriumId) {
+
+        final EventShowWithAuditoriumDto eventShowWithAuditoriumDto = EventShowWithAuditoriumDto.of(eventShowId, auditoriumId);
+        try {
+            log.info("Event show: " + eventShowWithAuditoriumDto);
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(eventShowSeatService
+                    .findEventShowSeatDetailsByEventShowAndAuditoriumId(eventShowWithAuditoriumDto));
+        } catch (final EventShowServiceException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        } catch (final Exception exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body("Failed to find seats for event show: "
+                    + eventShowWithAuditoriumDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        }
+    }
+
+    /**
      * Gets the event show seats by event show id.
      *
      * @param eventShowId the event show id
      * @return the event show seats by event show id
      */
-    @GetMapping("/{eventShowId}")
-    public ResponseEntity<?> getEventShowSeatsByEventShowId(@PathVariable("eventShowId") @NotNull(message = "The event show id cannot be null.") final Long eventShowId) {
+    @GetMapping("/with-bookings/event-show/{eventShowId}")
+    public ResponseEntity<?> getEventShowSeatsByEventShowId(@PathVariable("eventShowId") @NotNull(
+        message = "The event show id cannot be null."
+    ) final Long eventShowId) {
 
         try {
             log.info("Event show: " + eventShowId);
@@ -85,7 +159,9 @@ public class EventShowSeatController {
      * @return the response entity
      */
     @PostMapping("/amount/calculate")
-    public ResponseEntity<?> calculateSeatsTotalAmount(@RequestBody @NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds) {
+    public ResponseEntity<?> calculateSeatsTotalAmount(@RequestBody @NotEmpty(
+        message = "The seat ids cannot be empty."
+    ) final Set<Long> seatIds) {
 
         try {
             log.info("Seats IDs: " + seatIds);
@@ -110,7 +186,9 @@ public class EventShowSeatController {
      * @return the response entity
      */
     @PostMapping("/are-available")
-    public ResponseEntity<?> areSeatsAvailable(@RequestBody @NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds) {
+    public ResponseEntity<?> areSeatsAvailable(@RequestBody @NotEmpty(
+        message = "The seat ids cannot be empty."
+    ) final Set<Long> seatIds) {
 
         try {
             log.info("Seats IDs: " + seatIds);
@@ -133,13 +211,16 @@ public class EventShowSeatController {
      * @return the response entity
      */
     @PostMapping("/are-reserved")
-    public ResponseEntity<?> areSeatsReserved(@RequestBody @NotNull(message = "The seats booking info cannot be null.") final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
+    public ResponseEntity<?> areSeatsReserved(@RequestBody @NotNull(
+        message = "The seats booking info cannot be null."
+    ) final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
 
         try {
             log.info("Event show seats booking info: " + eventShowSeatsBookingDto);
             return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(eventShowSeatService.areSeatsReserved(eventShowSeatsBookingDto.getSeatIds(), eventShowSeatsBookingDto.getBookingId()));
+                .body(eventShowSeatService.areSeatsReserved(eventShowSeatsBookingDto.getSeatIds(), eventShowSeatsBookingDto
+                    .getBookingId()));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -156,7 +237,9 @@ public class EventShowSeatController {
      * @return the response entity
      */
     @PutMapping("/reserve")
-    public ResponseEntity<?> reserveSeats(@RequestBody @NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds) {
+    public ResponseEntity<?> reserveSeats(@RequestBody @NotEmpty(
+        message = "The seat ids cannot be empty."
+    ) final Set<Long> seatIds) {
 
         try {
             log.info("Seats IDs: " + seatIds);
@@ -179,7 +262,9 @@ public class EventShowSeatController {
      * @return the response entity
      */
     @PutMapping("/unreserve")
-    public ResponseEntity<?> unreserveSeats(@RequestBody @NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds) {
+    public ResponseEntity<?> unreserveSeats(@RequestBody @NotEmpty(
+        message = "The seat ids cannot be empty."
+    ) final Set<Long> seatIds) {
 
         try {
             log.info("Seats IDs: " + seatIds);
@@ -202,13 +287,16 @@ public class EventShowSeatController {
      * @return the response entity
      */
     @PutMapping("/book")
-    public ResponseEntity<?> bookSeats(@RequestBody @NotNull(message = "The seats booking info cannot be null.") final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
+    public ResponseEntity<?> bookSeats(@RequestBody @NotNull(
+        message = "The seats booking info cannot be null."
+    ) final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
 
         try {
             log.info("Event show seats booking info: " + eventShowSeatsBookingDto);
             return ResponseEntity
                 .accepted()
-                .body(eventShowSeatService.bookSeats(eventShowSeatsBookingDto.getSeatIds(), eventShowSeatsBookingDto.getBookingId()));
+                .body(eventShowSeatService.bookSeats(eventShowSeatsBookingDto.getSeatIds(), eventShowSeatsBookingDto
+                    .getBookingId()));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -225,13 +313,16 @@ public class EventShowSeatController {
      * @return the response entity
      */
     @PutMapping("/reserve-with-booking")
-    public ResponseEntity<?> fillBookingForReservedSeats(@RequestBody @NotNull(message = "The seats booking info cannot be null.") final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
+    public ResponseEntity<?> fillBookingForReservedSeats(@RequestBody @NotNull(
+        message = "The seats booking info cannot be null."
+    ) final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
 
         try {
             log.info("Event show seats booking info: " + eventShowSeatsBookingDto);
             return ResponseEntity
                 .accepted()
-                .body(eventShowSeatService.fillBookingForReservedSeats(eventShowSeatsBookingDto.getSeatIds(), eventShowSeatsBookingDto.getBookingId()));
+                .body(eventShowSeatService.fillBookingForReservedSeats(eventShowSeatsBookingDto.getSeatIds(),
+                    eventShowSeatsBookingDto.getBookingId()));
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -248,7 +339,9 @@ public class EventShowSeatController {
      * @return the response entity
      */
     @PutMapping("/cancel")
-    public ResponseEntity<?> cancelByBookingId(@RequestBody @NotNull(message = "The booking id cannot be null.") final Long bookingId) {
+    public ResponseEntity<?> cancelByBookingId(@RequestBody @NotNull(
+        message = "The booking id cannot be null."
+    ) final Long bookingId) {
 
         try {
             log.info("Booking id to cancel: " + bookingId);
