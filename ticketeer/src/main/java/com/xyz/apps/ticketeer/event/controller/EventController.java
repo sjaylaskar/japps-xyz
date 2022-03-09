@@ -194,8 +194,8 @@ public class EventController {
     @GetMapping("/search")
     public ResponseEntity<?> search(
             @NotBlank(message = "Search text is required.") @RequestParam final String text,
-            @RequestParam(defaultValue = "0") final Integer pageNumber,
-            @RequestParam(defaultValue = "1") final Integer pageSize) {
+            @RequestParam(defaultValue = "0", required = false) final Integer pageNumber,
+            @RequestParam(defaultValue = "1", required = false) final Integer pageSize) {
 
         try {
             final EventDetailsDtoList eventDetailsDtoList = eventService.searchByText(text, pageNumber, pageSize);

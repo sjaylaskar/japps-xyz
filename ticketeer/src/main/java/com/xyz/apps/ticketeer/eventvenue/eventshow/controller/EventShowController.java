@@ -135,9 +135,9 @@ public class EventShowController {
      */
     @GetMapping("/search")
     public ResponseEntity<?> search(
-            @RequestParam final Long cityId,
-            @RequestParam final Long eventId,
-            @RequestParam final String date) {
+            @RequestParam(required = false) final Long cityId,
+            @RequestParam(required = false) final Long eventId,
+            @RequestParam(required = false) final String date) {
 
         final EventShowSearchCriteria eventShowSearchCriteria = EventShowSearchCriteria.of(cityId, eventId, date);
         try {

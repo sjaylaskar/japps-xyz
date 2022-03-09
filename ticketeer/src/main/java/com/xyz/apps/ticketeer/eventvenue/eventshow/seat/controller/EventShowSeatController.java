@@ -98,9 +98,9 @@ public class EventShowSeatController {
      * @return the event show seats by event show id and auditorium idget event show seats by event show id
      */
     @GetMapping("/search")
-    public ResponseEntity<?> getEventShowSeatsByEventShowIdAndAuditoriumIdgetEventShowSeatsByEventShowId(
+    public ResponseEntity<?> getEventShowSeatsByEventShowIdAndAuditoriumId(
             @RequestParam("eventShowId") @NotNull(message = "The event show id cannot be null.") final Long eventShowId,
-            @RequestParam("eventShowId") @NotNull(message = "The auditorium id cannot be null.") final Long auditoriumId) {
+            @RequestParam("auditoriumId") @NotNull(message = "The auditorium id cannot be null.") final Long auditoriumId) {
 
         final EventShowWithAuditoriumDto eventShowWithAuditoriumDto = EventShowWithAuditoriumDto.of(eventShowId, auditoriumId);
         try {

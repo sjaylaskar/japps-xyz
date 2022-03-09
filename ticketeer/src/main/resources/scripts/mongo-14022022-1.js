@@ -9,3 +9,4 @@ db.createUser({user: "xyzticketeer", pwd: "xyzticketeer", roles:[{role: "userAdm
 
 
 
+mongodb://xyzticketeer:xyzticketeer@localhost:27017/ticketeer?authSource=ticketeer&maxPoolSize=500&readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=false
