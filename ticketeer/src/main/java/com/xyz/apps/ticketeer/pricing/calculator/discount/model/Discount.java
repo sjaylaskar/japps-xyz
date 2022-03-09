@@ -23,7 +23,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.mongodb.lang.NonNull;
 import com.xyz.apps.ticketeer.pricing.calculator.model.ShowTimeType;
-import com.xyz.apps.ticketeer.pricing.conveniencefee.model.DiscountStrategy;
 
 import lombok.Getter;
 import lombok.Setter;
