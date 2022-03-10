@@ -148,7 +148,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
      * @param bookingDto the booking dto
      * @return {@code true}, if event show seats are available.
      */
-    public Boolean areEventShowSeatsAvailable(final BookingDto bookingDto) {
+    public boolean areEventShowSeatsAvailable(final BookingDto bookingDto) {
 
         ResponseEntity<Boolean> eventShowSeatsAreAvailableResponseEntity = null;
         try {
@@ -169,7 +169,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
      * @param eventShowSeatsBookingDto the event show seats booking dto
      * @return {@code true}, if event show seats are reserved for booking.
      */
-    public Boolean areEventShowSeatsReserved(final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
+    public boolean areEventShowSeatsReserved(final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
 
         ResponseEntity<Boolean> eventShowSeatsAreReservedResponseEntity = null;
         try {
