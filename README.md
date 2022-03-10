@@ -3,7 +3,7 @@
 
 # Technical description:
 * Application name: Ticketeer
-* Build language: Java : JDK 11
+* Build language: Java : openjdk-11
 * Framework: Spring Boot v2.6.3
 * DB: RDBMS(MySQL v8.0.21), NoSQL(MongoDB v4.2.3)
 * Build: Maven: v3.6.3
