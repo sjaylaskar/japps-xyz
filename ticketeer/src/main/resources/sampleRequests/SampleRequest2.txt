@@ -373,44 +373,132 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventshow/search
 
 http://localhost:8082/xyz/apps/ticketeer/api/v1/booking/reserve
 
+
 {
   
-  "cityId": 1,
+  "cityId": 2,
   "emailId": "jaylaskar@gmail.com",
-  "eventShowId": 3,
+  "eventShowId": 5,
   "eventShowSeatIds": [
-    550,
-551,
-552,
-553
+    
+856,
+857,
+858
   ],
-  "eventVenueId": 2,  
+  "eventVenueId": 4,  
   "password": "jay12345",
   "phoneNumber": "8860083692",
   "username": "jaylaskar"
 }
-
+Response:
+{
+  "bookingId": 5,
+  "eventShowSeatIds": [
+    856,
+    857,
+    858
+  ],
+  "bookingTime": null,
+  "reservationTime": "2022-03-10T15:42:17.144328800",
+  "bookingStatus": "RESERVED",
+  "amount": 1500,
+  "finalAmount": 1500,
+  "offerCode": null,
+  "eventVenueId": 4,
+  "eventShowId": 5,
+  "cityId": 2,
+  "username": "jaylaskar",
+  "password": "jay12345",
+  "phoneNumber": "8860083692",
+  "emailId": "jaylaskar@gmail.com",
+  "isReserved": true,
+  "isConfirmed": null
+}
 
 http://localhost:8082/xyz/apps/ticketeer/api/v1/booking/confirm
 {
-  "bookingId" : 3,
-  "cityId": 1,
-  "emailId": "jaylaskar@gmail.com",
-  "eventShowId": 3,
+  "bookingId": 5,
   "eventShowSeatIds": [
-    401,
-402,
-403
+    856,
+    857,
+    858
   ],
-  "eventVenueId": 2,  
+  "eventVenueId": 4,
+  "eventShowId": 5,
+  "cityId": 2,
+  "username": "jaylaskar",
   "password": "jay12345",
   "phoneNumber": "8860083692",
-  "username": "jaylaskar"
+  "emailId": "jaylaskar@gmail.com"
+  
+}
+Response:
+{
+  "bookingId": 5,
+  "eventName": "The fall of dawn",
+  "eventShowDate": "2022-03-26",
+  "eventShowTime": "12:00:00",
+  "eventVenueName": "Rotterdam PVR",
+  "auditoriumName": "Audi 2",
+  "cityName": "Secunderabad",
+  "seatNumbers": [
+    "D 6",
+    "D 7",
+    "D 8"
+  ],
+  "bookingTime": "2022-03-10T15:45:38.7943122",
+  "bookingStatus": "CONFIRMED",
+  "baseAmount": 1500,
+  "finalAmount": 1522.5,
+  "offerCode": null,
+  "username": "jaylaskar",
+  "phoneNumber": "8860083692",
+  "emailId": "jaylaskar@gmail.com",
+  "isConfirmed": true
+}
+
+Discounts:
+{
+  "dtos": [
+    {
+      "applicableCityIds": [
+        1
+      ],
+      "applicableEventVenueIds": [
+        0
+      ],
+      "discountStrategy": "string",
+      "discountType": "string",
+      "endTime": "string",
+      "id": "string",
+      "minAmount": 0,
+      "minSeats": 0,
+      "nthSeat": 0,
+      "offerCode": "string",
+      "showTimeType": "string",
+      "startTime": "string",
+      "value": 0
+    }
+  ]
 }
 
 
-
-Discounts:
+{
+  "dtos": [
+    {
+      "applicableCityIds": [
+        1
+      ],
+      "discountStrategy": "FLAT_DISCOUNT",
+      "discountType": "AMOUNT",
+      "minAmount": 0,
+      "minSeats": 0,
+      "nthSeat": 0,
+      "offerCode": "TKTEEROFF100",
+      "value": 100
+    }
+  ]
+}
 
 {
   "dtos": [

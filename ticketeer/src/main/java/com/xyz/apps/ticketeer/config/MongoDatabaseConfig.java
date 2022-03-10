@@ -5,11 +5,13 @@
  */
 package com.xyz.apps.ticketeer.config;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.MongoDatabaseFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import org.springframework.core.env.Environment;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 
 /**
@@ -19,27 +21,28 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
  * @version 1.0
  */
 @Configuration
-public class MongoDatabaseConfig extends EnvironmentConfig {
+public class MongoDatabaseConfig extends AbstractMongoClientConfiguration {
 
-    /**
-     * Mongo database factory.
-     *
-     * @return the mongo database factory
-     */
-    @Bean
-    public MongoDatabaseFactory mongoDatabaseFactory() {
-        return new SimpleMongoClientDatabaseFactory(environment.getProperty("spring.data.mongodb.uri"));
+    /** The environment. */
+    @Autowired
+    private Environment environment;
+
+    @Override
+    public MongoClient mongoClient() {
+
+        return MongoClients.create(environment.getProperty("spring.data.mongodb.uri"));
     }
 
-    /**
-     * Mongo template.
-     *
-     * @return the mongo template
-     */
-    @Bean
-    public MongoTemplate mongoTemplate() {
+    @Override
+    protected String getDatabaseName() {
 
-        return new MongoTemplate(mongoDatabaseFactory());
+        return environment.getProperty("xyz.ticketeer.mongodb.dbname");
+    }
+
+    @Override
+    protected boolean autoIndexCreation() {
+
+        return true;
     }
 
 }

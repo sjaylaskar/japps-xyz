@@ -1,0 +1,73 @@
+<!-- Sample booking reserve response: -->
+
+{
+  "bookingId": 5,
+  "eventShowSeatIds": [
+    856,
+    857,
+    858
+  ],
+  "bookingTime": null,
+  "reservationTime": "2022-03-10T15:42:17.144328800",
+  "bookingStatus": "RESERVED",
+  "amount": 1500,
+  "finalAmount": 1500,
+  "offerCode": null,
+  "eventVenueId": 4,
+  "eventShowId": 5,
+  "cityId": 2,
+  "username": "jaylaskar",
+  "password": "jay12345",
+  "phoneNumber": "8860083692",
+  "emailId": "jaylaskar@gmail.com",
+  "isReserved": true,
+  "isConfirmed": null
+}
+
+{
+  "bookingId": 6,
+  "eventShowSeatIds": [
+    856,
+    857,
+    858
+  ],
+  "bookingTime": null,
+  "reservationTime": "2022-03-10T15:54:15.107563300",
+  "bookingStatus": "RESERVED",
+  "amount": 1500,
+  "finalAmount": 1500,
+  "offerCode": null,
+  "eventVenueId": 4,
+  "eventShowId": 5,
+  "cityId": 2,
+  "username": "jaylaskar",
+  "password": "jay12345",
+  "phoneNumber": "8860083692",
+  "emailId": "jaylaskar@gmail.com",
+  "isReserved": true,
+  "isConfirmed": null
+}
+
+{
+  "bookingId": 8,
+  "eventShowSeatIds": [
+    340,
+    341,
+    342
+  ],
+  "bookingTime": null,
+  "reservationTime": "2022-03-10T16:50:08.121245700",
+  "bookingStatus": "RESERVED",
+  "amount": 1000,
+  "finalAmount": 1000,
+  "offerCode": null,
+  "eventVenueId": 2,
+  "eventShowId": 2,
+  "cityId": 1,
+  "username": "jaylaskar2",
+  "password": "jay12345",
+  "phoneNumber": "8860083692",
+  "emailId": "jaylaskar@gmail.com",
+  "isReserved": true,
+  "isConfirmed": null
+}

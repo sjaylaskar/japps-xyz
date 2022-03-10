@@ -345,6 +345,7 @@ public class EventShowSeatController {
 
         try {
             log.info("Booking id to cancel: " + bookingId);
+            eventShowSeatService.cancelByBookingId(bookingId);
             return ResponseEntity
                 .accepted().build();
         } catch (final Exception exception) {

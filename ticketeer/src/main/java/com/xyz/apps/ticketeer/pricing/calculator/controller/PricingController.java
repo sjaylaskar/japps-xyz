@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xyz.apps.ticketeer.pricing.calculator.api.internal.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.pricing.calculator.service.PricingService;
+import com.xyz.apps.ticketeer.pricing.calculator.service.PricingServiceException;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -55,7 +56,12 @@ public class PricingController {
             return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(amount);
-        } catch (final Exception exception) {
+        } catch (final PricingServiceException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        }catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)

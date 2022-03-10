@@ -34,7 +34,10 @@ import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountModelMapper;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountRepository;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountStrategy;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountType;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountNotFoundException.OfferCode;
+import com.xyz.apps.ticketeer.pricing.calculator.model.ShowTimeType;
 import com.xyz.apps.ticketeer.util.StringUtil;
 
 
@@ -304,6 +307,33 @@ public class DiscountService extends GeneralService {
             throw new DiscountNotFoundException();
         }
         return DiscountDtoList.of(discountModelMapper.toDtos(discounts));
+    }
+
+    /**
+     * Finds the discount strategies.
+     *
+     * @return the list
+     */
+    public List<String> findDiscountStrategies() {
+        return Arrays.asList(DiscountStrategy.values()).stream().map(DiscountStrategy::fullDescription).toList();
+    }
+
+    /**
+     * Finds the discount types.
+     *
+     * @return the list
+     */
+    public List<String> findDiscountTypes() {
+        return Arrays.asList(DiscountType.values()).stream().map(DiscountType::fullDescription).toList();
+    }
+
+    /**
+     * Finds the show time types.
+     *
+     * @return the list
+     */
+    public List<String> findShowTimeTypes() {
+        return Arrays.asList(ShowTimeType.values()).stream().map(ShowTimeType::fullDescription).toList();
     }
 
     /**

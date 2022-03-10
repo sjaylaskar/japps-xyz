@@ -7,6 +7,7 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount.model;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
@@ -61,9 +62,9 @@ public class DiscountModelMapper extends GeneralModelMapper<Discount, DiscountDt
             mapper -> mapper.using(ModelConverter.LOCALDATETIME_TO_STRING_CONVERTER).map(Discount::getEndTime, DiscountDto::setEndTime)
           );
 
-        final Converter<String, DiscountStrategy> stringToDiscountStrategyConverter = converter -> DiscountStrategy.of(converter.getSource());
-        final Converter<String, DiscountType> stringToDiscountTypeConverter = converter -> DiscountType.of(converter.getSource());
-        final Converter<String, ShowTimeType> stringToShowTimeTypeConverter = converter -> ShowTimeType.of(converter.getSource());
+        final Converter<String, DiscountStrategy> stringToDiscountStrategyConverter = converter -> (StringUtils.isNotBlank(converter.getSource())) ? DiscountStrategy.of(converter.getSource()) : null;
+        final Converter<String, DiscountType> stringToDiscountTypeConverter = converter -> (StringUtils.isNotBlank(converter.getSource())) ? DiscountType.of(converter.getSource()) : null;
+        final Converter<String, ShowTimeType> stringToShowTimeTypeConverter = converter -> (StringUtils.isNotBlank(converter.getSource())) ? ShowTimeType.of(converter.getSource()) : null;
         final TypeMap<DiscountDto, Discount> discountDtoToDiscountMap = modelMapper.createTypeMap(DiscountDto.class, Discount.class);
         discountDtoToDiscountMap
         .addMappings(

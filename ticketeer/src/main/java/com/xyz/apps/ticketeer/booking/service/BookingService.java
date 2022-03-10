@@ -245,6 +245,9 @@ public class BookingService extends GeneralService {
         if (bookingByUsernameAndId == null) {
             throw new BookingNotFoundException(cancelBookingDto.getBookingId());
         }
+        if (!BookingStatus.CONFIRMED.equals(bookingByUsernameAndId.getBookingStatus())) {
+            throw new BookingServiceException("No confirmed booking found for booking id: " + bookingByUsernameAndId.getId());
+        }
 
         bookingByUsernameAndId.setBookingStatus(BookingStatus.CANCELLED);
         final Booking bookingCancelled = bookingRepository.save(bookingByUsernameAndId);

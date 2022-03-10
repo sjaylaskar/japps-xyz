@@ -20,10 +20,31 @@ import com.xyz.apps.ticketeer.pricing.calculator.discount.service.InvalidDiscoun
 public enum DiscountType {
 
     /** The percentage. */
-    PERCENTAGE,
+    PERCENTAGE("Applicable for a discount percentage of the total amount."),
 
     /** The amount. */
-    AMOUNT;
+    AMOUNT("Applicable for a flat amount reduction.");
+
+    /** The description. */
+    private String description;
+
+    /**
+     * Instantiates a new discount type.
+     *
+     * @param description the description
+     */
+    DiscountType(final String description) {
+        this.description = description;
+    }
+
+    /**
+     * Full description.
+     *
+     * @return the string
+     */
+    public String fullDescription() {
+        return name() + " : " + description;
+    }
 
     public static DiscountType of(final String discountType) {
         return Arrays.asList(values())

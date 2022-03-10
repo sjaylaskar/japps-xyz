@@ -32,7 +32,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
 
     /** The cancel booked seats query. */
     static final String CANCEL_BOOKED_SEATS_QUERY = "update EventShowSeat ess"
-        + " set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.AVAILABLE.name(),"
+        + " set ess.seatReservationStatus = com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus.AVAILABLE,"
         + " ess.bookingId = null,"
         + " ess.bookingTime = null,"
         + " ess.reservationTime = null"

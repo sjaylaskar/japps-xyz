@@ -22,7 +22,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EventShowSeatMinimalDto {
+public class EventShowSeatDto {
 
     /** The id. */
     private Long id;

@@ -28,16 +28,16 @@ import lombok.Getter;
 public enum ShowTimeType {
 
     /** The morning. */
-    MORNING(LocalDateTimeFormatUtil.parseLocalTime("06:00"), LocalDateTimeFormatUtil.parseLocalTime("11:59")),
+    MORNING(LocalDateTimeFormatUtil.parseLocalTime("06:00"), LocalDateTimeFormatUtil.parseLocalTime("11:59"), "Applicable for morning shows."),
 
     /** The afternoon. */
-    AFTERNOON(LocalDateTimeFormatUtil.parseLocalTime("12:00"), LocalDateTimeFormatUtil.parseLocalTime("17:59")),
+    AFTERNOON(LocalDateTimeFormatUtil.parseLocalTime("12:00"), LocalDateTimeFormatUtil.parseLocalTime("17:59"), "Applicable for afternoon shows."),
 
     /** The evening. */
-    EVENING(LocalDateTimeFormatUtil.parseLocalTime("18:00"), LocalDateTimeFormatUtil.parseLocalTime("23:59")),
+    EVENING(LocalDateTimeFormatUtil.parseLocalTime("18:00"), LocalDateTimeFormatUtil.parseLocalTime("23:59"), "Applicable for evening shows."),
 
     /** The night. */
-    NIGHT(LocalDateTimeFormatUtil.parseLocalTime("00:00"), LocalDateTimeFormatUtil.parseLocalTime("05:59"));
+    NIGHT(LocalDateTimeFormatUtil.parseLocalTime("00:00"), LocalDateTimeFormatUtil.parseLocalTime("05:59"), "Applicable for night shows.");
 
     /** The range start time. */
     private LocalTime rangeStartTime;
@@ -45,15 +45,29 @@ public enum ShowTimeType {
     /** The range end time. */
     private LocalTime rangeEndTime;
 
+    /** The description. */
+    private String description;
+
     /**
      * Instantiates a new show time type.
      *
      * @param rangeStartTime the range start time
      * @param rangeEndTime the range end time
+     * @param description the description
      */
-    ShowTimeType(final LocalTime rangeStartTime, final LocalTime rangeEndTime) {
+    ShowTimeType(final LocalTime rangeStartTime, final LocalTime rangeEndTime, final String description) {
         this.rangeStartTime = rangeStartTime;
         this.rangeEndTime = rangeEndTime;
+        this.description = description;
+    }
+
+    /**
+     * Full description.
+     *
+     * @return the string
+     */
+    public String fullDescription() {
+        return name() + " : " + description + " Shows in between times: " + rangeString();
     }
 
     /**

@@ -30,7 +30,6 @@ import com.xyz.apps.ticketeer.booking.api.internal.contract.CancelBookingDto;
 import com.xyz.apps.ticketeer.booking.service.BookingNotFoundException;
 import com.xyz.apps.ticketeer.booking.service.BookingService;
 import com.xyz.apps.ticketeer.booking.service.BookingServiceException;
-import com.xyz.apps.ticketeer.booking.service.SelectedSeatsUnavailableException;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -74,7 +73,7 @@ public class BookingController {
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body("The selected seats are no longer available! Please select new seats.");
             }
-        } catch(final SelectedSeatsUnavailableException exception) {
+        } catch(final BookingServiceException exception) {
             return ResponseEntity
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
