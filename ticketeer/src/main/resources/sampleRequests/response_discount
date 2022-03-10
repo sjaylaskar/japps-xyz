@@ -1,0 +1,23 @@
+{
+  "dtos": [
+    {
+      "id": "6229ec0cb115f540a2f64162",
+      "offerCode": "TKTEEROFF10",
+      "discountStrategy": "FLAT_DISCOUNT",
+      "applicableCityIds": [
+        1
+      ],
+      "applicableEventVenueIds": [],
+      "minAmount": 1200,
+      "minSeats": 0,
+      "nthSeat": 0,
+      "showTimeType": null,
+      "discountType": "PERCENTAGE",
+      "value": 10,
+      "startTime": null,
+      "endTime": null
+    }
+  ],
+  "empty": false,
+  "notEmpty": true
+}

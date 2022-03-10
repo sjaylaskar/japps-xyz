@@ -112,9 +112,8 @@ public class DiscountService extends GeneralService {
         }
 
         discountDtoList.dtos().stream().forEach(this::validateDetails);
-        discountDtoList.dtos().stream().map(DiscountDto::getOfferCode).forEach(this::validateOfferCode);
-
         validOfferCodeUniqueForAll(discountDtoList);
+        discountDtoList.dtos().stream().map(DiscountDto::getOfferCode).forEach(this::validateOfferCode);
 
         final List<Discount> discountsAdded = discountRepository.saveAll(discountModelMapper.toEntities(discountDtoList.dtos()));
 
