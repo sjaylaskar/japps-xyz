@@ -93,7 +93,7 @@ public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The value. */
     @NonNull
-    @NotNull(message = "The value of the discount cannot be null")
+    @NotNull(message = "The value of the discount cannot be null.")
     private Double value = 0d;
 
     /** The start date. */

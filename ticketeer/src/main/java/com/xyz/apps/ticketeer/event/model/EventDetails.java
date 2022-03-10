@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.TextIndexed;
@@ -17,6 +18,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.data.mongodb.core.mapping.TextScore;
 import org.springframework.validation.annotation.Validated;
 
+import com.mongodb.lang.NonNull;
 import com.xyz.apps.ticketeer.general.model.Entity;
 
 import lombok.Getter;
@@ -42,12 +44,14 @@ public class EventDetails extends Entity {
     private ObjectId id;
 
     /** The event id. */
+    @NonNull
     @NotBlank(message = "The event id cannot be blank.")
     private Long eventId;
 
     /** The name. */
-    @TextIndexed(weight = 5)
+    @NonNull
     @NotBlank(message = "The event name cannot be blank.")
+    @TextIndexed(weight = 5)
     private String name;
 
     /** The description. */
@@ -56,16 +60,23 @@ public class EventDetails extends Entity {
 
     /** The event type. */
     @NotBlank(message = "The event type cannot be blank.")
+    @NonNull
     private String eventType;
 
     /** The language. */
     @TextIndexed(weight = 2)
+    @NonNull
+    @NotBlank(message = "The language cannot be blank.")
     private String language;
 
     /** The duration. */
-    private long duration;
+    @NonNull
+    @NotNull(message = "The duration in minutes cannot be null.")
+    private Long durationInMinutes;
 
     /** The release date. */
+    @NonNull
+    @NotNull(message = "The release date cannot be null.")
     private LocalDate releaseDate;
 
     /** The genre. */
@@ -81,6 +92,8 @@ public class EventDetails extends Entity {
     private List<String> movieCastNames;
 
     /** The country name. */
+    @NonNull
+    @NotBlank(message = "The country name cannot be blank.")
     @TextIndexed(weight = 1.74f)
     private String countryName;
 

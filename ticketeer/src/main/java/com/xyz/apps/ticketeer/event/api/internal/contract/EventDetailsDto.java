@@ -47,7 +47,7 @@ public class EventDetailsDto extends Dto<EventDetails> {
     private String language;
 
     /** The duration. */
-    private long duration;
+    private long durationInMinutes;
 
     /** The release date. */
     private String releaseDate;

@@ -73,14 +73,20 @@ public class UserController {
                 .body(userModelMapper.toDto(userAdded));
         } catch (final UserServiceException exception) {
             log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+            throw exception;
+            /*
+             * return ResponseEntity
+             * .status(HttpStatus.EXPECTATION_FAILED)
+             * .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+             */
         } catch (final Exception exception) {
             log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add user: " + userDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+            throw exception;
+            /*
+             * return ResponseEntity
+             * .status(HttpStatus.EXPECTATION_FAILED)
+             * .body("Failed to add user: " + userDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+             */
         }
     }
 

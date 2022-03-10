@@ -1,8 +1,8 @@
 /*
-* Id: User.java 14-Feb-2022 12:48:53 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: User.java 14-Feb-2022 12:48:53 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.user.model;
 
 import javax.persistence.Column;
@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -20,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 
 /**
  * The user.
@@ -32,7 +35,13 @@ import lombok.ToString;
 @Setter
 @ToString
 @Validated
+@Table(
+    uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_username", columnNames = "username"),
+        @UniqueConstraint(name = "UNIQUE_email", columnNames = "email"),
+        @UniqueConstraint(name = "UNIQUE_phonenumber", columnNames = "phoneNumber")}
+)
 public class User extends com.xyz.apps.ticketeer.general.model.Entity {
+
     /** The id. */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
