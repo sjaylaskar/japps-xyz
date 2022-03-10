@@ -71,3 +71,27 @@
   "isReserved": true,
   "isConfirmed": null
 }
+
+{
+  "bookingId": 10,
+  "eventShowSeatIds": [
+    401,
+    402,
+    403
+  ],
+  "bookingTime": null,
+  "reservationTime": "2022-03-10T18:20:48.829684300",
+  "bookingStatus": "RESERVED",
+  "amount": 600,
+  "finalAmount": 600,
+  "offerCode": null,
+  "eventVenueId": 2,
+  "eventShowId": 3,
+  "cityId": 1,
+  "username": "jaylaskar",
+  "password": "jay12345",
+  "phoneNumber": "8860083692",
+  "emailId": "jaylaskar@gmail.com",
+  "isReserved": true,
+  "isConfirmed": null
+}

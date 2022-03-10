@@ -374,6 +374,24 @@ http://localhost:8082/xyz/apps/ticketeer/api/eventshow/search
 http://localhost:8082/xyz/apps/ticketeer/api/v1/booking/reserve
 
 
+
+{
+  
+  "cityId": 1,
+  "emailId": "jaylaskar@gmail.com",
+  "eventShowId": 3,
+  "eventShowSeatIds": [
+    
+856,
+857,
+858
+  ],
+  "eventVenueId": 2,  
+  "password": "jay12345",
+  "phoneNumber": "8860083692",
+  "username": "jaylaskar"
+}
+
 {
   
   "cityId": 2,
@@ -520,6 +538,52 @@ Discounts:
       "showTimeType": "string",
       "startTime": "string",
       "value": 0
+    }
+  ]
+}
+
+
+{
+  "dtos": [
+    {
+"applicableEventVenueIds": [
+2
+],
+      "discountStrategy": "NTH_SEAT_DISCOUNT",
+      "discountType": "PERCENTAGE",
+      "minAmount": 1200,
+      "minSeats": 0,
+      "nthSeat": 3,
+      "offerCode": "TKTEEROFF50",
+      "value": 50
+    },
+{
+      "applicableCityIds": [
+        2
+      ],
+      "discountStrategy": "N_SEATS_DISCOUNT",
+      "discountType": "AMOUNT",
+      "minAmount": 2000,
+      "minSeats": 3,
+      "nthSeat": 0,
+      "offerCode": "TKTEEROFF500",
+      "value": 500
+    },
+{
+      "applicableCityIds": [
+        1
+      ],
+"applicableEventVenueIds": [
+1
+],
+      "discountStrategy": "SHOW_TIME_DISCOUNT",
+      "discountType": "PERCENTAGE",
+      "minAmount": 0,
+      "minSeats": 0,
+      "nthSeat": 0,
+      "showTimeType": "AFTERNOON",
+      "offerCode": "TKTEEROFF500",
+      "value": 30
     }
   ]
 }
