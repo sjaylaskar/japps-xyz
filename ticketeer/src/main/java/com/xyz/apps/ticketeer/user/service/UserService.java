@@ -61,10 +61,13 @@ public class UserService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public User update(@NotNull(message = "The user cannot be null.") final User user) {
+        if (user.getId() == null) {
+            throw new UserServiceException("The user id to update cannot be null.");
+        }
         if (exists(user)) {
             return userRepository.save(user);
         }
-        return null;
+        throw new UserNotFoundException(user.getId());
     }
 
     /**
@@ -75,12 +78,15 @@ public class UserService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public boolean delete(@NotNull(message = "The user cannot be null.") final User user) {
+        if (user.getId() == null) {
+            throw new UserServiceException("The user id to update cannot be null.");
+        }
         if (exists(user)) {
             userRepository.delete(user);
             return true;
         }
 
-        return false;
+        throw new UserNotFoundException(user.getId());
     }
 
     /**

@@ -25,4 +25,8 @@ public class InvalidOfferCodeException extends DiscountServiceException {
     public InvalidOfferCodeException(final String message) {
         super(message);
     }
+
+    public static InvalidOfferCodeException offerCodeExists(final String offerCode) {
+        return new InvalidOfferCodeException("The offer code: " + offerCode + " already exists. Please add a different offer code.");
+    }
 }

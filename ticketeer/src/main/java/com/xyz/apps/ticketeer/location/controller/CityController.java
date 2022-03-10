@@ -26,6 +26,7 @@ import com.xyz.apps.ticketeer.location.api.internal.contract.CityDto;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CityDtoList;
 import com.xyz.apps.ticketeer.location.service.CityNotFoundException;
 import com.xyz.apps.ticketeer.location.service.CityService;
+import com.xyz.apps.ticketeer.location.service.CityServiceException;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -63,6 +64,10 @@ public class CityController {
             return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(cityAdded);
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -87,6 +92,10 @@ public class CityController {
             return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(citiesAdded);
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -113,6 +122,10 @@ public class CityController {
                 .body(cityUpdated);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -136,6 +149,10 @@ public class CityController {
             return ResponseEntity.accepted().body("Deleted city: " + cityDto);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -159,6 +176,10 @@ public class CityController {
             return ResponseEntity.accepted().body("Deleted city with id: " + id);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -184,6 +205,10 @@ public class CityController {
             return ResponseEntity.accepted().body("Deleted city: " + code);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -207,6 +232,10 @@ public class CityController {
                 .body(cityDto);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
                 + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
@@ -231,6 +260,10 @@ public class CityController {
                 .body(cityDto);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
                 + code + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
@@ -255,6 +288,10 @@ public class CityController {
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
                 + name + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
@@ -278,6 +315,10 @@ public class CityController {
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
                 + countryCode + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
@@ -301,6 +342,10 @@ public class CityController {
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
                 + countryId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
@@ -322,6 +367,10 @@ public class CityController {
                     .body(cityDtoList);
         } catch (final CityNotFoundException cityNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
+        } catch (final CityServiceException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities. Error: "
                 + ExceptionUtils.getRootCause(exception).getLocalizedMessage());

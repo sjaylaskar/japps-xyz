@@ -70,6 +70,8 @@ public class DiscountService extends GeneralService {
 
         validateDetails(discountDto);
 
+        validateOfferCode(discountDto.getOfferCode());
+
         final Discount discountAdded = discountRepository.save(discountModelMapper.toEntity(discountDto));
 
         if (discountAdded == null) {
@@ -77,6 +79,20 @@ public class DiscountService extends GeneralService {
         }
 
         return discountModelMapper.toDto(discountAdded);
+    }
+
+    /**
+     * Validate offer code.
+     *
+     * @param offerCode the offer code
+     */
+    private void validateOfferCode(@NotBlank(message = "The offer code cannot be blank.") final String offerCode) {
+        if (StringUtils.isBlank(offerCode)) {
+            throw new DiscountServiceException("Offer code cannot be blank.");
+        }
+        if (findDiscountByOfferCode(offerCode) != null) {
+            throw InvalidOfferCodeException.offerCodeExists(offerCode);
+        }
     }
 
     /**
@@ -95,6 +111,7 @@ public class DiscountService extends GeneralService {
         }
 
         discountDtoList.dtos().stream().forEach(this::validateDetails);
+        discountDtoList.dtos().stream().map(DiscountDto::getOfferCode).forEach(this::validateOfferCode);
 
         final List<Discount> discountsAdded = discountRepository.saveAll(discountModelMapper.toEntities(discountDtoList.dtos()));
 

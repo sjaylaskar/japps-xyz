@@ -71,6 +71,11 @@ public class UserController {
             return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userModelMapper.toDto(userAdded));
+        } catch (final UserServiceException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -100,6 +105,16 @@ public class UserController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User: " + userDto + " not found.");
             }
+        } catch (final UserNotFoundException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        } catch (final UserServiceException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -126,6 +141,11 @@ public class UserController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User: " + userDto + " not found.");
             }
+        } catch (final UserNotFoundException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -150,6 +170,11 @@ public class UserController {
             return ResponseEntity.accepted().body("Deleted user with id: " + id);
         } catch (final UserNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        } catch (final UserServiceException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
@@ -172,11 +197,16 @@ public class UserController {
         try {
             log.info("User: " + basicUserDto.getUsername());
             return ResponseEntity.ok().body(userService.authenticate(basicUserDto));
+        } catch (final UserServiceException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body("Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -218,6 +248,11 @@ public class UserController {
                 .body(userDto);
         } catch (final UserNotFoundException userNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(userNotFoundException).getLocalizedMessage());
+        } catch (final UserServiceException exception) {
+            log.error(exception);
+            return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         } catch (final Exception exception) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find user: "
                 + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
