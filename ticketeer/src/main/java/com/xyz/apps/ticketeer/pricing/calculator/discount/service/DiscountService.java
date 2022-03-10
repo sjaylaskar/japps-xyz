@@ -8,6 +8,7 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -113,6 +114,8 @@ public class DiscountService extends GeneralService {
         discountDtoList.dtos().stream().forEach(this::validateDetails);
         discountDtoList.dtos().stream().map(DiscountDto::getOfferCode).forEach(this::validateOfferCode);
 
+        validOfferCodeUniqueForAll(discountDtoList);
+
         final List<Discount> discountsAdded = discountRepository.saveAll(discountModelMapper.toEntities(discountDtoList.dtos()));
 
         if (CollectionUtils.isEmpty(discountsAdded)) {
@@ -120,6 +123,18 @@ public class DiscountService extends GeneralService {
         }
 
         return DiscountDtoList.of(discountModelMapper.toDtos(discountsAdded));
+    }
+
+    /**
+     * Valid offer code unique for all.
+     *
+     * @param discountDtoList the discount dto list
+     */
+    private void validOfferCodeUniqueForAll(@NotNull(message = "The discounts list to add cannot be null."
+    ) final DiscountDtoList discountDtoList) {
+        if (discountDtoList.dtos().stream().map(DiscountDto::getOfferCode).collect(Collectors.toSet()).size() != discountDtoList.size()) {
+            throw new DiscountServiceException("Discount offer codes must be unique.");
+        }
     }
 
     /**
@@ -137,6 +152,8 @@ public class DiscountService extends GeneralService {
 
         validateDetails(discountDto);
 
+        validateOfferCodeForUpdate(discountDto);
+
         final Discount discountUpdated = discountRepository.save(discountModelMapper.toEntity(discountDto));
 
         if (discountUpdated == null) {
@@ -145,6 +162,17 @@ public class DiscountService extends GeneralService {
 
         return discountModelMapper.toDto(discountUpdated);
 
+    }
+
+    /**
+     * @param discountDto
+     */
+    private void validateOfferCodeForUpdate(final DiscountDto discountDto) {
+
+        final DiscountDto discountDtoByOfferCode = findByOfferCode(discountDto.getOfferCode());
+        if (!StringUtils.equals(discountDto.getId(), discountDtoByOfferCode.getId())) {
+            throw InvalidOfferCodeException.offerCodeExists(discountDto.getOfferCode());
+        }
     }
 
     /**
@@ -167,6 +195,10 @@ public class DiscountService extends GeneralService {
         discountDtoList.dtos().stream().forEach(this::validateDiscountExists);
 
         discountDtoList.dtos().stream().forEach(this::validateDetails);
+
+        validOfferCodeUniqueForAll(discountDtoList);
+
+        discountDtoList.dtos().stream().forEach(this::validateOfferCodeForUpdate);
 
         final List<Discount> discountsUpdated = discountRepository.saveAll(discountModelMapper.toEntities(discountDtoList.dtos()));
 

@@ -94,4 +94,25 @@ public class DtoList<T extends Dto<?>> {
     public static <D extends Dto<?>> boolean isEmpty(final DtoList<D> dtoList) {
         return !isNotEmpty(dtoList);
     }
+
+    /**
+     * Size.
+     *
+     * @param <D> the generic type
+     * @return the int
+     */
+    public <D extends Dto<?>> int size() {
+        return isNotEmpty() ? dtos.size() : 0;
+    }
+
+    /**
+     * Size.
+     *
+     * @param <D> the generic type
+     * @param dtoList the dto list
+     * @return the int
+     */
+    public static <D extends Dto<?>> int size(final DtoList<D> dtoList) {
+        return isNotEmpty(dtoList) ? dtoList.size() : 0;
+    }
 }
