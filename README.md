@@ -18,6 +18,6 @@
 * booking - Handles the event booking process for the user.
 * pricing - Discount related features; handles amount calculation based on discounts, platform convenience fee.
 
-
+# Swagger definitions on local run:
 * Swagger API defs: http://localhost:8082/xyz/apps/ticketeer/api/v1/swagger-ui/index.html#
 
