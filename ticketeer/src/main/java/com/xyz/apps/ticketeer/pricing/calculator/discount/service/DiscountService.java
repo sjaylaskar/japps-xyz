@@ -92,7 +92,7 @@ public class DiscountService extends GeneralService {
             throw new DiscountServiceException("Offer code cannot be blank.");
         }
         if (findDiscountByOfferCode(offerCode) != null) {
-            throw InvalidOfferCodeException.offerCodeExists(offerCode);
+            throw DiscountOfferCodeAlreadyExistsException.offerCodeExists(offerCode);
         }
     }
 
@@ -170,7 +170,7 @@ public class DiscountService extends GeneralService {
 
         final DiscountDto discountDtoByOfferCode = findByOfferCode(discountDto.getOfferCode());
         if (!StringUtils.equals(discountDto.getId(), discountDtoByOfferCode.getId())) {
-            throw InvalidOfferCodeException.offerCodeExists(discountDto.getOfferCode());
+            throw DiscountOfferCodeAlreadyExistsException.offerCodeExists(discountDto.getOfferCode());
         }
     }
 

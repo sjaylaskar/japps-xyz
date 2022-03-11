@@ -47,6 +47,9 @@ public class PlatformConvenienceFeeModelMapper extends GeneralModelMapper<Platfo
         platformConvenienceFeeDtoToEntityMap
         .addMappings(
             mapper -> mapper.using(ModelConverter.STRING_TO_OBJECTID_CONVERTER).map(PlatformConvenienceFeeDto::getId, PlatformConvenienceFee::setId)
+          )
+        .addMappings(
+            mapper -> mapper.using(ModelConverter.NULL_TO_ZERO_CONVERTER).map(PlatformConvenienceFeeDto::getFeePercentage, PlatformConvenienceFee::setFeePercentage)
           );
     }
 }

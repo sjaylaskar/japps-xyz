@@ -56,4 +56,7 @@ public final class ModelConverter {
 
     /** The object id to string converter. */
     public static final Converter<ObjectId, String> OBJECTID_TO_STRING_CONVERTER = converter -> converter.getSource().toHexString();
+
+    /** The null to zero converter. */
+    public static final Converter<Double, Double> NULL_TO_ZERO_CONVERTER = converter -> (converter.getSource() != null) ? converter.getSource() : 0d;
 }

@@ -36,9 +36,10 @@ import lombok.ToString;
 @ToString
 @Validated
 @Table(
-    uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_username", columnNames = "username"),
+    uniqueConstraints =
+       {@UniqueConstraint(name = "UNIQUE_username", columnNames = "username"),
         @UniqueConstraint(name = "UNIQUE_email", columnNames = "email"),
-        @UniqueConstraint(name = "UNIQUE_phonenumber", columnNames = "phoneNumber")}
+        @UniqueConstraint(name = "UNIQUE_phoneNumber", columnNames = "phoneNumber")}
 )
 public class User extends com.xyz.apps.ticketeer.general.model.Entity {
 

@@ -42,7 +42,7 @@ public class Payment extends com.xyz.apps.ticketeer.general.model.Entity {
     private static final String DEFAULT_PAYMENT_METHOD = "UPI";
 
     /** The default transaction id. */
-    public static final String DEFAULT_TRANSACTION_ID_PREFIX = "TICKTEER_";
+    public static final String DEFAULT_TRANSACTION_ID_PREFIX = "TICKTEER";
 
     /** The id. */
     @Id

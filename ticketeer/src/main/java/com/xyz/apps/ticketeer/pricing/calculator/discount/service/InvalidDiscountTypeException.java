@@ -25,5 +25,4 @@ public class InvalidDiscountTypeException extends DiscountServiceException {
 
         super("Invalid discount type: " + discountType);
     }
-
 }
