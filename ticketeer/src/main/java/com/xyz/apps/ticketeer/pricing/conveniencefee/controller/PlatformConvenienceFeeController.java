@@ -1,11 +1,10 @@
 /*
-* Id: PlatformConvenienceFeeController.java 05-Mar-2022 4:33:51 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: PlatformConvenienceFeeController.java 05-Mar-2022 4:33:51 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.pricing.conveniencefee.controller;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xyz.apps.ticketeer.pricing.conveniencefee.api.internal.contract.PlatformConvenienceFeeCreationDto;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.api.internal.contract.PlatformConvenienceFeeDto;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.service.PlatformConvenienceFeeService;
 
 import lombok.extern.log4j.Log4j2;
+
 
 /**
  * The platform convenience fee controller.
@@ -45,25 +46,21 @@ public class PlatformConvenienceFeeController {
     /**
      * Adds the platformConvenienceFee.
      *
-     * @param platformConvenienceFeeDto the platformConvenienceFee dto
-     * @return the platformConvenienceFee dto
+     * @param platformConvenienceFeeCreationDto the platform convenience fee creation dto
+     * @return the response entity
+     * @throws Exception In case of a service exception
      */
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody final PlatformConvenienceFeeDto platformConvenienceFeeDto) {
+    public ResponseEntity<?> add(@RequestBody final PlatformConvenienceFeeCreationDto platformConvenienceFeeCreationDto)
+            throws Exception {
 
-        try {
-            log.info("PlatformConvenienceFee: " + platformConvenienceFeeDto);
-            final PlatformConvenienceFeeDto platformConvenienceFeeDtoAdded = platformConvenienceFeeService.add(platformConvenienceFeeDto);
-            log.info("PlatformConvenienceFee added: " + platformConvenienceFeeDtoAdded);
-            return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(platformConvenienceFeeDtoAdded);
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add platformConvenienceFee: " + platformConvenienceFeeDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("PlatformConvenienceFee: " + platformConvenienceFeeCreationDto);
+        final PlatformConvenienceFeeDto platformConvenienceFeeDtoAdded = platformConvenienceFeeService.add(
+            platformConvenienceFeeCreationDto);
+        log.info("PlatformConvenienceFee added: " + platformConvenienceFeeDtoAdded);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(platformConvenienceFeeDtoAdded);
     }
 
     /**
@@ -75,19 +72,13 @@ public class PlatformConvenienceFeeController {
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody final PlatformConvenienceFeeDto platformConvenienceFeeDto) {
 
-        try {
-            log.info("PlatformConvenienceFee: " + platformConvenienceFeeDto);
-            final PlatformConvenienceFeeDto platformConvenienceFeeDtoUpdated = platformConvenienceFeeService.update(platformConvenienceFeeDto);
-            log.info("PlatformConvenienceFee updated: " + platformConvenienceFeeDtoUpdated);
-            return ResponseEntity
-                .accepted()
-                .body(platformConvenienceFeeDtoUpdated);
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update platformConvenienceFee: " + platformConvenienceFeeDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("PlatformConvenienceFee: " + platformConvenienceFeeDto);
+        final PlatformConvenienceFeeDto platformConvenienceFeeDtoUpdated = platformConvenienceFeeService.update(
+            platformConvenienceFeeDto);
+        log.info("PlatformConvenienceFee updated: " + platformConvenienceFeeDtoUpdated);
+        return ResponseEntity
+            .accepted()
+            .body(platformConvenienceFeeDtoUpdated);
     }
 
     /**
@@ -99,17 +90,10 @@ public class PlatformConvenienceFeeController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") final String id) {
 
-        try {
-            log.info("PlatformConvenienceFee id: " + id);
-            platformConvenienceFeeService.deleteById(id);
-            log.info("PlatformConvenienceFee deleted: " + id);
-            return ResponseEntity.accepted().body("Deleted platformConvenienceFee with id: " + id);
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete platformConvenienceFee with id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("PlatformConvenienceFee id: " + id);
+        platformConvenienceFeeService.deleteById(id);
+        log.info("PlatformConvenienceFee deleted: " + id);
+        return ResponseEntity.accepted().body("Deleted platformConvenienceFee with id: " + id);
     }
 
     /**
@@ -120,14 +104,10 @@ public class PlatformConvenienceFeeController {
     @GetMapping(value = "/percentage")
     public ResponseEntity<?> getPercentage() {
 
-        try {
-            final Double percentage = platformConvenienceFeeService.findPercentage();
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(percentage);
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find platform convenience fee percentage. Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        final Double percentage = platformConvenienceFeeService.findPercentage();
+        log.info("Platform covenience fee percentage: " + percentage);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(percentage);
     }
 }

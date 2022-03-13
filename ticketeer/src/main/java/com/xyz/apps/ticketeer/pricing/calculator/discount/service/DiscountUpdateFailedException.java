@@ -8,8 +8,8 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 import java.util.Collection;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.executable.ExecutableType;
-import javax.validation.executable.ValidateOnExecution;
+
+import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
 import com.xyz.apps.ticketeer.util.CollectionUtil;
@@ -17,7 +17,7 @@ import com.xyz.apps.ticketeer.util.CollectionUtil;
 /**
  * The discount update failed exception.
  */
-@ValidateOnExecution(type = ExecutableType.CONSTRUCTORS)
+@Validated
 public class DiscountUpdateFailedException extends DiscountServiceException {
 
     /** The serial version UID. */

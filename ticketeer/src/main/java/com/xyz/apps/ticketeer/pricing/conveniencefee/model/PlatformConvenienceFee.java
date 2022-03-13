@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.validation.annotation.Validated;
 
 import com.mongodb.lang.NonNull;
+import com.xyz.apps.ticketeer.pricing.conveniencefee.resources.Messages;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,11 +40,11 @@ public class PlatformConvenienceFee extends com.xyz.apps.ticketeer.general.model
 
     /** The percentage of ticket amount. */
     @NonNull
-    @NotNull(message = "The fee percentage cannot be null.")
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_FEE_PERCENTAGE)
     private Double feePercentage = 0d;
 
     /** The updatation time. */
     @NonNull
-    @NotNull(message = "The fee updation time cannot be null.")
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_UPDATION_TIME)
     private LocalDateTime updationTime = LocalDateTime.now();
 }

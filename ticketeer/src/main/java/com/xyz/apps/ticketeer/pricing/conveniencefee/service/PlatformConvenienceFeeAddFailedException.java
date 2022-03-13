@@ -5,6 +5,10 @@
 */
 package com.xyz.apps.ticketeer.pricing.conveniencefee.service;
 
+import org.springframework.context.MessageSource;
+
+import com.xyz.apps.ticketeer.pricing.conveniencefee.resources.Messages;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 
 /**
  * The platform convenience fee add failed exception.
@@ -12,7 +16,7 @@ package com.xyz.apps.ticketeer.pricing.conveniencefee.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class PlatformConvenienceFeeAddFailedException extends RuntimeException {
+public class PlatformConvenienceFeeAddFailedException extends PlatformConvenienceFeeServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 1496514246888966594L;
@@ -20,7 +24,7 @@ public class PlatformConvenienceFeeAddFailedException extends RuntimeException {
     /**
      * Instantiates a new platform convenience fee add failed exception.
      */
-    public PlatformConvenienceFeeAddFailedException() {
-        super("Failed to update the platform convenience fee.");
+    public PlatformConvenienceFeeAddFailedException(final MessageSource messageSource) {
+        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_FAILURE_ADD_PLATFORM_CONVENIENCE_FEE, null));
     }
 }

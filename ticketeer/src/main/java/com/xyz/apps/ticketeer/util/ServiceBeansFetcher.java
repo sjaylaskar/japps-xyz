@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,10 @@ public class ServiceBeansFetcher {
     /** The web client builder. */
     @Autowired
     private WebClient.Builder webClientBuilder;
+
+    /** The message source. */
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Environment.
@@ -71,5 +76,14 @@ public class ServiceBeansFetcher {
      */
     public WebClient.Builder webClientBuilder() {
         return webClientBuilder;
+    }
+
+    /**
+     * Message source.
+     *
+     * @return the message source
+     */
+    public MessageSource messageSource() {
+        return messageSource;
     }
 }

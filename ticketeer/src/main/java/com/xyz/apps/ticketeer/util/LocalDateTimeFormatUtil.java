@@ -9,10 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-
-import javax.validation.constraints.NotNull;
-
-import org.springframework.validation.annotation.Validated;
+import java.util.Objects;
 
 /**
  * The local date time format util.
@@ -20,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-@Validated
 public final class LocalDateTimeFormatUtil {
 
     /**
@@ -36,7 +32,8 @@ public final class LocalDateTimeFormatUtil {
      * @param localDate the local date
      * @return the string
      */
-    public static String format(@NotNull(message = "The localDate must not be null.") final LocalDate localDate) {
+    public static String format(final LocalDate localDate) {
+        Objects.requireNonNull(localDate, "The parameter localDate cannot be null.");
         return localDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
@@ -46,7 +43,8 @@ public final class LocalDateTimeFormatUtil {
      * @param localDateTime the local date time
      * @return the string
      */
-    public static String format(@NotNull(message = "The localDate must not be null.") final LocalDateTime localDateTime) {
+    public static String format(final LocalDateTime localDateTime) {
+        Objects.requireNonNull(localDateTime, "The parameter localDateTime cannot be null.");
         return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
@@ -56,7 +54,8 @@ public final class LocalDateTimeFormatUtil {
      * @param localTime the local time
      * @return the string
      */
-    public static String format(@NotNull(message = "The localDate must not be null.") final LocalTime localTime) {
+    public static String format(final LocalTime localTime) {
+        Objects.requireNonNull(localTime, "The parameter localTime cannot be null.");
         return localTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
@@ -66,7 +65,8 @@ public final class LocalDateTimeFormatUtil {
      * @param localDateString the local date string
      * @return the local date
      */
-    public static LocalDate parseLocalDate(@NotNull(message = "The localDateString must not be null.") final String localDateString) {
+    public static LocalDate parseLocalDate(final String localDateString) {
+        Objects.requireNonNull(localDateString, "The parameter localDateString cannot be null.");
         return LocalDate.parse(localDateString, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
@@ -76,7 +76,8 @@ public final class LocalDateTimeFormatUtil {
      * @param localDateTimeString the local date time string
      * @return the local date time
      */
-    public static LocalDateTime parseLocalDateTime(@NotNull(message = "The localDateTimeString must not be null.") final String localDateTimeString) {
+    public static LocalDateTime parseLocalDateTime(final String localDateTimeString) {
+        Objects.requireNonNull(localDateTimeString, "The parameter localDateTimeString cannot be null.");
         return LocalDateTime.parse(localDateTimeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
@@ -86,7 +87,8 @@ public final class LocalDateTimeFormatUtil {
      * @param localTimeString the local time string
      * @return the local time
      */
-    public static LocalTime parseLocalTime(@NotNull(message = "The localTimeString must not be null.") final String localTimeString) {
+    public static LocalTime parseLocalTime(final String localTimeString) {
+        Objects.requireNonNull(localTimeString, "The parameter localTimeString cannot be null.");
         return LocalTime.parse(localTimeString, DateTimeFormatter.ISO_LOCAL_TIME);
     }
 }

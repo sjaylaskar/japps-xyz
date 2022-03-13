@@ -26,7 +26,6 @@ import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountService;
 import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfo;
 import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfoModelMapper;
-import com.xyz.apps.ticketeer.pricing.conveniencefee.service.PlatformConvenienceFeeNotFoundException;
 
 
 /**
@@ -76,11 +75,10 @@ public class PricingService extends GeneralService {
                 throw new PricingServiceException(exception.getResponseBodyAsString());
             }
 
-            if (ServiceUtil.notHasBodyResponseEntity(platformConvenienceFeeResponseEntity)) {
-                throw new PlatformConvenienceFeeNotFoundException();
+            Double platformConvenienceFeePercentage = 0.0d;
+            if (ServiceUtil.hasBodyResponseEntity(platformConvenienceFeeResponseEntity)) {
+                platformConvenienceFeePercentage = platformConvenienceFeeResponseEntity.getBody();
             }
-
-            final Double platformConvenienceFeePercentage = platformConvenienceFeeResponseEntity.getBody();
 
             return rounded(bookingPriceInfo.getFinalAmount() * (1 + platformConvenienceFeePercentage / 100));
         }

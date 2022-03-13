@@ -8,6 +8,7 @@ package com.xyz.apps.ticketeer.util;
 import java.text.MessageFormat;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The string util.
@@ -21,6 +22,9 @@ public final class StringUtil {
 
     }
 
+    /** The message key. */
+    public static final String MESSAGE_KEY = "[#$#messageKey#$#]";
+
     /**
      * Format.
      *
@@ -32,5 +36,15 @@ public final class StringUtil {
         return (ArrayUtils.isNotEmpty(placeHolderValues))
                 ? MessageFormat.format(text, placeHolderValues)
                 : text;
+    }
+
+    /**
+     * To message key.
+     *
+     * @param messageKeyDenoter the message key denoter
+     * @return the message key
+     */
+    public static String toMessageKey(final String messageKeyDenoter) {
+        return StringUtils.replace(messageKeyDenoter, MESSAGE_KEY, StringUtils.EMPTY);
     }
 }
