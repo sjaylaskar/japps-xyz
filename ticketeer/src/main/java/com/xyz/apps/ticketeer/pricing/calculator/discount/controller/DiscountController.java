@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountCreationDto;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountCreationDtoList;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDtoList;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountNotFoundException;
@@ -51,31 +53,18 @@ public class DiscountController {
     /**
      * Adds the discount.
      *
-     * @param discountDto the discount dto
+     * @param discountCreationDto the discount dto
      * @return the discount dto
      */
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody final DiscountDto discountDto) {
+    public ResponseEntity<?> add(@RequestBody final DiscountCreationDto discountCreationDto) {
 
-        try {
-            log.info("Discount: " + discountDto);
-            final DiscountDto discountDtoAdded = discountService.add(discountDto);
-            log.info("Discount added: " + discountDtoAdded);
-            return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(discountDtoAdded);
-        } catch (final DiscountServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add discount: "
-                    + discountDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Discount: " + discountCreationDto);
+        final DiscountDto discountDtoAdded = discountService.add(discountCreationDto);
+        log.info("Discount added: " + discountDtoAdded);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(discountDtoAdded);
     }
 
     /**
@@ -85,27 +74,14 @@ public class DiscountController {
      * @return the list of discounts
      */
     @PostMapping("/add/all")
-    public ResponseEntity<?> addAll(@RequestBody final DiscountDtoList discountDtoList) {
+    public ResponseEntity<?> addAll(@RequestBody final DiscountCreationDtoList discountCreationDtoList) {
 
-        try {
-            log.info("Discount list: " + discountDtoList);
-            final DiscountDtoList discountDtoListAdded = discountService.addAll(discountDtoList);
-            log.info("Discounts added: " + discountDtoListAdded);
-            return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(discountDtoListAdded);
-        } catch (final DiscountServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add discounts: "
-                    + discountDtoList + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Discount list: " + discountCreationDtoList);
+        final DiscountDtoList discountDtoListAdded = discountService.addAll(discountCreationDtoList);
+        log.info("Discounts added: " + discountDtoListAdded);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(discountDtoListAdded);
     }
 
     /**
@@ -117,25 +93,12 @@ public class DiscountController {
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody final DiscountDto discountDto) {
 
-        try {
-            log.info("Discount: " + discountDto);
-            final DiscountDto discountDtoUpdated = discountService.update(discountDto);
-            log.info("Discount updated: " + discountDtoUpdated);
-            return ResponseEntity
-                .accepted()
-                .body(discountDtoUpdated);
-        } catch (final DiscountServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update discount: "
-                    + discountDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Discount: " + discountDto);
+        final DiscountDto discountDtoUpdated = discountService.update(discountDto);
+        log.info("Discount updated: " + discountDtoUpdated);
+        return ResponseEntity
+            .accepted()
+            .body(discountDtoUpdated);
     }
 
     /**
@@ -147,25 +110,12 @@ public class DiscountController {
     @PutMapping("/update/all")
     public ResponseEntity<?> updateAll(@RequestBody final DiscountDtoList discountDtoList) {
 
-        try {
-            log.info("Discount list: " + discountDtoList);
-            final DiscountDtoList discountDtoListUpdated = discountService.updateAll(discountDtoList);
-            log.info("Discounts updated: " + discountDtoListUpdated);
-            return ResponseEntity
-                .accepted()
-                .body(discountDtoListUpdated);
-        } catch (final DiscountServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update discounts: "
-                    + discountDtoList + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Discount list: " + discountDtoList);
+        final DiscountDtoList discountDtoListUpdated = discountService.updateAll(discountDtoList);
+        log.info("Discounts updated: " + discountDtoListUpdated);
+        return ResponseEntity
+            .accepted()
+            .body(discountDtoListUpdated);
     }
 
     /**

@@ -5,11 +5,13 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
+import org.springframework.context.MessageSource;
+
 import com.xyz.apps.ticketeer.general.service.NotFoundException;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * The discount not found exception.
@@ -25,45 +27,31 @@ public class DiscountNotFoundException extends NotFoundException {
     /**
      * Instantiates a new discount not found exception.
      *
+     * @param messageSource the message source
      * @param id the id
      */
-    public DiscountNotFoundException(final String id) {
-        super("Discount not found for id: " + id);
+    public DiscountNotFoundException(final MessageSource messageSource, final String id) {
+        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_NOT_FOUND_DISCOUNT_ID, id));
     }
 
     /**
      * Instantiates a new discount not found exception.
      *
+     * @param messageSource the message source
      * @param offerCode the offer code
      */
-    public DiscountNotFoundException(final OfferCode offerCode) {
-        super("Invalid offer code: " + offerCode);
+    public DiscountNotFoundException(final MessageSource messageSource, final OfferCode offerCode) {
+        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_NOT_FOUND_DISCOUNT_OFFER_CODE, offerCode));
     }
 
     /**
      * Instantiates a new discount not found exception.
+     *
+     * @param messageSource the message source
      */
-    public DiscountNotFoundException() {
-        super("No discounts found.");
+    public DiscountNotFoundException(final MessageSource messageSource) {
+        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_NOT_FOUND_DISCOUNTS, null));
     }
-
-    /**
-     * The offer code.
-     */
-
-    /**
-     * Gets the offer code.
-     *
-     * @return the offer code
-     */
-    @Getter
-
-    /**
-     * Sets the offer code.
-     *
-     * @param offerCode the new offer code
-     */
-    @Setter
 
     /**
      * Instantiates a new offer code.

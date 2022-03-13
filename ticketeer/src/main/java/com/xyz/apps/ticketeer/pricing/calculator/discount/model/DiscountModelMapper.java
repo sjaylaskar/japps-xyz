@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 import com.xyz.apps.ticketeer.general.model.ModelConverter;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
-import com.xyz.apps.ticketeer.pricing.calculator.model.ShowTimeType;
 
 
 /**

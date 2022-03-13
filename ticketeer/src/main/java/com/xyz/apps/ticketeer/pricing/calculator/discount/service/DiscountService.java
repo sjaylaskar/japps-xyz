@@ -17,6 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -25,20 +26,24 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.general.model.DtoList;
-import com.xyz.apps.ticketeer.general.model.DtoListEmptyException;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.external.contract.CityDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.external.contract.EventVenueDto;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountCreationDto;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountCreationDtoList;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDtoList;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountCreationModelMapper;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountModelMapper;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountRepository;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountStrategy;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountType;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.model.ShowTimeType;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountNotFoundException.OfferCode;
-import com.xyz.apps.ticketeer.pricing.calculator.model.ShowTimeType;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 import com.xyz.apps.ticketeer.util.StringUtil;
 
 
@@ -60,23 +65,29 @@ public class DiscountService extends GeneralService {
     @Autowired
     private DiscountModelMapper discountModelMapper;
 
+    /** The discount creation model mapper. */
+    @Autowired
+    private DiscountCreationModelMapper discountCreationModelMapper;
+
     /**
      * Adds the discount.
      *
-     * @param discountDto the discount dto
+     * @param discountCreationDto the discount dto
      * @return the discount dto
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public DiscountDto add(@NotNull(message = "The discount to add cannot be null.") final DiscountDto discountDto) {
+    public DiscountDto add(@NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_ADD) final DiscountCreationDto discountCreationDto) {
 
-        validateDetails(discountDto);
+        validateApplicableCityIds(discountCreationDto.getApplicableCityIds());
 
-        validateOfferCode(discountDto.getOfferCode());
+        validateApplicableEventVenueIds(discountCreationDto.getApplicableEventVenueIds());
 
-        final Discount discountAdded = discountRepository.save(discountModelMapper.toEntity(discountDto));
+        validateOfferCode(discountCreationDto.getOfferCode());
+
+        final Discount discountAdded = discountRepository.save(discountCreationModelMapper.toEntity(discountCreationDto));
 
         if (discountAdded == null) {
-            throw new DiscountAddFailedException(Arrays.asList(discountDto));
+            throw new DiscountAddFailedException(messageSource(), Arrays.asList(discountCreationDto));
         }
 
         return discountModelMapper.toDto(discountAdded);
@@ -87,52 +98,53 @@ public class DiscountService extends GeneralService {
      *
      * @param offerCode the offer code
      */
-    private void validateOfferCode(@NotBlank(message = "The offer code cannot be blank.") final String offerCode) {
+    private void validateOfferCode(final String offerCode) {
+
         if (StringUtils.isBlank(offerCode)) {
-            throw new DiscountServiceException("Offer code cannot be blank.");
+            throw new DiscountServiceException(MessageUtil.defaultLocaleMessage(messageSource(), Messages.MESSAGE_ERROR_NOT_BLANK_OFFER_CODE, null));
         }
         if (findDiscountByOfferCode(offerCode) != null) {
-            throw DiscountOfferCodeAlreadyExistsException.offerCodeExists(offerCode);
+            throw DiscountOfferCodeAlreadyExistsException.offerCodeExists(messageSource(), offerCode);
         }
     }
 
     /**
      * Adds all the discounts.
      *
-     * @param discountDtoList the discount dto list
+     * @param discountCreationDtoList the discount dto list
      * @return the discount dto list
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public DiscountDtoList addAll(@NotNull(
-        message = "The discounts list to add cannot be null."
-    ) final DiscountDtoList discountDtoList) {
+    public DiscountDtoList addAll(@NotNull(message = Messages.MESSAGE_ERROR_NOT_EMPTY_DISCOUNTS_ADD) final DiscountCreationDtoList discountCreationDtoList) {
 
-        if (DtoList.isEmpty(discountDtoList)) {
-            throw new DtoListEmptyException("The discount list to add cannot be null or empty.");
+        if (DtoList.isEmpty(discountCreationDtoList)) {
+            throw new DiscountServiceException(MessageUtil.defaultLocaleMessage(messageSource(), Messages.MESSAGE_ERROR_NOT_EMPTY_DISCOUNTS_ADD, null));
         }
 
-        discountDtoList.dtos().stream().forEach(this::validateDetails);
-        validOfferCodeUniqueForAll(discountDtoList);
-        discountDtoList.dtos().stream().map(DiscountDto::getOfferCode).forEach(this::validateOfferCode);
+        discountCreationDtoList.dtos().stream().map(DiscountCreationDto::getApplicableCityIds).forEach(this::validateApplicableCityIds);
+        discountCreationDtoList.dtos().stream().map(DiscountCreationDto::getApplicableEventVenueIds).forEach(this::validateApplicableEventVenueIds);
+        validateOfferCodeUniqueForAll(discountCreationDtoList.dtos().stream().map(DiscountCreationDto::getOfferCode).collect(Collectors.toSet()).size(), discountCreationDtoList.size());
+        discountCreationDtoList.dtos().stream().map(DiscountCreationDto::getOfferCode).forEach(this::validateOfferCode);
 
-        final List<Discount> discountsAdded = discountRepository.saveAll(discountModelMapper.toEntities(discountDtoList.dtos()));
+        final List<Discount> discountsAdded = discountRepository.saveAll(discountCreationModelMapper.toEntities(discountCreationDtoList.dtos()));
 
         if (CollectionUtils.isEmpty(discountsAdded)) {
-            throw new DiscountAddFailedException(discountDtoList.dtos());
+            throw new DiscountAddFailedException(messageSource(), discountCreationDtoList.dtos());
         }
 
         return DiscountDtoList.of(discountModelMapper.toDtos(discountsAdded));
     }
 
+
     /**
-     * Valid offer code unique for all.
+     * Validate offer code unique for all.
      *
-     * @param discountDtoList the discount dto list
+     * @param numberOfUniqueOfferCodes the number of unique offer codes
+     * @param numberOfDiscounts the number of discounts
      */
-    private void validOfferCodeUniqueForAll(@NotNull(message = "The discounts list to add cannot be null."
-    ) final DiscountDtoList discountDtoList) {
-        if (discountDtoList.dtos().stream().map(DiscountDto::getOfferCode).collect(Collectors.toSet()).size() != discountDtoList.size()) {
-            throw new DiscountServiceException("Discount offer codes must be unique.");
+    private void validateOfferCodeUniqueForAll(final int numberOfUniqueOfferCodes, final int numberOfDiscounts) {
+        if (numberOfUniqueOfferCodes != numberOfDiscounts) {
+            throw new DiscountServiceException(MessageUtil.defaultLocaleMessage(messageSource(), Messages.MESSAGE_ERROR_UNIQUE_DISCOUNT_OFFER_CODES, null));
         }
     }
 
@@ -143,20 +155,22 @@ public class DiscountService extends GeneralService {
      * @return the discount dto
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public DiscountDto update(@NotNull(message = "The discount to update cannot be null.") final DiscountDto discountDto) {
+    public DiscountDto update(@NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_UPDATE) final DiscountDto discountDto) {
 
         validateDiscountIdNotNull(discountDto);
 
         validateDiscountExists(discountDto);
 
-        validateDetails(discountDto);
+        validateApplicableCityIds(discountDto.getApplicableCityIds());
+
+        validateApplicableEventVenueIds(discountDto.getApplicableEventVenueIds());
 
         validateOfferCodeForUpdate(discountDto);
 
         final Discount discountUpdated = discountRepository.save(discountModelMapper.toEntity(discountDto));
 
         if (discountUpdated == null) {
-            throw new DiscountUpdateFailedException(Arrays.asList(discountDto));
+            throw new DiscountUpdateFailedException(messageSource(), Arrays.asList(discountDto));
         }
 
         return discountModelMapper.toDto(discountUpdated);
@@ -170,7 +184,7 @@ public class DiscountService extends GeneralService {
 
         final DiscountDto discountDtoByOfferCode = findByOfferCode(discountDto.getOfferCode());
         if (!StringUtils.equals(discountDto.getId(), discountDtoByOfferCode.getId())) {
-            throw DiscountOfferCodeAlreadyExistsException.offerCodeExists(discountDto.getOfferCode());
+            throw DiscountOfferCodeAlreadyExistsException.offerCodeExists(messageSource(), discountDto.getOfferCode());
         }
     }
 
@@ -182,27 +196,28 @@ public class DiscountService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public DiscountDtoList updateAll(@NotNull(
-        message = "The discounts list to update cannot be null."
+        message = Messages.MESSAGE_ERROR_NOT_EMPTY_DISCOUNTS_UPDATE
     ) final DiscountDtoList discountDtoList) {
 
         if (DtoList.isEmpty(discountDtoList)) {
-            throw new DtoListEmptyException("The discount list to add cannot be null or empty.");
+            throw new DiscountServiceException(MessageUtil.defaultLocaleMessage(messageSource(), Messages.MESSAGE_ERROR_NOT_EMPTY_DISCOUNTS_UPDATE, null));
         }
 
         discountDtoList.dtos().stream().forEach(this::validateDiscountIdNotNull);
 
         discountDtoList.dtos().stream().forEach(this::validateDiscountExists);
 
-        discountDtoList.dtos().stream().forEach(this::validateDetails);
+        discountDtoList.dtos().stream().map(DiscountDto::getApplicableCityIds).forEach(this::validateApplicableCityIds);
+        discountDtoList.dtos().stream().map(DiscountDto::getApplicableEventVenueIds).forEach(this::validateApplicableEventVenueIds);
 
-        validOfferCodeUniqueForAll(discountDtoList);
+        validateOfferCodeUniqueForAll(discountDtoList.dtos().stream().map(DiscountDto::getOfferCode).collect(Collectors.toSet()).size(), discountDtoList.size());
 
         discountDtoList.dtos().stream().forEach(this::validateOfferCodeForUpdate);
 
         final List<Discount> discountsUpdated = discountRepository.saveAll(discountModelMapper.toEntities(discountDtoList.dtos()));
 
         if (CollectionUtils.isEmpty(discountsUpdated)) {
-            throw new DiscountUpdateFailedException(discountDtoList.dtos());
+            throw new DiscountUpdateFailedException(messageSource(), discountDtoList.dtos());
         }
 
         return DiscountDtoList.of(discountModelMapper.toDtos(discountsUpdated));
@@ -214,12 +229,14 @@ public class DiscountService extends GeneralService {
      * @param offerCode the offer code
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteByOfferCode(@NotBlank(message = "The discount offer code to delete cannot be blank.") final String offerCode) {
+    public void deleteByOfferCode(@NotBlank(
+        message = "The discount offer code to delete cannot be blank."
+    ) final String offerCode) {
 
         final Discount discount = findDiscountByOfferCode(offerCode);
 
         if (discount == null) {
-            throw new DiscountNotFoundException(offerCode);
+            throw new DiscountNotFoundException(messageSource(), offerCode);
         }
 
         discountRepository.delete(discount);
@@ -269,7 +286,7 @@ public class DiscountService extends GeneralService {
     private void validateDiscountExistsById(final String id) {
 
         if (!discountRepository.existsById(new ObjectId(id))) {
-            throw new DiscountNotFoundException(id);
+            throw new DiscountNotFoundException(messageSource(), id);
         }
     }
 
@@ -280,7 +297,9 @@ public class DiscountService extends GeneralService {
      * @return the discount dto
      */
     public DiscountDto findById(@NotBlank(message = "The discount id to delete cannot be null.") final String id) {
-        return discountModelMapper.toDto(discountRepository.findById(new ObjectId(id)).orElseThrow(() -> new DiscountNotFoundException(id)));
+
+        return discountModelMapper.toDto(discountRepository.findById(new ObjectId(id)).orElseThrow(
+            () -> new DiscountNotFoundException(messageSource(), id)));
     }
 
     /**
@@ -294,7 +313,7 @@ public class DiscountService extends GeneralService {
         final Discount discount = findDiscountByOfferCode(offerCode);
 
         if (discount == null) {
-            throw new DiscountNotFoundException(new OfferCode(offerCode));
+            throw new DiscountNotFoundException(messageSource(), new OfferCode(offerCode));
         }
 
         return discountModelMapper.toDto(discount);
@@ -319,7 +338,9 @@ public class DiscountService extends GeneralService {
      * @return the discount dto list
      */
     public DiscountDtoList findByCityId(final Long cityId) {
-        final List<Discount> discounts = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("applicableCityIds").in(cityId)), Discount.class);
+
+        final List<Discount> discounts = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where(
+            "applicableCityIds").in(cityId)), Discount.class);
 
         if (CollectionUtils.isNotEmpty(discounts)) {
             return DiscountDtoList.of(discountModelMapper.toDtos(discounts));
@@ -335,7 +356,9 @@ public class DiscountService extends GeneralService {
      * @return the discount dto list
      */
     public DiscountDtoList findByEventVenueId(final Long eventVenueId) {
-        final List<Discount> discounts = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("applicableEventVenueIds").in(eventVenueId)), Discount.class);
+
+        final List<Discount> discounts = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where(
+            "applicableEventVenueIds").in(eventVenueId)), Discount.class);
 
         if (CollectionUtils.isNotEmpty(discounts)) {
             return DiscountDtoList.of(discountModelMapper.toDtos(discounts));
@@ -350,9 +373,10 @@ public class DiscountService extends GeneralService {
      * @return the discount dto list
      */
     public DiscountDtoList findAll() {
+
         final List<Discount> discounts = discountRepository.findAll();
         if (CollectionUtils.isEmpty(discounts)) {
-            throw new DiscountNotFoundException();
+            throw new DiscountNotFoundException(messageSource());
         }
         return DiscountDtoList.of(discountModelMapper.toDtos(discounts));
     }
@@ -363,6 +387,7 @@ public class DiscountService extends GeneralService {
      * @return the list
      */
     public List<String> findDiscountStrategies() {
+
         return Arrays.asList(DiscountStrategy.values()).stream().map(DiscountStrategy::fullDescription).toList();
     }
 
@@ -372,6 +397,7 @@ public class DiscountService extends GeneralService {
      * @return the list
      */
     public List<String> findDiscountTypes() {
+
         return Arrays.asList(DiscountType.values()).stream().map(DiscountType::fullDescription).toList();
     }
 
@@ -381,23 +407,8 @@ public class DiscountService extends GeneralService {
      * @return the list
      */
     public List<String> findShowTimeTypes() {
+
         return Arrays.asList(ShowTimeType.values()).stream().map(ShowTimeType::fullDescription).toList();
-    }
-
-    /**
-     * Validate.
-     *
-     * @param discountDto the discount dto
-     */
-    private void validateDetails(final DiscountDto discountDto) {
-
-        if (CollectionUtils.isNotEmpty(discountDto.getApplicableCityIds())) {
-            validateApplicableCityIds(discountDto.getApplicableCityIds());
-        }
-
-        if (CollectionUtils.isNotEmpty(discountDto.getApplicableEventVenueIds())) {
-            validateApplicableEventVenueIds(discountDto.getApplicableEventVenueIds());
-        }
     }
 
     /**
@@ -407,15 +418,18 @@ public class DiscountService extends GeneralService {
      */
     private void validateApplicableCityIds(final Set<Long> applicableCityIds) {
 
-        applicableCityIds
-        .forEach(cityId -> {
-            try {
-                serviceBeansFetcher().restTemplate().getForEntity(
-                    StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
-            } catch (final HttpStatusCodeException exception) {
-                throw new DiscountServiceException("Invalid city id: " + cityId);
-            }
-        });
+        if (CollectionUtils.isNotEmpty(applicableCityIds)) {
+            applicableCityIds
+                .forEach(cityId -> {
+                    try {
+                        serviceBeansFetcher().restTemplate().getForEntity(
+                            StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()),
+                                cityId), CityDto.class);
+                    } catch (final HttpStatusCodeException exception) {
+                        throw new DiscountServiceException("Invalid city id: " + cityId);
+                    }
+                });
+        }
     }
 
     /**
@@ -424,15 +438,19 @@ public class DiscountService extends GeneralService {
      * @param applicableEventVenueIds the applicable event venue ids
      */
     private void validateApplicableEventVenueIds(final Set<Long> applicableEventVenueIds) {
-        applicableEventVenueIds
-        .forEach(eventVenueId -> {
-            try {
-                serviceBeansFetcher().restTemplate().getForEntity(
-                    StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_VENUE_BY_ID.get()), eventVenueId), EventVenueDto.class);
-            } catch (final HttpStatusCodeException exception) {
-                throw new DiscountServiceException("Invalid event venue id: " + eventVenueId);
-            }
-        });
+
+        if (CollectionUtils.isNotEmpty(applicableEventVenueIds)) {
+            applicableEventVenueIds
+                .forEach(eventVenueId -> {
+                    try {
+                        serviceBeansFetcher().restTemplate().getForEntity(
+                            StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_VENUE_BY_ID
+                                .get()), eventVenueId), EventVenueDto.class);
+                    } catch (final HttpStatusCodeException exception) {
+                        throw new DiscountServiceException("Invalid event venue id: " + eventVenueId);
+                    }
+                });
+        }
     }
 
     /**
@@ -442,6 +460,18 @@ public class DiscountService extends GeneralService {
      * @return the discount
      */
     public Discount toDiscount(final DiscountDto discountDto) {
+
         return discountModelMapper.toEntity(discountDto);
+    }
+
+
+    /**
+     * Message source.
+     *
+     * @return the message source
+     */
+    private MessageSource messageSource() {
+
+        return serviceBeansFetcher().messageSource();
     }
 }

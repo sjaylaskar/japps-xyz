@@ -3,7 +3,9 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.pricing.calculator.service;
+package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
+
+import com.xyz.apps.ticketeer.general.service.NotFoundException;
 
 /**
  * The invalid show time type exception.
@@ -11,7 +13,7 @@ package com.xyz.apps.ticketeer.pricing.calculator.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class InvalidShowTimeTypeException extends PricingServiceException {
+public class InvalidShowTimeTypeException extends NotFoundException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -3476048200437413619L;

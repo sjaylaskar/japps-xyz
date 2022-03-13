@@ -7,17 +7,16 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
 import java.util.Collection;
 
-import javax.validation.constraints.NotEmpty;
-
-import org.springframework.validation.annotation.Validated;
+import org.springframework.context.MessageSource;
 
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 import com.xyz.apps.ticketeer.util.CollectionUtil;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 
 /**
  * The discount update failed exception.
  */
-@Validated
 public class DiscountUpdateFailedException extends DiscountServiceException {
 
     /** The serial version UID. */
@@ -26,10 +25,10 @@ public class DiscountUpdateFailedException extends DiscountServiceException {
     /**
      * Instantiates a new discount update failed exception.
      *
+     * @param messageSource the message source
      * @param discountDtos the discount dtos
      */
-    public DiscountUpdateFailedException(@NotEmpty(message = "No discounts specified.") final Collection<DiscountDto> discountDtos) {
-
-        super("Failed to update discount(s): " + CollectionUtil.stringify(discountDtos));
+    public DiscountUpdateFailedException(final MessageSource messageSource, final Collection<DiscountDto> discountDtos) {
+        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_FAILURE_UPDATE_DISCOUNT, CollectionUtil.stringify(discountDtos)));
     }
 }

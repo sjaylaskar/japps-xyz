@@ -5,7 +5,9 @@
 */
 package com.xyz.apps.ticketeer.util;
 
+import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.springframework.context.MessageSource;
 
@@ -43,5 +45,17 @@ public final class MessageUtil {
      */
     public static final String defaultLocaleMessage(final MessageSource messageSource, final String messageKeyDenoter, final Object argument) {
         return defaultLocaleMessage(messageSource, messageKeyDenoter, new Object[] {argument});
+    }
+
+    /**
+     * Message.
+     *
+     * @param resourceBundle the resource bundle
+     * @param messageKey the message key
+     * @param arguments the arguments
+     * @return the string
+     */
+    public static final String message(final ResourceBundle resourceBundle, final String messageKey, final Object ...arguments) {
+        return MessageFormat.format(resourceBundle.getString(messageKey), arguments);
     }
 }

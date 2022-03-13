@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.general.service;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * The service exception.
@@ -14,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-@Validated
 public abstract class ServiceException extends RuntimeException {
 
     /** The serial version UID. */

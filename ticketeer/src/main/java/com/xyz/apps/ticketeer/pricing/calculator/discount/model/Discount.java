@@ -22,7 +22,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.validation.annotation.Validated;
 
 import com.mongodb.lang.NonNull;
-import com.xyz.apps.ticketeer.pricing.calculator.model.ShowTimeType;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -48,13 +48,13 @@ public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The offer code. */
     @NonNull
-    @NotBlank(message = "Offer code is required.")
-    @Size(min = 5, max = 20, message = "Invalid offer code length - must be between 5 and 20 characters.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_OFFER_CODE)
+    @Size(min = 5, max = 20, message = Messages.MESSAGE_ERROR_LENGTH_OFFER_CODE)
     private String offerCode;
 
     /** The discount strategy. */
     @NonNull
-    @NotNull(message = "Discount strategy is required.")
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_STRATEGY)
     @Enumerated(EnumType.STRING)
     private DiscountStrategy discountStrategy;
 
@@ -66,19 +66,19 @@ public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The min amount. */
     @NonNull
-    @NotNull(message = "The min amount must not be null and be at least 0.")
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_MIN_AMOUNT)
     private Double minAmount = 0d;
 
     /** The min seats. */
     @NonNull
-    @NotNull(message = "The min seats must not be null and be at least 0.")
-    @Min(value = 0)
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_MIN_SEATS)
+    @Min(value = 0, message = Messages.MESSAGE_ERROR_MIN_VALUE_MIN_SEATS)
     private Integer minSeats = 0;
 
     /** The nth seat. */
     @NonNull
-    @NotNull(message = "The nth seat must not be null and be at least 0.")
-    @Min(value = 0)
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_NTH_SEAT)
+    @Min(value = 0, message = Messages.MESSAGE_ERROR_MIN_VALUE_NTH_SEAT)
     private Integer nthSeat;
 
     /** The show time type. */
@@ -87,13 +87,13 @@ public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The discount type. */
     @NonNull
-    @NotNull(message = "The discount type is required.")
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_TYPE)
     @Enumerated(EnumType.STRING)
     private DiscountType discountType;
 
     /** The value. */
     @NonNull
-    @NotNull(message = "The value of the discount cannot be null.")
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_VALUE)
     private Double value = 0d;
 
     /** The start date. */

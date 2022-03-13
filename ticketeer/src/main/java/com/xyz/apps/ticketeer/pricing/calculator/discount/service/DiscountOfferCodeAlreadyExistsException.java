@@ -5,7 +5,11 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
+import org.springframework.context.MessageSource;
+
 import com.xyz.apps.ticketeer.general.service.AlreadyExistsException;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 
 /**
  * The invalid offer code exception.
@@ -33,7 +37,7 @@ public class DiscountOfferCodeAlreadyExistsException extends AlreadyExistsExcept
      * @param offerCode the offer code
      * @return the discount offer code already exists exception
      */
-    public static DiscountOfferCodeAlreadyExistsException offerCodeExists(final String offerCode) {
-        return new DiscountOfferCodeAlreadyExistsException("The offer code: " + offerCode + " already exists. Please add a different offer code.");
+    public static DiscountOfferCodeAlreadyExistsException offerCodeExists(final MessageSource messageSource, final String offerCode) {
+        return new DiscountOfferCodeAlreadyExistsException(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_ALREADY_EXISTS_OFFER_CODE, offerCode));
     }
 }

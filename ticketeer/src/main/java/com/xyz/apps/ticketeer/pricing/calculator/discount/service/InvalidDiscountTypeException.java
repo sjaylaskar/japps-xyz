@@ -5,13 +5,15 @@
  */
 package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
+import com.xyz.apps.ticketeer.general.service.NotFoundException;
+
 /**
  * The invalid discount type exception.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class InvalidDiscountTypeException extends DiscountServiceException {
+public class InvalidDiscountTypeException extends NotFoundException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 4870015337253355571L;

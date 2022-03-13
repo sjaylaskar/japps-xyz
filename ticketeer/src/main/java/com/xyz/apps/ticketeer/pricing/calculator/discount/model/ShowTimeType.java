@@ -3,14 +3,14 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.pricing.calculator.model;
+package com.xyz.apps.ticketeer.pricing.calculator.discount.model;
 
 import java.time.LocalTime;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.xyz.apps.ticketeer.pricing.calculator.service.InvalidShowTimeTypeException;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.service.InvalidShowTimeTypeException;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
 
 import lombok.Getter;
