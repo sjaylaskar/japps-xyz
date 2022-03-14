@@ -5,6 +5,9 @@
 */
 package com.xyz.apps.ticketeer.general.service;
 
+import java.util.ResourceBundle;
+
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -21,11 +24,23 @@ public abstract class NotFoundException extends ServiceException {
     /**
      * Instantiates a new not found exception.
      *
-     * @param message the message
+     * @param resourceBundle the resource bundle
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
      */
-    public NotFoundException(final String message) {
+    public NotFoundException(final ResourceBundle resourceBundle, final String messageKey, final Object ...messageArguments) {
+        super(resourceBundle, messageKey, messageArguments);
+    }
 
-        super(message);
+    /**
+     * Instantiates a new not found exception.
+     *
+     * @param messageSource the message source
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
+     */
+    public NotFoundException(final MessageSource messageSource, final String messageKey, final Object ...messageArguments) {
+        super(messageSource, messageKey, messageArguments);
     }
 
     /**

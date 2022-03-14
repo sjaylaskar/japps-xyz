@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.general.controller;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolationException;
@@ -32,6 +31,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.xyz.apps.ticketeer.general.service.ServiceException;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 import com.xyz.apps.ticketeer.util.StringUtil;
 
 
@@ -176,8 +176,6 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
      * @return the message
      */
     private String messageFromResource(final String message) {
-
-        return (StringUtils.startsWith(message, StringUtil.MESSAGE_KEY)) ? messageSource.getMessage(
-            StringUtil.toMessageKey(message), null, Locale.getDefault()) : message;
+        return (StringUtils.startsWith(message, StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX)) ? MessageUtil.fromMessageSource(messageSource, message) : message;
     }
 }

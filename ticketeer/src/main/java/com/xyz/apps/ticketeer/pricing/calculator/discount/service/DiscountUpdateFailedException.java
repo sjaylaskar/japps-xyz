@@ -7,12 +7,9 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
 import java.util.Collection;
 
-import org.springframework.context.MessageSource;
-
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 import com.xyz.apps.ticketeer.util.CollectionUtil;
-import com.xyz.apps.ticketeer.util.MessageUtil;
 
 /**
  * The discount update failed exception.
@@ -25,10 +22,9 @@ public class DiscountUpdateFailedException extends DiscountServiceException {
     /**
      * Instantiates a new discount update failed exception.
      *
-     * @param messageSource the message source
      * @param discountDtos the discount dtos
      */
-    public DiscountUpdateFailedException(final MessageSource messageSource, final Collection<DiscountDto> discountDtos) {
-        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_FAILURE_UPDATE_DISCOUNT, CollectionUtil.stringify(discountDtos)));
+    public DiscountUpdateFailedException(final Collection<DiscountDto> discountDtos) {
+        super(Messages.MESSAGE_ERROR_FAILURE_UPDATE_DISCOUNT, CollectionUtil.stringify(discountDtos));
     }
 }

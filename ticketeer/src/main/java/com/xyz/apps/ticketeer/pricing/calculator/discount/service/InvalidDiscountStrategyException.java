@@ -7,7 +7,6 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
 import com.xyz.apps.ticketeer.general.service.NotFoundException;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
-import com.xyz.apps.ticketeer.util.MessageUtil;
 
 /**
  * The invalid discount strategy exception.
@@ -26,7 +25,7 @@ public class InvalidDiscountStrategyException extends NotFoundException {
      * @param strategy the strategy
      */
     public InvalidDiscountStrategyException(final String strategy) {
-        super(MessageUtil.message(Messages.resourceBundle(), Messages.MESSAGE_ERROR_INVALID_DISCOUNT_STRATEGY, strategy));
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_INVALID_DISCOUNT_STRATEGY, strategy);
     }
 
 }

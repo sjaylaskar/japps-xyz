@@ -19,13 +19,16 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.general.service.ServiceUtil;
-import com.xyz.apps.ticketeer.pricing.calculator.api.external.ApiPropertyKey;
+import com.xyz.apps.ticketeer.pricing.calculator.api.external.ExternalApiUrls;
 import com.xyz.apps.ticketeer.pricing.calculator.api.internal.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountService;
 import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfo;
 import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfoModelMapper;
+import com.xyz.apps.ticketeer.pricing.calculator.resources.Messages;
+import com.xyz.apps.ticketeer.util.MessageUtil;
+import com.xyz.apps.ticketeer.util.StringUtil;
 
 
 /**
@@ -52,7 +55,8 @@ public class PricingService extends GeneralService {
      * @param bookingPriceInfo the booking price info
      * @return the double
      */
-    public Double calculateFinalAmount(@NotNull(message = "The booking price info cannot be null.") final BookingPriceInfoDto bookingPriceInfoDto) {
+    public Double calculateFinalAmount(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO)
+                                      final BookingPriceInfoDto bookingPriceInfoDto) {
         final BookingPriceInfo bookingPriceInfo = bookingPriceInfoModelMapper.toEntity(bookingPriceInfoDto);
         if (bookingPriceInfo != null && bookingPriceInfo.getBaseAmount() != null) {
             if (bookingPriceInfo.getFinalAmount() == null || bookingPriceInfo.getFinalAmount().equals(0d)) {
@@ -69,8 +73,7 @@ public class PricingService extends GeneralService {
 
             ResponseEntity<Double> platformConvenienceFeeResponseEntity = null;
             try {
-                platformConvenienceFeeResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-                    serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE.get()), Double.class);
+                platformConvenienceFeeResponseEntity = restTemplate().getForEntity(MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE), Double.class);
             } catch (final HttpStatusCodeException exception) {
                 throw new PricingServiceException(exception.getResponseBodyAsString());
             }

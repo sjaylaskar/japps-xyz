@@ -5,6 +5,9 @@
 */
 package com.xyz.apps.ticketeer.general.service;
 
+import java.util.ResourceBundle;
+
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -13,7 +16,7 @@ import org.springframework.http.HttpStatus;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public abstract class ServiceException extends RuntimeException {
+public abstract class ServiceException extends LocalizedException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 7367272733965850656L;
@@ -22,10 +25,23 @@ public abstract class ServiceException extends RuntimeException {
     /**
      * Instantiates a new service exception.
      *
-     * @param message the message
+     * @param resourceBundle the resource bundle
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
      */
-    public ServiceException(final String message) {
-        super(message);
+    public ServiceException(final ResourceBundle resourceBundle, final String messageKey, final Object ...messageArguments) {
+        super(resourceBundle, messageKey, messageArguments);
+    }
+
+    /**
+     * Instantiates a new service exception.
+     *
+     * @param messageSource the message source
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
+     */
+    public ServiceException(final MessageSource messageSource, final String messageKey, final Object ...messageArguments) {
+        super(messageSource, messageKey, messageArguments);
     }
 
     /**

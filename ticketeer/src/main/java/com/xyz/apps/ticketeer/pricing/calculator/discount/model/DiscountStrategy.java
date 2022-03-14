@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountValidator;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.InvalidDiscountStrategyException;
 import com.xyz.apps.ticketeer.pricing.calculator.service.BookingDiscountApplier;
 
@@ -23,19 +24,22 @@ import com.xyz.apps.ticketeer.pricing.calculator.service.BookingDiscountApplier;
 public enum DiscountStrategy {
 
     /** The flat discount. */
-    FLAT_DISCOUNT(BookingDiscountApplier::applyFlatDiscount, "Applicable for flat rate disount."),
+    FLAT_DISCOUNT(BookingDiscountApplier::applyFlatDiscount, DiscountValidator::validateFlatDiscount, "Applicable for flat rate disount."),
 
     /** The nth seat discount. */
-    NTH_SEAT_DISCOUNT(BookingDiscountApplier::applyNthSeatDiscount, "Applicable for discount on nth seat."),
+    NTH_SEAT_DISCOUNT(BookingDiscountApplier::applyNthSeatDiscount, DiscountValidator::validateNthSeatDiscount, "Applicable for discount on nth seat."),
 
     /** The n seats discount. */
-    N_SEATS_DISCOUNT(BookingDiscountApplier::applyNSeatsDiscount, "Applicable discount based on a minimum number of seats."),
+    N_SEATS_DISCOUNT(BookingDiscountApplier::applyNSeatsDiscount, DiscountValidator::validateNSeatsDiscount, "Applicable discount based on a minimum number of seats."),
 
     /** The show time discount. */
-    SHOW_TIME_DISCOUNT(BookingDiscountApplier::applyShowTimeDiscount, "Applicable for discount based on show time.");
+    SHOW_TIME_DISCOUNT(BookingDiscountApplier::applyShowTimeDiscount, DiscountValidator::validateShowTimeDiscount, "Applicable for discount based on show time.");
 
     /** The booking discount applier consumer. */
     private Consumer<BookingDiscountApplier> bookingDiscountApplierConsumer;
+
+    /** The discount validator consumer. */
+    private Consumer<DiscountValidator> discountValidatorConsumer;
 
     /** The description. */
     private String description;
@@ -44,11 +48,15 @@ public enum DiscountStrategy {
      * Instantiates a new discount strategy.
      *
      * @param bookingDiscountApplierConsumer the booking discount applier consumer
+     * @param discountValidatorConsumer the discount validator consumer
      * @param description the description
      */
-    DiscountStrategy(final Consumer<BookingDiscountApplier> bookingDiscountApplierConsumer, final String description) {
+    DiscountStrategy(final Consumer<BookingDiscountApplier> bookingDiscountApplierConsumer,
+                     final Consumer<DiscountValidator> discountValidatorConsumer,
+                     final String description) {
 
         this.bookingDiscountApplierConsumer = bookingDiscountApplierConsumer;
+        this.discountValidatorConsumer = discountValidatorConsumer;
         this.description = description;
     }
 
@@ -60,6 +68,16 @@ public enum DiscountStrategy {
     public void accept(final BookingDiscountApplier bookingDiscountApplier) {
 
         bookingDiscountApplierConsumer.accept(bookingDiscountApplier);
+    }
+
+    /**
+     * Accept.
+     *
+     * @param discountValidator the discount validator
+     */
+    public void accept(final DiscountValidator discountValidator) {
+
+        discountValidatorConsumer.accept(discountValidator);
     }
 
     /**

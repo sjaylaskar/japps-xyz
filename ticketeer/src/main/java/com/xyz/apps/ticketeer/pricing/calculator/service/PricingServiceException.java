@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.pricing.calculator.service;
 
 import com.xyz.apps.ticketeer.general.service.ServiceException;
+import com.xyz.apps.ticketeer.pricing.calculator.resources.Messages;
 
 /**
  * The pricing service exception.
@@ -21,10 +22,11 @@ public class PricingServiceException extends ServiceException {
     /**
      * Instantiates a new pricing service exception.
      *
-     * @param message the message
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
      */
-    public PricingServiceException(final String message) {
+    public PricingServiceException(final String messageKey, final Object ...messageArguments) {
 
-        super(message);
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 }

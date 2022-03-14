@@ -26,7 +26,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DiscountDto extends Dto<Discount> {
+public class DiscountDto extends Dto<Discount> implements DiscountContract {
 
     /** The id. */
     private String id;

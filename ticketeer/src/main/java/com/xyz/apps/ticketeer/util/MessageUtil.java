@@ -9,6 +9,7 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 
 /**
@@ -19,6 +20,12 @@ import org.springframework.context.MessageSource;
  */
 public final class MessageUtil {
 
+    /** The default locale. */
+    private static final Locale DEFAULT_LOCALE = Locale.getDefault();
+
+    /**
+     * Instantiates a new message util.
+     */
     private MessageUtil() {
 
     }
@@ -31,31 +38,58 @@ public final class MessageUtil {
      * @param arguments the arguments
      * @return the message
      */
-    public static final String defaultLocaleMessage(final MessageSource messageSource, final String messageKeyDenoter, final Object[] arguments) {
-        return messageSource.getMessage(StringUtil.toMessageKey(messageKeyDenoter), arguments, Locale.getDefault());
-    }
-
-    /**
-     * Default locale message.
-     *
-     * @param messageSource the message source
-     * @param messageKeyDenoter the message key denoter
-     * @param argument the argument
-     * @return the string
-     */
-    public static final String defaultLocaleMessage(final MessageSource messageSource, final String messageKeyDenoter, final Object argument) {
-        return defaultLocaleMessage(messageSource, messageKeyDenoter, new Object[] {argument});
+    public static String fromMessageSource(final MessageSource messageSource, final String messageKeyDenoter, final Object ...arguments) {
+        validate(messageSource, messageKeyDenoter);
+        return messageSource.getMessage(StringUtil.toMessageKey(messageKeyDenoter), arguments, DEFAULT_LOCALE);
     }
 
     /**
      * Message.
      *
      * @param resourceBundle the resource bundle
-     * @param messageKey the message key
+     * @param messageKeyDenoter the message key denoter
      * @param arguments the arguments
-     * @return the string
+     * @return the message
      */
-    public static final String message(final ResourceBundle resourceBundle, final String messageKey, final Object ...arguments) {
-        return MessageFormat.format(resourceBundle.getString(messageKey), arguments);
+    public static String fromResourceBundle(final ResourceBundle resourceBundle, final String messageKeyDenoter, final Object ...arguments) {
+        validate(resourceBundle, messageKeyDenoter);
+        return MessageFormat.format(resourceBundle.getString(StringUtil.toMessageKey(messageKeyDenoter)), arguments);
+    }
+
+    /**
+     * Validate.
+     *
+     * @param messageSource the message source
+     * @param messageKey the message key
+     */
+    private static void validate(final MessageSource messageSource, final String messageKey) {
+        if (messageSource == null) {
+            throw new IllegalArgumentException("The message source cannot be null.");
+        }
+        validate(messageKey);
+    }
+
+    /**
+     * Validate.
+     *
+     * @param resourceBundle the resource bundle
+     * @param messageKey the message key
+     */
+    private static void validate(final ResourceBundle resourceBundle, final String messageKey) {
+        if (resourceBundle == null) {
+            throw new IllegalArgumentException("The resource bundle cannot be null.");
+        }
+        validate(messageKey);
+    }
+
+    /**
+     * Validate.
+     *
+     * @param messageKey the message key
+     */
+    private static void validate(final String messageKey) {
+        if (StringUtils.isBlank(messageKey)) {
+            throw new IllegalArgumentException("The message key cannot be blank.");
+        }
     }
 }

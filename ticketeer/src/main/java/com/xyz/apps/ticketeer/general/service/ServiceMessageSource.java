@@ -27,7 +27,7 @@ public class ServiceMessageSource {
     /**
      * Adds the message sources.
      */
-    protected void add(final String baseNames) {
+    protected void add(final String ...baseNames) {
         if (messageSource instanceof ReloadableResourceBundleMessageSource) {
             ((ReloadableResourceBundleMessageSource) messageSource).addBasenames(baseNames);
         }

@@ -5,7 +5,7 @@
 */
 package com.xyz.apps.ticketeer.pricing.conveniencefee.resources;
 
-import com.xyz.apps.ticketeer.util.StringUtil;
+import java.util.ResourceBundle;
 
 /**
  * The messages.
@@ -22,29 +22,47 @@ public final class Messages {
 
     }
 
+    /** The error message prefix. */
+    private static final String ERROR_MESSAGE_PREFIX = "pricing.conveniencefee.message.error.";
+
+    /*
+     * Model messages:
+     */
 
     /** The message error fee percentage required. */
-    public static final String MESSAGE_ERROR_REQUIRED_FEE_PERCENTAGE = "{pricing.conveniencefee.message.error.required.feePercentage}";
+    public static final String MESSAGE_ERROR_REQUIRED_FEE_PERCENTAGE = "{" + ERROR_MESSAGE_PREFIX + "required.feePercentage}";
 
     /** The message error updation time required. */
-    public static final String MESSAGE_ERROR_REQUIRED_UPDATION_TIME = "{pricing.conveniencefee.message.error.required.updationTime}";
+    public static final String MESSAGE_ERROR_REQUIRED_UPDATION_TIME = "{" + ERROR_MESSAGE_PREFIX + "required.updationTime}";
+
+    /*
+     * Other messages:
+     */
 
     /** The message error required convenience fee. */
-    public static final String MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE = StringUtil.MESSAGE_KEY + "pricing.conveniencefee.message.error.required.platformConvenienceFee";
+    public static final String MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE = ERROR_MESSAGE_PREFIX + "required.platformConvenienceFee";
 
     /** The message error required platform convenience fee id. */
-    public static final String MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE_ID = StringUtil.MESSAGE_KEY + "pricing.conveniencefee.message.error.required.platformConvenienceFee.id";
+    public static final String MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE_ID = ERROR_MESSAGE_PREFIX + "required.platformConvenienceFee.id";
 
     /** The message error not found platform convenience fee. */
-    public static final String MESSAGE_ERROR_NOT_FOUND_PLATFORM_CONVENIENCE_FEE = StringUtil.MESSAGE_KEY + "pricing.conveniencefee.message.error.notFound.platformConvenienceFee";
+    public static final String MESSAGE_ERROR_NOT_FOUND_PLATFORM_CONVENIENCE_FEE = ERROR_MESSAGE_PREFIX + "notFound.platformConvenienceFee";
 
     /** The message error not found platform convenience fee id. */
-    public static final String MESSAGE_ERROR_NOT_FOUND_PLATFORM_CONVENIENCE_FEE_ID = StringUtil.MESSAGE_KEY + "pricing.conveniencefee.message.error.notFound.platformConvenienceFee.id";
+    public static final String MESSAGE_ERROR_NOT_FOUND_PLATFORM_CONVENIENCE_FEE_ID = ERROR_MESSAGE_PREFIX + "notFound.platformConvenienceFee.id";
 
     /** The message error failure add platform convenience fee. */
-    public static final String MESSAGE_ERROR_FAILURE_ADD_PLATFORM_CONVENIENCE_FEE = StringUtil.MESSAGE_KEY + "pricing.conveniencefee.message.error.failure.add.platformConvenienceFee";
+    public static final String MESSAGE_ERROR_FAILURE_ADD_PLATFORM_CONVENIENCE_FEE = ERROR_MESSAGE_PREFIX + "failure.add.platformConvenienceFee";
 
     /** The message error failure update platform convenience fee. */
-    public static final String MESSAGE_ERROR_FAILURE_UPDATE_PLATFORM_CONVENIENCE_FEE = StringUtil.MESSAGE_KEY + "pricing.conveniencefee.message.error.failure.update.platformConvenienceFee";
+    public static final String MESSAGE_ERROR_FAILURE_UPDATE_PLATFORM_CONVENIENCE_FEE = ERROR_MESSAGE_PREFIX + "failure.update.platformConvenienceFee";
 
+    /**
+     * Resource bundle.
+     *
+     * @return the resource bundle
+     */
+    public static ResourceBundle resourceBundle() {
+        return ResourceBundle.getBundle("messages.pricing.conveniencefee.Messages");
+    }
 }

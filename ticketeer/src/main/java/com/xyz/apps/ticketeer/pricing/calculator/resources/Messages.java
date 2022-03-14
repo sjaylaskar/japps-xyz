@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.pricing.calculator.discount.resources;
+package com.xyz.apps.ticketeer.pricing.calculator.resources;
 
 import java.util.ResourceBundle;
 
@@ -23,44 +23,10 @@ public final class Messages {
     }
 
     /** The error message prefix. */
-    private static final String ERROR_MESSAGE_PREFIX = "pricing.calculator.discount.message.error.";
+    private static final String ERROR_MESSAGE_PREFIX = "pricing.calculator.message.error.";
 
-    /*
-     * Model Messages:
-     */
-    /** The message error required discount offer code. */
-    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_OFFER_CODE = "{" + ERROR_MESSAGE_PREFIX + "required.offerCode}";
-
-    /** The message error length offer code. */
-    public static final String MESSAGE_ERROR_LENGTH_OFFER_CODE = "{" + ERROR_MESSAGE_PREFIX + "length.offerCode}";
-
-    /** The message error required discount strategy. */
-    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_STRATEGY = "{" + ERROR_MESSAGE_PREFIX + "required.discountStrategy}";
-
-    /** The message error required min amount. */
-    public static final String MESSAGE_ERROR_REQUIRED_MIN_AMOUNT = "{" + ERROR_MESSAGE_PREFIX + "required.minAmount}";
-
-    /** The message error required min seats. */
-    public static final String MESSAGE_ERROR_REQUIRED_MIN_SEATS = "{" + ERROR_MESSAGE_PREFIX + "required.minSeats}";
-
-    /** The message error min value min seats. */
-    public static final String MESSAGE_ERROR_MIN_VALUE_MIN_SEATS = "{" + ERROR_MESSAGE_PREFIX + "minValue.minSeats}";
-
-    /** The message error required nth seat. */
-    public static final String MESSAGE_ERROR_REQUIRED_NTH_SEAT = "{" + ERROR_MESSAGE_PREFIX + "required.nthSeat}";
-
-    /** The message error min value nth seat. */
-    public static final String MESSAGE_ERROR_MIN_VALUE_NTH_SEAT = "{" + ERROR_MESSAGE_PREFIX + "minValue.nthSeat}";
-
-    /** The message error required discount type. */
-    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_TYPE = "{" + ERROR_MESSAGE_PREFIX + "required.discountType}";
-
-    /** The message error required discount value. */
-    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_VALUE = "{" + ERROR_MESSAGE_PREFIX + "required.discountValue}";
-
-    /*
-     * Other messages:
-     */
+    /** The message error required booking price info. */
+    public static final String MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO = "{" + ERROR_MESSAGE_PREFIX + "required.bookingPriceInfo}";
 
     /** The message error required discount add. */
     public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_ADD = ERROR_MESSAGE_PREFIX + "required.discountToAdd";

@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
 import com.xyz.apps.ticketeer.general.service.NotFoundException;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 
 /**
  * The invalid show time type exception.
@@ -25,7 +26,7 @@ public class InvalidShowTimeTypeException extends NotFoundException {
      */
     public InvalidShowTimeTypeException(final String showTimeType) {
 
-        super("Invalid show time type: " + showTimeType);
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_INVALID_SHOW_TIME_TYPE, showTimeType);
     }
 
 }

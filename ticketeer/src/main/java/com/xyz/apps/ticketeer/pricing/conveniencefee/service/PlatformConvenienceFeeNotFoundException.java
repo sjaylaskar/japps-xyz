@@ -5,11 +5,8 @@
 */
 package com.xyz.apps.ticketeer.pricing.conveniencefee.service;
 
-import org.springframework.context.MessageSource;
-
 import com.xyz.apps.ticketeer.general.service.NotFoundException;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.resources.Messages;
-import com.xyz.apps.ticketeer.util.MessageUtil;
 
 /**
  * The platform convenience fee not found exception.
@@ -25,8 +22,8 @@ public class PlatformConvenienceFeeNotFoundException extends NotFoundException {
     /**
      * Instantiates a new platform convenience fee not found exception.
      */
-    public PlatformConvenienceFeeNotFoundException(final MessageSource messageSource) {
-        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_NOT_FOUND_PLATFORM_CONVENIENCE_FEE, null));
+    public PlatformConvenienceFeeNotFoundException() {
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_NOT_FOUND_PLATFORM_CONVENIENCE_FEE);
     }
 
     /**
@@ -34,7 +31,7 @@ public class PlatformConvenienceFeeNotFoundException extends NotFoundException {
      *
      * @param id the id
      */
-    public PlatformConvenienceFeeNotFoundException(final MessageSource messageSource, final String id) {
-        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_NOT_FOUND_PLATFORM_CONVENIENCE_FEE_ID, id));
+    public PlatformConvenienceFeeNotFoundException(final String id) {
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_NOT_FOUND_PLATFORM_CONVENIENCE_FEE_ID, id);
     }
 }

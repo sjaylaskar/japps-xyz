@@ -7,12 +7,9 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
 import java.util.Collection;
 
-import org.springframework.context.MessageSource;
-
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountCreationDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 import com.xyz.apps.ticketeer.util.CollectionUtil;
-import com.xyz.apps.ticketeer.util.MessageUtil;
 
 
 /**
@@ -26,11 +23,10 @@ public class DiscountAddFailedException extends DiscountServiceException {
     /**
      * Instantiates a new discount add failed exception.
      *
-     * @param messageSource the message source
      * @param discountCreationDtos the discount creation dtos
      */
-    public DiscountAddFailedException(final MessageSource messageSource, final Collection<DiscountCreationDto> discountCreationDtos) {
+    public DiscountAddFailedException(final Collection<DiscountCreationDto> discountCreationDtos) {
 
-        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_FAILURE_ADD_DISCOUNT, CollectionUtil.stringify(discountCreationDtos)));
+        super(Messages.MESSAGE_ERROR_FAILURE_ADD_DISCOUNT, CollectionUtil.stringify(discountCreationDtos));
     }
 }

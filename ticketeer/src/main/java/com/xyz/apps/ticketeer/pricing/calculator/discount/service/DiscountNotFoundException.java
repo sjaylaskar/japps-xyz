@@ -5,11 +5,8 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
-import org.springframework.context.MessageSource;
-
 import com.xyz.apps.ticketeer.general.service.NotFoundException;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
-import com.xyz.apps.ticketeer.util.MessageUtil;
 
 import lombok.AllArgsConstructor;
 
@@ -27,31 +24,37 @@ public class DiscountNotFoundException extends NotFoundException {
     /**
      * Instantiates a new discount not found exception.
      *
-     * @param messageSource the message source
      * @param id the id
      */
-    public DiscountNotFoundException(final MessageSource messageSource, final String id) {
-        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_NOT_FOUND_DISCOUNT_ID, id));
+    public DiscountNotFoundException(final String id) {
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_NOT_FOUND_DISCOUNT_ID, id);
     }
 
     /**
      * Instantiates a new discount not found exception.
      *
-     * @param messageSource the message source
      * @param offerCode the offer code
      */
-    public DiscountNotFoundException(final MessageSource messageSource, final OfferCode offerCode) {
-        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_NOT_FOUND_DISCOUNT_OFFER_CODE, offerCode));
+    public DiscountNotFoundException(final OfferCode offerCode) {
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_NOT_FOUND_DISCOUNT_OFFER_CODE, offerCode);
     }
 
     /**
      * Instantiates a new discount not found exception.
-     *
-     * @param messageSource the message source
      */
-    public DiscountNotFoundException(final MessageSource messageSource) {
-        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_NOT_FOUND_DISCOUNTS, null));
+    public DiscountNotFoundException() {
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_NOT_FOUND_DISCOUNTS);
     }
+
+    /**
+     * Instantiates a new offer code.
+     */
+
+    /**
+     * Instantiates a new offer code.
+     *
+     * @param offerCode the offer code
+     */
 
     /**
      * Instantiates a new offer code.

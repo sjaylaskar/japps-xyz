@@ -5,7 +5,8 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
-import com.xyz.apps.ticketeer.pricing.calculator.service.PricingServiceException;
+import com.xyz.apps.ticketeer.general.service.ServiceException;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 
 /**
  * The discount service exception.
@@ -13,7 +14,7 @@ import com.xyz.apps.ticketeer.pricing.calculator.service.PricingServiceException
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class DiscountServiceException extends PricingServiceException {
+public class DiscountServiceException extends ServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -6237952517165449903L;
@@ -21,9 +22,10 @@ public class DiscountServiceException extends PricingServiceException {
     /**
      * Instantiates a new discount service exception.
      *
-     * @param message the message
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
      */
-    public DiscountServiceException(final String message) {
-        super(message);
+    public DiscountServiceException(final String messageKey, final Object ...messageArguments) {
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 }

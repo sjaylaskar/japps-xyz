@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.pricing.calculator.discount.service;
 
 import com.xyz.apps.ticketeer.general.service.NotFoundException;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 
 /**
  * The invalid discount type exception.
@@ -25,6 +26,6 @@ public class InvalidDiscountTypeException extends NotFoundException {
      */
     public InvalidDiscountTypeException(final String discountType) {
 
-        super("Invalid discount type: " + discountType);
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_INVALID_DISCOUNT_TYPE, discountType);
     }
 }

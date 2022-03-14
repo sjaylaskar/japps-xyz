@@ -5,10 +5,7 @@
 */
 package com.xyz.apps.ticketeer.pricing.conveniencefee.service;
 
-import org.springframework.context.MessageSource;
-
 import com.xyz.apps.ticketeer.pricing.conveniencefee.resources.Messages;
-import com.xyz.apps.ticketeer.util.MessageUtil;
 
 /**
  * The platform convenience fee update failed exception.
@@ -24,7 +21,7 @@ public class PlatformConvenienceFeeUpdateFailedException extends PlatformConveni
     /**
      * Instantiates a new platform convenience fee update failed exception.
      */
-    public PlatformConvenienceFeeUpdateFailedException(final MessageSource messageSource) {
-        super(MessageUtil.defaultLocaleMessage(messageSource, Messages.MESSAGE_ERROR_FAILURE_UPDATE_PLATFORM_CONVENIENCE_FEE, null));
+    public PlatformConvenienceFeeUpdateFailedException() {
+        super(Messages.MESSAGE_ERROR_FAILURE_UPDATE_PLATFORM_CONVENIENCE_FEE);
     }
 }

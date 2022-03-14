@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.pricing.conveniencefee.service;
 
 import com.xyz.apps.ticketeer.general.service.ServiceException;
+import com.xyz.apps.ticketeer.pricing.conveniencefee.resources.Messages;
 
 /**
  * The platform convenience fee service exception.
@@ -23,9 +24,9 @@ public class PlatformConvenienceFeeServiceException extends ServiceException {
      *
      * @param message the message
      */
-    public PlatformConvenienceFeeServiceException(final String message) {
+    public PlatformConvenienceFeeServiceException(final String messageKey, final Object ...messageArguments) {
 
-        super(message);
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 
 }

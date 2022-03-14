@@ -23,7 +23,7 @@ public final class StringUtil {
     }
 
     /** The message key. */
-    public static final String MESSAGE_KEY = "[#$#messageKey#$#]";
+    public static final String METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX = "[#$#methodArgValidationMessageKeyPrefix#$#]";
 
     /**
      * Format.
@@ -45,6 +45,6 @@ public final class StringUtil {
      * @return the message key
      */
     public static String toMessageKey(final String messageKeyDenoter) {
-        return StringUtils.replace(messageKeyDenoter, MESSAGE_KEY, StringUtils.EMPTY);
+        return StringUtils.replace(messageKeyDenoter, METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX, StringUtils.EMPTY);
     }
 }

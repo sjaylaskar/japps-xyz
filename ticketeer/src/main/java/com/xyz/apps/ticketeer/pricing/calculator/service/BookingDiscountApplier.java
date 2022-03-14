@@ -9,12 +9,8 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountType;
-import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountOfferCodeAlreadyExistsException;
 import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfo;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.xyz.apps.ticketeer.pricing.calculator.resources.BookingDiscountApplierMessages;
 
 
 /**
@@ -23,9 +19,6 @@ import lombok.ToString;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-@Getter
-@Setter
-@ToString
 public class BookingDiscountApplier {
 
     /** The booking price info. */
@@ -118,9 +111,14 @@ public class BookingDiscountApplier {
      * Validate date.
      */
     private void validateDate() {
-        if ((discount.getEndTime() != null && (bookingPriceInfo.getBookingTime() == null || bookingPriceInfo.getBookingTime().isAfter(discount.getEndTime())))
-            || (discount.getStartTime() != null && (bookingPriceInfo.getBookingTime() == null || bookingPriceInfo.getBookingTime().isBefore(discount.getStartTime())))) {
-            throw new DiscountOfferCodeAlreadyExistsException("The offer code is not applicable at this time.");
+
+        if ((discount.getEndTime() != null
+            && (bookingPriceInfo.getBookingTime() == null || bookingPriceInfo.getBookingTime().isAfter(discount.getEndTime())))
+            || (discount.getStartTime() != null
+                && (bookingPriceInfo.getBookingTime() == null
+                    || bookingPriceInfo.getBookingTime().isBefore(discount.getStartTime())))) {
+            throw new BookingDiscountApplierException(
+                BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_APPLICABLE_OFFER_CODE_AT_TIME);
         }
     }
 
@@ -131,7 +129,8 @@ public class BookingDiscountApplier {
 
         if (discount.getMinAmount() != null
             && (bookingPriceInfo.getBaseAmount() != null && bookingPriceInfo.getBaseAmount() < discount.getMinAmount())) {
-            throw new DiscountOfferCodeAlreadyExistsException("Minimum amount required for this offer code is: " + discount.getMinAmount());
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_MIN_AMOUNT_FOR_OFFER_CODE,
+                discount.getMinAmount());
         }
     }
 
@@ -142,8 +141,8 @@ public class BookingDiscountApplier {
 
         if (discount.getMinSeats() != null
             && (bookingPriceInfo.getNumberOfSeats() == null || bookingPriceInfo.getNumberOfSeats() < discount.getMinSeats())) {
-            throw new DiscountOfferCodeAlreadyExistsException("Minimum number of seats to be booked for this offer code is: "
-                + discount.getMinSeats());
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_MIN_SEATS_FOR_OFFER_CODE,
+                discount.getMinSeats());
         }
     }
 
@@ -154,7 +153,7 @@ public class BookingDiscountApplier {
 
         if (CollectionUtils.isNotEmpty(discount.getApplicableCityIds())
             && (bookingPriceInfo.getCityId() == null || !discount.getApplicableCityIds().contains(bookingPriceInfo.getCityId()))) {
-            throw new DiscountOfferCodeAlreadyExistsException("The offer is not applicable for this city.");
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_APPLICABLE_FOR_CITY);
         }
     }
 
@@ -166,7 +165,7 @@ public class BookingDiscountApplier {
         if (CollectionUtils.isNotEmpty(discount.getApplicableEventVenueIds())
             && (bookingPriceInfo.getEventVenueId() == null
                 || !discount.getApplicableEventVenueIds().contains(bookingPriceInfo.getEventVenueId()))) {
-            throw new DiscountOfferCodeAlreadyExistsException("The offer is not applicable for this venue.");
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_APPLICABLE_FOR_EVENT_VENUE);
         }
     }
 
@@ -177,8 +176,8 @@ public class BookingDiscountApplier {
 
         if (discount.getNthSeat() != null
             && (bookingPriceInfo.getNumberOfSeats() == null || bookingPriceInfo.getNumberOfSeats() < discount.getNthSeat())) {
-            throw new DiscountOfferCodeAlreadyExistsException("Minimum number of seats to be booked for this offer code is: "
-                + discount.getNthSeat());
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_MIN_SEATS_FOR_OFFER_CODE,
+                discount.getNthSeat());
         }
     }
 
@@ -190,8 +189,8 @@ public class BookingDiscountApplier {
         if (discount.getShowTimeType() != null
             && (bookingPriceInfo.getShowStartTime() == null
                 || !discount.getShowTimeType().isInShowTimeRange(bookingPriceInfo.getShowStartTime()))) {
-            throw new DiscountOfferCodeAlreadyExistsException("The offer is only applicable for "
-                + discount.getShowTimeType().name().toLowerCase() + " shows between " + discount.getShowTimeType().rangeString());
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_APPLICABLE_FOR_SHOW_TIME,
+                discount.getShowTimeType().name().toLowerCase(), discount.getShowTimeType().rangeString());
         }
     }
 }
