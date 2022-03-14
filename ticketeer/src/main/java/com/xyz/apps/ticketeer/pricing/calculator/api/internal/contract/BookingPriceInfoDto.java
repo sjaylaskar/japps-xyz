@@ -58,9 +58,6 @@ public class BookingPriceInfoDto extends Dto<BookingPriceInfo> {
     /** The show start time. */
     private String showStartTime;
 
-    /** The final amount. */
-    private Double finalAmount;
-
     /** The booking date. */
     private String bookingTime;
 

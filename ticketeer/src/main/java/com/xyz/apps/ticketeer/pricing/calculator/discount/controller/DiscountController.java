@@ -7,7 +7,6 @@ package com.xyz.apps.ticketeer.pricing.calculator.discount.controller;
 
 import javax.validation.constraints.NotBlank;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +25,7 @@ import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountCreationDtoList;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDtoList;
-import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountNotFoundException;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountService;
-import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountServiceException;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -126,23 +123,10 @@ public class DiscountController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") final String id) {
 
-        try {
-            log.info("Discount id: " + id);
-            discountService.deleteById(id);
-            log.info("Discount deleted: " + id);
-            return ResponseEntity.accepted().body("Deleted discount with id: " + id);
-        } catch (final DiscountServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete discount with id: "
-                    + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Discount id: " + id);
+        discountService.deleteById(id);
+        log.info("Discount deleted: " + id);
+        return ResponseEntity.accepted().body("Deleted discount with id: " + id);
     }
 
     /**
@@ -155,23 +139,10 @@ public class DiscountController {
         message = "The discount code to delete cannot be null."
     ) final String offerCode) {
 
-        try {
-            log.info("Discount code: " + offerCode);
-            discountService.deleteByOfferCode(offerCode);
-            log.info("Discount deleted: " + offerCode);
-            return ResponseEntity.accepted().body("Deleted discount: " + offerCode);
-        } catch (final DiscountServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete discount: "
-                    + offerCode + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Discount code: " + offerCode);
+        discountService.deleteByOfferCode(offerCode);
+        log.info("Discount deleted: " + offerCode);
+        return ResponseEntity.accepted().body("Deleted discount: " + offerCode);
     }
 
     /**
@@ -183,24 +154,10 @@ public class DiscountController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") final String id) {
 
-        try {
-            final DiscountDto discountDtoFound = discountService.findById(id);
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(discountDtoFound);
-        } catch (final DiscountNotFoundException discountNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountNotFoundException)
-                .getLocalizedMessage());
-        } catch (final DiscountServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find discount: "
-                    + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        final DiscountDto discountDtoFound = discountService.findById(id);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(discountDtoFound);
     }
 
     /**
@@ -214,24 +171,10 @@ public class DiscountController {
         message = "The discount offer code to fetch cannot be blank."
     ) final String offerCode) {
 
-        try {
-            final DiscountDto discountDtoFound = discountService.findByOfferCode(offerCode);
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(discountDtoFound);
-        } catch (final DiscountNotFoundException discountNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountNotFoundException)
-                .getLocalizedMessage());
-        } catch (final DiscountServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find discount: "
-                    + offerCode + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        final DiscountDto discountDtoFound = discountService.findByOfferCode(offerCode);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(discountDtoFound);
     }
 
     /**
@@ -245,24 +188,10 @@ public class DiscountController {
         message = "The city id cannot be blank."
     ) final Long cityId) {
 
-        try {
-            final DiscountDtoList discountDtoListFound = discountService.findByCityId(cityId);
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(discountDtoListFound);
-        } catch (final DiscountNotFoundException discountNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountNotFoundException)
-                .getLocalizedMessage());
-        } catch (final DiscountServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find discounts by city: "
-                    + cityId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        final DiscountDtoList discountDtoListFound = discountService.findByCityId(cityId);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(discountDtoListFound);
     }
 
     /**
@@ -276,19 +205,10 @@ public class DiscountController {
         message = "The event venue id cannot be blank."
     ) final Long eventVenueId) {
 
-        try {
-            final DiscountDtoList discountDtoListFound = discountService.findByEventVenueId(eventVenueId);
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(discountDtoListFound);
-        } catch (final DiscountServiceException discountServiceException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountServiceException)
-                .getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find discounts by city: "
-                    + eventVenueId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        final DiscountDtoList discountDtoListFound = discountService.findByEventVenueId(eventVenueId);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(discountDtoListFound);
     }
 
     /**
@@ -299,18 +219,10 @@ public class DiscountController {
     @GetMapping(value = "all")
     public ResponseEntity<?> all() {
 
-        try {
-            final DiscountDtoList discountDtoListFound = discountService.findAll();
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(discountDtoListFound);
-        } catch (final DiscountServiceException discountServiceException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(discountServiceException)
-                .getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find discounts. Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        final DiscountDtoList discountDtoListFound = discountService.findAll();
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(discountDtoListFound);
     }
 
     /**
@@ -321,17 +233,9 @@ public class DiscountController {
     @GetMapping(value = "/strategies")
     public ResponseEntity<?> strategies() {
 
-        try {
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(discountService.findDiscountStrategies());
-        } catch (final DiscountServiceException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception)
-                .getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find discount strategies. Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(discountService.findDiscountStrategies());
     }
 
     /**
@@ -342,17 +246,9 @@ public class DiscountController {
     @GetMapping(value = "/types")
     public ResponseEntity<?> types() {
 
-        try {
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(discountService.findDiscountTypes());
-        } catch (final DiscountServiceException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception)
-                .getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find discount types. Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(discountService.findDiscountTypes());
     }
 
     /**
@@ -363,16 +259,8 @@ public class DiscountController {
     @GetMapping(value = "/show-time-types")
     public ResponseEntity<?> showTimeTypes() {
 
-        try {
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(discountService.findShowTimeTypes());
-        } catch (final DiscountServiceException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception)
-                .getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                "Failed to find show time types. Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(discountService.findShowTimeTypes());
     }
 }
