@@ -7,7 +7,6 @@ package com.xyz.apps.ticketeer.user.controller;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xyz.apps.ticketeer.user.api.internal.contract.BasicUserDto;
+import com.xyz.apps.ticketeer.user.api.internal.contract.UserCreationDto;
 import com.xyz.apps.ticketeer.user.api.internal.contract.UserDto;
-import com.xyz.apps.ticketeer.user.model.User;
-import com.xyz.apps.ticketeer.user.model.UserModelMapper;
-import com.xyz.apps.ticketeer.user.service.UserNotFoundException;
 import com.xyz.apps.ticketeer.user.service.UserService;
-import com.xyz.apps.ticketeer.user.service.UserServiceException;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -42,6 +38,8 @@ import lombok.extern.log4j.Log4j2;
 @CrossOrigin
 @RestController
 @RequestMapping("user")
+
+/** The log. */
 @Log4j2
 @Validated
 public class UserController {
@@ -50,48 +48,23 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    /** The user model mapper. */
-    @Autowired
-    private UserModelMapper userModelMapper;
-
     /**
      * Adds the user.
      *
-     * @param userDto the user dto
+     * @param userCreationDto the user creation dto
      * @return the response entity
      */
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody final UserDto userDto) {
+    public ResponseEntity<?> add(@RequestBody final UserCreationDto userCreationDto) {
 
-        try {
-            log.info("User: " + userDto);
-            final User user = userModelMapper.toEntity(userDto);
-            final User userAdded = userService.add(user);
-            log.info("User added: " + userAdded);
-            return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(userModelMapper.toDto(userAdded));
-        } catch (final UserServiceException exception) {
-            log.error(exception);
-            throw exception;
-            /*
-             * return ResponseEntity
-             * .status(HttpStatus.EXPECTATION_FAILED)
-             * .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-             */
-        } catch (final Exception exception) {
-            log.error(exception);
-            throw exception;
-            /*
-             * return ResponseEntity
-             * .status(HttpStatus.EXPECTATION_FAILED)
-             * .body("Failed to add user: " + userDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-             */
-        }
+        log.info("User: " + userCreationDto);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(userService.add(userCreationDto));
     }
 
     /**
-     * Updates the.
+     * Updates the user.
      *
      * @param userDto the user dto
      * @return the response entity
@@ -99,65 +72,10 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody final UserDto userDto) {
 
-        try {
-            log.info("UserDto: " + userDto);
-            final User user = userModelMapper.toEntity(userDto);
-            final User userUpdated = userService.update(user);
-            if (userUpdated != null) {
-                log.info("User updated: " + userUpdated);
-                return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(userModelMapper.toDto(userUpdated));
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User: " + userDto + " not found.");
-            }
-        } catch (final UserNotFoundException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final UserServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update user: " + userDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Delete.
-     *
-     * @param userDto the user dto
-     * @return the response entity
-     */
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody final UserDto userDto) {
-
-        try {
-            log.info("UserDto: " + userDto);
-            final User user = userModelMapper.toEntity(userDto);
-            if (userService.delete(user)) {
-                log.info("User deleted: " + userDto);
-                return ResponseEntity.accepted().body("Deleted user: " + userDto);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User: " + userDto + " not found.");
-            }
-        } catch (final UserNotFoundException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete user: " + userDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("UserDto: " + userDto);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(userService.update(userDto));
     }
 
     /**
@@ -169,24 +87,25 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteById(@PathVariable final Long id) {
 
-        try {
-            log.info("User id: " + id);
-            userService.deleteById(id);
-            log.info("User deleted: " + id);
-            return ResponseEntity.accepted().body("Deleted user with id: " + id);
-        } catch (final UserNotFoundException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final UserServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete user with id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("User id: " + id);
+        userService.deleteById(id);
+        log.info("User deleted: " + id);
+        return ResponseEntity.accepted().body("Deleted user with id: " + id);
+    }
+
+    /**
+     * Delete by username.
+     *
+     * @param username the username
+     * @return the response entity
+     */
+    @DeleteMapping("/delete/username/{username}")
+    public ResponseEntity<?> deleteByUsername(@PathVariable final String username) {
+
+        log.info("Username: " + username);
+        userService.deleteByUsername(username);
+        log.info("User deleted: " + username);
+        return ResponseEntity.accepted().body("Deleted user with username: " + username);
     }
 
     /**
@@ -200,20 +119,8 @@ public class UserController {
         message = "The user cannot be null."
     ) final BasicUserDto basicUserDto) {
 
-        try {
-            log.info("User: " + basicUserDto.getUsername());
-            return ResponseEntity.ok().body(userService.authenticate(basicUserDto));
-        } catch (final UserServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("User: " + basicUserDto.getUsername());
+        return ResponseEntity.ok().body(userService.authenticate(basicUserDto));
     }
 
     /**
@@ -224,19 +131,7 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<?> all() {
 
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
-        } catch (final UserServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 
     /**
@@ -248,20 +143,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
-        try {
-            final UserDto userDto = userService.findById(id);
-            return ResponseEntity.status(HttpStatus.OK)
-                .body(userDto);
-        } catch (final UserNotFoundException userNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(userNotFoundException).getLocalizedMessage());
-        } catch (final UserServiceException exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find user: "
-                + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.findById(id));
     }
 }

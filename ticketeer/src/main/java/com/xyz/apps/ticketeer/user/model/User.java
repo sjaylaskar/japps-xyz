@@ -19,6 +19,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.user.resources.Messages;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -51,19 +53,19 @@ public class User extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The username. */
     @Column(nullable = false, unique = true, length = 15)
-    @NotBlank(message = "Username is mandatory.")
-    @Size(min = 8, max = 15, message = "The username must be between 8 and 15 characters.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_USERNAME)
+    @Size(min = 8, max = 15, message = Messages.MESSAGE_ERROR_INVALID_USERNAME)
     private String username;
 
     /** The password. */
     @Column(nullable = false, length = 15)
-    @NotBlank(message = "Password is mandatory.")
-    @Size(min = 8, max = 15, message = "The password must be between 8 and 15 characters.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_PASSWORD)
+    @Size(min = 8, max = 15, message = Messages.MESSAGE_ERROR_INVALID_PASSWORD)
     private String password;
 
     /** The firstname. */
     @Column(nullable = false)
-    @NotBlank(message = "First name is mandatory.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_FIRST_NAME)
     private String firstname;
 
     /** The lastname. */
@@ -71,13 +73,13 @@ public class User extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The email. */
     @Column(nullable = false, unique = true)
-    @Email(message = "Not a valid email id.")
-    @NotBlank(message = "Email id is mandatory.")
+    @Email(message = Messages.MESSAGE_ERROR_INVALID_EMAIL)
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_EMAIL)
     private String email;
 
     /** The phone number. */
     @Column(nullable = false, unique = true, length = 15)
-    @NotBlank(message = "Phone number is mandatory.")
-    @Size(min = 10, max = 15, message = "The phone number must be between 10 and 15 characters.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_PHONE_NUMBER)
+    @Size(min = 10, max = 15, message = Messages.MESSAGE_ERROR_INVALID_PHONE_NUMBER)
     private String phoneNumber;
 }

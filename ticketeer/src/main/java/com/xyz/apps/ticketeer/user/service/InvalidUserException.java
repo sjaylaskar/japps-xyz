@@ -5,9 +5,12 @@
 */
 package com.xyz.apps.ticketeer.user.service;
 
+import org.springframework.http.HttpStatus;
+
+import com.xyz.apps.ticketeer.user.resources.Messages;
 
 /**
- * The InvalidUserException.
+ * The invalid user exception.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -21,6 +24,15 @@ public class InvalidUserException extends UserServiceException {
      * Instantiates a new invalid user exception.
      */
     public InvalidUserException() {
-        super("The username or password is invalid.");
+        super(Messages.MESSAGE_ERROR_INVALID_USERNAME_OR_PASSWORD);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HttpStatus httpStatus() {
+
+        return HttpStatus.UNAUTHORIZED;
     }
 }

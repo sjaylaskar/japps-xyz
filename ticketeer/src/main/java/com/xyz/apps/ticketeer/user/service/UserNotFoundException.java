@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.user.service;
 
+import com.xyz.apps.ticketeer.general.service.NotFoundException;
+import com.xyz.apps.ticketeer.user.resources.Messages;
 
 /**
  * The user not found exception.
@@ -12,7 +14,7 @@ package com.xyz.apps.ticketeer.user.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class UserNotFoundException extends UserServiceException {
+public class UserNotFoundException extends NotFoundException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 5323684035822182407L;
@@ -24,7 +26,23 @@ public class UserNotFoundException extends UserServiceException {
      */
     public UserNotFoundException(final Long id) {
 
-        super("User not found with id: " + id);
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_NOT_FOUND_USER_ID, id);
+    }
+
+    /**
+     * Instantiates a new user not found exception.
+     *
+     * @param username the username
+     */
+    public UserNotFoundException(final String username) {
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_NOT_FOUND_USERNAME, username);
+    }
+
+    /**
+     * Instantiates a new user not found exception.
+     */
+    public UserNotFoundException() {
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_NOT_FOUND_USERS);
     }
 
 }

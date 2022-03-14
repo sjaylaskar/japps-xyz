@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.user.service;
 
+import com.xyz.apps.ticketeer.general.service.ServiceException;
+import com.xyz.apps.ticketeer.user.resources.Messages;
 
 /**
  * The user service exception.
@@ -12,7 +14,7 @@ package com.xyz.apps.ticketeer.user.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class UserServiceException extends RuntimeException {
+public class UserServiceException extends ServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -7482018046156320846L;
@@ -20,9 +22,10 @@ public class UserServiceException extends RuntimeException {
     /**
      * Instantiates a new user service exception.
      *
-     * @param message the message
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
      */
-    public UserServiceException(final String message) {
-        super(message);
+    public UserServiceException(final String messageKey, final Object ...messageArguments) {
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 }
