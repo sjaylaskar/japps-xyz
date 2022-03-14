@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -32,6 +34,9 @@ import lombok.ToString;
 @Setter
 @ToString
 @Validated
+@Table(
+    uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_code", columnNames = "code")}
+)
 public class Country extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
@@ -47,7 +52,7 @@ public class Country extends com.xyz.apps.ticketeer.general.model.Entity {
     private String code;
 
     /** The name. */
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     @NotBlank(message = "Country name is required.")
     private String name;
 
@@ -58,6 +63,7 @@ public class Country extends com.xyz.apps.ticketeer.general.model.Entity {
      * @return the country
      */
     public Country id(final Long id) {
+
         this.id = id;
         return this;
     }

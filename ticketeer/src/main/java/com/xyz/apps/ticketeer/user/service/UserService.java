@@ -82,6 +82,7 @@ public class UserService extends GeneralService {
             throw new UserServiceException(Messages.MESSAGE_ERROR_NOT_NULL_USER_ID);
         }
         if (existsById(userDto.getId())) {
+            validateUserUpdation(userDto);
             final User user = userRepository.save(userModelMapper.toEntity(userDto));
             if (user == null) {
                 throw new UserServiceException(Messages.MESSAGE_ERROR_FAILED_UPDATE_USER);
@@ -187,6 +188,26 @@ public class UserService extends GeneralService {
 
         if (findByEmail(userCreationDto.getEmail()) != null) {
             throw UserAlreadyExistsException.forEmail(userCreationDto.getEmail());
+        }
+    }
+
+    /**
+     * Validate user updation.
+     *
+     * @param userDto the user dto
+     */
+    private void validateUserUpdation(final UserDto userDto) {
+        final User userByUsername = findByUsername(userDto.getUsername());
+        if (userByUsername != null && userByUsername.getId() != userDto.getId()) {
+            throw UserAlreadyExistsException.forUsername(userDto.getUsername());
+        }
+        final User userByPhoneNumber = findByPhoneNumber(userDto.getPhoneNumber());
+        if (userByPhoneNumber != null && userByPhoneNumber.getId() != userDto.getId()) {
+            throw UserAlreadyExistsException.forPhoneNumber(userDto.getPhoneNumber());
+        }
+        final User userByEmail = findByEmail(userDto.getEmail());
+        if (userByEmail != null && userByEmail.getId() != userDto.getId()) {
+            throw UserAlreadyExistsException.forEmail(userDto.getEmail());
         }
     }
 

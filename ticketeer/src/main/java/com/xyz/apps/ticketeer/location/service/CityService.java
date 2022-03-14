@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.location.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
@@ -15,15 +16,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.general.model.DtoList;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
+import com.xyz.apps.ticketeer.location.api.internal.contract.CityCreationDto;
+import com.xyz.apps.ticketeer.location.api.internal.contract.CityCreationDtoList;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CityDto;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CityDtoList;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CountryDto;
 import com.xyz.apps.ticketeer.location.model.City;
+import com.xyz.apps.ticketeer.location.model.CityCreationModelMapper;
 import com.xyz.apps.ticketeer.location.model.CityModelMapper;
 import com.xyz.apps.ticketeer.location.model.CityRepository;
-
-import lombok.extern.log4j.Log4j2;
+import com.xyz.apps.ticketeer.location.resources.Messages;
+import com.xyz.apps.ticketeer.util.StringUtil;
 
 
 /**
@@ -33,7 +38,6 @@ import lombok.extern.log4j.Log4j2;
  * @version 1.0
  */
 @Service
-@Log4j2
 @Validated
 public class CityService extends GeneralService {
 
@@ -49,54 +53,68 @@ public class CityService extends GeneralService {
     @Autowired
     private CityModelMapper cityModelMapper;
 
+    /** The city creation model mapper. */
+    @Autowired
+    private CityCreationModelMapper cityCreationModelMapper;
+
     /**
      * Adds the city.
      *
-     * @param city the city
+     * @param cityCreationDto the city creation dto
      * @return the city
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public CityDto add(@NotNull(message = "The city cannot be null.") final CityDto cityDto) {
-        return cityModelMapper.toDto(cityRepository.save(cityModelMapper.toEntity(cityDto)));
+    public CityDto add(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY) final CityCreationDto cityCreationDto) {
+        validateCityCreation(cityCreationDto);
+        final City city = cityRepository.save(cityCreationModelMapper.toEntity(cityCreationDto));
+        if (city == null) {
+            throw new CityServiceException(Messages.MESSAGE_ERROR_FAILED_CITY_ADD);
+        }
+        return cityModelMapper.toDto(city);
     }
 
     /**
      * Adds all.
      *
-     * @param cities the cities
+     * @param cityCreationDtoList the city creation dto list
      * @return the list of cities.
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public CityDtoList addAll(@NotNull(message = "The city list cannot be null.") final CityDtoList cityDtoList) {
-        final List<City> entities = cityModelMapper.toEntities(cityDtoList.dtos());
-        return CityDtoList.of(cityModelMapper.toDtos(cityRepository.saveAll(entities)));
+    public CityDtoList addAll(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_LIST) final CityCreationDtoList cityCreationDtoList) {
+        if (DtoList.isNotEmpty(cityCreationDtoList)) {
+            if (cityCreationDtoList.dtos().stream().map(CityCreationDto::getCode).collect(Collectors.toSet()).size() != cityCreationDtoList.size()) {
+                throw new CityServiceException(Messages.MESSAGE_ERROR_UNIQUE_CITY_CODES);
+            }
+            cityCreationDtoList.dtos().stream().forEach(this::validateCityCreation);
+            final List<City> cities = cityRepository.saveAll(cityCreationModelMapper.toEntities(cityCreationDtoList.dtos()));
+            if (CollectionUtils.isEmpty(cities)) {
+                throw new CityServiceException(Messages.MESSAGE_ERROR_FAILED_CITIES_ADD);
+            }
+            return CityDtoList.of(cityModelMapper.toDtos(cities));
+        }
+
+        throw new CityServiceException(Messages.MESSAGE_ERROR_NOT_NULL_CITY_LIST);
     }
 
     /**
      * Updates the city.
      *
-     * @param city the city
+     * @param cityDto the city dto
      * @return the city
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public CityDto update(@NotNull(message = "The city cannot be null") final CityDto cityDto) {
+    public CityDto update(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY) final CityDto cityDto) {
+        if (cityDto.getId() == null) {
+            throw new CityServiceException(Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID);
+        }
         if (!cityRepository.existsById(cityDto.getId())) {
-            throw new CityNotFoundException(cityDto);
+            throw CityNotFoundException.forId(cityDto.getId());
+        }
+        final City cityByCode = cityRepository.findByCode(cityDto.getCode());
+        if (cityByCode != null && cityByCode.getId() != cityDto.getId()) {
+            throw new CityAlreadyExistsException(cityDto.getCode());
         }
         return cityModelMapper.toDto(cityRepository.save(cityModelMapper.toEntity(cityDto)));
-    }
-
-    /**
-     * Delete.
-     *
-     * @param city the city
-     */
-    @Transactional(rollbackFor = {Throwable.class})
-    public void delete(@NotNull(message = "City cannot be null.") final CityDto cityDto) {
-        if (!cityRepository.existsById(cityDto.getId())) {
-            throw new CityNotFoundException(cityDto);
-        }
-        cityRepository.delete(cityModelMapper.toEntity(cityDto));
     }
 
     /**
@@ -105,9 +123,9 @@ public class CityService extends GeneralService {
      * @param id the id
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteById(final Long id) {
+    public void deleteById(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID) final Long id) {
         if (!cityRepository.existsById(id)) {
-            throw new CityNotFoundException(id);
+            throw CityNotFoundException.forId(id);
         }
         cityRepository.deleteById(id);
     }
@@ -118,10 +136,10 @@ public class CityService extends GeneralService {
      * @param code the code
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteByCode(final String code) {
+    public void deleteByCode(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_CODE) final String code) {
         final CityDto cityDto = findByCode(code);
         if (cityDto == null) {
-            throw new CityNotFoundException(code);
+            throw CityNotFoundException.forCode(code);
         }
         cityRepository.deleteByCode(code);
     }
@@ -132,8 +150,8 @@ public class CityService extends GeneralService {
      * @param id the id
      * @return the city
      */
-    public CityDto findById(final Long id) {
-        return cityModelMapper.toDto(cityRepository.findById(id).orElseThrow(() -> new CityNotFoundException(id)));
+    public CityDto findById(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID) final Long id) {
+        return cityModelMapper.toDto(cityRepository.findById(id).orElseThrow(() -> CityNotFoundException.forId(id)));
     }
 
     /**
@@ -142,26 +160,12 @@ public class CityService extends GeneralService {
      * @param code the code
      * @return the city
      */
-    public CityDto findByCode(final String code) {
+    public CityDto findByCode(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_CODE) final String code) {
         final City city = cityRepository.findByCode(code);
         if (city != null) {
             return cityModelMapper.toDto(city);
         }
-        throw new CityNotFoundException(code);
-    }
-
-    /**
-     * Finds the cities by name.
-     *
-     * @param name the name
-     * @return the cities
-     */
-    public CityDtoList findByName(final String name) {
-        final List<City> cities = cityRepository.findByName(name);
-        if (CollectionUtils.isNotEmpty(cities)) {
-            return CityDtoList.of(cityModelMapper.toDtos(cities));
-        }
-        throw new CityNotFoundException(name);
+        throw CityNotFoundException.forCode(code);
     }
 
     /**
@@ -169,40 +173,15 @@ public class CityService extends GeneralService {
      *
      * @param countryId the country id
      * @return the list of cities
-     * @throws CountryNotFoundException in case the country is not found
      */
-    public CityDtoList findByCountry(final Long countryId) throws CountryNotFoundException {
+    public CityDtoList findByCountry(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID) final Long countryId) {
         final CountryDto countryDto = countryService.findById(countryId);
-        if (countryDto == null) {
-            log.error("Country not found for id: " + countryId);
-            throw new CountryNotFoundException(countryId);
-        }
         final List<City> cities = cityRepository.findByCountry(countryService.toCountry(countryDto));
         if (CollectionUtils.isNotEmpty(cities)) {
             return CityDtoList.of(cityModelMapper.toDtos(cities));
         }
 
-        throw new CityServiceException("No cities found for country id: " + countryId);
-    }
-
-    /**
-     * Finds the by country code.
-     *
-     * @param countryCode the country code
-     * @return the list of cities
-     */
-    public CityDtoList findByCountryCode(final String countryCode) {
-        final CountryDto countryDto = countryService.findByCode(countryCode);
-        if (countryDto == null) {
-            log.error("Country not found for id: " + countryCode);
-            throw new CountryNotFoundException(countryCode);
-        }
-        final List<City> cities = cityRepository.findByCountryCode(countryCode);
-        if (CollectionUtils.isNotEmpty(cities)) {
-            return CityDtoList.of(cityModelMapper.toDtos(cities));
-        }
-
-        throw new CityServiceException("No cities found for country code: " + countryCode);
+        throw CityNotFoundException.forCountryId(countryId);
     }
 
     /**
@@ -215,6 +194,17 @@ public class CityService extends GeneralService {
         if (CollectionUtils.isNotEmpty(cities)) {
             return CityDtoList.of(cityModelMapper.toDtos(cities));
         }
-        throw new CityServiceException("No cities found.");
+        throw new CityNotFoundException();
+    }
+
+    /**
+     * Validate city creation.
+     *
+     * @param cityCreationDto the city creation dto
+     */
+    private void validateCityCreation(final CityCreationDto cityCreationDto) {
+        if (cityRepository.findByCode(cityCreationDto.getCode()) != null) {
+            throw new CityAlreadyExistsException(cityCreationDto.getCode());
+        }
     }
 }

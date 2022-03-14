@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.location.service;
 
+import com.xyz.apps.ticketeer.general.service.ServiceException;
+import com.xyz.apps.ticketeer.location.resources.Messages;
 
 /**
  * The country service exception.
@@ -12,7 +14,8 @@ package com.xyz.apps.ticketeer.location.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class CountryServiceException extends RuntimeException {
+public class CountryServiceException extends ServiceException {
+
 
     /** The serial version UID. */
     private static final long serialVersionUID = -7930079436782680563L;
@@ -20,9 +23,11 @@ public class CountryServiceException extends RuntimeException {
     /**
      * Instantiates a new country service exception.
      *
-     * @param message the message
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
      */
-    public CountryServiceException(final String message) {
-        super(message);
+    public CountryServiceException(final String messageKey, final Object ...messageArguments) {
+
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 }

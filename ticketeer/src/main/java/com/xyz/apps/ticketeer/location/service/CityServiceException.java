@@ -5,24 +5,22 @@
  */
 package com.xyz.apps.ticketeer.location.service;
 
+import com.xyz.apps.ticketeer.general.service.ServiceException;
+import com.xyz.apps.ticketeer.location.resources.Messages;
+
 /**
  * The city service exception.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class CityServiceException extends RuntimeException {
+public class CityServiceException extends ServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -241616310168263221L;
 
-    /**
-     * Instantiates a new city service exception.
-     *
-     * @param message the message
-     */
-    public CityServiceException(final String message) {
+    public CityServiceException(final String messageKey, final Object ...messageArguments) {
 
-        super(message);
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 }

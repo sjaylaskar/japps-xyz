@@ -5,9 +5,6 @@
  */
 package com.xyz.apps.ticketeer.location.controller;
 
-import javax.validation.constraints.NotBlank;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xyz.apps.ticketeer.location.api.internal.contract.CityCreationDto;
+import com.xyz.apps.ticketeer.location.api.internal.contract.CityCreationDtoList;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CityDto;
-import com.xyz.apps.ticketeer.location.api.internal.contract.CityDtoList;
-import com.xyz.apps.ticketeer.location.service.CityNotFoundException;
 import com.xyz.apps.ticketeer.location.service.CityService;
-import com.xyz.apps.ticketeer.location.service.CityServiceException;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -51,29 +47,16 @@ public class CityController {
     /**
      * Adds the city.
      *
-     * @param cityDto the city dto
+     * @param cityCreationDto the city dto
      * @return the city dto
      */
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody final CityDto cityDto) {
+    public ResponseEntity<?> add(@RequestBody final CityCreationDto cityCreationDto) {
 
-        try {
-            log.info("CityDto: " + cityDto);
-            final CityDto cityAdded = cityService.add(cityDto);
-            log.info("City added: " + cityAdded);
-            return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(cityAdded);
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add city: " + cityDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("CityDto: " + cityCreationDto);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(cityService.add(cityCreationDto));
     }
 
     /**
@@ -83,25 +66,12 @@ public class CityController {
      * @return the list of cities
      */
     @PostMapping("/add/all")
-    public ResponseEntity<?> addAll(@RequestBody final CityDtoList cityDtoList) {
+    public ResponseEntity<?> addAll(@RequestBody final CityCreationDtoList cityCreationDtoList) {
 
-        try {
-            log.info("CityDto list: " + cityDtoList);
-            final CityDtoList citiesAdded = cityService.addAll(cityDtoList);
-            log.info("Cities added: " + citiesAdded);
-            return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(citiesAdded);
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add cities: " + cityDtoList + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("City list: " + cityCreationDtoList);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(cityService.addAll(cityCreationDtoList));
     }
 
     /**
@@ -113,52 +83,10 @@ public class CityController {
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody final CityDto cityDto) {
 
-        try {
-            log.info("CityDto: " + cityDto);
-            final CityDto cityUpdated = cityService.update(cityDto);
-            log.info("City updated: " + cityUpdated);
-            return ResponseEntity
-                .accepted()
-                .body(cityUpdated);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to update city: " + cityDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Delete.
-     *
-     * @param cityDto the city dto
-     */
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody final CityDto cityDto) {
-
-        try {
-            log.info("CityDto: " + cityDto);
-            cityService.delete(cityDto);
-            log.info("City deleted: " + cityDto);
-            return ResponseEntity.accepted().body("Deleted city: " + cityDto);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete city: " + cityDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("CityDto: " + cityDto);
+        return ResponseEntity
+            .accepted()
+            .body(cityService.update(cityDto));
     }
 
     /**
@@ -169,23 +97,10 @@ public class CityController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteById(@PathVariable final Long id) {
 
-        try {
-            log.info("CityDto id: " + id);
-            cityService.deleteById(id);
-            log.info("City deleted: " + id);
-            return ResponseEntity.accepted().body("Deleted city with id: " + id);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete city with id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("City id: " + id);
+        cityService.deleteById(id);
+        log.info("City deleted: " + id);
+        return ResponseEntity.accepted().body("Deleted city with id: " + id);
     }
 
     /**
@@ -194,27 +109,12 @@ public class CityController {
      * @param code the code
      */
     @DeleteMapping("/delete/code/{code}")
-    public ResponseEntity<?> deleteByCode(@PathVariable @NotBlank(
-        message = "The city code to delete cannot be null."
-    ) final String code) {
+    public ResponseEntity<?> deleteByCode(@PathVariable final String code) {
 
-        try {
-            log.info("CityDto code: " + code);
-            cityService.deleteByCode(code);
-            log.info("City deleted: " + code);
-            return ResponseEntity.accepted().body("Deleted city: " + code);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete city: " + code + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("City code: " + code);
+        cityService.deleteByCode(code);
+        log.info("City deleted: " + code);
+        return ResponseEntity.accepted().body("Deleted city: " + code);
     }
 
     /**
@@ -226,20 +126,8 @@ public class CityController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
-        try {
-            final CityDto cityDto = cityService.findById(id);
-            return ResponseEntity.status(HttpStatus.OK)
-                .body(cityDto);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
-                + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(cityService.findById(id));
     }
 
     /**
@@ -249,80 +137,11 @@ public class CityController {
      * @return the city by code
      */
     @GetMapping(value = "code/{code}")
-    public ResponseEntity<?> getByCode(@PathVariable("code") @NotBlank(
-        message = "The city code to fetch cannot be blank."
-    ) final String code) {
+    public ResponseEntity<?> getByCode(@PathVariable("code") final String code) {
 
-        try {
-            final CityDto cityDto = cityService.findByCode(code);
-            return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(cityDto);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
-                + code + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Gets the city by name.
-     *
-     * @param name the name
-     * @return the city by name
-     */
-    @GetMapping(value = "name/{name}")
-    public ResponseEntity<?> getByName(@PathVariable("name") @NotBlank(
-        message = "The city name to fetch cannot be blank."
-    ) final String name) {
-
-        try {
-            final CityDtoList cityDtoList = cityService.findByName(name);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(cityDtoList);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find city: "
-                + name + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Gets the by country code.
-     *
-     * @param countryCode the country code
-     * @return the by country code
-     */
-    @GetMapping(value = "country/code/{countryCode}")
-    public ResponseEntity<?> getByCountryCode(
-            @PathVariable("countryCode") final String countryCode) {
-
-        try {
-            final CityDtoList cityDtoList = cityService.findByCountryCode(countryCode);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(cityDtoList);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
-                + countryCode + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(cityService.findByCode(code));
     }
 
     /**
@@ -335,21 +154,9 @@ public class CityController {
     public ResponseEntity<?> getByCountryId(
             @PathVariable("countryId") final Long countryId) {
 
-        try {
-            final CityDtoList cityDtoList = cityService.findByCountry(countryId);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(cityDtoList);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities for country: "
-                + countryId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(cityService.findByCountry(countryId));
     }
 
     /**
@@ -360,20 +167,8 @@ public class CityController {
     @GetMapping("/all")
     public ResponseEntity<?> all() {
 
-        try {
-            final CityDtoList cityDtoList = cityService.findAll();
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(cityDtoList);
-        } catch (final CityNotFoundException cityNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(cityNotFoundException).getLocalizedMessage());
-        } catch (final CityServiceException exception) {
-            return ResponseEntity
-                    .status(HttpStatus.EXPECTATION_FAILED)
-                    .body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        } catch (final Exception exception) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Failed to find cities. Error: "
-                + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(cityService.findAll());
     }
 }
