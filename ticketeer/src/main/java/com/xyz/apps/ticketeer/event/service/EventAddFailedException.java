@@ -7,9 +7,8 @@ package com.xyz.apps.ticketeer.event.service;
 
 import java.util.Collection;
 
-import javax.validation.constraints.NotEmpty;
-
-import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsDto;
+import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsCreationDto;
+import com.xyz.apps.ticketeer.event.resources.Messages;
 import com.xyz.apps.ticketeer.util.CollectionUtil;
 
 /**
@@ -23,9 +22,9 @@ public class EventAddFailedException extends EventServiceException {
     /**
      * Instantiates a new event add failed exception.
      *
-     * @param eventDetailsDtos the event details dtos
+     * @param eventDetailsCreationDtos the event details creation dtos
      */
-    public EventAddFailedException(@NotEmpty(message = "No events specified.") final Collection<EventDetailsDto> eventDetailsDtos) {
-        super("Failed to add event(s): " + CollectionUtil.stringify(eventDetailsDtos));
+    public EventAddFailedException(final Collection<EventDetailsCreationDto> eventDetailsCreationDtos) {
+        super(Messages.MESSAGE_ERROR_FAILURE_ADD, CollectionUtil.stringify(eventDetailsCreationDtos));
     }
 }

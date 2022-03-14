@@ -15,6 +15,8 @@ import javax.validation.constraints.NotBlank;
 
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.event.resources.Messages;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -41,6 +43,6 @@ public class Event extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The name. */
     @Column(nullable = false)
-    @NotBlank(message = "The event name cannot be blank.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_NAME)
     private String name;
 }

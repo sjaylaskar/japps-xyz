@@ -8,6 +8,7 @@ package com.xyz.apps.ticketeer.event.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -19,6 +20,7 @@ import org.springframework.data.mongodb.core.mapping.TextScore;
 import org.springframework.validation.annotation.Validated;
 
 import com.mongodb.lang.NonNull;
+import com.xyz.apps.ticketeer.event.resources.Messages;
 import com.xyz.apps.ticketeer.general.model.Entity;
 
 import lombok.Getter;
@@ -45,12 +47,12 @@ public class EventDetails extends Entity {
 
     /** The event id. */
     @NonNull
-    @NotBlank(message = "The event id cannot be blank.")
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_ID)
     private Long eventId;
 
     /** The name. */
     @NonNull
-    @NotBlank(message = "The event name cannot be blank.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_NAME)
     @TextIndexed(weight = 5)
     private String name;
 
@@ -59,24 +61,25 @@ public class EventDetails extends Entity {
     private String description;
 
     /** The event type. */
-    @NotBlank(message = "The event type cannot be blank.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_TYPE)
     @NonNull
     private String eventType;
 
     /** The language. */
     @TextIndexed(weight = 2)
     @NonNull
-    @NotBlank(message = "The language cannot be blank.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_LANGUAGE)
     private String language;
 
     /** The duration. */
     @NonNull
-    @NotNull(message = "The duration in minutes cannot be null.")
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_DURATION)
+    @Min(value = 5, message = Messages.MESSAGE_ERROR_INVALID_DURATION)
     private Long durationInMinutes;
 
     /** The release date. */
     @NonNull
-    @NotNull(message = "The release date cannot be null.")
+    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_RELEASE_DATE)
     private LocalDate releaseDate;
 
     /** The genre. */
@@ -93,7 +96,7 @@ public class EventDetails extends Entity {
 
     /** The country name. */
     @NonNull
-    @NotBlank(message = "The country name cannot be blank.")
+    @NotBlank(message = Messages.MESSAGE_ERROR_REQUIRED_COUNTRY_NAME)
     @TextIndexed(weight = 1.74f)
     private String countryName;
 

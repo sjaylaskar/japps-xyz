@@ -1,5 +1,5 @@
 /*
-* Id: EventAddFailureException.java 03-Mar-2022 4:40:42 pm SubhajoyLaskar
+* Id: EventUpdateFailedException.java 03-Mar-2022 4:40:42 pm SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
@@ -7,9 +7,8 @@ package com.xyz.apps.ticketeer.event.service;
 
 import java.util.Collection;
 
-import javax.validation.constraints.NotEmpty;
-
 import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsDto;
+import com.xyz.apps.ticketeer.event.resources.Messages;
 import com.xyz.apps.ticketeer.util.CollectionUtil;
 
 /**
@@ -25,7 +24,7 @@ public class EventUpdateFailedException extends EventServiceException {
      *
      * @param eventDetailsDtos the event details dtos
      */
-    public EventUpdateFailedException(@NotEmpty(message = "No events specified.") final Collection<EventDetailsDto> eventDetailsDtos) {
-        super("Failed to update event(s): " + CollectionUtil.stringify(eventDetailsDtos));
+    public EventUpdateFailedException(final Collection<EventDetailsDto> eventDetailsDtos) {
+        super(Messages.MESSAGE_ERROR_FAILURE_UPDATE, CollectionUtil.stringify(eventDetailsDtos));
     }
 }

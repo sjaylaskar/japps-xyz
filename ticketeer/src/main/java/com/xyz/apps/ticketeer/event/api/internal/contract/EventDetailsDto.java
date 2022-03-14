@@ -17,7 +17,7 @@ import lombok.ToString;
 
 
 /**
- * The EventDetailsDto.
+ * The event details dto.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -27,9 +27,6 @@ import lombok.ToString;
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EventDetailsDto extends Dto<EventDetails> {
-
-    /** The id. */
-    private String id;
 
     /** The event id. */
     private Long eventId;
@@ -47,7 +44,7 @@ public class EventDetailsDto extends Dto<EventDetails> {
     private String language;
 
     /** The duration. */
-    private long durationInMinutes;
+    private Long durationInMinutes;
 
     /** The release date. */
     private String releaseDate;
@@ -63,4 +60,25 @@ public class EventDetailsDto extends Dto<EventDetails> {
 
     /** The country name. */
     private String countryName;
+
+    /**
+     * Of.
+     *
+     * @param eventDetailsCreationDto the event details creation dto
+     * @return the event details dto
+     */
+    public static EventDetailsDto of(final EventDetailsCreationDto eventDetailsCreationDto) {
+        final EventDetailsDto eventDetailsDto = new EventDetailsDto();
+        eventDetailsDto.setName(eventDetailsCreationDto.getName());
+        eventDetailsDto.setDescription(eventDetailsCreationDto.getDescription());
+        eventDetailsDto.setEventType(eventDetailsCreationDto.getEventType());
+        eventDetailsDto.setLanguage(eventDetailsCreationDto.getLanguage());
+        eventDetailsDto.setDurationInMinutes(eventDetailsCreationDto.getDurationInMinutes());
+        eventDetailsDto.setReleaseDate(eventDetailsCreationDto.getReleaseDate());
+        eventDetailsDto.setGenre(eventDetailsCreationDto.getGenre());
+        eventDetailsDto.setMovieDirectorName(eventDetailsCreationDto.getMovieDirectorName());
+        eventDetailsDto.setMovieCastNames(eventDetailsCreationDto.getMovieCastNames());
+        eventDetailsDto.setCountryName(eventDetailsCreationDto.getCountryName());
+        return eventDetailsDto;
+    }
 }

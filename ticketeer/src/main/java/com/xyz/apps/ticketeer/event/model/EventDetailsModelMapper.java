@@ -40,17 +40,11 @@ public class EventDetailsModelMapper extends GeneralModelMapper<EventDetails, Ev
         final TypeMap<EventDetails, EventDetailsDto> eventDetailsToEventDetailsDtoMap = modelMapper.createTypeMap(EventDetails.class, EventDetailsDto.class);
         eventDetailsToEventDetailsDtoMap
         .addMappings(
-            mapper -> mapper.using(ModelConverter.OBJECTID_TO_STRING_CONVERTER).map(EventDetails::getId, EventDetailsDto::setId)
-          )
-        .addMappings(
           mapper -> mapper.using(ModelConverter.LOCALDATE_TO_STRING_CONVERTER).map(EventDetails::getReleaseDate, EventDetailsDto::setReleaseDate)
         );
 
         final TypeMap<EventDetailsDto, EventDetails> eventDetailsDtoToEventDetailsMap = modelMapper.createTypeMap(EventDetailsDto.class, EventDetails.class);
         eventDetailsDtoToEventDetailsMap
-        .addMappings(
-            mapper -> mapper.using(ModelConverter.STRING_TO_OBJECTID_CONVERTER).map(EventDetailsDto::getId, EventDetails::setId)
-          )
         .addMappings(
           mapper -> mapper.using(ModelConverter.STRING_TO_LOCALDATE_CONVERTER).map(EventDetailsDto::getReleaseDate, EventDetails::setReleaseDate)
         );
