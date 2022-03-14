@@ -5,7 +5,6 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.service;
 
-
 /**
  * The event venue not found exception.
  *
@@ -17,6 +16,10 @@ public class EventVenueNotFoundException extends EventVenueServiceException {
     /** The serial version UID. */
     private static final long serialVersionUID = -4218140171803098203L;
 
+    public EventVenueNotFoundException(final String message) {
+        super(message);
+    }
+
     /**
      * Instantiates a new event venue not found exception.
      *
@@ -24,5 +27,16 @@ public class EventVenueNotFoundException extends EventVenueServiceException {
      */
     public EventVenueNotFoundException(final Long id) {
         super("Event venue not found for id: " + id);
+    }
+
+    /**
+     * For city id.
+     *
+     * @param cityId the city id
+     * @return the event venue not found exception
+     */
+    public static EventVenueNotFoundException forCityId(final Long cityId) {
+
+        return new EventVenueNotFoundException("No event venues found for city id: " + cityId);
     }
 }

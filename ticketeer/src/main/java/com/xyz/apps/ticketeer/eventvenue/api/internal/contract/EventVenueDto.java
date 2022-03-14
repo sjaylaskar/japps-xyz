@@ -1,5 +1,5 @@
 /*
-* Id: Event.java 15-Feb-2022 3:00:51 am SubhajoyLaskar
+* Id: EventVenueDto.java 15-Feb-2022 3:00:51 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
@@ -31,9 +31,6 @@ public class EventVenueDto extends Dto<EventVenue> {
 
     /** The name. */
     private String name;
-
-    /** The number of auditoriums. */
-    private int numberOfAuditoriums;
 
     /** The city. */
     private Long cityId;

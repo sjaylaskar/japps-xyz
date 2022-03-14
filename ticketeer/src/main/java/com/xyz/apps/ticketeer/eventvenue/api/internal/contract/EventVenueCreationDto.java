@@ -1,18 +1,21 @@
 /*
-* Id: EventVenueDetailsDto.java 02-Mar-2022 12:04:24 pm SubhajoyLaskar
+* Id: EventVenueCreationDto.java 15-Feb-2022 3:00:51 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
 package com.xyz.apps.ticketeer.eventvenue.api.internal.contract;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.xyz.apps.ticketeer.eventvenue.model.EventVenue;
+import com.xyz.apps.ticketeer.general.model.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+
 /**
- * The event venue details dto.
+ * The event venue creation dto.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -21,18 +24,11 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EventVenueDetailsDto {
+public class EventVenueCreationDto extends Dto<EventVenue> {
 
-    /** The event venue name. */
+    /** The name. */
     private String name;
 
-    /** The event venue city. */
+    /** The city. */
     private Long cityId;
-
-    /** The number of auditoriums. */
-    private int numberOfAuditoriums;
-
-    /** The auditorium details list. */
-    private final AuditoriumDetailsDtoList auditoriumDetailsDtoList = new AuditoriumDetailsDtoList();
-
 }

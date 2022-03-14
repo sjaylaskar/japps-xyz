@@ -13,10 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.Min;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
@@ -34,6 +37,10 @@ import lombok.ToString;
 @Setter
 @ToString
 @Validated
+@Table(
+    uniqueConstraints =
+       {@UniqueConstraint(name = "UNIQUE_eventvenue_name", columnNames = {"eventVenue", "name"})}
+)
 public class Auditorium extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
@@ -47,38 +54,19 @@ public class Auditorium extends com.xyz.apps.ticketeer.general.model.Entity {
     @NotBlank(message = "Auditorium name is required.")
     private String name;
 
-    /** The number of seats. */
-    @Column(nullable = false)
-    @NotNull(message = "The number of seats cannot be null.")
-    @Min(value = 1, message = "Number of seats must be atleast 1.")
-    private Integer numberOfSeats = 1;
-
     /** The event venue. */
     @ManyToOne(optional = false)
     @JoinColumn(name = "eventVenueId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @NotNull(message = "Event venue is required for Auditorium.")
     private EventVenue eventVenue;
 
     /**
-     * Instantiates a new auditorium.
+     * Id.
      *
-     * @param name the name
-     * @param numberOfSeats the number of seats
-     * @param eventVenue the event venue
+     * @param id the id
+     * @return the auditorium
      */
-    public Auditorium(final String name, final Integer numberOfSeats, final EventVenue eventVenue) {
-
-        this.name = name;
-        this.numberOfSeats = numberOfSeats;
-        this.eventVenue = eventVenue;
-    }
-
-    /**
-     * Instantiates a new auditorium.
-     */
-    public Auditorium() {
-
-    }
-
     public Auditorium id(final Long id) {
         this.id = id;
         return this;

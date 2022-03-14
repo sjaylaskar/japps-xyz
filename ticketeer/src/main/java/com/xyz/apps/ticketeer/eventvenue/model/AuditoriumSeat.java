@@ -13,9 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.Min;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
@@ -34,6 +39,11 @@ import lombok.ToString;
 @Setter
 @ToString
 @Validated
+@Table(
+    uniqueConstraints =
+       {@UniqueConstraint(name = "UNIQUE_audi_rowName_seatNr", columnNames = {"auditorium", "rowName", "seatNumber"}),
+        @UniqueConstraint(name = "UNIQUE_audi_seatNumber", columnNames = {"auditorium", "seatNumber"})}
+)
 public class AuditoriumSeat extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
@@ -42,39 +52,22 @@ public class AuditoriumSeat extends com.xyz.apps.ticketeer.general.model.Entity 
     @SequenceGenerator(initialValue = 1, name = "auditorium_seat_seq", allocationSize = 1)
     private Long id;
 
-    /** The seat row. */
-    @Column(nullable = false)
-    @NotNull(message = "Seat row cannot be null.")
-    private Character seatRow;
+    @Column(nullable = false, length = 5)
+    @NotBlank(message = "Row name cannot be blank.")
+    @Size(min = 1, max = 5, message = "The row name must be of at least 1 and at most 5 characters.")
+    private String rowName;
 
     /** The seat number. */
     @Column(nullable = false)
-    @NotNull(message = "The seat number cannot be null.")
-    @Min(value = 1, message = "Seat numbers must start with at least 1.")
-    private Integer seatNumber;
+    @NotBlank(message = "The seat number cannot be blank.")
+    private String seatNumber;
 
     /** The auditorium. */
     @ManyToOne(optional = false)
     @JoinColumn(name = "auditoriumId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @NotNull(message = "Auditorium is required for Auditorium Seat.")
     private Auditorium auditorium;
-
-    public AuditoriumSeat() {
-
-    }
-
-    /**
-     * Instantiates a new auditorium seat.
-     *
-     * @param seatRow the seat row
-     * @param seatNumber the seat number
-     * @param auditorium the auditorium
-     */
-    public AuditoriumSeat(final Character seatRow, final Integer seatNumber, final Auditorium auditorium) {
-
-        this.seatRow = seatRow;
-        this.seatNumber = seatNumber;
-        this.auditorium = auditorium;
-    }
 
     /**
      * Id.

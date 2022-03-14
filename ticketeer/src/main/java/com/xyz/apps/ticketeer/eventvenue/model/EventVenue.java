@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -45,17 +44,17 @@ public class EventVenue extends com.xyz.apps.ticketeer.general.model.Entity {
     @NotEmpty(message = "The event venue name is mandatory.")
     private String name;
 
-    /** The number of auditoriums. */
-    @Column(nullable = false)
-    @NotNull(message = "The number of auditoriums cannot be null.")
-    @Min(value = 1, message = "The number of auditoriums must be atleast 1.")
-    private Integer numberOfAuditoriums;
-
     /** The city. */
     @Column(nullable = false)
     @NotNull(message = "The city id cannot be null.")
     private Long cityId;
 
+    /**
+     * Id.
+     *
+     * @param id the id
+     * @return the event venue
+     */
     public EventVenue id(final Long id) {
         this.id = id;
         return this;
