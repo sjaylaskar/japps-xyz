@@ -39,8 +39,8 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<CityDto> cityDtoResponseEntity = null;
         try {
-            cityDtoResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
+            cityDtoResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw new EventVenueServiceException(exception.getResponseBodyAsString());
         }
@@ -60,8 +60,8 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<EventDto> eventDtoResponseEntity = null;
         try {
-            eventDtoResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId), EventDto.class);
+            eventDtoResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId), EventDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw new EventVenueServiceException(exception.getResponseBodyAsString());
         }

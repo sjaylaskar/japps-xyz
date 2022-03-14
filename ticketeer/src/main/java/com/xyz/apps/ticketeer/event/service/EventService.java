@@ -135,7 +135,7 @@ public class EventService extends GeneralService {
      */
     private EventDetails findEventDetails(final Long eventId) {
 
-        return serviceBeansFetcher().mongoTemplate().findOne(new Query().addCriteria(Criteria.where("eventId").is(eventId)),
+        return mongoTemplate().findOne(new Query().addCriteria(Criteria.where("eventId").is(eventId)),
             EventDetails.class);
     }
 
@@ -149,7 +149,7 @@ public class EventService extends GeneralService {
         message = "The event id cannot be null."
     ) final List<Long> eventIds) {
 
-        final List<EventDetails> eventDetailsList = serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria
+        final List<EventDetails> eventDetailsList = mongoTemplate().find(new Query().addCriteria(Criteria
             .where("eventId").in(eventIds)), EventDetails.class);
         if (CollectionUtils.isNotEmpty(eventDetailsList)) {
             return EventDetailsDtoList.of(eventDetailsModelMapper.toDtos(eventDetailsList));
@@ -278,7 +278,7 @@ public class EventService extends GeneralService {
      */
     public EventDetailsDtoList findAllByEvents(final List<Event> events) {
 
-        return toEventDetailsDtoList(serviceBeansFetcher().mongoTemplate().find(new Query().addCriteria(Criteria.where("eventId")
+        return toEventDetailsDtoList(mongoTemplate().find(new Query().addCriteria(Criteria.where("eventId")
             .in(events.stream().map(Event::getId).toList())), EventDetails.class));
     }
 
@@ -303,11 +303,11 @@ public class EventService extends GeneralService {
      */
     public EventDetailsDtoList searchByText(final String text, final int pageNumber, final int pageSize) {
 
-        List<EventDetails> eventDetailsList = serviceBeansFetcher().mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(
+        List<EventDetails> eventDetailsList = mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(
             SearchQuery.phrase(text), pageNumber, pageSize), EventDetails.class);
 
         if (CollectionUtils.isEmpty(eventDetailsList)) {
-            eventDetailsList = serviceBeansFetcher().mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.any(
+            eventDetailsList = mongoTemplate().find(SearchQuery.scoreSortedPageableQuery(SearchQuery.any(
                 text), pageNumber, pageSize), EventDetails.class);
         }
         return (CollectionUtils.isNotEmpty(eventDetailsList))
@@ -371,8 +371,8 @@ public class EventService extends GeneralService {
 
         ResponseEntity<EventShowDtoList> eventShowDtoListResponseEntity = null;
         try {
-            eventShowDtoListResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get()),
+            eventShowDtoListResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_SHOWS_BY_CITY_ID.get()),
                     cityId), EventShowDtoList.class);
         } catch (final HttpStatusCodeException exception) {
             throw new EventNotFoundException(exception.getResponseBodyAsString());

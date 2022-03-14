@@ -56,8 +56,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
     public EventShowDetailedInfoDto findEventShowDetailsByEventShowId(@NotNull(message = "The event show id cannot be null.") final Long eventShowId) {
         ResponseEntity<EventShowDetailedInfoDto> eventShowDetailedInfoDtoResponseEntity = null;
         try {
-            eventShowDetailedInfoDtoResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_DETAILED_INFO.get()), eventShowId),
+            eventShowDetailedInfoDtoResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_DETAILED_INFO.get()), eventShowId),
                 EventShowDetailedInfoDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
@@ -81,8 +81,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<EventShowSeatNumbersDto> seatNumbersResponseEntity = null;
         try {
-            seatNumbersResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEAT_NUMBERS.get()),
+            seatNumbersResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEAT_NUMBERS.get()),
                     eventShowSeatIds.stream().map(value -> Long.toString(value)).collect(Collectors.joining(","))),
                 EventShowSeatNumbersDto.class);
         } catch (final HttpStatusCodeException exception) {
@@ -106,8 +106,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<Integer> eventShowSeatsReservedCountResponseEntity = null;
         try {
-            eventShowSeatsReservedCountResponseEntity = serviceBeansFetcher().restTemplate().exchange(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()),
+            eventShowSeatsReservedCountResponseEntity = restTemplate().exchange(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()),
                 HttpMethod.PUT,
                 new HttpEntity<Set<Long>>(bookingDto.getEventShowSeatIds()),
                 Integer.class);
@@ -129,8 +129,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<Integer> eventShowSeatsBookingReservedCountResponseEntity = null;
         try {
-            eventShowSeatsBookingReservedCountResponseEntity = serviceBeansFetcher().restTemplate().exchange(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE_WITH_BOOKING.get()),
+            eventShowSeatsBookingReservedCountResponseEntity = restTemplate().exchange(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE_WITH_BOOKING.get()),
                 HttpMethod.PUT,
                 new HttpEntity<EventShowSeatsBookingDto>(eventShowSeatsBookingDto),
                 Integer.class);
@@ -152,8 +152,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<Boolean> eventShowSeatsAreAvailableResponseEntity = null;
         try {
-            eventShowSeatsAreAvailableResponseEntity = serviceBeansFetcher().restTemplate().postForEntity(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_AVAILABLE.get()), bookingDto
+            eventShowSeatsAreAvailableResponseEntity = restTemplate().postForEntity(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_AVAILABLE.get()), bookingDto
                     .getEventShowSeatIds(), Boolean.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
@@ -173,8 +173,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<Boolean> eventShowSeatsAreReservedResponseEntity = null;
         try {
-            eventShowSeatsAreReservedResponseEntity = serviceBeansFetcher().restTemplate().postForEntity(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_RESERVED.get()),
+            eventShowSeatsAreReservedResponseEntity = restTemplate().postForEntity(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_RESERVED.get()),
                 eventShowSeatsBookingDto, Boolean.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
@@ -192,8 +192,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
     public void cancelBookingForEventShowSeats(final Long bookingId) {
 
         try {
-            serviceBeansFetcher().restTemplate().put(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_CANCEL.get()), bookingId);
+            restTemplate().put(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_CANCEL.get()), bookingId);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
         }
@@ -207,8 +207,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
     public void unreserveSeats(final BookingDto bookingDto) {
 
         try {
-            serviceBeansFetcher().restTemplate().put(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_UNRESERVE.get()), bookingDto
+            restTemplate().put(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_UNRESERVE.get()), bookingDto
                     .getEventShowSeatIds());
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
@@ -225,8 +225,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<Double> eventShowSeatsAmountResponseEntity = null;
         try {
-            eventShowSeatsAmountResponseEntity = serviceBeansFetcher().restTemplate().postForEntity(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()), bookingDto
+            eventShowSeatsAmountResponseEntity = restTemplate().postForEntity(
+                environment().getProperty(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()), bookingDto
                     .getEventShowSeatIds(), Double.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
@@ -249,8 +249,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<Double> bookingFinalAmountResponseEntity = null;
         try {
-            bookingFinalAmountResponseEntity = serviceBeansFetcher().restTemplate().postForEntity(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.PRICING_CALCULATE.get()), bookingPriceInfoDto,
+            bookingFinalAmountResponseEntity = restTemplate().postForEntity(
+                environment().getProperty(ApiPropertyKey.PRICING_CALCULATE.get()), bookingPriceInfoDto,
                 Double.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
@@ -273,8 +273,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         ResponseEntity<Integer> eventShowSeatsBookedCountResponseEntity = null;
         try {
-            eventShowSeatsBookedCountResponseEntity = serviceBeansFetcher().restTemplate().exchange(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()),
+            eventShowSeatsBookedCountResponseEntity = restTemplate().exchange(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()),
                 HttpMethod.PUT,
                 new HttpEntity<EventShowSeatsBookingDto>(eventShowSeatsBookingDto),
                 Integer.class);
@@ -299,8 +299,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
         }
         ResponseEntity<CityDto> cityDtoResponseEntity = null;
         try {
-            cityDtoResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), bookingDto
+            cityDtoResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), bookingDto
                     .getCityId()), CityDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
@@ -324,8 +324,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
         }
         ResponseEntity<EventShowDto> eventShowDtoResponseEntity = null;
         try {
-            eventShowDtoResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get()),
+            eventShowDtoResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get()),
                     bookingDto.getEventShowId()),
                 EventShowDto.class);
         } catch (final HttpStatusCodeException exception) {
@@ -355,8 +355,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
         basicUserDto.setPassword(password);
 
         try {
-            serviceBeansFetcher().restTemplate().postForEntity(
-                serviceBeansFetcher().environment().getProperty(ApiPropertyKey.AUTHENTICATE_USER.get()), basicUserDto,
+            restTemplate().postForEntity(
+                environment().getProperty(ApiPropertyKey.AUTHENTICATE_USER.get()), basicUserDto,
                 Boolean.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException("User is not authenticated.");
@@ -372,8 +372,8 @@ public class BookingExternalApiHandlerService extends GeneralService {
     public Set<Long> findEventShowSeatIdsByEventShowId(@NotNull(message = "The event show id cannot be null.") final Long eventShowId) {
         ResponseEntity<EventShowSeatDtoList> eventShowSeatMinimalDtosResponseEntity = null;
         try {
-            eventShowSeatMinimalDtosResponseEntity = serviceBeansFetcher().restTemplate().getForEntity(
-                StringUtil.format(serviceBeansFetcher().environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID.get()), eventShowId),
+            eventShowSeatMinimalDtosResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID.get()), eventShowId),
                 EventShowSeatDtoList.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());

@@ -305,7 +305,7 @@ public class BookingService extends GeneralService {
      */
     private BookingDetails findBookingDetailsByBookingId(final Long bookingId) {
 
-        return serviceBeansFetcher().mongoTemplate().findOne(new Query().addCriteria(Criteria.where("bookingId").is(bookingId)).limit(1), BookingDetails.class);
+        return mongoTemplate().findOne(new Query().addCriteria(Criteria.where("bookingId").is(bookingId)).limit(1), BookingDetails.class);
     }
 
     /**
