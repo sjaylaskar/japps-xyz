@@ -13,7 +13,7 @@ import com.xyz.apps.ticketeer.general.model.DtoList;
 
 
 /**
- * The EventVenueDtoList.
+ * The event venue dto list.
  *
  * @author Subhajoy Laskar
  * @version 1.0

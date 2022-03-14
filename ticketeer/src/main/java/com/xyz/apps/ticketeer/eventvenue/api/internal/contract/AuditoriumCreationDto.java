@@ -1,5 +1,5 @@
 /*
-* Id: AuditoriumDto.java 06-Mar-2022 10:27:38 pm SubhajoyLaskar
+* Id: AuditoriumCreationDto.java 06-Mar-2022 10:27:38 pm SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
@@ -14,7 +14,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The auditorium dto.
+ * The auditorium creation dto.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -23,10 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AuditoriumDto extends Dto<Auditorium> {
-
-    /** The id. */
-    private Long id;
+public class AuditoriumCreationDto extends Dto<Auditorium> {
 
     /** The name. */
     private String name;
