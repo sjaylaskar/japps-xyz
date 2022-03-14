@@ -8,6 +8,8 @@ package com.xyz.apps.ticketeer.pricing.calculator.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.xyz.apps.ticketeer.general.model.AbstractModel;
 
@@ -31,6 +33,9 @@ public class BookingPriceInfo extends AbstractModel {
 
     /** The base amount. */
     private Double baseAmount;
+
+    /** The seat prices. */
+    private List<Double> seatPrices = new ArrayList<>();
 
     /** The number of seats. */
     private Integer numberOfSeats;

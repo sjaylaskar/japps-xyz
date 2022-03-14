@@ -5,6 +5,9 @@
 */
 package com.xyz.apps.ticketeer.pricing.calculator.api.internal.contract;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.xyz.apps.ticketeer.general.model.Dto;
 import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfo;
@@ -30,6 +33,9 @@ public class BookingPriceInfoDto extends Dto<BookingPriceInfo> {
 
     /** The base amount. */
     private Double baseAmount;
+
+    /** The seat prices. */
+    private List<Double> seatPrices = new ArrayList<>();
 
     /** The number of seats. */
     private Integer numberOfSeats;

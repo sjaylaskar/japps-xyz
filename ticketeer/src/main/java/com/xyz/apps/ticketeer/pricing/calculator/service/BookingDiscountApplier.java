@@ -5,6 +5,9 @@
  */
 package com.xyz.apps.ticketeer.pricing.calculator.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.collections4.CollectionUtils;
 
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
@@ -54,15 +57,25 @@ public class BookingDiscountApplier {
 
         validate();
 
-        final double pricePerSeat = bookingPriceInfo.getBaseAmount() / bookingPriceInfo.getNumberOfSeats();
+        int nthSeatIndex = discount.getNthSeat() - 1;
 
-        final int nthSeatCount = bookingPriceInfo.getNumberOfSeats() / discount.getNthSeat();
-        final int remSeatCount = bookingPriceInfo.getNumberOfSeats() - nthSeatCount;
+        final Set<Integer> nthSeatIndices = new HashSet<>();
 
-        bookingPriceInfo.setFinalAmount(pricePerSeat * remSeatCount
-            + ((DiscountType.PERCENTAGE.equals(discount.getDiscountType()))
-                ? nthSeatCount * (pricePerSeat * (1 - discount.getValue() / 100))
-                : nthSeatCount * (pricePerSeat - discount.getValue())));
+        for (final int index = nthSeatIndex; nthSeatIndex < bookingPriceInfo.getSeatPrices().size(); nthSeatIndex += discount.getNthSeat()) {
+            nthSeatIndices.add(index);
+        }
+
+        double discountedSeatAmount = 0;
+        for (int index = 0; index < bookingPriceInfo.getSeatPrices().size(); index++) {
+            discountedSeatAmount += (nthSeatIndices.contains(index))
+                                    ? (DiscountType.PERCENTAGE.equals(discount.getDiscountType()))
+                                        ? bookingPriceInfo.getSeatPrices().get(index) * (1 - discount.getValue() / 100)
+                                        : bookingPriceInfo.getSeatPrices().get(index) - discount.getValue()
+                                     : bookingPriceInfo.getSeatPrices().get(index);
+        }
+
+
+        bookingPriceInfo.setFinalAmount(discountedSeatAmount);
     }
 
     /**
@@ -98,6 +111,8 @@ public class BookingDiscountApplier {
      */
     private void validate() {
 
+        validateBookingBaseAmount();
+        validateSeatPrices();
         validateDate();
         validateMinAmount();
         validateMinSeats();
@@ -105,6 +120,40 @@ public class BookingDiscountApplier {
         validateEventVenue();
         validateNthSeat();
         validateShowTime();
+    }
+
+    /**
+     * Validate booking base amount.
+     */
+    private void validateBookingBaseAmount() {
+        if (bookingPriceInfo.getBaseAmount() == null || bookingPriceInfo.getBaseAmount() < 0) {
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_NULL_OR_NEGATIVE_BASE_AMOUNT);
+        }
+    }
+
+    /**
+     * Validate seat prices.
+     */
+    private void validateSeatPrices() {
+
+        if (CollectionUtils.isEmpty(bookingPriceInfo.getSeatPrices())) {
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_EMPTY_SEAT_PRICES);
+        }
+
+        if (bookingPriceInfo.getSeatPrices().size() != bookingPriceInfo.getNumberOfSeats()) {
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NUMBER_OF_SEATS_NOT_EQUAL_SEAT_PRICES);
+        }
+
+        bookingPriceInfo.getSeatPrices().forEach(seatPrice -> {
+            if (seatPrice == null || seatPrice < 0) {
+                throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_NULL_OR_NEGATIVE_SEAT_PRICE);
+            }
+        });
+
+        if (bookingPriceInfo.getBaseAmount().doubleValue() != bookingPriceInfo.getSeatPrices().stream().mapToDouble(Double::valueOf).sum()) {
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_BASE_AMOUNT_NOT_EQUAL_SUM_SEAT_PRICES);
+        }
+
     }
 
     /**
