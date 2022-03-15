@@ -17,7 +17,10 @@ public enum ApiPropertyKey {
     GET_CITY_BY_ID("api.external.city.getById"),
 
     /** The get city by id. */
-    GET_EVENT_BY_ID("api.external.event.getById");
+    GET_EVENT_BY_ID("api.external.event.getById"),
+
+    /** The get event details by event id. */
+    GET_EVENT_DETAILS_BY_EVENT_ID("api.external.event.details.getById");
 
     /** The key. */
     private String key;

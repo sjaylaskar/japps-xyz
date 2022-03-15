@@ -72,4 +72,15 @@ public class AuditoriumNotFoundException extends EventVenueServiceException {
 
         return new AuditoriumNotFoundException("Auditoriums not found for event venue id: " + eventVenueId);
     }
+
+    /**
+     * For id.
+     *
+     * @param id the id
+     * @return the auditorium not found exception
+     */
+    public static AuditoriumNotFoundException forId(final Long id) {
+
+        return new AuditoriumNotFoundException("Auditoriums not found for id: " + id);
+    }
 }

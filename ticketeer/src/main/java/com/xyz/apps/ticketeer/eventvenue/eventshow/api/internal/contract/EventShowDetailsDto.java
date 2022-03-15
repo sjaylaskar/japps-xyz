@@ -5,8 +5,9 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.SeatRowPriceDtoList;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,16 +25,8 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EventShowDetailsDto {
 
-    /** The event id. */
-    private Long eventId;
-
-    /** The event venue id. */
-    private Long eventVenueId;
-
-    /** The auditorium id. */
-    private Long auditoriumId;
-
-    private Long cityId;
+    /** The id. */
+    private Long id;
 
     /** The date. */
     private String date;
@@ -41,26 +34,46 @@ public class EventShowDetailsDto {
     /** The start time. */
     private String startTime;
 
+    /** The end date. */
+    private String endDate;
+
     /** The end time. */
     private String endTime;
 
-    /** The seat row price dto list. */
-    private SeatRowPriceDtoList seatRowPriceDtoList = new SeatRowPriceDtoList();
+    /** The event. */
+    private Long eventId;
+
+    /** The city id. */
+    private Long cityId;
+
+    /** The event venue id. */
+    private Long eventVenueId;
+
+    /** The auditorium. */
+    private String auditoriumName;
 
     /**
-     * To event show dto.
+     * Of.
      *
-     * @return the event show dto
+     * @param eventShowDto the event show dto
+     * @param eventVenueId the event venue id
+     * @param auditoriumName the auditorium name
+     * @return the event show details dto
      */
-    public EventShowDto toEventShowDto() {
-        final EventShowDto eventShowDto = new EventShowDto();
-        eventShowDto.setCityId(cityId);
-        eventShowDto.setEventId(eventId);
-        eventShowDto.setEventVenueId(eventVenueId);
-        eventShowDto.setAuditoriumId(auditoriumId);
-        eventShowDto.setDate(date);
-        eventShowDto.setStartTime(startTime);
-        eventShowDto.setEndTime(endTime);
-        return eventShowDto;
+    public static EventShowDetailsDto of(final EventShowDto eventShowDto, final Long eventVenueId, final String auditoriumName) {
+        if (eventShowDto != null && eventVenueId != null && StringUtils.isNotBlank(auditoriumName)) {
+            final EventShowDetailsDto eventShowDetailsDto = new EventShowDetailsDto();
+            eventShowDetailsDto.setId(eventShowDto.getId());
+            eventShowDetailsDto.setDate(eventShowDto.getDate());
+            eventShowDetailsDto.setStartTime(eventShowDto.getStartTime());
+            eventShowDetailsDto.setEndDate(eventShowDto.getEndDate());
+            eventShowDetailsDto.setEndTime(eventShowDto.getEndTime());
+            eventShowDetailsDto.setEventId(eventShowDto.getEventId());
+            eventShowDetailsDto.setCityId(eventShowDto.getCityId());
+            eventShowDetailsDto.setEventVenueId(eventVenueId);
+            eventShowDetailsDto.setAuditoriumName(auditoriumName);
+            return eventShowDetailsDto;
+        }
+        return null;
     }
 }

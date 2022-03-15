@@ -143,9 +143,21 @@ public class AuditoriumService extends GeneralService {
      * @param auditoriumName the auditorium name
      * @return the auditorium
      */
-    public Auditorium findByEventVenueAndAuditoriumName(final Long eventVenueId, final String auditoriumName) {
+    public Auditorium findByEventVenueAndAuditoriumName(
+            @NotNull(message = "The event venue id cannot be null.") final Long eventVenueId,
+            @NotBlank(message = "The auditorium name cannot be blank.") final String auditoriumName) {
 
         return auditoriumRepository.findByEventVenueAndName(eventVenueModelMapper.fromId(eventVenueId), auditoriumName);
+    }
+
+    /**
+     * Finds the by id.
+     *
+     * @param id the id
+     * @return the auditorium
+     */
+    public Auditorium findById(@NotNull(message = "The auditorium id cannot be null.") final Long id) {
+        return auditoriumRepository.findById(id).orElseThrow(() -> AuditoriumNotFoundException.forId(id));
     }
 
     /**
@@ -155,11 +167,11 @@ public class AuditoriumService extends GeneralService {
      * @param auditoriumName the auditorium name
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteByEventVenueIdAndAuditoriumName(@NotNull(message = "The event venue id cannot be null.") final Long eventVenueId,
+    public void deleteByEventVenueIdAndAuditoriumName(
+            @NotNull(message = "The event venue id cannot be null.") final Long eventVenueId,
             @NotBlank(message = "The auditorium name cannot be blank.") final String auditoriumName) {
 
-        final Auditorium auditorium = auditoriumRepository.findByEventVenueAndName(eventVenueModelMapper.fromId(eventVenueId),
-            auditoriumName);
+        final Auditorium auditorium = findByEventVenueAndAuditoriumName(eventVenueId, auditoriumName);
 
         if (auditorium == null) {
             throw AuditoriumNotFoundException.forEventVenueIdAndName(eventVenueId, auditoriumName);

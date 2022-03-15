@@ -22,8 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDetailsDto;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowCreationDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowNotFoundException;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowSearchCriteria;
@@ -53,26 +52,16 @@ public class EventShowController {
     /**
      * Adds the event show.
      *
-     * @param eventShowDetailsDto the event show details dto
+     * @param eventShowCreationDto the event show creation dto
      * @return the response entity
      */
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody final EventShowDetailsDto eventShowDetailsDto) {
+    public ResponseEntity<?> add(@RequestBody final EventShowCreationDto eventShowCreationDto) {
 
-        try {
-            log.info("Event show: " + eventShowDetailsDto);
-            final EventShowDto eventShowAdded = eventShowService.add(eventShowDetailsDto);
-            log.info("Event show added: " + eventShowAdded);
-            return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(eventShowAdded);
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to add event show: "
-                    + eventShowDetailsDto + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Event show: " + eventShowCreationDto);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(eventShowService.add(eventShowCreationDto));
     }
 
     /**
@@ -94,7 +83,8 @@ public class EventShowController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete event show: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+                .body("Failed to delete event show: "
+                    + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -123,7 +113,8 @@ public class EventShowController {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find event shows for city: " + cityId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+                .body("Failed to find event shows for city: "
+                    + cityId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -175,12 +166,14 @@ public class EventShowController {
             return ResponseEntity.status(HttpStatus.OK)
                 .body(eventShowService.findById(id));
         } catch (final EventShowNotFoundException eventShowNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventShowNotFoundException).getLocalizedMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventShowNotFoundException)
+                .getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find event show for id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+                .body("Failed to find event show for id: "
+                    + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 
@@ -191,19 +184,23 @@ public class EventShowController {
      * @return the details by id
      */
     @GetMapping("/details/{id}")
-    public ResponseEntity<?> getDetailsById(@PathVariable("id") @NotNull(message = "The event show id cannot be null") final Long id) {
+    public ResponseEntity<?> getDetailsById(@PathVariable("id") @NotNull(
+        message = "The event show id cannot be null"
+    ) final Long id) {
 
         try {
             log.info("Event show: " + id);
             return ResponseEntity.status(HttpStatus.OK)
                 .body(eventShowService.findDetailedInfoById(id));
         } catch (final EventShowNotFoundException eventShowNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventShowNotFoundException).getLocalizedMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventShowNotFoundException)
+                .getLocalizedMessage());
         } catch (final Exception exception) {
             log.error(exception);
             return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find event show for id: " + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+                .body("Failed to find event show for id: "
+                    + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
         }
     }
 }

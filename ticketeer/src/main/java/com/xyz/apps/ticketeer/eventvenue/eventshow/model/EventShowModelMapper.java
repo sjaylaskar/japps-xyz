@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDto;
 import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
-import com.xyz.apps.ticketeer.eventvenue.model.EventVenue;
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 import com.xyz.apps.ticketeer.general.model.ModelConverter;
 
@@ -51,17 +50,16 @@ public class EventShowModelMapper extends GeneralModelMapper<EventShow, EventSho
             mapper -> mapper.using(ModelConverter.LOCALTIME_TO_STRING_CONVERTER).map(EventShow::getStartTime, EventShowDto::setStartTime)
         )
         .addMappings(
+            mapper -> mapper.using(ModelConverter.LOCALDATE_TO_STRING_CONVERTER).map(EventShow::getEndDate, EventShowDto::setEndDate)
+          )
+        .addMappings(
             mapper -> mapper.using(ModelConverter.LOCALTIME_TO_STRING_CONVERTER).map(EventShow::getEndTime, EventShowDto::setEndTime)
         )
         .addMappings(
             mapper -> mapper.map(eventShow -> eventShow.getAuditorium().getId(), EventShowDto::setAuditoriumId)
-        )
-        .addMappings(
-            mapper -> mapper.map(eventShow -> eventShow.getEventVenue().getId(), EventShowDto::setEventVenueId)
         );
 
         final Converter<Long, Auditorium> auditoriumIdToAuditoriumConverter = converter -> new Auditorium().id(converter.getSource());
-        final Converter<Long, EventVenue> eventVenueIdToEventVenueConverter = converter -> new EventVenue().id(converter.getSource());
         final TypeMap<EventShowDto, EventShow> eventShowDtoToEventShowMap = modelMapper.createTypeMap(EventShowDto.class, EventShow.class);
         eventShowDtoToEventShowMap
         .addMappings(
@@ -71,14 +69,13 @@ public class EventShowModelMapper extends GeneralModelMapper<EventShow, EventSho
             mapper -> mapper.using(ModelConverter.STRING_TO_LOCALTIME_CONVERTER).map(EventShowDto::getStartTime, EventShow::setStartTime)
           )
         .addMappings(
+            mapper -> mapper.using(ModelConverter.STRING_TO_LOCALDATE_CONVERTER).map(EventShowDto::getEndDate, EventShow::setEndDate)
+          )
+        .addMappings(
             mapper -> mapper.using(ModelConverter.STRING_TO_LOCALTIME_CONVERTER).map(EventShowDto::getEndTime, EventShow::setEndTime)
           )
         .addMappings(
             mapper -> mapper.using(auditoriumIdToAuditoriumConverter).map(EventShowDto::getAuditoriumId, EventShow::setAuditorium)
-        )
-        .addMappings(
-            mapper -> mapper.using(eventVenueIdToEventVenueConverter).map(EventShowDto::getEventVenueId, EventShow::setEventVenue)
         );
     }
-
 }

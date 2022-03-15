@@ -35,11 +35,11 @@ public final class LocalDateTimeFormatUtil {
      */
     public static String format(final LocalDate localDate) {
 
-        Objects.requireNonNull(localDate, "The parameter localDate cannot be null.");
+        Objects.requireNonNull(localDate, "The date cannot be null.");
         try {
             return localDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
         } catch (final Exception exception) {
-            throw new IllegalArgumentException("Invalid local date: "
+            throw new IllegalArgumentException("Invalid date: "
                 + localDate + " for format: " + DateTimeFormatter.ISO_LOCAL_DATE);
         }
     }
@@ -52,11 +52,11 @@ public final class LocalDateTimeFormatUtil {
      */
     public static String format(final LocalDateTime localDateTime) {
 
-        Objects.requireNonNull(localDateTime, "The parameter localDateTime cannot be null.");
+        Objects.requireNonNull(localDateTime, "The date-time cannot be null.");
         try {
             return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         } catch (final Exception exception) {
-            throw new IllegalArgumentException("Invalid local date time: "
+            throw new IllegalArgumentException("Invalid date-time: "
                 + localDateTime + " for format: " + DateTimeFormatter.ISO_LOCAL_DATE);
         }
     }
@@ -69,11 +69,11 @@ public final class LocalDateTimeFormatUtil {
      */
     public static String format(final LocalTime localTime) {
 
-        Objects.requireNonNull(localTime, "The parameter localTime cannot be null.");
+        Objects.requireNonNull(localTime, "The time cannot be null.");
         try {
             return localTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
         } catch (final Exception exception) {
-            throw new IllegalArgumentException("Invalid local time: "
+            throw new IllegalArgumentException("Invalid time: "
                 + localTime + " for format: " + DateTimeFormatter.ISO_LOCAL_DATE);
         }
     }
@@ -86,11 +86,11 @@ public final class LocalDateTimeFormatUtil {
      */
     public static LocalDate parseLocalDate(final String localDateString) {
 
-        Objects.requireNonNull(localDateString, "The parameter localDateString cannot be null.");
+        Objects.requireNonNull(localDateString, "The date cannot be null.");
         try {
             return LocalDate.parse(localDateString, DateTimeFormatter.ISO_LOCAL_DATE);
         } catch (final Exception exception) {
-            throw new IllegalArgumentException("Invalid local date string: "
+            throw new IllegalArgumentException("Invalid date string: "
                 + localDateString + " for format: " + DateTimeFormatter.ISO_LOCAL_DATE);
         }
     }
@@ -103,11 +103,11 @@ public final class LocalDateTimeFormatUtil {
      */
     public static LocalDateTime parseLocalDateTime(final String localDateTimeString) {
 
-        Objects.requireNonNull(localDateTimeString, "The parameter localDateTimeString cannot be null.");
+        Objects.requireNonNull(localDateTimeString, "The date-time cannot be null.");
         try {
             return LocalDateTime.parse(localDateTimeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         } catch (final Exception exception) {
-            throw new IllegalArgumentException("Invalid local date time string: "
+            throw new IllegalArgumentException("Invalid date time string: "
                 + localDateTimeString + " for format: " + DateTimeFormatter.ISO_LOCAL_DATE);
         }
     }
@@ -120,11 +120,11 @@ public final class LocalDateTimeFormatUtil {
      */
     public static LocalTime parseLocalTime(final String localTimeString) {
 
-        Objects.requireNonNull(localTimeString, "The parameter localTimeString cannot be null.");
+        Objects.requireNonNull(localTimeString, "The time cannot be null.");
         try {
             return LocalTime.parse(localTimeString, DateTimeFormatter.ISO_LOCAL_TIME);
         } catch (final Exception exception) {
-            throw new IllegalArgumentException("Invalid local time string: "
+            throw new IllegalArgumentException("Invalid time string: "
                 + localTimeString + " for format: " + DateTimeFormatter.ISO_LOCAL_DATE);
         }
 

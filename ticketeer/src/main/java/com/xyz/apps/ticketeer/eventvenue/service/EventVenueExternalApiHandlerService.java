@@ -14,6 +14,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.eventvenue.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.CityDto;
+import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDetailsDto;
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDto;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.general.service.ServiceUtil;
@@ -62,6 +63,27 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
         try {
             eventDtoResponseEntity = restTemplate().getForEntity(
                 StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId), EventDto.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new EventVenueServiceException(exception.getResponseBodyAsString());
+        }
+        if (ServiceUtil.notHasBodyResponseEntity(eventDtoResponseEntity)) {
+            throw new EventVenueServiceException("Invalid event id: " + eventId);
+        }
+        return eventDtoResponseEntity.getBody();
+    }
+
+    /**
+     * Finds the event details.
+     *
+     * @param eventId the event id
+     * @return the event details dto
+     */
+    public EventDetailsDto findEventDetails(@NotNull(message = "The event id cannot be null") final Long eventId) {
+
+        ResponseEntity<EventDetailsDto> eventDtoResponseEntity = null;
+        try {
+            eventDtoResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_DETAILS_BY_EVENT_ID.get()), eventId), EventDetailsDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw new EventVenueServiceException(exception.getResponseBodyAsString());
         }

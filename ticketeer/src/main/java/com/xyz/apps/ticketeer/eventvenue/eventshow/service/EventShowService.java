@@ -5,7 +5,8 @@
  */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.service;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,14 +15,16 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.CityDto;
+import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDetailsDto;
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDto;
-import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDto;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowCreationDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDetailedInfoDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDetailsDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDto;
@@ -29,17 +32,16 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventSh
 import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShow;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShowModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShowRepository;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.SeatRowPriceDto;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeat;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatRepository;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.SeatReservationStatus;
-import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeat;
-import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeatRepository;
+import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
+import com.xyz.apps.ticketeer.eventvenue.service.AuditoriumService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueExternalApiHandlerService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueValidationService;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
+import com.xyz.apps.ticketeer.util.MessageUtil;
+
+import lombok.extern.log4j.Log4j2;
 
 
 /**
@@ -50,23 +52,16 @@ import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
  */
 @Validated
 @Service
+@Log4j2
 public class EventShowService extends GeneralService {
 
     /** The event show repository. */
     @Autowired
     private EventShowRepository eventShowRepository;
 
-    /** The event show seat repository. */
-    @Autowired
-    private EventShowSeatRepository eventShowSeatRepository;
-
     /** The event venue service. */
     @Autowired
     private EventVenueService eventVenueService;
-
-    /** The auditorium seat repository. */
-    @Autowired
-    private AuditoriumSeatRepository auditoriumSeatRepository;
 
     /** The event show model mapper. */
     @Autowired
@@ -80,86 +75,93 @@ public class EventShowService extends GeneralService {
     @Autowired
     private EventVenueExternalApiHandlerService externalApiHandlerService;
 
+    /** The auditorium service. */
+    @Autowired
+    private AuditoriumService auditoriumService;
+
     /**
      * Adds the event show.
      *
-     * @param eventShowDetailsDto the event show details dto
+     * @param eventShowCreationDto the event show details dto
      * @return the event show
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public EventShowDto add(@NotNull(message = "The event show details cannot be null.") final EventShowDetailsDto eventShowDetailsDto) {
+    public EventShowDetailsDto add(@NotNull(message = "The event show details cannot be null.") final EventShowCreationDto eventShowCreationDto) {
 
-        Objects.requireNonNull(eventShowDetailsDto, "The event show details cannot be null.");
+        validate(eventShowCreationDto);
 
-        validate(eventShowDetailsDto);
+        final EventDetailsDto eventDetailsDto = externalApiHandlerService.findEventDetails(eventShowCreationDto.getEventId());
 
-        final EventShow eventShow = eventShowRepository.save(toEventShow(eventShowDetailsDto));
+        final LocalDateTime eventShowStartDateTime = eventShowStartDateTime(eventShowCreationDto);
+        final LocalDateTime eventShowEndDateTime = eventShowEndDateTime(eventDetailsDto, eventShowStartDateTime);
 
-        if (eventShow != null) {
-            eventShowSeatRepository.saveAll(
-                eventShowDetailsDto.getSeatRowPriceDtoList()
-                    .getSeatRowPriceDtos()
-                    .stream()
-                    .map(seatRowPriceDto -> toEventShowSeatList(seatRowPriceDto, eventShow, eventShowDetailsDto.getAuditoriumId()))
-                    .flatMap(List::stream)
-                    .toList());
+        validateEventShowDate(eventShowCreationDto, eventDetailsDto);
+
+        final Auditorium auditorium = auditoriumService.findByEventVenueAndAuditoriumName(eventShowCreationDto.getEventId(),
+            eventShowCreationDto.getAuditoriumName());
+
+        validateAuditoriumSlotForShow(eventShowStartDateTime, eventShowEndDateTime, auditorium);
+
+        final EventShow eventShow = eventShowRepository.save(eventShowModelMapper.toEntity((EventShowDto.of(eventShowCreationDto,
+            auditorium.getId(), eventShowEndDateTime))));
+
+        if (eventShow == null) {
+            throw new EventShowServiceException("Failed to add event show.");
         }
 
-        return eventShowModelMapper.toDto(eventShow);
+        return EventShowDetailsDto.of(eventShowModelMapper.toDto(eventShow), eventShowCreationDto.getEventVenueId(), auditorium.getName());
     }
 
     /**
-     * Validate.
+     * Event show end date time.
      *
-     * @param eventShowDetailsDto the event show details dto
+     * @param eventDetailsDto the event details dto
+     * @param eventShowDateTime the event show date time
+     * @return the local date time
      */
-    private void validate(@NotNull(message = "The event show details cannot be null.") final EventShowDetailsDto eventShowDetailsDto) {
+    private LocalDateTime eventShowEndDateTime(final EventDetailsDto eventDetailsDto, final LocalDateTime eventShowDateTime) {
 
-        validateCity(eventShowDetailsDto.getCityId());
-
-        validateEventId(eventShowDetailsDto.getEventId());
-
-        validateEventVenueId(eventShowDetailsDto.getEventVenueId());
-
-        validateAuditoriumId(eventShowDetailsDto.getAuditoriumId());
+        return eventShowDateTime.plusMinutes(eventDetailsDto.getDurationInMinutes())
+            .plusMinutes(showDurationExtraMinutes());
     }
 
     /**
-     * Validate city.
+     * Event show start date time.
      *
-     * @param cityId the city id
+     * @param eventShowCreationDto the event show creation dto
+     * @return the local date time
      */
-    private void validateCity(@NotNull(message = "The city id cannot be null") final Long cityId) {
+    private LocalDateTime eventShowStartDateTime(final EventShowCreationDto eventShowCreationDto) {
 
-        eventVenueValidationService.validateCity(cityId);
+        return LocalDateTime.of(eventShowStartDate(eventShowCreationDto), LocalDateTimeFormatUtil
+            .parseLocalTime(eventShowCreationDto.getStartTime()));
     }
 
     /**
-     * Validate event id.
+     * Event show start date.
      *
-     * @param eventId the event id
+     * @param eventShowCreationDto the event show creation dto
+     * @return the local date
      */
-    private void validateEventId(@NotNull(message = "The event id cannot be null") final Long eventId) {
+    private LocalDate eventShowStartDate(final EventShowCreationDto eventShowCreationDto) {
 
-        eventVenueValidationService.validateEventId(eventId);
+        return LocalDateTimeFormatUtil.parseLocalDate(eventShowCreationDto.getDate());
     }
 
     /**
-     * Validate event venue id.
+     * Show duration extra minutes.
      *
-     * @param eventVenueId the event venue id
+     * @return the duration
      */
-    private void validateEventVenueId(final Long eventVenueId) {
-         eventVenueService.findById(eventVenueId);
-    }
-
-    /**
-     * Validate auditorium id.
-     *
-     * @param auditoriumId the auditorium id
-     */
-    private void validateAuditoriumId(final Long auditoriumId) {
-        eventVenueService.findAuditoriumById(auditoriumId);
+    private Long showDurationExtraMinutes() {
+        Long showDurationExtraMinutes = 30L;
+        try {
+           showDurationExtraMinutes = Long.valueOf(MessageUtil.fromMessageSource(messageSource(), "show.duration.extraMinutes"));
+        } catch (final Exception exception) {
+            log.error(exception);
+            showDurationExtraMinutes = 30L;
+        }
+        return showDurationExtraMinutes;
     }
 
     /**
@@ -168,15 +170,133 @@ public class EventShowService extends GeneralService {
      * @param id the id
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void delete(final Long id) {
-
-        Objects.requireNonNull(id, "The event show id cannot be null.");
+    public void delete(@NotNull(message = "The event show id cannot be null.") final Long id) {
 
         if (!eventShowRepository.existsById(id)) {
             throw new EventShowNotFoundException(id);
         }
         eventShowRepository.deleteById(id);
     }
+
+    /**
+     * Search.
+     *
+     * @param eventShowSearchCriteria the event show search criteria
+     * @return the {@link EventShowDtoList}
+     */
+    public EventShowDtoList search(final EventShowSearchCriteria eventShowSearchCriteria) {
+
+        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowRepository.findByEventShowSearchCriteria(
+            eventShowSearchCriteria.getCityId(),
+            eventShowSearchCriteria.getEventId(),
+            StringUtils.isNotBlank(eventShowSearchCriteria.getDate())
+                ? LocalDateTimeFormatUtil.parseLocalDate(eventShowSearchCriteria.getDate())
+                : null)));
+    }
+
+    /**
+     * Finds the by city id.
+     *
+     * @param cityId the city id
+     * @return the event show dto list
+     */
+    public EventShowDtoList findByCityId(@NotNull(message = "The city id cannot be null.") final Long cityId) {
+
+        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowRepository.findByCityId(cityId)));
+    }
+
+    /**
+     * Finds the detailed info by id.
+     *
+     * @param id the id
+     * @return the event show detailed info dto
+     */
+    public EventShowDetailedInfoDto findDetailedInfoById(@NotNull(message = "The event show id cannot be null.") final Long id) {
+
+        final EventShowDto eventShowDto = findById(id);
+        final Auditorium auditorium = auditoriumService.findById(eventShowDto.getAuditoriumId());
+        final EventVenueDto eventVenueDto = eventVenueService.findById(auditorium.getEventVenue().getId());
+        final EventDto eventDto = externalApiHandlerService.findEvent(eventShowDto.getEventId());
+        final CityDto cityDto = externalApiHandlerService.findCity(eventShowDto.getCityId());
+        return EventShowDetailedInfoDto.of(eventShowDto, eventDto.getName(), cityDto.getName(), eventVenueDto.getName(),
+            auditorium.getName());
+
+    }
+
+    /**
+     * Validate auditorium slot for show.
+     *
+     * @param eventShowStartDateTime the event show start date time
+     * @param eventShowEndDateTime the event show end date time
+     * @param auditorium the auditorium
+     */
+    private void validateAuditoriumSlotForShow(
+            final LocalDateTime eventShowStartDateTime,
+            final LocalDateTime eventShowEndDateTime,
+            final Auditorium auditorium) {
+        final List<EventShow> eventShowsForDate = eventShowRepository.findByAuditoriumAndDate(auditorium, eventShowStartDateTime.toLocalDate());
+
+        if (CollectionUtils.isNotEmpty(eventShowsForDate)) {
+            if (!eventShowsForDate.stream()
+            .map(eventShowForDate -> Pair.of(LocalDateTime.of(eventShowForDate.getDate(), eventShowForDate.getStartTime()),
+                                              LocalDateTime.of(eventShowForDate.getEndDate(), eventShowForDate.getEndTime())))
+            .allMatch(showDateTimePair -> eventShowStartDateTime.isBefore(showDateTimePair.getFirst()) && eventShowEndDateTime.isBefore(showDateTimePair.getFirst())
+                                          || eventShowStartDateTime.isAfter(showDateTimePair.getSecond()) && eventShowEndDateTime.isAfter(showDateTimePair.getSecond()))) {
+                throw new EventShowServiceException("Auditorium is already booked for the time slot.");
+            }
+        }
+    }
+
+    /**
+     * Validate event show.
+     *
+     * @param eventShowCreationDto the event show creation dto
+     * @param eventDetailsDto the event details dto
+     */
+    private void validateEventShowDate(final EventShowCreationDto eventShowCreationDto, final EventDetailsDto eventDetailsDto) {
+
+        final LocalDate eventShowDate = eventShowStartDate(eventShowCreationDto);
+        final LocalDate eventReleaseDate = LocalDateTimeFormatUtil.parseLocalDate(eventDetailsDto.getReleaseDate());
+
+        if (eventShowDate.isBefore(eventReleaseDate)) {
+            throw new EventShowServiceException("The event show date must be on or after the event release date: "
+                + eventReleaseDate);
+        }
+    }
+
+    /**
+     * Validate.
+     *
+     * @param eventShowCreationDto the event show details dto
+     */
+    private void validate(final EventShowCreationDto eventShowCreationDto) {
+
+        validateCity(eventShowCreationDto.getCityId());
+
+        validateEventVenueId(eventShowCreationDto.getEventVenueId());
+
+    }
+
+    /**
+     * Validate city.
+     *
+     * @param cityId the city id
+     */
+    private void validateCity(final Long cityId) {
+
+        eventVenueValidationService.validateCity(cityId);
+    }
+
+    /**
+     * Validate event venue id.
+     *
+     * @param eventVenueId the event venue id
+     */
+    private void validateEventVenueId(final Long eventVenueId) {
+
+        eventVenueService.findById(eventVenueId);
+    }
+
 
     /**
      * Finds the event show by id.
@@ -203,87 +323,4 @@ public class EventShowService extends GeneralService {
         return eventShowRepository.findById(id).orElseThrow(() -> new EventShowNotFoundException(id));
     }
 
-    /**
-     * Finds the detailed info by id.
-     *
-     * @param id the id
-     * @return the event show detailed info dto
-     */
-    public EventShowDetailedInfoDto findDetailedInfoById(@NotNull(message = "The event show id cannot be null.") final Long id) {
-        final EventShowDto eventShowDto = findById(id);
-        final EventVenueDto eventVenueDto = eventVenueService.findById(eventShowDto.getEventVenueId());
-        final AuditoriumDto auditoriumDto = eventVenueService.findAuditoriumById(eventShowDto.getAuditoriumId());
-        final EventDto eventDto = externalApiHandlerService.findEvent(eventShowDto.getEventId());
-        final CityDto cityDto = externalApiHandlerService.findCity(eventShowDto.getCityId());
-        return EventShowDetailedInfoDto.of(eventShowDto, eventDto.getName(), cityDto.getName(), eventVenueDto.getName(), auditoriumDto.getName());
-
-    }
-
-    /**
-     * To event show seat list.
-     *
-     * @param seatRowPriceDto the seat row price dto
-     * @param eventShow the event show
-     * @param auditoriumId the auditorium id
-     * @return the list
-     */
-    private List<EventShowSeat> toEventShowSeatList(final SeatRowPriceDto seatRowPriceDto,
-            final EventShow eventShow, final Long auditoriumId) {
-
-        final List<Character> seatRows = new ArrayList<>();
-        for (char row = seatRowPriceDto.getStartRow(); row <= seatRowPriceDto.getEndRow(); row++) {
-            seatRows.add(row);
-        }
-
-        final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.findBySeatRowIn(auditoriumId, seatRows);
-
-        return (CollectionUtils.isNotEmpty(auditoriumSeats))
-            ? auditoriumSeats
-                .stream()
-                .map(auditoriumSeat -> new EventShowSeat(seatRowPriceDto.getAmount(),
-                    SeatReservationStatus.AVAILABLE,
-                    eventShow,
-                    auditoriumSeat,
-                    null,
-                    null))
-                .toList()
-            : List.of();
-    }
-
-    /**
-     * To event show.
-     *
-     * @param eventShowDetailsDto the event show details dto
-     * @return the event show
-     */
-    private EventShow toEventShow(final EventShowDetailsDto eventShowDetailsDto) {
-
-        return eventShowModelMapper.toEntity(eventShowDetailsDto.toEventShowDto());
-    }
-
-    /**
-     * Search.
-     *
-     * @param eventShowSearchCriteria the event show search criteria
-     * @return the {@link EventShowDtoList}
-     */
-    public EventShowDtoList search(final EventShowSearchCriteria eventShowSearchCriteria) {
-        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowRepository.findByEventShowSearchCriteria(
-            eventShowSearchCriteria.getCityId(),
-            eventShowSearchCriteria.getEventId(),
-            StringUtils.isNotBlank(eventShowSearchCriteria.getDate())
-            ? LocalDateTimeFormatUtil.parseLocalDate(eventShowSearchCriteria.getDate())
-            : null)));
-    }
-
-    /**
-     * Finds the by city id.
-     *
-     * @param cityId the city id
-     * @return the event show dto list
-     */
-    public EventShowDtoList findByCityId(@NotNull(message = "The city id cannot be null.") final Long cityId) {
-
-        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowRepository.findByCityId(cityId)));
-    }
 }

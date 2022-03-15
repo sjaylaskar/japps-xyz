@@ -1,5 +1,5 @@
 /*
-* Id: CityRepository.java 14-Feb-2022 1:18:18 am SubhajoyLaskar
+* Id: EventShowRepository.java 14-Feb-2022 1:18:18 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
 
 
 /**
@@ -42,4 +44,14 @@ public interface EventShowRepository extends JpaRepository<EventShow, Long> {
      */
     @Query("select es from EventShow es where es.cityId = :cityId")
     public List<EventShow> findByCityId(@Param("cityId") final Long cityId);
+
+
+    /**
+     * Finds the by auditorium and date.
+     *
+     * @param auditorium the auditorium
+     * @param eventShowStartDate the event show start date
+     * @return the list
+     */
+    public List<EventShow> findByAuditoriumAndDate(final Auditorium auditorium, final LocalDate date);
 }

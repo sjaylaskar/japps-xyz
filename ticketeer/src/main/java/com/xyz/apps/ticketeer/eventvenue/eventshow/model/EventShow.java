@@ -18,10 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
-import com.xyz.apps.ticketeer.eventvenue.model.EventVenue;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -57,30 +58,30 @@ public class EventShow extends com.xyz.apps.ticketeer.general.model.Entity {
     @NotNull(message = "Show start time cannot be null.")
     private LocalTime startTime;
 
+    @Column(nullable = false, columnDefinition = "DATE")
+    @NotNull(message = "Show end date cannot be null.")
+    private LocalDate endDate;
+
     /** The end time. */
     @Column(nullable = false, columnDefinition = "TIME")
     @NotNull(message = "Show end time cannot be null.")
     private LocalTime endTime;
+
+    /** The event. */
+    @Column(nullable = false)
+    @NotNull(message = "Event id cannot be null.")
+    private Long eventId;
 
     /** The city id. */
     @Column(nullable = false)
     @NotNull(message = "City id cannot be null.")
     private Long cityId;
 
-    /** The event venue. */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "eventVenueId", nullable = false)
-    private EventVenue eventVenue;
-
     /** The auditorium. */
     @ManyToOne(optional = false)
     @JoinColumn(name = "auditoriumId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Auditorium auditorium;
-
-    /** The event. */
-    @Column(nullable = false)
-    @NotNull(message = "Event id cannot be null.")
-    private Long eventId;
 
     /**
      * Id.
