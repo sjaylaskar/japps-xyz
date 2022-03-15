@@ -25,9 +25,10 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuditoriumCreationDto extends Dto<Auditorium> {
 
+    /** The event venue. */
+    private Long eventVenueId;
+
     /** The name. */
     private String name;
 
-    /** The event venue. */
-    private Long eventVenueId;
 }

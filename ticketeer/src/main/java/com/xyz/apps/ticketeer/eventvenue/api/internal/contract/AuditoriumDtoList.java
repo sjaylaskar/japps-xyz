@@ -5,11 +5,14 @@
  */
 package com.xyz.apps.ticketeer.eventvenue.api.internal.contract;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.xyz.apps.ticketeer.general.model.DtoList;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 
 /**
@@ -18,37 +21,38 @@ import com.xyz.apps.ticketeer.general.model.DtoList;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class AuditoriumDtoList extends DtoList<AuditoriumDto> {
+@Getter
+@Setter
+@ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class AuditoriumDtoList {
+
+    /** The event venue id. */
+    private Long eventVenueId;
+
+    /** The auditoriums. */
+    private List<BasicAuditoriumDto> auditoriums = new ArrayList<>();
 
     /**
-     * Instantiates a new auditorium dto list.
-     */
-    public AuditoriumDtoList() {
-
-    }
-
-    /**
-     * Instantiates a new auditorium dto list.
+     * Of.
      *
-     * @param auditoriumDtos the auditorium dtos
+     * @return the auditorium dto list
      */
-    public AuditoriumDtoList(final List<AuditoriumDto> auditoriumDtos) {
-
-        super(auditoriumDtos);
+    public static AuditoriumDtoList of() {
+        return new AuditoriumDtoList();
     }
 
     /**
      * Of.
      *
-     * @param auditoriumDtos the auditorium dtos
+     * @param eventVenueId the event venue id
+     * @param auditoriums the auditoriums
      * @return the auditorium dto list
      */
-    public static AuditoriumDtoList of(final List<AuditoriumDto> auditoriumDtos) {
-
-        if (CollectionUtils.isEmpty(auditoriumDtos)) {
-            return new AuditoriumDtoList();
-        }
-        return new AuditoriumDtoList(auditoriumDtos);
+    public static AuditoriumDtoList of(final Long eventVenueId, final List<BasicAuditoriumDto> auditoriums) {
+        final AuditoriumDtoList auditoriumDtoList = AuditoriumDtoList.of();
+        auditoriumDtoList.setEventVenueId(eventVenueId);
+        auditoriumDtoList.setAuditoriums(auditoriums);
+        return auditoriumDtoList;
     }
-
 }

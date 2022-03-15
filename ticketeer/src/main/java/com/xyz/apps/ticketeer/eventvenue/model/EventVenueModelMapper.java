@@ -26,4 +26,17 @@ public class EventVenueModelMapper extends GeneralModelMapper<EventVenue, EventV
 
         super(EventVenue.class, EventVenueDto.class);
     }
+
+    /**
+     * Returns an event venue object with only id set.
+     *
+     * @param id the id
+     * @return the event venue
+     */
+    public EventVenue fromId(final Long id) {
+        if (id != null) {
+            return new EventVenue().id(id);
+        }
+        return null;
+    }
 }

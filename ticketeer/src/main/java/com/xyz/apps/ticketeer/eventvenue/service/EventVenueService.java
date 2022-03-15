@@ -1,5 +1,5 @@
 /*
-* Id: EventService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
+* Id: EventVenueService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */

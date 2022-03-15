@@ -1,32 +1,39 @@
 /*
-* Id: EventService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: AuditoriumService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.eventvenue.service;
 
 import java.util.List;
+import java.util.Set;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueCreationDto;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumCreationDto;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumCreationDtoList;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDto;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDtoList;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDto;
-import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDtoList;
-import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueUpdationDto;
-import com.xyz.apps.ticketeer.eventvenue.model.EventVenue;
-import com.xyz.apps.ticketeer.eventvenue.model.EventVenueCreationModelMapper;
+import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
+import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumCreationModelMapper;
+import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumModelMapper;
+import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumRepository;
 import com.xyz.apps.ticketeer.eventvenue.model.EventVenueModelMapper;
-import com.xyz.apps.ticketeer.eventvenue.model.EventVenueRepository;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
+import com.xyz.apps.ticketeer.util.CollectionUtil;
+
 
 /**
- * The event venue service.
+ * The auditorium service.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -35,113 +42,199 @@ import com.xyz.apps.ticketeer.general.service.GeneralService;
 @Validated
 public class AuditoriumService extends GeneralService {
 
-    /** The event venue repository. */
-    @Autowired
-    private EventVenueRepository eventVenueRepository;
-
     /** The event venue model mapper. */
     @Autowired
     private EventVenueModelMapper eventVenueModelMapper;
 
-    /** The event venue validation service. */
+    /** The event venue service. */
     @Autowired
-    private EventVenueValidationService eventVenueValidationService;
+    private EventVenueService eventVenueService;
 
-    /** The event venue creation model mapper. */
+    /** The auditorium creation model mapper. */
     @Autowired
-    private EventVenueCreationModelMapper eventVenueCreationModelMapper;
+    private AuditoriumCreationModelMapper auditoriumCreationModelMapper;
+
+    /** The auditorium repository. */
+    @Autowired
+    private AuditoriumRepository auditoriumRepository;
+
+    /** The auditorium model mapper. */
+    @Autowired
+    private AuditoriumModelMapper auditoriumModelMapper;
 
     /**
-     * Adds the event venue.
+     * Adds the.
      *
-     * @param eventVenueCreationDto the event venue creation dto
-     * @return the event venue dto
+     * @param auditoriumCreationDto the auditorium creation dto
+     * @return the auditorium dto
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public EventVenueDto add(@NotNull(message = "The event venue details cannot be null.") final EventVenueCreationDto eventVenueCreationDto) {
+    public AuditoriumDto add(@NotNull(
+        message = "The auditorium cannot be null."
+    ) final AuditoriumCreationDto auditoriumCreationDto) {
 
-        eventVenueValidationService.validateCity(eventVenueCreationDto.getCityId());
+        validateAuditorium(auditoriumCreationDto);
 
-        final EventVenue eventVenue = eventVenueRepository.save(eventVenueCreationModelMapper.toEntity(eventVenueCreationDto));
+        final Auditorium auditorium = auditoriumRepository.save(auditoriumCreationModelMapper.toEntity(auditoriumCreationDto));
 
-        if (eventVenue == null) {
-            throw new EventVenueServiceException("Failed to add event venue: " + eventVenueCreationDto);
+        if (auditorium == null) {
+            throw new AuditoriumServiceException("Failed to add auditorium: " + auditoriumCreationDto);
         }
 
-        return eventVenueModelMapper.toDto(eventVenue);
+        return auditoriumModelMapper.toDto(auditorium);
     }
 
     /**
-     * Updates the.
+     * Adds the all.
      *
-     * @param eventVenueUpdationDto the event venue updation dto
-     * @return the event venue dto
+     * @param auditoriumCreationDtoList the auditorium creation dto list
+     * @return the auditorium dto list
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public EventVenueDto update(@NotNull(message = "The event venue details cannot be null.") final EventVenueUpdationDto eventVenueUpdationDto) {
+    public AuditoriumDtoList addAll(@NotNull(
+        message = "The auditoriums list cannot be empty."
+    ) final AuditoriumCreationDtoList auditoriumCreationDtoList) {
 
-        if (eventVenueUpdationDto.getId() == null) {
-            throw new EventVenueServiceException("The event venue id cannot be null.");
+        validateAuditoriums(auditoriumCreationDtoList);
+
+        final List<Auditorium> auditoriums = auditoriumRepository.saveAll(auditoriumCreationModelMapper.toAuditoriums(
+            auditoriumCreationDtoList));
+
+        if (CollectionUtils.isNotEmpty(auditoriums)) {
+            throw new AuditoriumServiceException("Failed to add auditoriums.");
         }
 
-        EventVenue eventVenue = findEventVenueById(eventVenueUpdationDto.getId());
-        eventVenue.setName(eventVenueUpdationDto.getName());
-        eventVenue = eventVenueRepository.save(eventVenue);
+        return auditoriumModelMapper.toAuditoriumDtoList(auditoriums);
+    }
 
-        if (eventVenue == null) {
-            throw new EventVenueServiceException("Failed to updated event venue: " + eventVenueUpdationDto);
+    /**
+     * Updates the auditorium.
+     *
+     * @param auditoriumDto the auditorium dto
+     * @return the auditorium dto
+     */
+    @Transactional(rollbackFor = {Throwable.class})
+    public AuditoriumDto update(@NotNull(message = "The auditorium cannot be null.") final AuditoriumDto auditoriumDto) {
+
+        final Auditorium auditorium = auditoriumRepository.findByEventVenueIdAndId(auditoriumDto.getEventVenueId(), auditoriumDto
+            .getId())
+            .orElseThrow(() -> AuditoriumNotFoundException.forEventVenueIdAndId(auditoriumDto.getEventVenueId(), auditoriumDto
+                .getId()));
+
+        if (auditoriumRepository.findByEventVenueAndName(auditorium.getEventVenue(), auditoriumDto.getName()) != null) {
+            throw new AuditoriumAlreadyExistsException("Auditorium with name: "
+                + auditoriumDto.getName() + " already exists for event venue id: " + auditoriumDto.getEventVenueId());
         }
 
-        return eventVenueModelMapper.toDto(eventVenue);
+        auditorium.setName(auditoriumDto.getName());
+
+        return auditoriumModelMapper.toDto(auditoriumRepository.save(auditorium));
     }
 
     /**
      * Delete.
      *
-     * @param id the id
+     * @param eventVenueId the event venue id
+     * @param auditoriumName the auditorium name
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void delete(@NotNull(message = "The event venue id cannot be null.") final Long id) {
+    public void deleteByEventVenueIdAndAuditoriumName(@NotNull(message = "The event venue id cannot be null.") final Long eventVenueId,
+            @NotBlank(message = "The auditorium name cannot be blank.") final String auditoriumName) {
 
-        if (!eventVenueRepository.existsById(id)) {
-            throw new EventVenueNotFoundException(id);
+        final Auditorium auditorium = auditoriumRepository.findByEventVenueAndName(eventVenueModelMapper.fromId(eventVenueId),
+            auditoriumName);
+
+        if (auditorium == null) {
+            throw AuditoriumNotFoundException.forEventVenueIdAndName(eventVenueId, auditoriumName);
         }
 
-        eventVenueRepository.deleteById(id);
+        auditoriumRepository.deleteById(auditorium.getId());
     }
 
     /**
-     * Finds the by id.
+     * Finds the by event venue id.
      *
-     * @param id the id
-     * @return the event venue dto
+     * @param eventVenueId the event venue id
+     * @return the auditorium dto list
      */
-    public EventVenueDto findById(@NotNull(message = "The event venue id cannot be null.") final Long id) {
-        return eventVenueModelMapper.toDto(findEventVenueById(id));
-    }
+    public AuditoriumDtoList findByEventVenueId(@NotNull(message = "The event venue id cannot be null.") final Long eventVenueId) {
 
-    /**
-     * Finds the by city id.
-     *
-     * @param cityId the city id
-     * @return the event venue dto
-     */
-    public EventVenueDtoList findByCityId(@NotNull(message = "The city id cannot be null.") final Long cityId) {
-        final List<EventVenue> eventVenuesByCityId = eventVenueRepository.findByCityId(cityId);
-        if (CollectionUtils.isEmpty(eventVenuesByCityId)) {
-            throw EventVenueNotFoundException.forCityId(cityId);
+        final List<Auditorium> auditoriums = auditoriumRepository.findByEventVenue(eventVenueModelMapper.fromId(eventVenueId));
+
+        if (CollectionUtils.isEmpty(auditoriums)) {
+            throw AuditoriumNotFoundException.forEventVenueId(eventVenueId);
         }
-        return EventVenueDtoList.of(eventVenueModelMapper.toDtos(eventVenuesByCityId));
+
+        return auditoriumModelMapper.toAuditoriumDtoList(auditoriums);
     }
 
     /**
-     * Finds the event venue by id.
+     * Validate auditorium.
      *
-     * @param id the id
-     * @return the event venue
+     * @param auditoriumCreationDto the auditorium creation dto
      */
-    private EventVenue findEventVenueById(final Long id) {
+    private void validateAuditorium(final AuditoriumCreationDto auditoriumCreationDto) {
 
-        return eventVenueRepository.findById(id).orElseThrow(() -> new EventVenueNotFoundException(id));
+        final EventVenueDto eventVenueDto = validateAndFindEventVenue(auditoriumCreationDto.getEventVenueId());
+
+        if (StringUtils.isBlank(auditoriumCreationDto.getName())) {
+            throw new AuditoriumServiceException("The auditorium name cannot be null.");
+        }
+
+        if (auditoriumRepository.findByEventVenueAndName(eventVenueModelMapper.toEntity(eventVenueDto),
+            auditoriumCreationDto.getName()) != null) {
+            throw new AuditoriumAlreadyExistsException("Auditorium with name: "
+                + auditoriumCreationDto.getName() + " already exists for event venue: " + eventVenueDto);
+        }
     }
+
+    /**
+     * Validate auditoriums.
+     *
+     * @param auditoriumCreationDtoList the auditorium creation dto list
+     */
+    private void validateAuditoriums(final AuditoriumCreationDtoList auditoriumCreationDtoList) {
+
+        if (CollectionUtils.isEmpty(auditoriumCreationDtoList.getAuditoriumNames())) {
+            throw new AuditoriumServiceException("The auditoriums list cannot be empty.");
+        }
+
+        final EventVenueDto eventVenueDto = validateAndFindEventVenue(auditoriumCreationDtoList.getEventVenueId());
+
+        if (auditoriumCreationDtoList.getAuditoriumNames().stream().anyMatch(StringUtils::isBlank)) {
+            throw new AuditoriumServiceException("The auditorium name cannot be null.");
+        }
+
+        if (Set.of(auditoriumCreationDtoList.getAuditoriumNames()).size() != auditoriumCreationDtoList.getAuditoriumNames()
+            .size()) {
+            throw new AuditoriumServiceException("The auditorium names must be unique.");
+        }
+
+        final List<Auditorium> existingAuditoriumsForEventVenueAndNames = auditoriumRepository.findByEventVenueAndNames(
+            eventVenueModelMapper.toEntity(eventVenueDto), auditoriumCreationDtoList.getAuditoriumNames());
+        if (CollectionUtils.isNotEmpty(existingAuditoriumsForEventVenueAndNames)) {
+            throw new AuditoriumAlreadyExistsException("Auditoriums with names: "
+                + CollectionUtil.stringify(existingAuditoriumsForEventVenueAndNames.stream().map(Auditorium::getName)
+                    .toList())
+                + " already exist for event venue: " + eventVenueDto);
+        }
+    }
+
+    /**
+     * Validate and find event venue.
+     *
+     * @param eventVenueId the event venue id
+     * @return the event venue dto
+     */
+    private EventVenueDto validateAndFindEventVenue(final Long eventVenueId) {
+
+        final EventVenueDto eventVenueDto = eventVenueService.findById(eventVenueId);
+
+        if (eventVenueDto == null) {
+            throw new AuditoriumServiceException("Event venue not found for id: " + eventVenueId);
+        }
+
+        return eventVenueDto;
+    }
+
 }

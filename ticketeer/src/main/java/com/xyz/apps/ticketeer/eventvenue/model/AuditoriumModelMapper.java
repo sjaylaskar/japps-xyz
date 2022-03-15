@@ -5,13 +5,18 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.model;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDto;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDtoList;
+import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.BasicAuditoriumDto;
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 
 /**
@@ -50,6 +55,20 @@ public class AuditoriumModelMapper extends GeneralModelMapper<Auditorium, Audito
         .addMappings(
           mapper -> mapper.using(eventVenueIdToEventVenueConverter).map(AuditoriumDto::getEventVenueId, Auditorium::setEventVenue)
         );
+    }
+
+    /**
+     * To auditorium dto list.
+     *
+     * @param auditoriums the auditoriums
+     * @return the auditorium dto list
+     */
+    public AuditoriumDtoList toAuditoriumDtoList(final List<Auditorium> auditoriums) {
+        if (CollectionUtils.isNotEmpty(auditoriums)) {
+            return AuditoriumDtoList.of(auditoriums.get(0).getEventVenue().getId(),
+                auditoriums.stream().map(auditorium -> BasicAuditoriumDto.of(auditorium.getId(), auditorium.getName())).toList());
+        }
+        return AuditoriumDtoList.of();
     }
 
 }

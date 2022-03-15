@@ -1,5 +1,5 @@
 /*
- * Id: EventController.java 15-Feb-2022 11:19:17 am SubhajoyLaskar
+ * Id: EventVenueController.java 15-Feb-2022 11:19:17 am SubhajoyLaskar
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */

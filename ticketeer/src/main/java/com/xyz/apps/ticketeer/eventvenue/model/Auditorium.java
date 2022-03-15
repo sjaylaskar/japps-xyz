@@ -71,4 +71,26 @@ public class Auditorium extends com.xyz.apps.ticketeer.general.model.Entity {
         this.id = id;
         return this;
     }
+
+    /**
+     * Name.
+     *
+     * @param name the name
+     * @return the auditorium
+     */
+    public Auditorium name(final String name) {
+        this.name = name;
+        return this;
+    }
+
+    /**
+     * Event venue.
+     *
+     * @param eventVenueId the event venue id
+     * @return the auditorium
+     */
+    public Auditorium eventVenue(final Long eventVenueId) {
+        eventVenue = new EventVenue().id(eventVenueId);
+        return this;
+    }
 }
