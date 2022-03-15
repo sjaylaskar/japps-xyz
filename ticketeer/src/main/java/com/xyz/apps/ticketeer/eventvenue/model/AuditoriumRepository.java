@@ -7,7 +7,6 @@ package com.xyz.apps.ticketeer.eventvenue.model;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -50,8 +49,8 @@ public interface AuditoriumRepository extends JpaRepository<Auditorium, Long> {
      * @param id the id
      * @return the auditorium
      */
-    @Query(value = "select audi.* from Auditorium audi where audi.eventVenueId = :eventVenueId and audi.id = id limit 1", nativeQuery = true)
-    public Optional<Auditorium> findByEventVenueIdAndId(@Param(value = "eventVenueId") final Long eventVenueId, @Param(value = "id") final Long id);
+    @Query(value = "select audi.* from Auditorium audi where audi.event_venue_id = :eventVenueId and audi.id = id", nativeQuery = true)
+    public List<Auditorium> findByEventVenueIdAndId(@Param(value = "eventVenueId") final Long eventVenueId, @Param(value = "id") final Long id);
 
     /**
      * Finds the auditoriums by event venue.

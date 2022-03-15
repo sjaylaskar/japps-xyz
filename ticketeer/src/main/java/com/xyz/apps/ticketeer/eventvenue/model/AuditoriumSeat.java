@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -59,8 +60,9 @@ public class AuditoriumSeat extends com.xyz.apps.ticketeer.general.model.Entity 
 
     /** The seat number. */
     @Column(nullable = false)
-    @NotBlank(message = "The seat number cannot be blank.")
-    private String seatNumber;
+    @NotNull(message = "The seat number cannot be null.")
+    @Min(value = 1, message = "The minimum seat number must be 1.")
+    private Integer seatNumber;
 
     /** The auditorium. */
     @ManyToOne(optional = false)

@@ -71,4 +71,17 @@ public class AuditoriumModelMapper extends GeneralModelMapper<Auditorium, Audito
         return AuditoriumDtoList.of();
     }
 
+    /**
+     * From id.
+     *
+     * @param id the id
+     * @return the auditorium
+     */
+    public Auditorium fromId(final Long id) {
+        if (id != null) {
+            return new Auditorium().id(id);
+        }
+        return null;
+    }
+
 }

@@ -5,8 +5,6 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.api.internal.contract;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -35,14 +33,14 @@ public class AuditoriumSeatDto {
      * Of.
      *
      * @param id the id
-     * @param seatRow the seat row
      * @param seatNumber the seat number
      * @return the auditorium seat dto
      */
-    public static AuditoriumSeatDto of(final Long id, final Character seatRow, final Integer seatNumber) {
+    public static AuditoriumSeatDto of(final Long id, final String seatNumber) {
         final AuditoriumSeatDto auditoriumSeatDto = new AuditoriumSeatDto();
         auditoriumSeatDto.setId(id);
-        auditoriumSeatDto.setSeatNumber(String.valueOf(seatRow) + StringUtils.SPACE + seatNumber);
+        auditoriumSeatDto.setSeatNumber(seatNumber);
         return auditoriumSeatDto;
     }
+
 }

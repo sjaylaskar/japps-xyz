@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.eventvenue.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
@@ -42,6 +43,10 @@ import com.xyz.apps.ticketeer.util.CollectionUtil;
 @Validated
 public class AuditoriumService extends GeneralService {
 
+    /** The auditorium repository. */
+    @Autowired
+    private AuditoriumRepository auditoriumRepository;
+
     /** The event venue model mapper. */
     @Autowired
     private EventVenueModelMapper eventVenueModelMapper;
@@ -54,16 +59,12 @@ public class AuditoriumService extends GeneralService {
     @Autowired
     private AuditoriumCreationModelMapper auditoriumCreationModelMapper;
 
-    /** The auditorium repository. */
-    @Autowired
-    private AuditoriumRepository auditoriumRepository;
-
     /** The auditorium model mapper. */
     @Autowired
     private AuditoriumModelMapper auditoriumModelMapper;
 
     /**
-     * Adds the.
+     * Adds the auditorium.
      *
      * @param auditoriumCreationDto the auditorium creation dto
      * @return the auditorium dto
@@ -116,19 +117,35 @@ public class AuditoriumService extends GeneralService {
     @Transactional(rollbackFor = {Throwable.class})
     public AuditoriumDto update(@NotNull(message = "The auditorium cannot be null.") final AuditoriumDto auditoriumDto) {
 
-        final Auditorium auditorium = auditoriumRepository.findByEventVenueIdAndId(auditoriumDto.getEventVenueId(), auditoriumDto
-            .getId())
-            .orElseThrow(() -> AuditoriumNotFoundException.forEventVenueIdAndId(auditoriumDto.getEventVenueId(), auditoriumDto
-                .getId()));
+        final EventVenueDto eventVenueDto = validateAndFindEventVenue(auditoriumDto.getEventVenueId());
 
-        if (auditoriumRepository.findByEventVenueAndName(auditorium.getEventVenue(), auditoriumDto.getName()) != null) {
+        final List<Auditorium> auditoriums = auditoriumRepository.findByEventVenueIdAndId(eventVenueDto.getId(), auditoriumDto
+            .getId());
+        if (CollectionUtils.isEmpty(auditoriums)) {
+            throw AuditoriumNotFoundException.forEventVenueIdAndId(auditoriumDto.getEventVenueId(), auditoriumDto
+                .getId());
+        }
+
+        if (!StringUtils.equals(auditoriumDto.getName(), auditoriums.get(0).getName())
+            && findByEventVenueAndAuditoriumName(auditoriumDto.getEventVenueId(), auditoriumDto.getName()) != null) {
             throw new AuditoriumAlreadyExistsException("Auditorium with name: "
                 + auditoriumDto.getName() + " already exists for event venue id: " + auditoriumDto.getEventVenueId());
         }
 
-        auditorium.setName(auditoriumDto.getName());
+        auditoriums.get(0).setName(auditoriumDto.getName());
+        return auditoriumModelMapper.toDto(auditoriumRepository.save(auditoriums.get(0)));
+    }
 
-        return auditoriumModelMapper.toDto(auditoriumRepository.save(auditorium));
+    /**
+     * Finds the by event venue and auditorium name.
+     *
+     * @param eventVenueId the event venue id
+     * @param auditoriumName the auditorium name
+     * @return the auditorium
+     */
+    public Auditorium findByEventVenueAndAuditoriumName(final Long eventVenueId, final String auditoriumName) {
+
+        return auditoriumRepository.findByEventVenueAndName(eventVenueModelMapper.fromId(eventVenueId), auditoriumName);
     }
 
     /**
@@ -181,8 +198,7 @@ public class AuditoriumService extends GeneralService {
             throw new AuditoriumServiceException("The auditorium name cannot be null.");
         }
 
-        if (auditoriumRepository.findByEventVenueAndName(eventVenueModelMapper.toEntity(eventVenueDto),
-            auditoriumCreationDto.getName()) != null) {
+        if (findByEventVenueAndAuditoriumName(auditoriumCreationDto.getEventVenueId(), auditoriumCreationDto.getName()) != null) {
             throw new AuditoriumAlreadyExistsException("Auditorium with name: "
                 + auditoriumCreationDto.getName() + " already exists for event venue: " + eventVenueDto);
         }
@@ -201,8 +217,9 @@ public class AuditoriumService extends GeneralService {
 
         final EventVenueDto eventVenueDto = validateAndFindEventVenue(auditoriumCreationDtoList.getEventVenueId());
 
-        if (auditoriumCreationDtoList.getAuditoriumNames().stream().anyMatch(StringUtils::isBlank)) {
-            throw new AuditoriumServiceException("The auditorium name cannot be null.");
+        if (auditoriumCreationDtoList.getAuditoriumNames().stream().filter(Objects::nonNull).toList().isEmpty() ||
+            auditoriumCreationDtoList.getAuditoriumNames().stream().anyMatch(StringUtils::isBlank)) {
+            throw new AuditoriumServiceException("The auditorium name cannot be blank.");
         }
 
         if (Set.of(auditoriumCreationDtoList.getAuditoriumNames()).size() != auditoriumCreationDtoList.getAuditoriumNames()

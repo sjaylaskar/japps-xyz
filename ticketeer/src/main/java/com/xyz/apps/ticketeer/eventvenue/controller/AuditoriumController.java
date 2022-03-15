@@ -35,11 +35,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("auditorium")
-
-/** The log. */
-
-/** The log. */
+@RequestMapping("eventvenue/auditorium")
 @Log4j2
 @Validated
 public class AuditoriumController {
