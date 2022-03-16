@@ -55,25 +55,27 @@ public class PricingService extends GeneralService {
      * @param bookingPriceInfo the booking price info
      * @return the double
      */
-    public Double calculateFinalAmount(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO)
-                                      final BookingPriceInfoDto bookingPriceInfoDto) {
-        final BookingPriceInfo bookingPriceInfo = bookingPriceInfoModelMapper.toEntity(bookingPriceInfoDto);
-        if (bookingPriceInfo != null && bookingPriceInfo.getBaseAmount() != null) {
-            if (bookingPriceInfo.getFinalAmount() == null || bookingPriceInfo.getFinalAmount().equals(0d)) {
-                bookingPriceInfo.setFinalAmount(bookingPriceInfo.getBaseAmount());
-            }
+    public Double calculateFinalAmount(@NotNull(
+        message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO
+    ) final BookingPriceInfoDto bookingPriceInfoDto) {
 
+        final BookingPriceInfo bookingPriceInfo = bookingPriceInfoModelMapper.toEntity(bookingPriceInfoDto);
+        if (bookingPriceInfo != null) {
             if (StringUtils.isNotBlank(bookingPriceInfo.getOfferCode())) {
                 final DiscountDto discountDto = discountService.findByOfferCode(bookingPriceInfo.getOfferCode());
                 if (discountDto != null) {
                     final Discount discount = discountService.toDiscount(discountDto);
                     discount.getDiscountStrategy().accept(new BookingDiscountApplier(bookingPriceInfo, discount));
                 }
+            } else {
+                BookingDiscountApplier.validateSeatPrices(bookingPriceInfo);
+                BookingDiscountApplier.calculateBaseAmount(bookingPriceInfo);
             }
 
             ResponseEntity<Double> platformConvenienceFeeResponseEntity = null;
             try {
-                platformConvenienceFeeResponseEntity = restTemplate().getForEntity(MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE), Double.class);
+                platformConvenienceFeeResponseEntity = restTemplate().getForEntity(MessageUtil.fromMessageSource(messageSource(),
+                    ExternalApiUrls.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE), Double.class);
             } catch (final HttpStatusCodeException exception) {
                 throw new PricingServiceException(exception.getResponseBodyAsString());
             }
@@ -96,8 +98,9 @@ public class PricingService extends GeneralService {
      * @return the rounded value
      */
     private static double rounded(final double amount) {
+
         return (new BigDecimal(Double.toString(amount))
-                .setScale(2, RoundingMode.HALF_UP))
+            .setScale(2, RoundingMode.HALF_UP))
                 .doubleValue();
     }
 }

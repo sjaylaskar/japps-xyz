@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.pricing.calculator.service;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -61,19 +62,19 @@ public class BookingDiscountApplier {
 
         final Set<Integer> nthSeatIndices = new HashSet<>();
 
-        for (final int index = nthSeatIndex; nthSeatIndex < bookingPriceInfo.getSeatPrices().size(); nthSeatIndex += discount.getNthSeat()) {
+        for (final int index = nthSeatIndex; nthSeatIndex < bookingPriceInfo.getSeatPrices().size(); nthSeatIndex += discount
+            .getNthSeat()) {
             nthSeatIndices.add(index);
         }
 
         double discountedSeatAmount = 0;
         for (int index = 0; index < bookingPriceInfo.getSeatPrices().size(); index++) {
             discountedSeatAmount += (nthSeatIndices.contains(index))
-                                    ? (DiscountType.PERCENTAGE.equals(discount.getDiscountType()))
-                                        ? bookingPriceInfo.getSeatPrices().get(index) * (1 - discount.getValue() / 100)
-                                        : bookingPriceInfo.getSeatPrices().get(index) - discount.getValue()
-                                     : bookingPriceInfo.getSeatPrices().get(index);
+                ? (DiscountType.PERCENTAGE.equals(discount.getDiscountType()))
+                    ? bookingPriceInfo.getSeatPrices().get(index) * (1 - discount.getValue() / 100)
+                    : bookingPriceInfo.getSeatPrices().get(index) - discount.getValue()
+                : bookingPriceInfo.getSeatPrices().get(index);
         }
-
 
         bookingPriceInfo.setFinalAmount(discountedSeatAmount);
     }
@@ -111,8 +112,10 @@ public class BookingDiscountApplier {
      */
     private void validate() {
 
+        validateSeatPrices(bookingPriceInfo);
+        calculateBaseAmount(bookingPriceInfo);
+
         validateBookingBaseAmount();
-        validateSeatPrices();
         validateDate();
         validateMinAmount();
         validateMinSeats();
@@ -126,34 +129,11 @@ public class BookingDiscountApplier {
      * Validate booking base amount.
      */
     private void validateBookingBaseAmount() {
+
         if (bookingPriceInfo.getBaseAmount() == null || bookingPriceInfo.getBaseAmount() < 0) {
-            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_NULL_OR_NEGATIVE_BASE_AMOUNT);
+            throw new BookingDiscountApplierException(
+                BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_NULL_OR_NEGATIVE_BASE_AMOUNT);
         }
-    }
-
-    /**
-     * Validate seat prices.
-     */
-    private void validateSeatPrices() {
-
-        if (CollectionUtils.isEmpty(bookingPriceInfo.getSeatPrices())) {
-            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_EMPTY_SEAT_PRICES);
-        }
-
-        if (bookingPriceInfo.getSeatPrices().size() != bookingPriceInfo.getNumberOfSeats()) {
-            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NUMBER_OF_SEATS_NOT_EQUAL_SEAT_PRICES);
-        }
-
-        bookingPriceInfo.getSeatPrices().forEach(seatPrice -> {
-            if (seatPrice == null || seatPrice < 0) {
-                throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_NULL_OR_NEGATIVE_SEAT_PRICE);
-            }
-        });
-
-        if (bookingPriceInfo.getBaseAmount().doubleValue() != bookingPriceInfo.getSeatPrices().stream().mapToDouble(Double::valueOf).sum()) {
-            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_BASE_AMOUNT_NOT_EQUAL_SUM_SEAT_PRICES);
-        }
-
     }
 
     /**
@@ -189,7 +169,7 @@ public class BookingDiscountApplier {
     private void validateMinSeats() {
 
         if (discount.getMinSeats() != null
-            && (bookingPriceInfo.getNumberOfSeats() == null || bookingPriceInfo.getNumberOfSeats() < discount.getMinSeats())) {
+            && (bookingPriceInfo.getSeatPrices().size() < discount.getMinSeats())) {
             throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_MIN_SEATS_FOR_OFFER_CODE,
                 discount.getMinSeats());
         }
@@ -224,7 +204,7 @@ public class BookingDiscountApplier {
     private void validateNthSeat() {
 
         if (discount.getNthSeat() != null
-            && (bookingPriceInfo.getNumberOfSeats() == null || bookingPriceInfo.getNumberOfSeats() < discount.getNthSeat())) {
+            && (bookingPriceInfo.getSeatPrices().size() < discount.getNthSeat())) {
             throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_MIN_SEATS_FOR_OFFER_CODE,
                 discount.getNthSeat());
         }
@@ -241,5 +221,36 @@ public class BookingDiscountApplier {
             throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_APPLICABLE_FOR_SHOW_TIME,
                 discount.getShowTimeType().name().toLowerCase(), discount.getShowTimeType().rangeString());
         }
+    }
+
+    /**
+     * Validate seat prices.
+     *
+     * @param bookingPriceInfo the booking price info
+     */
+    public static void validateSeatPrices(final BookingPriceInfo bookingPriceInfo) {
+
+        if (CollectionUtils.isEmpty(bookingPriceInfo.getSeatPrices())) {
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_EMPTY_SEAT_PRICES);
+        }
+
+        if (bookingPriceInfo.getSeatPrices()
+            .stream()
+            .filter(Objects::nonNull)
+            .anyMatch(seatPrice -> seatPrice < 0)) {
+            throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_NULL_OR_NEGATIVE_SEAT_PRICE);
+        }
+    }
+
+    /**
+     * Calculate base amount.
+     *
+     * @param bookingPriceInfo the booking price info
+     * @return the double
+     */
+    public static void calculateBaseAmount(final BookingPriceInfo bookingPriceInfo) {
+
+        bookingPriceInfo.setBaseAmount(bookingPriceInfo.getSeatPrices().stream().mapToDouble(Double::valueOf).sum());
+        bookingPriceInfo.setFinalAmount(bookingPriceInfo.getBaseAmount());
     }
 }

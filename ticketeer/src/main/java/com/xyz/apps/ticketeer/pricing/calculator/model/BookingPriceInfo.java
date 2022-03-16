@@ -28,17 +28,11 @@ import lombok.ToString;
 @ToString
 public class BookingPriceInfo extends AbstractModel {
 
-    /** The offer code. */
-    private String offerCode;
-
-    /** The base amount. */
-    private Double baseAmount;
-
     /** The seat prices. */
     private List<Double> seatPrices = new ArrayList<>();
 
-    /** The number of seats. */
-    private Integer numberOfSeats;
+    /** The offer code. */
+    private String offerCode;
 
     /** The city id. */
     private Long cityId;
@@ -58,10 +52,13 @@ public class BookingPriceInfo extends AbstractModel {
     /** The show start time. */
     private LocalTime showStartTime;
 
-    /** The final amount. */
-    private Double finalAmount;
-
     /** The booking date. */
     private LocalDateTime bookingTime;
+
+    /** The base amount. */
+    private Double baseAmount = 0d;
+
+    /** The final amount. */
+    private Double finalAmount = 0d;
 
 }

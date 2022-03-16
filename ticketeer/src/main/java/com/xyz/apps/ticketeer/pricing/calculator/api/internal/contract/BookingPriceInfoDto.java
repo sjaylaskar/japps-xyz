@@ -28,17 +28,11 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BookingPriceInfoDto extends Dto<BookingPriceInfo> {
 
+    /** The seat base prices. */
+    private List<Double> seatBasePrices = new ArrayList<>();
+
     /** The offer code. */
     private String offerCode;
-
-    /** The base amount. */
-    private Double baseAmount;
-
-    /** The seat prices. */
-    private List<Double> seatPrices = new ArrayList<>();
-
-    /** The number of seats. */
-    private Integer numberOfSeats;
 
     /** The city id. */
     private Long cityId;
