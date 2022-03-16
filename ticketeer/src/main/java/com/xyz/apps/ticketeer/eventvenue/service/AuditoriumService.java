@@ -26,6 +26,7 @@ import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDtoList
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDto;
 import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumRepository;
+import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
 import com.xyz.apps.ticketeer.eventvenue.service.modelmapper.AuditoriumCreationModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.service.modelmapper.AuditoriumModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.service.modelmapper.EventVenueModelMapper;
@@ -128,8 +129,7 @@ public class AuditoriumService extends GeneralService {
 
         if (!StringUtils.equals(auditoriumDto.getName(), auditoriums.get(0).getName())
             && findByEventVenueAndAuditoriumName(auditoriumDto.getEventVenueId(), auditoriumDto.getName()) != null) {
-            throw new AuditoriumAlreadyExistsException("Auditorium with name: "
-                + auditoriumDto.getName() + " already exists for event venue id: " + auditoriumDto.getEventVenueId());
+            throw new AuditoriumAlreadyExistsException(Messages.MESSAGE_ERROR_ALREADY_EXISTS_AUDITORIUM);
         }
 
         auditoriums.get(0).setName(auditoriumDto.getName());

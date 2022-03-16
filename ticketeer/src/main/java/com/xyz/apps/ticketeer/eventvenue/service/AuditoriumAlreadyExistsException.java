@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.service;
 
+import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.AlreadyExistsException;
 
 /**
  * The auditorium already exists exception.
@@ -12,12 +14,12 @@ package com.xyz.apps.ticketeer.eventvenue.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class AuditoriumAlreadyExistsException extends RuntimeException {
+public class AuditoriumAlreadyExistsException extends AlreadyExistsException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 5465605448320833668L;
 
-    public AuditoriumAlreadyExistsException(final String message) {
-        super(message);
+    public AuditoriumAlreadyExistsException(final String messageKey, final Object ...messageArguments) {
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 }
