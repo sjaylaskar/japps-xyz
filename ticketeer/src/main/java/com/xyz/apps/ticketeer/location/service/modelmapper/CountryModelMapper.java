@@ -3,12 +3,13 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.location.model;
+package com.xyz.apps.ticketeer.location.service.modelmapper;
 
 import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CountryDto;
+import com.xyz.apps.ticketeer.location.model.Country;
 
 
 /**

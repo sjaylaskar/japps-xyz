@@ -3,7 +3,7 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.eventvenue.eventshow.model;
+package com.xyz.apps.ticketeer.eventvenue.eventshow.service.modelmapper;
 
 import javax.annotation.PostConstruct;
 
@@ -12,6 +12,7 @@ import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShow;
 import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 import com.xyz.apps.ticketeer.general.model.ModelConverter;

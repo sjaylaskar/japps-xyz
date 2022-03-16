@@ -3,11 +3,12 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.event.model;
+package com.xyz.apps.ticketeer.event.service.modelmapper;
 
 import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.event.api.internal.contract.EventDto;
+import com.xyz.apps.ticketeer.event.model.Event;
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 
 

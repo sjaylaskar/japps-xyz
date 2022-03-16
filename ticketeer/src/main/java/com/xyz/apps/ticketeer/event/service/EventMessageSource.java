@@ -26,7 +26,7 @@ public class EventMessageSource extends ServiceMessageSource {
      */
     @PostConstruct
     private void add() {
-        super.add("classpath:messages/event/Messages",
-                  "classpath:messages/event/ExternalApiUrls");
+        super.add("classpath:module/event/Messages",
+                  "classpath:module/event/ExternalApiUrls");
     }
 }

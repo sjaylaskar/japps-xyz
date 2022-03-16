@@ -50,6 +50,6 @@ public final class DiscountValidatorMessages {
      * @return the resource bundle
      */
     public static ResourceBundle resourceBundle() {
-        return ResourceBundle.getBundle("messages.pricing.calculator.discount.DiscountValidatorMessages");
+        return ResourceBundle.getBundle("module.pricing.calculator.discount.DiscountValidatorMessages");
     }
 }

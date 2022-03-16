@@ -29,18 +29,17 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventSh
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShow;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShowModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShowRepository;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.service.modelmapper.EventShowModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
 import com.xyz.apps.ticketeer.eventvenue.service.AuditoriumService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueExternalApiHandlerService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueValidationService;
+import com.xyz.apps.ticketeer.general.resources.EnvironmentPropertyKeys;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
+import com.xyz.apps.ticketeer.util.EnvironmentDefaults;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
-import com.xyz.apps.ticketeer.util.MessageUtil;
-
-import lombok.extern.log4j.Log4j2;
 
 
 /**
@@ -51,7 +50,6 @@ import lombok.extern.log4j.Log4j2;
  */
 @Validated
 @Service
-@Log4j2
 public class EventShowService extends GeneralService {
 
     /** The event show repository. */
@@ -85,7 +83,9 @@ public class EventShowService extends GeneralService {
      * @return the event show
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public EventShowDetailsDto add(@NotNull(message = "The event show details cannot be null.") final EventShowCreationDto eventShowCreationDto) {
+    public EventShowDetailsDto add(@NotNull(
+        message = "The event show details cannot be null."
+    ) final EventShowCreationDto eventShowCreationDto) {
 
         validate(eventShowCreationDto);
 
@@ -108,7 +108,8 @@ public class EventShowService extends GeneralService {
             throw new EventShowServiceException("Failed to add event show.");
         }
 
-        return EventShowDetailsDto.of(eventShowModelMapper.toDto(eventShow), eventShowCreationDto.getEventVenueId(), auditorium.getName());
+        return EventShowDetailsDto.of(eventShowModelMapper.toDto(eventShow), eventShowCreationDto.getEventVenueId(), auditorium
+            .getName());
     }
 
     /**
@@ -257,14 +258,9 @@ public class EventShowService extends GeneralService {
      * @return the duration
      */
     private Long showDurationExtraMinutes() {
-        Long showDurationExtraMinutes = 30L;
-        try {
-           showDurationExtraMinutes = Long.valueOf(MessageUtil.fromMessageSource(messageSource(), "show.duration.extraMinutes"));
-        } catch (final Exception exception) {
-            log.error(exception);
-            showDurationExtraMinutes = 30L;
-        }
-        return showDurationExtraMinutes;
+
+        return environment().getProperty(EnvironmentPropertyKeys.SHOW_ENDTIME_DURATION_EXTRA_MINUTES, Long.class,
+            EnvironmentDefaults.SHOW_ENDTIME_DURATION_EXTRA_MINUTES);
     }
 
     /**
@@ -278,14 +274,18 @@ public class EventShowService extends GeneralService {
             final LocalDateTime eventShowStartDateTime,
             final LocalDateTime eventShowEndDateTime,
             final Auditorium auditorium) {
-        final List<EventShow> eventShowsForDate = eventShowRepository.findByAuditoriumAndDate(auditorium, eventShowStartDateTime.toLocalDate());
+
+        final List<EventShow> eventShowsForDate = eventShowRepository.findByAuditoriumAndDate(auditorium, eventShowStartDateTime
+            .toLocalDate());
 
         if (CollectionUtils.isNotEmpty(eventShowsForDate)) {
             if (!eventShowsForDate.stream()
-            .map(eventShowForDate -> Pair.of(LocalDateTime.of(eventShowForDate.getDate(), eventShowForDate.getStartTime()),
-                                              LocalDateTime.of(eventShowForDate.getEndDate(), eventShowForDate.getEndTime())))
-            .allMatch(showDateTimePair -> eventShowStartDateTime.isBefore(showDateTimePair.getFirst()) && eventShowEndDateTime.isBefore(showDateTimePair.getFirst())
-                                          || eventShowStartDateTime.isAfter(showDateTimePair.getSecond()) && eventShowEndDateTime.isAfter(showDateTimePair.getSecond()))) {
+                .map(eventShowForDate -> Pair.of(LocalDateTime.of(eventShowForDate.getDate(), eventShowForDate.getStartTime()),
+                    LocalDateTime.of(eventShowForDate.getEndDate(), eventShowForDate.getEndTime())))
+                .allMatch(showDateTimePair -> eventShowStartDateTime.isBefore(showDateTimePair.getFirst())
+                    && eventShowEndDateTime.isBefore(showDateTimePair.getFirst())
+                    || eventShowStartDateTime.isAfter(showDateTimePair.getSecond())
+                        && eventShowEndDateTime.isAfter(showDateTimePair.getSecond()))) {
                 throw new EventShowServiceException("Auditorium is already booked for the time slot.");
             }
         }

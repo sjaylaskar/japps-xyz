@@ -31,14 +31,14 @@ import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDtoList;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
-import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountCreationModelMapper;
-import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountModelMapper;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountRepository;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountStrategy;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountType;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.ShowTimeType;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountNotFoundException.OfferCode;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.service.modelmapper.DiscountCreationModelMapper;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.service.modelmapper.DiscountModelMapper;
 import com.xyz.apps.ticketeer.util.StringUtil;
 
 

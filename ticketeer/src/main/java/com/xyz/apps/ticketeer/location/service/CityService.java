@@ -24,10 +24,10 @@ import com.xyz.apps.ticketeer.location.api.internal.contract.CityDto;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CityDtoList;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CountryDto;
 import com.xyz.apps.ticketeer.location.model.City;
-import com.xyz.apps.ticketeer.location.model.CityCreationModelMapper;
-import com.xyz.apps.ticketeer.location.model.CityModelMapper;
 import com.xyz.apps.ticketeer.location.model.CityRepository;
 import com.xyz.apps.ticketeer.location.resources.Messages;
+import com.xyz.apps.ticketeer.location.service.modelmapper.CityCreationModelMapper;
+import com.xyz.apps.ticketeer.location.service.modelmapper.CityModelMapper;
 import com.xyz.apps.ticketeer.util.StringUtil;
 
 

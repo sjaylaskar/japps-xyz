@@ -64,6 +64,6 @@ public final class BookingDiscountApplierMessages {
      * @return the resource bundle
      */
     public static ResourceBundle resourceBundle() {
-        return ResourceBundle.getBundle("messages.pricing.calculator.BookingDiscountApplierMessages");
+        return ResourceBundle.getBundle("module.pricing.calculator.BookingDiscountApplierMessages");
     }
 }

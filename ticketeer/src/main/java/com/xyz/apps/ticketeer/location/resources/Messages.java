@@ -141,6 +141,6 @@ public final class Messages {
      * @return the resource bundle
      */
     public static ResourceBundle resourceBundle() {
-        return ResourceBundle.getBundle("messages.location.Messages");
+        return ResourceBundle.getBundle("module.location.Messages");
     }
 }

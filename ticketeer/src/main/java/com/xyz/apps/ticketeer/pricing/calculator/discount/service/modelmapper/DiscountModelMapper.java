@@ -3,7 +3,7 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.pricing.calculator.discount.model;
+package com.xyz.apps.ticketeer.pricing.calculator.discount.service.modelmapper;
 
 import javax.annotation.PostConstruct;
 
@@ -15,6 +15,10 @@ import org.springframework.stereotype.Component;
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 import com.xyz.apps.ticketeer.general.model.ModelConverter;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountStrategy;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.model.DiscountType;
+import com.xyz.apps.ticketeer.pricing.calculator.discount.model.ShowTimeType;
 
 
 /**

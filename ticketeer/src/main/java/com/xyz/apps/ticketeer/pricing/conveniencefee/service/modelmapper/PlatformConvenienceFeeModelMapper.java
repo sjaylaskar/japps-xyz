@@ -3,7 +3,7 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.pricing.conveniencefee.model;
+package com.xyz.apps.ticketeer.pricing.conveniencefee.service.modelmapper;
 
 import javax.annotation.PostConstruct;
 
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 import com.xyz.apps.ticketeer.general.model.ModelConverter;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.api.internal.contract.PlatformConvenienceFeeDto;
+import com.xyz.apps.ticketeer.pricing.conveniencefee.model.PlatformConvenienceFee;
 
 
 /**

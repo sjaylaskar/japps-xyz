@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventvenue.model;
+package com.xyz.apps.ticketeer.eventvenue.service.modelmapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +20,8 @@ import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatDet
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatDto;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatRowDto;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatsDto;
+import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
+import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeat;
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 
 /**

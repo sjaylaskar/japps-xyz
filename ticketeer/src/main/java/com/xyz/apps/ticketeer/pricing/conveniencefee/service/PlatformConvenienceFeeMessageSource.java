@@ -26,6 +26,6 @@ public class PlatformConvenienceFeeMessageSource extends ServiceMessageSource {
      */
     @PostConstruct
     private void add() {
-        super.add("classpath:messages/pricing/conveniencefee/Messages");
+        super.add("classpath:module/pricing/conveniencefee/Messages");
     }
 }

@@ -28,8 +28,8 @@ import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatsDt
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDto;
 import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeat;
-import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeatModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeatRepository;
+import com.xyz.apps.ticketeer.eventvenue.service.modelmapper.AuditoriumSeatModelMapper;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 
 

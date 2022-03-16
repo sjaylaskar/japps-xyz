@@ -20,9 +20,9 @@ import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDto;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDtoList;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueUpdationDto;
 import com.xyz.apps.ticketeer.eventvenue.model.EventVenue;
-import com.xyz.apps.ticketeer.eventvenue.model.EventVenueCreationModelMapper;
-import com.xyz.apps.ticketeer.eventvenue.model.EventVenueModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.model.EventVenueRepository;
+import com.xyz.apps.ticketeer.eventvenue.service.modelmapper.EventVenueCreationModelMapper;
+import com.xyz.apps.ticketeer.eventvenue.service.modelmapper.EventVenueModelMapper;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 
 /**

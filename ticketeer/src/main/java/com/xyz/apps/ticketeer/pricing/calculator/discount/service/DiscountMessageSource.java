@@ -26,7 +26,7 @@ public class DiscountMessageSource extends ServiceMessageSource {
      */
     @PostConstruct
     private void add() {
-        super.add("classpath:messages/pricing/calculator/discount/Messages",
-                  "classpath:messages/pricing/calculator/discount/ExternalApiUrls");
+        super.add("classpath:module/pricing/calculator/discount/Messages",
+                  "classpath:module/pricing/calculator/discount/ExternalApiUrls");
     }
 }

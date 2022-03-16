@@ -7,6 +7,7 @@ package com.xyz.apps.ticketeer.eventvenue.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -56,7 +57,7 @@ public class Auditorium extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The event venue. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "eventVenueId", nullable = false)
+    @JoinColumn(name = "eventVenueId", nullable = false, foreignKey = @ForeignKey(name = "FK_EventVenue"))
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Event venue is required for Auditorium.")
     private EventVenue eventVenue;

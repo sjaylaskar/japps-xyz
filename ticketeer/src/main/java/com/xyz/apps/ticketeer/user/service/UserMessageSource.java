@@ -26,6 +26,6 @@ public class UserMessageSource extends ServiceMessageSource {
      */
     @PostConstruct
     private void add() {
-        super.add("classpath:messages/user/Messages");
+        super.add("classpath:module/user/Messages");
     }
 }

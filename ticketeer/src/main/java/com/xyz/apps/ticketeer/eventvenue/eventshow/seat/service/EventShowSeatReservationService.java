@@ -79,12 +79,12 @@ public class EventShowSeatReservationService extends GeneralService {
     }
 
     /**
-     * Finds the event show seats by event show id.
+     * Finds the seat prices.
      *
      * @param eventShowSeatPricesRequestDto the event show seat prices request dto
      * @return the event show seat prices response dto
      */
-    public EventShowSeatPricesResponseDto findEventShowSeatsByEventShowId(
+    public EventShowSeatPricesResponseDto findSeatPrices(
             @NotNull(
                 message = "The event show id cannot be null."
             ) final EventShowSeatPricesRequestDto eventShowSeatPricesRequestDto) {

@@ -103,6 +103,6 @@ public final class Messages {
      * @return the resource bundle
      */
     public static ResourceBundle resourceBundle() {
-        return ResourceBundle.getBundle("messages.pricing.calculator.discount.Messages");
+        return ResourceBundle.getBundle("module.pricing.calculator.discount.Messages");
     }
 }

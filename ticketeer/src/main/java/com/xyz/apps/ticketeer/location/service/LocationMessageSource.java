@@ -26,6 +26,6 @@ public class LocationMessageSource extends ServiceMessageSource {
      */
     @PostConstruct
     private void add() {
-        super.add("classpath:messages/location/Messages");
+        super.add("classpath:module/location/Messages");
     }
 }

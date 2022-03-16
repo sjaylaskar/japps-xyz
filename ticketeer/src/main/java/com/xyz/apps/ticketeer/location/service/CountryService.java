@@ -23,10 +23,10 @@ import com.xyz.apps.ticketeer.location.api.internal.contract.CountryCreationDtoL
 import com.xyz.apps.ticketeer.location.api.internal.contract.CountryDto;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CountryDtoList;
 import com.xyz.apps.ticketeer.location.model.Country;
-import com.xyz.apps.ticketeer.location.model.CountryCreationModelMapper;
-import com.xyz.apps.ticketeer.location.model.CountryModelMapper;
 import com.xyz.apps.ticketeer.location.model.CountryRepository;
 import com.xyz.apps.ticketeer.location.resources.Messages;
+import com.xyz.apps.ticketeer.location.service.modelmapper.CountryCreationModelMapper;
+import com.xyz.apps.ticketeer.location.service.modelmapper.CountryModelMapper;
 import com.xyz.apps.ticketeer.util.StringUtil;
 
 

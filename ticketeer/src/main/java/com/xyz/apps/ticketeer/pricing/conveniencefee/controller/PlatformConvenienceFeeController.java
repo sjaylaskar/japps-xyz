@@ -35,7 +35,7 @@ import lombok.extern.log4j.Log4j2;
 @Validated
 @CrossOrigin
 @RestController
-@RequestMapping("platformconveniencefee")
+@RequestMapping("pricing/platformconveniencefee")
 @Log4j2
 public class PlatformConvenienceFeeController {
 

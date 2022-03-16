@@ -7,6 +7,7 @@ package com.xyz.apps.ticketeer.location.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -63,7 +64,7 @@ public class City extends com.xyz.apps.ticketeer.general.model.Entity {
     private String name;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "countryId", nullable = false)
+    @JoinColumn(name = "countryId", nullable = false, foreignKey = @ForeignKey(name = "FK_Country"))
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Country is required for City.")
     private Country country;

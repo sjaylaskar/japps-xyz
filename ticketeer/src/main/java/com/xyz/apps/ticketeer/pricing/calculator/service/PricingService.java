@@ -25,8 +25,8 @@ import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.
 import com.xyz.apps.ticketeer.pricing.calculator.discount.model.Discount;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountService;
 import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfo;
-import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfoModelMapper;
 import com.xyz.apps.ticketeer.pricing.calculator.resources.Messages;
+import com.xyz.apps.ticketeer.pricing.calculator.service.modelmapper.BookingPriceInfoModelMapper;
 import com.xyz.apps.ticketeer.util.MessageUtil;
 import com.xyz.apps.ticketeer.util.StringUtil;
 

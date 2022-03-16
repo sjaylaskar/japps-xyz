@@ -38,7 +38,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("discount")
+@RequestMapping("pricing/discount")
 @Log4j2
 @Validated
 public class DiscountController {

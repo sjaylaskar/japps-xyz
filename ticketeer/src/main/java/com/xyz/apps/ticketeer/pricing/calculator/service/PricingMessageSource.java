@@ -26,8 +26,8 @@ public class PricingMessageSource extends ServiceMessageSource {
      */
     @PostConstruct
     private void add() {
-        super.add("classpath:messages/pricing/calculator/Messages",
-                  "classpath:messages/pricing/calculator/ExternalApiUrls",
-                  "classpath:messages/pricing/calculator/BookingDiscountApplierMessages");
+        super.add("classpath:module/pricing/calculator/Messages",
+                  "classpath:module/pricing/calculator/ExternalApiUrls",
+                  "classpath:module/pricing/calculator/BookingDiscountApplierMessages");
     }
 }

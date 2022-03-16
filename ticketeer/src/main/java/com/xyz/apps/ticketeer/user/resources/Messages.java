@@ -104,6 +104,6 @@ public final class Messages {
      * @return the resource bundle
      */
     public static ResourceBundle resourceBundle() {
-        return ResourceBundle.getBundle("messages.user.Messages");
+        return ResourceBundle.getBundle("module.user.Messages");
     }
 }

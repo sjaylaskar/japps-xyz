@@ -96,6 +96,6 @@ public final class Messages {
      * @return the resource bundle
      */
     public static ResourceBundle resourceBundle() {
-        return ResourceBundle.getBundle("messages.event.Messages");
+        return ResourceBundle.getBundle("module.event.Messages");
     }
 }

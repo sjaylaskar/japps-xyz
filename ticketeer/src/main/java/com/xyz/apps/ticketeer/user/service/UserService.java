@@ -23,10 +23,10 @@ import com.xyz.apps.ticketeer.user.api.internal.contract.UserCreationDto;
 import com.xyz.apps.ticketeer.user.api.internal.contract.UserDto;
 import com.xyz.apps.ticketeer.user.api.internal.contract.UserDtoList;
 import com.xyz.apps.ticketeer.user.model.User;
-import com.xyz.apps.ticketeer.user.model.UserCreationModelMapper;
-import com.xyz.apps.ticketeer.user.model.UserModelMapper;
 import com.xyz.apps.ticketeer.user.model.UserRepository;
 import com.xyz.apps.ticketeer.user.resources.Messages;
+import com.xyz.apps.ticketeer.user.service.modelmapper.UserCreationModelMapper;
+import com.xyz.apps.ticketeer.user.service.modelmapper.UserModelMapper;
 import com.xyz.apps.ticketeer.util.StringUtil;
 
 /**

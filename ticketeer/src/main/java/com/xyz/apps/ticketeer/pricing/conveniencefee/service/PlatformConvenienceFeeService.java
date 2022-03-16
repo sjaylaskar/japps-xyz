@@ -23,10 +23,10 @@ import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.api.internal.contract.PlatformConvenienceFeeCreationDto;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.api.internal.contract.PlatformConvenienceFeeDto;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.model.PlatformConvenienceFee;
-import com.xyz.apps.ticketeer.pricing.conveniencefee.model.PlatformConvenienceFeeCreationModelMapper;
-import com.xyz.apps.ticketeer.pricing.conveniencefee.model.PlatformConvenienceFeeModelMapper;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.model.PlatformConvenienceFeeRepository;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.resources.Messages;
+import com.xyz.apps.ticketeer.pricing.conveniencefee.service.modelmapper.PlatformConvenienceFeeCreationModelMapper;
+import com.xyz.apps.ticketeer.pricing.conveniencefee.service.modelmapper.PlatformConvenienceFeeModelMapper;
 import com.xyz.apps.ticketeer.util.StringUtil;
 
 import lombok.extern.log4j.Log4j2;

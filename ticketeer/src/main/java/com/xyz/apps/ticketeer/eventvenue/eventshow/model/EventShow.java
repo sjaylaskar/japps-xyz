@@ -10,6 +10,7 @@ import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -79,7 +80,7 @@ public class EventShow extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The auditorium. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "auditoriumId", nullable = false)
+    @JoinColumn(name = "auditoriumId", nullable = false, foreignKey = @ForeignKey(name = "FK_Auditorium"))
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Auditorium auditorium;
 

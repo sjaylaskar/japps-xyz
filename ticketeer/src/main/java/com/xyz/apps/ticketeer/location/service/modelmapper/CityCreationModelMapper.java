@@ -3,7 +3,7 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.location.model;
+package com.xyz.apps.ticketeer.location.service.modelmapper;
 
 import javax.annotation.PostConstruct;
 
@@ -12,24 +12,26 @@ import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
-import com.xyz.apps.ticketeer.location.api.internal.contract.CityDto;
+import com.xyz.apps.ticketeer.location.api.internal.contract.CityCreationDto;
+import com.xyz.apps.ticketeer.location.model.City;
+import com.xyz.apps.ticketeer.location.model.Country;
 
 
 /**
- * The city model mapper.
+ * The city creation model mapper.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
 @Component
-public class CityModelMapper extends GeneralModelMapper<City, CityDto> {
+public class CityCreationModelMapper extends GeneralModelMapper<City, CityCreationDto> {
 
     /**
      * Instantiates a new city model mapper.
      */
-    public CityModelMapper() {
+    public CityCreationModelMapper() {
 
-        super(City.class, CityDto.class);
+        super(City.class, CityCreationDto.class);
 
     }
 
@@ -39,14 +41,10 @@ public class CityModelMapper extends GeneralModelMapper<City, CityDto> {
     @PostConstruct
     private void initMappings() {
 
-        final TypeMap<City, CityDto> cityToCityDtoMap = modelMapper.createTypeMap(City.class, CityDto.class);
-        cityToCityDtoMap.addMappings(
-            mapper -> mapper.map(city -> city.getCountry().getId(), CityDto::setCountryId));
-
         final Converter<Long, Country> countryIdToCountryConverter = converter -> new Country().id(converter.getSource());
-        final TypeMap<CityDto, City> cityDtoToCityMap = modelMapper.createTypeMap(CityDto.class, City.class);
+        final TypeMap<CityCreationDto, City> cityDtoToCityMap = modelMapper.createTypeMap(CityCreationDto.class, City.class);
         cityDtoToCityMap.addMappings(
-            mapper -> mapper.using(countryIdToCountryConverter).map(CityDto::getCountryId, City::setCountry));
+            mapper -> mapper.using(countryIdToCountryConverter).map(CityCreationDto::getCountryId, City::setCountry));
     }
 
 }
