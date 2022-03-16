@@ -42,6 +42,17 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     public List<EventShowSeat> findByEventShow(@Param("eventShow") final EventShow eventShow);
 
     /**
+     * Finds the by event show and booking reservation id.
+     *
+     * @param eventShow the event show
+     * @param bookingReservationId the booking reservation id
+     * @return the list
+     */
+    public List<EventShowSeat> findByEventShowAndBookingReservationId(
+            @Param("eventShow") final EventShow eventShow,
+            @Param("bookingReservationId") final UUID bookingReservationId);
+
+    /**
      * Finds the by event show and row name.
      *
      * @param eventShow the event show

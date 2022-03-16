@@ -1,18 +1,14 @@
 /*
-* Id: BookingExternalApiHandlerService.java 09-Mar-2022 7:48:04 pm SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: BookingExternalApiHandlerService.java 09-Mar-2022 7:48:04 pm SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.booking.service;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -20,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.xyz.apps.ticketeer.booking.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.booking.api.external.contract.BasicUserDto;
@@ -27,11 +24,16 @@ import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.CityDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDetailedInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDto;
-import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatDto;
-import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatDtoList;
-import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatNumbersDto;
-import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookingDto;
-import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatForShowResponseDtoList;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatInformationResponseDtoList;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatPricesRequestDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatPricesResponseDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookingRequestDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookingResponseDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsCancellationRequestDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsCancellationResponseDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsReservationRequestDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsReservationResponseDto;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.general.service.ServiceUtil;
 import com.xyz.apps.ticketeer.util.StringUtil;
@@ -48,12 +50,103 @@ import com.xyz.apps.ticketeer.util.StringUtil;
 public class BookingExternalApiHandlerService extends GeneralService {
 
     /**
+     * Reserve.
+     *
+     * @param eventShowSeatsReservationRequestDto the event show seats reservation request dto
+     * @return the event show seats reservation response dto
+     */
+    public EventShowSeatsReservationResponseDto reserve(
+            @NotNull(message = "The event show seats reservation request cannot be null.")
+            final EventShowSeatsReservationRequestDto eventShowSeatsReservationRequestDto) {
+
+        ResponseEntity<EventShowSeatsReservationResponseDto> eventShowSeatsReservationResponseDtoResponseEntity = null;
+        try {
+            eventShowSeatsReservationResponseDtoResponseEntity = restTemplate().exchange(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()),
+                HttpMethod.PUT,
+                new HttpEntity<EventShowSeatsReservationRequestDto>(eventShowSeatsReservationRequestDto),
+                EventShowSeatsReservationResponseDto.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatsReservationResponseDtoResponseEntity)
+            || StringUtils.isBlank(eventShowSeatsReservationResponseDtoResponseEntity.getBody().getBookingReservationId())
+            || BooleanUtils.isFalse(eventShowSeatsReservationResponseDtoResponseEntity.getBody().getAreSeatsReserved())) {
+            throw new SelectedSeatsUnavailableException();
+        }
+
+        return eventShowSeatsReservationResponseDtoResponseEntity.getBody();
+    }
+
+    /**
+     * Book.
+     *
+     * @param eventShowSeatsBookingRequestDto the event show seats booking request dto
+     * @return the event show seats booking response dto
+     */
+    public EventShowSeatsBookingResponseDto book(
+            @NotNull(message = "The event show seats reservation request cannot be null.")
+            final EventShowSeatsBookingRequestDto eventShowSeatsBookingRequestDto) {
+
+        ResponseEntity<EventShowSeatsBookingResponseDto> eventShowSeatsBookingResponseDtoResponseEntity = null;
+        try {
+            eventShowSeatsBookingResponseDtoResponseEntity = restTemplate().exchange(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()),
+                HttpMethod.PUT,
+                new HttpEntity<EventShowSeatsBookingRequestDto>(eventShowSeatsBookingRequestDto),
+                EventShowSeatsBookingResponseDto.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatsBookingResponseDtoResponseEntity)
+                || StringUtils.isBlank(eventShowSeatsBookingResponseDtoResponseEntity.getBody().getBookingReservationId())
+                || BooleanUtils.isFalse(eventShowSeatsBookingResponseDtoResponseEntity.getBody().getAreSeatsBooked())) {
+                throw new SelectedSeatsUnavailableException();
+            }
+
+            return eventShowSeatsBookingResponseDtoResponseEntity.getBody();
+    }
+
+    /**
+     * Cancel booking for event show seats.
+     *
+     * @param eventShowSeatsCancellationRequestDto the event show seats cancellation request dto
+     */
+    public void cancel(
+            @NotNull(
+                message = "The event show seats cancellation request cannot be null."
+            ) final EventShowSeatsCancellationRequestDto eventShowSeatsCancellationRequestDto) {
+
+        ResponseEntity<EventShowSeatsCancellationResponseDto> eventShowSeatsCancellationResponseEntity = null;
+        try {
+
+            eventShowSeatsCancellationResponseEntity = restTemplate().exchange(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_CANCEL.get()),
+                HttpMethod.PUT,
+                new HttpEntity<EventShowSeatsCancellationRequestDto>(eventShowSeatsCancellationRequestDto),
+                EventShowSeatsCancellationResponseDto.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatsCancellationResponseEntity)
+            || BooleanUtils.isFalse(eventShowSeatsCancellationResponseEntity.getBody().getAreSeatsCancelled())) {
+            throw new BookingServiceException("Failed to cancel the seat reservation.");
+        }
+    }
+
+    /**
      * Finds the event show details by event show id.
      *
      * @param eventShowId the event show id
      * @return the event show detailed info dto
      */
-    public EventShowDetailedInfoDto findEventShowDetailsByEventShowId(@NotNull(message = "The event show id cannot be null.") final Long eventShowId) {
+    public EventShowDetailedInfoDto findEventShowDetailsByEventShowId(@NotNull(
+        message = "The event show id cannot be null."
+    ) final Long eventShowId) {
+
         ResponseEntity<EventShowDetailedInfoDto> eventShowDetailedInfoDtoResponseEntity = null;
         try {
             eventShowDetailedInfoDtoResponseEntity = restTemplate().getForEntity(
@@ -70,173 +163,32 @@ public class BookingExternalApiHandlerService extends GeneralService {
     }
 
     /**
-     * Finds the seat numbers.
+     * Obtain event show seat prices.
      *
-     * @param eventShowSeatIds the event show seat ids
-     * @return the seat numbers
+     * @param eventShowSeatPricesRequestDto the event show seat prices request dto
+     * @return the event show seat prices response dto
      */
-    public List<String> findSeatNumbers(@NotEmpty(
-        message = "The event show seat ids cannot be empty."
-    ) final Set<Long> eventShowSeatIds) {
+    public EventShowSeatPricesResponseDto obtainEventShowSeatPrices(
+            @NotNull(message = "The event show seat prices request cannot be null.")
+            final EventShowSeatPricesRequestDto eventShowSeatPricesRequestDto) {
 
-        ResponseEntity<EventShowSeatNumbersDto> seatNumbersResponseEntity = null;
+        ResponseEntity<EventShowSeatPricesResponseDto> eventShowSeatPricesResponseDtoResponseEntity = null;
         try {
-            seatNumbersResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEAT_NUMBERS.get()),
-                    eventShowSeatIds.stream().map(value -> Long.toString(value)).collect(Collectors.joining(","))),
-                EventShowSeatNumbersDto.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-        if (ServiceUtil.notHasBodyResponseEntity(seatNumbersResponseEntity)
-            || CollectionUtils.isEmpty(seatNumbersResponseEntity.getBody().getSeatNumbers())) {
-            throw new BookingServiceException("Seats not found for ids: " + eventShowSeatIds);
-        }
-
-        return seatNumbersResponseEntity.getBody().getSeatNumbers();
-    }
-
-    /**
-     * Reserve seats.
-     *
-     * @param bookingDto the booking dto
-     * @return the count of seats reserved.
-     */
-    public Integer reserveSeats(final BookingDto bookingDto) {
-
-        ResponseEntity<Integer> eventShowSeatsReservedCountResponseEntity = null;
-        try {
-            eventShowSeatsReservedCountResponseEntity = restTemplate().exchange(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()),
-                HttpMethod.PUT,
-                new HttpEntity<Set<Long>>(bookingDto.getEventShowSeatIds()),
-                Integer.class);
+            eventShowSeatPricesResponseDtoResponseEntity
+            = restTemplate().postForEntity(
+                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEAT_PRICES.get()),
+                eventShowSeatPricesRequestDto,
+                EventShowSeatPricesResponseDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
         }
 
-        return ServiceUtil.hasBodyResponseEntity(eventShowSeatsReservedCountResponseEntity)
-            ? eventShowSeatsReservedCountResponseEntity.getBody() : 0;
-    }
-
-    /**
-     * Reserve seats with booking.
-     *
-     * @param eventShowSeatsBookingDto the event show seats booking dto
-     * @return the count of seats reserved.
-     */
-    public Integer reserveSeatsWithBooking(final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
-
-        ResponseEntity<Integer> eventShowSeatsBookingReservedCountResponseEntity = null;
-        try {
-            eventShowSeatsBookingReservedCountResponseEntity = restTemplate().exchange(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE_WITH_BOOKING.get()),
-                HttpMethod.PUT,
-                new HttpEntity<EventShowSeatsBookingDto>(eventShowSeatsBookingDto),
-                Integer.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+        if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatPricesResponseDtoResponseEntity)
+            || CollectionUtils.isEmpty(eventShowSeatPricesResponseDtoResponseEntity.getBody().getEventShowSeatNumberPrices())) {
+            throw new BookingServiceException("Failed to obtain seat prices for selected seats.");
         }
 
-        return ServiceUtil.hasBodyResponseEntity(eventShowSeatsBookingReservedCountResponseEntity)
-            ? eventShowSeatsBookingReservedCountResponseEntity.getBody() : 0;
-    }
-
-    /**
-     * Are event show seats available.
-     *
-     * @param bookingDto the booking dto
-     * @return {@code true}, if event show seats are available.
-     */
-    public boolean areEventShowSeatsAvailable(final BookingDto bookingDto) {
-
-        ResponseEntity<Boolean> eventShowSeatsAreAvailableResponseEntity = null;
-        try {
-            eventShowSeatsAreAvailableResponseEntity = restTemplate().postForEntity(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_AVAILABLE.get()), bookingDto
-                    .getEventShowSeatIds(), Boolean.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-
-        return ServiceUtil.hasBodyResponseEntity(eventShowSeatsAreAvailableResponseEntity)
-            ? eventShowSeatsAreAvailableResponseEntity.getBody() : false;
-    }
-
-    /**
-     * Are event show seats reserved.
-     *
-     * @param eventShowSeatsBookingDto the event show seats booking dto
-     * @return {@code true}, if event show seats are reserved for booking.
-     */
-    public boolean areEventShowSeatsReserved(final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
-
-        ResponseEntity<Boolean> eventShowSeatsAreReservedResponseEntity = null;
-        try {
-            eventShowSeatsAreReservedResponseEntity = restTemplate().postForEntity(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_ARE_RESERVED.get()),
-                eventShowSeatsBookingDto, Boolean.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-
-        return ServiceUtil.hasBodyResponseEntity(eventShowSeatsAreReservedResponseEntity) ? eventShowSeatsAreReservedResponseEntity
-            .getBody() : false;
-    }
-
-    /**
-     * Cancel booking for event show seats.
-     *
-     * @param bookingId the booking id
-     */
-    public void cancelBookingForEventShowSeats(final Long bookingId) {
-
-        try {
-            restTemplate().put(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_CANCEL.get()), bookingId);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-    }
-
-    /**
-     * Unreserve seats.
-     *
-     * @param bookingDto the booking dto
-     */
-    public void unreserveSeats(final BookingDto bookingDto) {
-
-        try {
-            restTemplate().put(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_UNRESERVE.get()), bookingDto
-                    .getEventShowSeatIds());
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-    }
-
-    /**
-     * Calculate event show seats amount.
-     *
-     * @param bookingDto the booking dto
-     * @return the amount
-     */
-    public Double calculateEventShowSeatsAmount(final BookingDto bookingDto) {
-
-        ResponseEntity<Double> eventShowSeatsAmountResponseEntity = null;
-        try {
-            eventShowSeatsAmountResponseEntity = restTemplate().postForEntity(
-                environment().getProperty(ApiPropertyKey.CALCULATE_EVENT_SHOW_SEATS_AMOUNT.get()), bookingDto
-                    .getEventShowSeatIds(), Double.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-
-        if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatsAmountResponseEntity)) {
-            throw new BookingServiceException("Failed to calculate seats amount for booking: " + bookingDto);
-        }
-
-        return eventShowSeatsAmountResponseEntity.getBody();
+        return eventShowSeatPricesResponseDtoResponseEntity.getBody();
     }
 
     /**
@@ -264,78 +216,107 @@ public class BookingExternalApiHandlerService extends GeneralService {
     }
 
     /**
-     * Book seats.
-     *
-     * @param eventShowSeatsBookingDto the event show seats booking dto
-     * @return the count of booked seats
-     */
-    public Integer bookSeats(final EventShowSeatsBookingDto eventShowSeatsBookingDto) {
-
-        ResponseEntity<Integer> eventShowSeatsBookedCountResponseEntity = null;
-        try {
-            eventShowSeatsBookedCountResponseEntity = restTemplate().exchange(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()),
-                HttpMethod.PUT,
-                new HttpEntity<EventShowSeatsBookingDto>(eventShowSeatsBookingDto),
-                Integer.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-
-        return ServiceUtil.hasBodyResponseEntity(eventShowSeatsBookedCountResponseEntity) ? eventShowSeatsBookedCountResponseEntity
-            .getBody() : 0;
-    }
-
-    /**
-     * Finds the city.
-     *
-     * @param bookingDto the booking dto
-     * @return the city dto
-     */
-    public CityDto findCity(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
-
-        if (bookingDto.getCityId() == null) {
-            throw new BookingServiceException("The city id cannot be null.");
-        }
-        ResponseEntity<CityDto> cityDtoResponseEntity = null;
-        try {
-            cityDtoResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), bookingDto
-                    .getCityId()), CityDto.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-        if (ServiceUtil.notHasBodyResponseEntity(cityDtoResponseEntity)) {
-            throw new BookingServiceException("Invalid city id: " + bookingDto.getEventShowId());
-        }
-        return cityDtoResponseEntity.getBody();
-    }
-
-    /**
      * Finds the event show.
      *
-     * @param bookingDto the booking dto
+     * @param eventShowId the event show id
      * @return the event show dto
      */
-    public EventShowDto findEventShow(@NotNull(message = "The booking cannot be null") final BookingDto bookingDto) {
+    public EventShowDto findEventShow(@NotNull(message = "The event show id cannot be null") final Long eventShowId) {
 
-        if (bookingDto.getEventShowId() == null) {
-            throw new BookingServiceException("The event show id cannot be null.");
-        }
         ResponseEntity<EventShowDto> eventShowDtoResponseEntity = null;
         try {
             eventShowDtoResponseEntity = restTemplate().getForEntity(
                 StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get()),
-                    bookingDto.getEventShowId()),
+                    eventShowId),
                 EventShowDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowDtoResponseEntity)) {
-            throw new BookingServiceException("Invalid event show id: " + bookingDto.getEventShowId());
+            throw new BookingServiceException("Invalid event show id: " + eventShowId);
         }
         return eventShowDtoResponseEntity.getBody();
+    }
+
+    /**
+     * Finds the event show seats for show.
+     *
+     * @param eventShowId the event show id
+     * @return the event show seat for show response dto list
+     */
+    public EventShowSeatForShowResponseDtoList findEventShowSeatsForShow(@NotNull(
+        message = "The event show id cannot be null."
+    ) final Long eventShowId) {
+
+        ResponseEntity<EventShowSeatForShowResponseDtoList> eventShowSeatForShowResponseDtoListResponseEntity = null;
+        try {
+            eventShowSeatForShowResponseDtoListResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID.get()), eventShowId),
+                EventShowSeatForShowResponseDtoList.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatForShowResponseDtoListResponseEntity)
+            && CollectionUtils.isNotEmpty(eventShowSeatForShowResponseDtoListResponseEntity.getBody().getDtos())) {
+            throw new BookingServiceException("Could not find seats for event show id: " + eventShowId);
+        }
+
+        return eventShowSeatForShowResponseDtoListResponseEntity.getBody();
+    }
+
+    /**
+     * Finds the event show seats by booking reservation.
+     *
+     * @param eventShowId the event show id
+     * @param bookingReservationId the booking reservation id
+     * @return the event show seat information response dto list
+     */
+    public EventShowSeatInformationResponseDtoList findEventShowSeatsByBookingReservation(
+            @NotNull(message = "The event show id cannot be null.") final Long eventShowId,
+            @NotNull(message = "The booking reservation id cannot be null") final String bookingReservationId) {
+
+        ResponseEntity<EventShowSeatInformationResponseDtoList> eventShowInfoListResponseEntity = null;
+        try {
+            eventShowInfoListResponseEntity = restTemplate().getForEntity(
+                UriComponentsBuilder.fromHttpUrl(StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_RESERVATION_ID.get())))
+                .queryParam("eventShowId", eventShowId)
+                .queryParam("bookingReservationId", bookingReservationId)
+                .encode()
+                .toUriString(),
+                EventShowSeatInformationResponseDtoList.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+
+        if (ServiceUtil.notHasBodyResponseEntity(eventShowInfoListResponseEntity)
+            && CollectionUtils.isNotEmpty(eventShowInfoListResponseEntity.getBody().getDtos())) {
+            throw new BookingServiceException("Could not find seats for event show id: " + eventShowId + " and booking reservation id: " + bookingReservationId);
+        }
+
+        return eventShowInfoListResponseEntity.getBody();
+    }
+
+    /**
+     * Finds the city.
+     *
+     * @param cityId the city id
+     * @return the city dto
+     */
+    public CityDto findCity(@NotNull(message = "The city id cannot be null") final Long cityId) {
+
+        ResponseEntity<CityDto> cityDtoResponseEntity = null;
+        try {
+            cityDtoResponseEntity = restTemplate().getForEntity(
+                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
+        } catch (final HttpStatusCodeException exception) {
+            throw new BookingServiceException(exception.getResponseBodyAsString());
+        }
+        if (ServiceUtil.notHasBodyResponseEntity(cityDtoResponseEntity)) {
+            throw new BookingServiceException("Invalid city id: " + cityId);
+        }
+        return cityDtoResponseEntity.getBody();
     }
 
     /**
@@ -361,43 +342,5 @@ public class BookingExternalApiHandlerService extends GeneralService {
         } catch (final HttpStatusCodeException exception) {
             throw new BookingServiceException("User is not authenticated.");
         }
-    }
-
-    /**
-     * Finds the event show seat ids by event show id.
-     *
-     * @param eventShowId the event show id
-     * @return the event show seat minimal dto list
-     */
-    public Set<Long> findEventShowSeatIdsByEventShowId(@NotNull(message = "The event show id cannot be null.") final Long eventShowId) {
-        ResponseEntity<EventShowSeatDtoList> eventShowSeatMinimalDtosResponseEntity = null;
-        try {
-            eventShowSeatMinimalDtosResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID.get()), eventShowId),
-                EventShowSeatDtoList.class);
-        } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
-        }
-
-        if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatMinimalDtosResponseEntity)) {
-            throw new BookingServiceException("Could not find seats for event show id: " + eventShowId);
-        }
-
-        return getSeatIds(eventShowId, eventShowSeatMinimalDtosResponseEntity);
-    }
-
-    /**
-     * Gets the seat ids.
-     *
-     * @param eventShowId the event show id
-     * @param eventShowSeatMinimalDtosResponseEntity the event show seat minimal dtos response entity
-     * @return the seat ids
-     */
-    private Set<Long> getSeatIds(final Long eventShowId, final ResponseEntity<EventShowSeatDtoList> eventShowSeatMinimalDtosResponseEntity) {
-        if (CollectionUtils.isEmpty(eventShowSeatMinimalDtosResponseEntity.getBody().getDtos())) {
-            throw new BookingServiceException("Could not find seats for event show id: " + eventShowId);
-        }
-
-        return eventShowSeatMinimalDtosResponseEntity.getBody().getDtos().stream().map(EventShowSeatDto::getId).collect(Collectors.toSet());
     }
 }

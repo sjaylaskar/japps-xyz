@@ -6,6 +6,8 @@
 package com.xyz.apps.ticketeer.booking.model;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -45,4 +47,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         + " bk.username = :username"
         + " and bk.bookingStatus in (com.xyz.apps.ticketeer.booking.model.BookingStatus.CONFIRMED, com.xyz.apps.ticketeer.booking.model.BookingStatus.CANCELLED)")
     public List<Booking> findByUsername(@Param("username") final String username);
+
+    /**
+     * Finds the first by id and booking reservation id and username and event show id order by reservation time asc.
+     *
+     * @return the optional
+     */
+    public Optional<Booking> findFirstByIdAndBookingReservationIdAndEventShowIdAndUsernameOrderByReservationTimeAsc(
+            @Param("id") final Long id,
+            @Param("bookingReservationId") final UUID bookingReservationId,
+            @Param("eventShowId") final Long eventShowId,
+            @Param("username") final String username);
 }

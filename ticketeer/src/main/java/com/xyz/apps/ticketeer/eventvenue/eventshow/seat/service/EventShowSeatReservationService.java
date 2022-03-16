@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatForShowResponseDtoList;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatInformationResponseDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatPricesRequestDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatPricesResponseDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsBookingRequestDto;
@@ -30,7 +32,10 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.Ev
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeat;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.modelmapper.EventShowSeatForShowModelMapper;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.modelmapper.EventShowSeatInfoModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.modelmapper.EventShowSeatPricesModelMapper;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.service.modelmapper.EventShowModelMapper;
+import com.xyz.apps.ticketeer.general.resources.EnvironmentProperties;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 
 
@@ -60,6 +65,14 @@ public class EventShowSeatReservationService extends GeneralService {
     @Autowired
     private EventShowSeatPricesModelMapper eventShowSeatPricesModelMapper;
 
+    /** The event show model mapper. */
+    @Autowired
+    private EventShowModelMapper eventShowModelMapper;
+
+    /** The event show seat info model mapper. */
+    @Autowired
+    private EventShowSeatInfoModelMapper eventShowSeatInfoModelMapper;
+
     /**
      * Finds the event show seats by event show id.
      *
@@ -86,7 +99,7 @@ public class EventShowSeatReservationService extends GeneralService {
      */
     public EventShowSeatPricesResponseDto findSeatPrices(
             @NotNull(
-                message = "The event show id cannot be null."
+                message = "The event show seat prices request cannot be null."
             ) final EventShowSeatPricesRequestDto eventShowSeatPricesRequestDto) {
 
         final List<EventShowSeat> eventShowSeats = eventShowSeatService.findByEventShowAndSeatNumbers(
@@ -171,6 +184,26 @@ public class EventShowSeatReservationService extends GeneralService {
     }
 
     /**
+     * Finds the by event show id and booking reservation id.
+     *
+     * @param eventShowId the event show id
+     * @param bookingReservationId the booking reservation id
+     * @return the event show seat information response dto list
+     */
+    public EventShowSeatInformationResponseDtoList findByEventShowIdAndBookingReservationId(
+            @NotNull(message = "The event show id cannot be null.") final Long eventShowId,
+            @NotBlank(message = "The booking reservation id cannot be blank.") final String bookingReservationId) {
+
+        final List<EventShowSeat> eventShowSeatsByReservation = eventShowSeatRepository.findByEventShowAndBookingReservationId(eventShowModelMapper.fromId(eventShowId), UUID.fromString(bookingReservationId));
+
+        if (CollectionUtils.isEmpty(eventShowSeatsByReservation)) {
+            throw new EventShowSeatsNotFoundException("No seats found for event show id: " + eventShowId + " and booking reservation id: " + bookingReservationId);
+        }
+
+        return EventShowSeatInformationResponseDtoList.of(eventShowId, eventShowSeatInfoModelMapper.toDtos(eventShowSeatsByReservation));
+    }
+
+    /**
      * Validate.
      *
      * @param eventShowSeatsBookingRequestDto the event show seats booking request dto
@@ -200,7 +233,7 @@ public class EventShowSeatReservationService extends GeneralService {
      * @param seatNumbers the seat numbers
      * @param bookingReservationId the booking reservation id
      */
-    public void validateRequiredData(final Long eventShowId, final Set<String> seatNumbers, final String bookingReservationId) {
+    private void validateRequiredData(final Long eventShowId, final Set<String> seatNumbers, final String bookingReservationId) {
 
         validateRequiredDataForReservation(eventShowId, seatNumbers);
 
@@ -223,6 +256,11 @@ public class EventShowSeatReservationService extends GeneralService {
 
         if (CollectionUtils.isEmpty(seatNumbers)) {
             throw new EventShowSeatReservationServiceException("The seat numbers cannot be empty.");
+        }
+
+        final int maxSeatsPerBooking = EnvironmentProperties.get(environment()).maxSeatsPerBooking();
+        if (seatNumbers.size() > maxSeatsPerBooking) {
+            throw new EventShowSeatReservationServiceException("Maximum seats allowed per booking is: " + maxSeatsPerBooking);
         }
     }
 }

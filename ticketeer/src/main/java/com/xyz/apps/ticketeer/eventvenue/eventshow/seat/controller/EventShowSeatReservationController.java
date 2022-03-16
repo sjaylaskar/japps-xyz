@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatPricesRequestDto;
@@ -57,6 +58,25 @@ public class EventShowSeatReservationController {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(eventShowSeatReservationService.findEventShowSeatsByEventShowId(eventShowId));
+    }
+
+    /**
+     * Gets the seats by event show and booking reservation id.
+     *
+     * @param eventShowId the event show id
+     * @param bookingReservationId the booking reservation id
+     * @return the seats by event show and booking reservation id
+     */
+    @GetMapping("/seats-by-reservation")
+    public ResponseEntity<?> getSeatsByEventShowAndBookingReservationId(
+            @RequestParam final Long eventShowId,
+            @RequestParam final String bookingReservationId) {
+
+        log.info("Event show id: " + eventShowId);
+        log.info("Booking reservation id: " + bookingReservationId);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(eventShowSeatReservationService.findByEventShowIdAndBookingReservationId(eventShowId, bookingReservationId));
     }
 
     /**

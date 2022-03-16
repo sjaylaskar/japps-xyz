@@ -22,32 +22,14 @@ public enum ApiPropertyKey {
     /** The get event show by id. */
     GET_EVENT_SHOW_BY_ID("api.external.eventshow.getById"),
 
-    /** The calculate event show seats amount. */
-    CALCULATE_EVENT_SHOW_SEATS_AMOUNT("api.external.eventshow.seats.amount.calculate"),
-
-    /** The event show seats are available. */
-    EVENT_SHOW_SEATS_ARE_AVAILABLE("api.external.eventshow.seats.are.available"),
-
-    /** The event show seats are reserved. */
-    EVENT_SHOW_SEATS_ARE_RESERVED("api.external.eventshow.seats.are.reserved"),
-
     /** The event show seats reserve. */
     EVENT_SHOW_SEATS_RESERVE("api.external.eventshow.seats.reserve"),
-
-    /** The event show seats unreserve. */
-    EVENT_SHOW_SEATS_UNRESERVE("api.external.eventshow.seats.unreserve"),
 
     /** The event show seats book. */
     EVENT_SHOW_SEATS_BOOK("api.external.eventshow.seats.book"),
 
-    /** The event show seats reserve with booking. */
-    EVENT_SHOW_SEATS_RESERVE_WITH_BOOKING("api.external.eventshow.seats.reserve.with.booking"),
-
     /** The event show seats cancel. */
     EVENT_SHOW_SEATS_CANCEL("api.external.eventshow.seats.cancel"),
-
-    /** The event show seat numbers. */
-    EVENT_SHOW_SEAT_NUMBERS("api.external.eventshow.seats.seat-numbers"),
 
     /** The pricing calculate. */
     PRICING_CALCULATE("api.external.pricing.calculate"),
@@ -56,7 +38,13 @@ public enum ApiPropertyKey {
     EVENT_SHOW_DETAILED_INFO("api.external.eventshow.details.getById"),
 
     /** The event show seats by event show id. */
-    EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID("api.external.eventshow.seats.event-show.getByEventShowId");
+    EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID("api.external.eventshow.seats.reservation.seats-for-show"),
+
+    /** The event show seat prices. */
+    EVENT_SHOW_SEAT_PRICES("api.external.eventshow.seats.reservation.seat-prices"),
+
+    /** The event show seats by reservation id. */
+    EVENT_SHOW_SEATS_BY_RESERVATION_ID("api.external.eventshow.seats.reservation.seats-by-reservation");
 
     /** The key. */
     private String key;

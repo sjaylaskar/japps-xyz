@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.util;
+package com.xyz.apps.ticketeer.general.resources;
 
 
 /**
@@ -26,5 +26,8 @@ public final class EnvironmentDefaults {
 
     /** The max seats per booking. */
     public static final int MAX_SEATS_PER_BOOKING = 6;
+
+    /** The seat reservation expiry time minutes. */
+    public static final long SEAT_RESERVATION_EXPIRY_TIME_MINUTES = 5;
 
 }

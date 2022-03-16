@@ -36,9 +36,8 @@ import com.xyz.apps.ticketeer.eventvenue.service.AuditoriumService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueExternalApiHandlerService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueService;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueValidationService;
-import com.xyz.apps.ticketeer.general.resources.EnvironmentPropertyKeys;
+import com.xyz.apps.ticketeer.general.resources.EnvironmentProperties;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
-import com.xyz.apps.ticketeer.util.EnvironmentDefaults;
 import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
 
 
@@ -259,8 +258,7 @@ public class EventShowService extends GeneralService {
      */
     private Long showDurationExtraMinutes() {
 
-        return environment().getProperty(EnvironmentPropertyKeys.SHOW_ENDTIME_DURATION_EXTRA_MINUTES, Long.class,
-            EnvironmentDefaults.SHOW_ENDTIME_DURATION_EXTRA_MINUTES);
+        return EnvironmentProperties.get(environment()).showEndTimeDurationExtraMinutes();
     }
 
     /**

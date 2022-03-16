@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.booking.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,12 +16,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Type;
 import org.springframework.validation.annotation.Validated;
 
 import lombok.Getter;
@@ -39,6 +43,10 @@ import lombok.ToString;
 @Setter
 @ToString
 @Validated
+@Table(
+    uniqueConstraints =
+       {@UniqueConstraint(name = "UNIQUE_booking_reservation_id", columnNames = "bookingReservationId")}
+)
 public class Booking extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
@@ -46,6 +54,12 @@ public class Booking extends com.xyz.apps.ticketeer.general.model.Entity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_seq")
     @SequenceGenerator(initialValue = 1, name = "booking_seq", allocationSize = 1)
     private Long id;
+
+    /** The booking reservation id. */
+    @Type(type = "uuid-char")
+    @Column(nullable = false, columnDefinition = "char(36)", unique = true)
+    @NotNull(message = "The booking reservation id cannot be null.")
+    private UUID bookingReservationId;
 
     /** The booking time. */
     @Column(columnDefinition = "TIMESTAMP")
@@ -63,8 +77,8 @@ public class Booking extends com.xyz.apps.ticketeer.general.model.Entity {
     /** The number of seats. */
     @Column(nullable = false)
     @NotNull(message = "Number of seats cannot be null.")
-    @Min(value = 0, message = "Number of seats must be at least 0.")
-    private Integer numberOfSeats = 0;
+    @Min(value = 1, message = "Number of seats must be at least 1.")
+    private Integer numberOfSeats = 1;
 
     /** The amount. */
     @NotNull(message = "Amount cannot be null.")

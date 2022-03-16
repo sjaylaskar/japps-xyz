@@ -46,7 +46,7 @@ public class BookingDetails extends Entity {
 
     /** The booking id. */
     @NonNull
-    @NotBlank(message = "The event name cannot be null.")
+    @NotBlank(message = "The booking id cannot be null.")
     private Long bookingId;
 
     /** The event show name. */
@@ -61,7 +61,7 @@ public class BookingDetails extends Entity {
 
     /** The event show time. */
     @NonNull
-    @NotNull(message = "The event show date cannot be null.")
+    @NotNull(message = "The event show time cannot be null.")
     private LocalTime eventShowTime;
 
     /** The event venue name. */
