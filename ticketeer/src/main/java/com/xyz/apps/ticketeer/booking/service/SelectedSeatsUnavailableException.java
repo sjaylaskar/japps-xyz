@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.booking.service;
 
+import com.xyz.apps.ticketeer.booking.resources.Messages;
 
 /**
  * The selected seats unavailable exception.
@@ -21,6 +22,6 @@ public class SelectedSeatsUnavailableException extends BookingServiceException {
      * Instantiates a new selected seats unavailable exception.
      */
     public SelectedSeatsUnavailableException() {
-        super("The selected seats are no longer available! Please select different seats.");
+        super(Messages.MESSAGE_ERROR_UNAVAILABLE_SELECTED_SEATS);
     }
 }

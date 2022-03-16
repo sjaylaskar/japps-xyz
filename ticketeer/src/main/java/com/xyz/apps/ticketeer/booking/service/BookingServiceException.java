@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.booking.service;
 
+import com.xyz.apps.ticketeer.booking.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.ServiceException;
 
 /**
  * The booking service exception.
@@ -12,7 +14,7 @@ package com.xyz.apps.ticketeer.booking.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class BookingServiceException extends RuntimeException {
+public class BookingServiceException extends ServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -2557145865886422564L;
@@ -22,7 +24,7 @@ public class BookingServiceException extends RuntimeException {
      *
      * @param message the message
      */
-    public BookingServiceException(final String message) {
-        super(message);
+    public BookingServiceException(final String messageKey, final Object ...messageArguments) {
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 }

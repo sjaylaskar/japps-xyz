@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.booking.service;
 
+import com.xyz.apps.ticketeer.booking.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.NotFoundException;
 
 /**
  * The payment not found exception.
@@ -12,7 +14,7 @@ package com.xyz.apps.ticketeer.booking.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class SuccessfulPaymentNotFoundForBookingException extends BookingServiceException {
+public class SuccessfulPaymentNotFoundForBookingException extends NotFoundException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -3469218342966086310L;
@@ -23,7 +25,7 @@ public class SuccessfulPaymentNotFoundForBookingException extends BookingService
      * @param bookingId the booking id
      */
     public SuccessfulPaymentNotFoundForBookingException(final Long bookingId) {
-        super("Successful payment not found for booking id: " + bookingId);
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_NOT_FOUND_SUCCESSFUL_PAYMENT_FOR_BOOKING, bookingId);
     }
 
 }

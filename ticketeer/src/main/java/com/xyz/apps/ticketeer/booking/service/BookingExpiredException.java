@@ -5,6 +5,7 @@
 */
 package com.xyz.apps.ticketeer.booking.service;
 
+import com.xyz.apps.ticketeer.booking.resources.Messages;
 
 /**
  * The booking expired exception.
@@ -20,7 +21,7 @@ public class BookingExpiredException extends BookingServiceException {
     private static final long serialVersionUID = 565452579858754148L;
 
     public BookingExpiredException() {
-        super("The booking has expired.");
+        super(Messages.MESSAGE_ERROR_BOOKING_EXPIRED);
     }
 
 }

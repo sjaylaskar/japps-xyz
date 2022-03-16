@@ -5,11 +5,13 @@
 */
 package com.xyz.apps.ticketeer.booking.service;
 
+import com.xyz.apps.ticketeer.booking.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.NotFoundException;
 
 /**
  * The booking not found exception.
  */
-public class BookingNotFoundException extends BookingServiceException {
+public class BookingNotFoundException extends NotFoundException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -3861121481143099928L;
@@ -19,8 +21,8 @@ public class BookingNotFoundException extends BookingServiceException {
      *
      * @param message the message
      */
-    public BookingNotFoundException(final String message) {
-        super(message);
+    public BookingNotFoundException(final String messageKey, final Object ...messageArguments) {
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 
     /**
@@ -29,7 +31,7 @@ public class BookingNotFoundException extends BookingServiceException {
      * @param bookingId the booking id
      */
     public BookingNotFoundException(final Long bookingId) {
-        super("Booking not found for id: " + bookingId);
+        this(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_ID, bookingId);
     }
 
     /**
@@ -39,7 +41,7 @@ public class BookingNotFoundException extends BookingServiceException {
      * @return the booking not found exception
      */
     public static BookingNotFoundException forUsername(final String username) {
-        return new BookingNotFoundException("No booking(s) found for username: " + username);
+        return new BookingNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_USERNAME, username);
     }
 
     /**
@@ -50,6 +52,6 @@ public class BookingNotFoundException extends BookingServiceException {
      * @return the booking not found exception
      */
     public static BookingNotFoundException forUsernameAndId(final String username, final Long bookingId) {
-        return new BookingNotFoundException("Booking not found for user: " + username + " and booking: " + bookingId);
+        return new BookingNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_USERNAME_AND_ID, username, bookingId);
     }
 }

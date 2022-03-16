@@ -53,6 +53,7 @@ import com.xyz.apps.ticketeer.booking.model.BookingStatus;
 import com.xyz.apps.ticketeer.booking.model.Payment;
 import com.xyz.apps.ticketeer.booking.model.PaymentRepository;
 import com.xyz.apps.ticketeer.booking.model.PaymentStatus;
+import com.xyz.apps.ticketeer.booking.resources.Messages;
 import com.xyz.apps.ticketeer.booking.service.modelmapper.BookingModelMapper;
 import com.xyz.apps.ticketeer.general.resources.EnvironmentProperties;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
@@ -279,7 +280,7 @@ public class BookingService extends GeneralService {
         validateUser(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getPassword());
 
         if (bookingCancellationRequestDto.getBookingId() == null) {
-            throw new BookingServiceException("The booking id cannot be null.");
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_REQUIRED_ID);
         }
 
         cancel(findBooking(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getBookingId()));
@@ -401,7 +402,7 @@ public class BookingService extends GeneralService {
                 bookingConfirmationRequestDto.getEventShowId(), bookingConfirmationRequestDto.getUsername());
 
         if (optionalBooking.isEmpty()) {
-            throw new BookingServiceException("Invalid booking request.");
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_REQUEST);
         }
 
         final EventShowSeatInformationResponseDtoList eventShowSeatsForReservation = bookingExternalApiHandlerService
@@ -412,7 +413,7 @@ public class BookingService extends GeneralService {
             || bookingConfirmationRequestDto.getSeatNumbers()
                 .stream().anyMatch(seatNumber -> !eventShowSeatsForReservation.getDtos().stream().map(
                     EventShowSeatInformationResponseDto::getSeatNumber).collect(Collectors.toSet()).contains(seatNumber))) {
-            throw new BookingServiceException("Invalid seats for reservation.");
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_SEATS_FOR_RESERVATION);
         }
     }
 
@@ -449,7 +450,7 @@ public class BookingService extends GeneralService {
     private void validateEventShow(final Long eventShowId) {
 
         if (bookingExternalApiHandlerService.findEventShow(eventShowId) == null) {
-            throw new BookingServiceException("Invalid event show id: " + eventShowId);
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_EVENT_SHOW_ID, eventShowId);
         }
     }
 
@@ -463,12 +464,12 @@ public class BookingService extends GeneralService {
             final Set<String> bookingRequestSeatNumbers) {
 
         if (CollectionUtils.isEmpty(bookingRequestSeatNumbers)) {
-            throw new BookingServiceException("At least select one seat to reserve.");
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_MINIMUM_ONE_SEAT);
         }
 
         final int maxSeatsPerBooking = EnvironmentProperties.get(environment()).maxSeatsPerBooking();
         if (bookingRequestSeatNumbers.size() > maxSeatsPerBooking) {
-            throw new BookingServiceException("Maximum seats allowed per booking is: " + maxSeatsPerBooking);
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_MAX_SEATS_PER_BOOKING, maxSeatsPerBooking);
         }
 
         final EventShowSeatForShowResponseDtoList eventShowSeatListForShow = bookingExternalApiHandlerService
@@ -478,7 +479,7 @@ public class BookingService extends GeneralService {
             .stream().collect(Collectors.groupingBy(EventShowSeatForShowResponseDto::getSeatNumber));
 
         if (isInvalidSeatsSelection(bookingRequestSeatNumbers, eventShowSeatsBySeatNumberMap)) {
-            throw new BookingServiceException("Invalid seats selected.");
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_SEATS_SELECTED);
         }
 
         if (isAnySeatUnavailableForReservation(bookingRequestSeatNumbers, eventShowSeatsBySeatNumberMap)) {

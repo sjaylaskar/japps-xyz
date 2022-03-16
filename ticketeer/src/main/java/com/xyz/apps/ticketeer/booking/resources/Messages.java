@@ -23,7 +23,7 @@ public final class Messages {
     }
 
     /** The error message prefix. */
-    private static final String ERROR_MESSAGE_PREFIX = "user.message.error.";
+    private static final String ERROR_MESSAGE_PREFIX = "booking.message.error.";
 
     /*
      * Model messages:
@@ -32,6 +32,7 @@ public final class Messages {
     /** The message error required username. */
     public static final String MESSAGE_ERROR_REQUIRED_USERNAME = "{" + ERROR_MESSAGE_PREFIX + "required.username}";
 
+    /** The message error required password. */
     public static final String MESSAGE_ERROR_REQUIRED_PASSWORD = "{" + ERROR_MESSAGE_PREFIX + "required.password}";
 
     /** The message error required phone number. */
@@ -59,44 +60,47 @@ public final class Messages {
      * Other messages:
      */
 
-    /** The message error not null user. */
-    public static final String MESSAGE_ERROR_NOT_NULL_USER = ERROR_MESSAGE_PREFIX + "notNull.user";
+    /** The message error booking expired. */
+    public static final String MESSAGE_ERROR_BOOKING_EXPIRED = "booking.expired";
 
-    /** The message error not null user id. */
-    public static final String MESSAGE_ERROR_NOT_NULL_USER_ID = ERROR_MESSAGE_PREFIX + "notNull.user.id";
+    /** The message error not found for id. */
+    public static final String MESSAGE_ERROR_NOT_FOUND_FOR_ID = "notFound.forId";
 
-    /** The message error not blank username. */
-    public static final String MESSAGE_ERROR_NOT_BLANK_USERNAME = ERROR_MESSAGE_PREFIX + "notBlank.username";
+    /** The message error not found for username. */
+    public static final String MESSAGE_ERROR_NOT_FOUND_FOR_USERNAME = "notFound.forUsername";
 
-    /** The message error not blank username and password. */
-    public static final String MESSAGE_ERROR_NOT_BLANK_USERNAME_AND_PASSWORD = "notBlank.username.and.password";
+    /** The message error not found for username and id. */
+    public static final String MESSAGE_ERROR_NOT_FOUND_FOR_USERNAME_AND_ID = "notFound.forUsernameAndId";
 
-    /** The message error not found user id. */
-    public static final String MESSAGE_ERROR_NOT_FOUND_USER_ID = ERROR_MESSAGE_PREFIX + "notFound.user.id";
+    /** The message error not found successful payment for booking. */
+    public static final String MESSAGE_ERROR_NOT_FOUND_SUCCESSFUL_PAYMENT_FOR_BOOKING = "notFound.successfulPayment.forBooking";
 
-    /** The message error invalid username or password. */
-    public static final String MESSAGE_ERROR_INVALID_USERNAME_OR_PASSWORD = ERROR_MESSAGE_PREFIX + "invalid.username.or.password";
+    /** The message error invalid booking status. */
+    public static final String MESSAGE_ERROR_INVALID_BOOKING_STATUS = "invalid.booking.status";
 
-    /** The message error already exists username. */
-    public static final String MESSAGE_ERROR_ALREADY_EXISTS_USERNAME = ERROR_MESSAGE_PREFIX + "alreadyExists.username";
+    /** The message error unavailable selected seats. */
+    public static final String MESSAGE_ERROR_UNAVAILABLE_SELECTED_SEATS = "unavailable.selectedSeats";
 
-    /** The message error already exists phone number. */
-    public static final String MESSAGE_ERROR_ALREADY_EXISTS_PHONE_NUMBER = ERROR_MESSAGE_PREFIX + "alreadyExists.phoneNumber";
+    /** The message error required id. */
+    public static final String MESSAGE_ERROR_REQUIRED_ID = "required.id";
 
-    /** The message error already exists email. */
-    public static final String MESSAGE_ERROR_ALREADY_EXISTS_EMAIL = ERROR_MESSAGE_PREFIX + "alreadyExists.email";
+    /** The message error invalid request. */
+    public static final String MESSAGE_ERROR_INVALID_REQUEST = "invalid.booking.request";
 
-    /** The message error not found username. */
-    public static final String MESSAGE_ERROR_NOT_FOUND_USERNAME = ERROR_MESSAGE_PREFIX + "notFound.username";
+    /** The message error invalid seats for reservation. */
+    public static final String MESSAGE_ERROR_INVALID_SEATS_FOR_RESERVATION = "invalid.seats.for.reservation";
 
-    /** The message error not found users. */
-    public static final String MESSAGE_ERROR_NOT_FOUND_USERS = ERROR_MESSAGE_PREFIX + "notFound.users";
+    /** The message error invalid event show id. */
+    public static final String MESSAGE_ERROR_INVALID_EVENT_SHOW_ID = "invalid.event.show.id";
 
-    /** The message error failed add user. */
-    public static final String MESSAGE_ERROR_FAILED_ADD_USER = ERROR_MESSAGE_PREFIX + "failed.add.user";
+    /** The message error minimum one seat. */
+    public static final String MESSAGE_ERROR_MINIMUM_ONE_SEAT = "required.minimum.one.seat";
 
-    /** The message error failed update user. */
-    public static final String MESSAGE_ERROR_FAILED_UPDATE_USER = ERROR_MESSAGE_PREFIX + "failed.update.user";
+    /** The message error max seats per booking. */
+    public static final String MESSAGE_ERROR_MAX_SEATS_PER_BOOKING = "max.seats.allowed.per.booking";
+
+    /** The message error invalid seats selected. */
+    public static final String MESSAGE_ERROR_INVALID_SEATS_SELECTED = "invalid.seats.selected";
 
     /**
      * Resource bundle.
@@ -104,6 +108,6 @@ public final class Messages {
      * @return the resource bundle
      */
     public static ResourceBundle resourceBundle() {
-        return ResourceBundle.getBundle("module.user.Messages");
+        return ResourceBundle.getBundle("module.booking.Messages");
     }
 }
