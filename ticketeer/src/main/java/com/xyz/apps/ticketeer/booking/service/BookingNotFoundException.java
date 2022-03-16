@@ -11,9 +11,7 @@ package com.xyz.apps.ticketeer.booking.service;
  */
 public class BookingNotFoundException extends BookingServiceException {
 
-    /**
-     *
-     */
+    /** The serial version UID. */
     private static final long serialVersionUID = -3861121481143099928L;
 
     /**
@@ -42,5 +40,16 @@ public class BookingNotFoundException extends BookingServiceException {
      */
     public static BookingNotFoundException forUsername(final String username) {
         return new BookingNotFoundException("No booking(s) found for username: " + username);
+    }
+
+    /**
+     * For username and id.
+     *
+     * @param username the username
+     * @param bookingId the booking id
+     * @return the booking not found exception
+     */
+    public static BookingNotFoundException forUsernameAndId(final String username, final Long bookingId) {
+        return new BookingNotFoundException("Booking not found for user: " + username + " and booking: " + bookingId);
     }
 }

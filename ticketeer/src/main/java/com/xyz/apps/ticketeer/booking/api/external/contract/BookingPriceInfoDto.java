@@ -26,7 +26,8 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BookingPriceInfoDto {
 
-    final List<Double> seatBasePrices = new ArrayList<>();
+    /** The seat base prices. */
+    private List<Double> seatBasePrices = new ArrayList<>();
 
     /** The offer code. */
     private String offerCode;

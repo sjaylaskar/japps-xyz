@@ -5,7 +5,8 @@
  */
 package com.xyz.apps.ticketeer.booking.api.internal.contract;
 
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -48,7 +49,7 @@ public class BookingDetailsDto {
     private String cityName;
 
     /** The seats. */
-    private List<String> seatNumbers;
+    private Set<String> seatNumbers = new TreeSet<>();
 
     /** The booking time. */
     private String bookingTime;

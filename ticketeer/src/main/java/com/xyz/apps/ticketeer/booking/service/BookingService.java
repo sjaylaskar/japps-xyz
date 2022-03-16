@@ -1,5 +1,5 @@
 /*
- * Id: EventService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
+ * Id: BookingService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDetailedInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatForShowResponseDto;
@@ -40,12 +39,12 @@ import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsBookin
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsCancellationRequestDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsReservationRequestDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsReservationResponseDto;
+import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingCancellationRequestDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingConfirmationRequestDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingDetailsDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingDetailsDtoList;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingReservationRequestDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingReservationResponseDto;
-import com.xyz.apps.ticketeer.booking.api.internal.contract.CancelBookingDto;
 import com.xyz.apps.ticketeer.booking.model.Booking;
 import com.xyz.apps.ticketeer.booking.model.BookingDetails;
 import com.xyz.apps.ticketeer.booking.model.BookingDetailsRepository;
@@ -225,7 +224,7 @@ public class BookingService extends GeneralService {
         final Booking booking = bookingRepository.findById(bookingConfirmationRequestDto.getBookingId()).orElseThrow(
             BookingExpiredException::new);
 
-        final EventShowSeatPricesResponseDto eventShowSeatPrices = bookingExternalApiHandlerService.obtainEventShowSeatPrices(
+        final EventShowSeatPricesResponseDto eventShowSeatPricesResponseDto = bookingExternalApiHandlerService.obtainEventShowSeatPrices(
             EventShowSeatPricesRequestDto.of(bookingConfirmationRequestDto.getEventShowId(),
                 bookingConfirmationRequestDto.getSeatNumbers()));
 
@@ -234,22 +233,24 @@ public class BookingService extends GeneralService {
 
         final LocalDateTime bookingTime = LocalDateTime.now();
 
-        final double finalAmount = bookingExternalApiHandlerService.calculateFinalBookingAmount(toBookingPriceInfo(
-            bookingConfirmationRequestDto, eventShow, LocalDateTimeFormatUtil.format(bookingTime)));
+        final double finalAmount = bookingExternalApiHandlerService.calculateFinalBookingAmount(bookingModelMapper.toBookingPriceInfo(
+            bookingConfirmationRequestDto, eventShow, LocalDateTimeFormatUtil.format(bookingTime), eventShowSeatPricesResponseDto));
 
         savePayment(booking, finalAmount);
 
-        booking.setAmount(calculateBaseAmountOfSeats(eventShowSeatPrices));
+        booking.setAmount(calculateBaseAmountOfSeats(eventShowSeatPricesResponseDto));
         booking.setFinalAmount(finalAmount);
         booking.setBookingStatus(BookingStatus.CONFIRMED);
         booking.setBookingTime(bookingTime);
         final Booking bookingUpdated = bookingRepository.save(booking);
 
-        final BookingDetails bookingDetails = toBookingDetails(bookingConfirmationRequestDto);
-        bookingDetails.setBookingId(bookingUpdated.getId());
+        final EventShowDetailedInfoDto eventShowDetailedInfoDto = bookingExternalApiHandlerService
+                .findEventShowDetailsByEventShowId(
+                    bookingConfirmationRequestDto.getEventShowId());
+        final BookingDetails bookingDetails = bookingModelMapper.toBookingDetails(bookingConfirmationRequestDto, eventShowSeatPricesResponseDto, eventShowDetailedInfoDto);
         final BookingDetails bookingDetailsSaved = bookingDetailsRepository.save(bookingDetails);
 
-        return toBookingDetailsDto(bookingUpdated, bookingDetailsSaved);
+        return bookingModelMapper.toBookingDetailsDto(bookingUpdated, bookingDetailsSaved);
     }
 
     /**
@@ -271,12 +272,17 @@ public class BookingService extends GeneralService {
     /**
      * Cancel.
      *
-     * @param cancelBookingDto the cancel booking dto
-     * @return the booking dto
+     * @param bookingCancellationRequestDto the booking cancellation request dto
      */
-    public void cancel(@NotNull(message = "The booking cannot be null") final CancelBookingDto cancelBookingDto) {
+    public void cancel(@NotNull(message = "The booking cannot be null") final BookingCancellationRequestDto bookingCancellationRequestDto) {
 
-        cancel(cancelBookingDto);
+        validateUser(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getPassword());
+
+        if (bookingCancellationRequestDto.getBookingId() == null) {
+            throw new BookingServiceException("The booking id cannot be null.");
+        }
+
+        cancel(findBooking(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getBookingId()));
     }
 
     /**
@@ -287,36 +293,24 @@ public class BookingService extends GeneralService {
      * @return true, if successful
      */
     @Transactional(rollbackFor = {Throwable.class})
-    private void cancel(final CancelBookingDto cancelBookingDto, final BookingExternalReservationRequestResult bookingExternalReservationRequestResult) {
+    private void cancel(final Booking booking) {
 
-        bookingExternalApiHandlerService.validateUser(cancelBookingDto.getUsername(), cancelBookingDto.getPassword());
-        final Booking bookingByUsernameAndId = bookingRepository.findByUsernameAndId(cancelBookingDto.getUsername(),
-            cancelBookingDto
-                .getBookingId());
-        if (bookingByUsernameAndId == null) {
-            throw new BookingNotFoundException(cancelBookingDto.getBookingId());
-        }
-        if (!BookingStatus.CONFIRMED.equals(bookingByUsernameAndId.getBookingStatus())) {
-            throw new BookingServiceException("No confirmed booking found for booking id: " + bookingByUsernameAndId.getId());
-        }
+        final BookingDetails bookingDetails = findBookingDetailsByBookingId(booking.getId());
 
         bookingExternalApiHandlerService.cancel(
             EventShowSeatsCancellationRequestDto.of(
-                bookingReservationRequestDto.getEventShowId(),
-                bookingReservationRequestDto.getSeatNumbers(),
-                bookingExternalReservationRequestResult.bookingReservationId)
+                booking.getEventShowId(),
+                bookingDetails.getSeatNumbers(),
+                booking.getBookingReservationId().toString()));
 
-        bookingByUsernameAndId.setBookingStatus(BookingStatus.CANCELLED);
-        final Booking bookingCancelled = bookingRepository.save(bookingByUsernameAndId);
+        booking.setBookingStatus(BookingStatus.CANCELLED);
+        final Booking bookingCancelled = bookingRepository.save(booking);
         final Payment payment = paymentRepository.findSuccessfulPaymentByBooking(bookingCancelled);
         if (payment == null) {
             throw new SuccessfulPaymentNotFoundForBookingException(bookingCancelled.getId());
         }
         payment.setPaymentStatus(PaymentStatus.REFUNDED);
         paymentRepository.save(payment);
-
-        bookingExternalReservationRequestResult.value = true;
-        bookingExternalReservationRequestResult.bookingId = bookingCancelled.getId();
     }
 
     /**
@@ -330,13 +324,24 @@ public class BookingService extends GeneralService {
             @NotBlank(message = "The username cannot be empty.") final String username,
             @NotNull(message = "The booking id cannot be null.") final Long id) {
 
-        final Booking booking = bookingRepository.findByUsernameAndId(username, id);
-        if (booking == null) {
-            throw new BookingNotFoundException(id);
-        }
+        final Booking booking = findBooking(username, id);
         final BookingDetails bookingDetails = findBookingDetailsByBookingId(id);
 
-        return toBookingDetailsDto(booking, bookingDetails);
+        return bookingModelMapper.toBookingDetailsDto(booking, bookingDetails);
+    }
+
+    /**
+     * @param username
+     * @param id
+     * @return
+     */
+    private Booking findBooking(final String username, final Long id) {
+
+        final Booking booking = bookingRepository.findByUsernameAndId(username, id);
+        if (booking == null) {
+            throw BookingNotFoundException.forUsernameAndId(username, id);
+        }
+        return booking;
     }
 
     /**
@@ -345,14 +350,14 @@ public class BookingService extends GeneralService {
      * @param username the username
      * @return the booking details dto list
      */
-    public BookingDetailsDtoList findByUsername(@NotBlank(message = "The username cannot be empty.") final String username) {
+    public BookingDetailsDtoList findByUsername(@NotBlank(message = "The username cannot be blank.") final String username) {
 
         final List<Booking> bookings = bookingRepository.findByUsername(username);
         if (CollectionUtils.isEmpty(bookings)) {
             throw BookingNotFoundException.forUsername(username);
         }
 
-        return new BookingDetailsDtoList(bookings.stream().map(booking -> toBookingDetailsDto(booking,
+        return new BookingDetailsDtoList(bookings.stream().map(booking -> bookingModelMapper.toBookingDetailsDto(booking,
             findBookingDetailsByBookingId(booking.getId()))).toList());
     }
 
@@ -369,71 +374,6 @@ public class BookingService extends GeneralService {
     }
 
     /**
-     * To booking details dto.
-     *
-     * @param booking the booking
-     * @param bookingDetails the booking details
-     * @return the booking details dto
-     */
-    private BookingDetailsDto toBookingDetailsDto(final Booking booking, final BookingDetails bookingDetails) {
-
-        final BookingDetailsDto bookingDetailsDto = new BookingDetailsDto();
-        bookingDetailsDto.setBookingId(booking.getId());
-        bookingDetailsDto.setBookingStatus(booking.getBookingStatus().name());
-        bookingDetailsDto.setBookingTime(LocalDateTimeFormatUtil.format(booking.getBookingTime()));
-        bookingDetailsDto.setUsername(booking.getUsername());
-        bookingDetailsDto.setEmailId(booking.getEmailId());
-        bookingDetailsDto.setPhoneNumber(booking.getPhoneNumber());
-        bookingDetailsDto.setOfferCode(booking.getOfferCode());
-        bookingDetailsDto.setBaseAmount(booking.getAmount());
-        bookingDetailsDto.setFinalAmount(booking.getFinalAmount());
-        bookingDetailsDto.setIsConfirmed(BookingStatus.CONFIRMED.equals(booking.getBookingStatus()));
-        fillBookingDetailsInfo(bookingDetails, bookingDetailsDto);
-        return bookingDetailsDto;
-    }
-
-    /**
-     * Fill booking details info.
-     *
-     * @param bookingDetails the booking details
-     * @param bookingDetailsDto the booking details dto
-     */
-    private void fillBookingDetailsInfo(final BookingDetails bookingDetails, final BookingDetailsDto bookingDetailsDto) {
-
-        if (bookingDetails != null) {
-            bookingDetailsDto.setEventName(bookingDetails.getEventName());
-            bookingDetailsDto.setCityName(bookingDetails.getCityName());
-            bookingDetailsDto.setEventVenueName(bookingDetails.getEventVenueName());
-            bookingDetailsDto.setAuditoriumName(bookingDetails.getAuditoriumName());
-            bookingDetailsDto.setEventShowDate(LocalDateTimeFormatUtil.format(bookingDetails.getEventShowDate()));
-            bookingDetailsDto.setEventShowTime(LocalDateTimeFormatUtil.format(bookingDetails.getEventShowTime()));
-            bookingDetailsDto.setSeatNumbers(bookingDetails.getSeatNumbers());
-        }
-    }
-
-    /**
-     * Save booking details.
-     *
-     * @param bookingConfirmationRequestDto the booking dto
-     * @return the booking details
-     */
-    private BookingDetails toBookingDetails(final BookingConfirmationRequestDto bookingConfirmationRequestDto) {
-
-        final BookingDetails bookingDetails = new BookingDetails();
-        final EventShowDetailedInfoDto eventShowDetailedInfoDto = bookingExternalApiHandlerService
-            .findEventShowDetailsByEventShowId(
-                bookingConfirmationRequestDto.getEventShowId());
-        bookingDetails.setEventShowDate(LocalDateTimeFormatUtil.parseLocalDate(eventShowDetailedInfoDto.getDate()));
-        bookingDetails.setEventShowTime(LocalDateTimeFormatUtil.parseLocalTime(eventShowDetailedInfoDto.getStartTime()));
-        bookingDetails.setCityName(eventShowDetailedInfoDto.getCityName());
-        bookingDetails.setEventName(eventShowDetailedInfoDto.getEventName());
-        bookingDetails.setEventVenueName(eventShowDetailedInfoDto.getEventVenueName());
-        bookingDetails.setAuditoriumName(eventShowDetailedInfoDto.getAuditoriumName());
-        bookingDetails.setSeatNumbers(bookingConfirmationRequestDto.getSeatNumbers());
-        return bookingDetails;
-    }
-
-    /**
      * Calculate base amount of seats.
      *
      * @param eventShowSeatPricesResponseDto the event show seat prices response dto
@@ -443,29 +383,6 @@ public class BookingService extends GeneralService {
 
         return eventShowSeatPricesResponseDto.getEventShowSeatNumberPrices().stream().map(EventShowSeatNumberPriceDto::getAmount)
             .mapToDouble(Double::valueOf).sum();
-    }
-
-    /**
-     * To booking price info.
-     *
-     * @param bookingConfirmationRequestDto the booking dto
-     * @param eventShow the event show
-     * @param bookingTime the booking time
-     * @return the booking price info
-     */
-    private BookingPriceInfoDto toBookingPriceInfo(final BookingConfirmationRequestDto bookingConfirmationRequestDto,
-            final EventShowDto eventShow, final String bookingTime) {
-
-        final BookingPriceInfoDto bookingPriceInfoDto = new BookingPriceInfoDto();
-        bookingPriceInfoDto.setOfferCode(bookingConfirmationRequestDto.getOfferCode());
-        bookingPriceInfoDto.setCityId(eventShow.getCityId());
-        bookingPriceInfoDto.setEventVenueId(eventShow.getEventVenueId());
-        bookingPriceInfoDto.setEventId(eventShow.getEventId());
-        bookingPriceInfoDto.setEventShowId(bookingConfirmationRequestDto.getEventShowId());
-        bookingPriceInfoDto.setShowDate(eventShow.getDate());
-        bookingPriceInfoDto.setShowStartTime(eventShow.getStartTime());
-        bookingPriceInfoDto.setBookingTime(bookingTime);
-        return bookingPriceInfoDto;
     }
 
     /**
