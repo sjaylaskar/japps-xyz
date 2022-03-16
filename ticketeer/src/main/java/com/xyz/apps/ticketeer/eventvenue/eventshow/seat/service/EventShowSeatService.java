@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -34,9 +35,9 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.Ev
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatRowPriceDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsCreationDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeat;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatInfoModelMapper;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatModificationModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatRepository;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.modelmapper.EventShowSeatInfoModelMapper;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.modelmapper.EventShowSeatModificationModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowService;
 import com.xyz.apps.ticketeer.eventvenue.service.AuditoriumSeatService;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
@@ -179,15 +180,28 @@ public class EventShowSeatService extends GeneralService {
         message = "The event show id cannot be null."
     ) final Long eventShowId) {
 
-        final List<EventShowSeat> eventShowSeats = eventShowSeatRepository
-            .findByEventShow(
-                eventShowModelMapper.fromId(eventShowId));
+        final List<EventShowSeat> eventShowSeats = findByEventShowId(eventShowId);
 
         if (CollectionUtils.isEmpty(eventShowSeats)) {
             throw EventShowSeatsNotFoundException.forEventShow(eventShowId);
         }
 
         return EventShowSeatInformationResponseDtoList.of(eventShowId, eventShowSeatInfoModelMapper.toDtos(eventShowSeats));
+    }
+
+    /**
+     * Finds the by event show id.
+     *
+     * @param eventShowId the event show id
+     * @return the event show seats
+     */
+    protected List<EventShowSeat> findByEventShowId(@NotNull(
+        message = "The event show id cannot be null."
+    ) final Long eventShowId) {
+
+        return eventShowSeatRepository
+            .findByEventShow(
+                eventShowModelMapper.fromId(eventShowId));
     }
 
     /**
@@ -220,11 +234,11 @@ public class EventShowSeatService extends GeneralService {
     private List<EventShowSeat> updateEventShowSeatNumberPrices(final EventShowSeatPricesUpdationDto eventShowSeatPriceUpdationDto,
             final EventShow eventShow) {
 
-        final Map<String, List<EventShowSeat>> eventShowSeatsBySeatNumber = eventShowSeatRepository.findByEventShowAndSeatNumbers(
-            eventShow, eventShowSeatPriceUpdationDto
+        final Map<String, List<EventShowSeat>> eventShowSeatsBySeatNumber = findByEventShowAndSeatNumbers(eventShow,
+            eventShowSeatPriceUpdationDto
                 .getEventShowSeatNumberPrices().stream().map(EventShowSeatNumberPriceDto::getSeatNumber).collect(Collectors
                     .toSet()))
-            .stream().collect(Collectors.groupingBy(EventShowSeat::getSeatNumber));
+                        .stream().collect(Collectors.groupingBy(EventShowSeat::getSeatNumber));
 
         if (MapUtils.isEmpty(eventShowSeatsBySeatNumber)) {
             throw new EventShowSeatsNotFoundException("No event show seats found to update.");
@@ -242,6 +256,20 @@ public class EventShowSeatService extends GeneralService {
             throw new EventShowSeatServiceException("Failed to update event show seat prices.");
         }
         return eventShowSeatsUpdated;
+    }
+
+    /**
+     * Finds the by event show and seat numbers.
+     *
+     * @param eventShow the event show
+     * @param seatNumbers the seat numbers
+     * @return the list
+     */
+    protected List<EventShowSeat> findByEventShowAndSeatNumbers(
+            @NotNull(message = "The event show cannot be null.") final EventShow eventShow,
+            @NotEmpty(message = "The seat numbers cannot be empty.") final Set<String> seatNumbers) {
+
+        return eventShowSeatRepository.findByEventShowAndSeatNumbers(eventShow, seatNumbers);
     }
 
     /**
@@ -272,7 +300,7 @@ public class EventShowSeatService extends GeneralService {
      * @param eventShowId the event show id
      * @return the event show
      */
-    private EventShow findEventShowById(final Long eventShowId) {
+    protected EventShow findEventShowById(@NotNull(message = "The event show id cannot be null.") final Long eventShowId) {
 
         return eventShowService.findEventShowById(eventShowId);
     }

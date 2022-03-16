@@ -1,41 +1,41 @@
 /*
- * Id: EventShowSeatService.java 06-Mar-2022 4:58:33 pm SubhajoyLaskar
+ * Id: EventShowSeatReservationService.java 06-Mar-2022 4:58:33 pm SubhajoyLaskar
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatDto;
-import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatDtoList;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowWithAuditoriumDto;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatInformationResponseDto;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatDetailsDtoList;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatModificationResponseDtoList;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatNumbersDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatForShowResponseDtoList;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatPricesRequestDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatPricesResponseDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsBookingRequestDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsBookingResponseDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsCancellationRequestDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsCancellationResponseDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsReservationRequestDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsReservationResponseDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeat;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatModificationModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatRepository;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowServiceException;
-import com.xyz.apps.ticketeer.eventvenue.service.EventVenueService;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.modelmapper.EventShowSeatForShowModelMapper;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.modelmapper.EventShowSeatPricesModelMapper;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 
 
 /**
- * The event show seat service.
+ * The event show seat reservation service.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -44,214 +44,185 @@ import com.xyz.apps.ticketeer.general.service.GeneralService;
 @Validated
 public class EventShowSeatReservationService extends GeneralService {
 
+    /** The event show seat service. */
+    @Autowired
+    private EventShowSeatService eventShowSeatService;
+
     /** The event show seat repository. */
     @Autowired
     private EventShowSeatRepository eventShowSeatRepository;
 
-    /** The event show seat model mapper. */
+    /** The event show seat for show model mapper. */
     @Autowired
-    private EventShowSeatModificationModelMapper eventShowSeatModelMapper;
+    private EventShowSeatForShowModelMapper eventShowSeatForShowModelMapper;
 
-    /** The event venue service. */
+    /** The event show seat prices model mapper. */
     @Autowired
-    private EventVenueService eventVenueService;
+    private EventShowSeatPricesModelMapper eventShowSeatPricesModelMapper;
 
     /**
      * Finds the event show seats by event show id.
      *
      * @param eventShowId the event show id
-     * @return the event show seat dto list
+     * @return the event show seat for show response dto list
      */
-    public EventShowSeatModificationResponseDtoList findEventShowSeatsByEventShowId(final Long eventShowId) {
+    public EventShowSeatForShowResponseDtoList findEventShowSeatsByEventShowId(@NotNull(
+        message = "The event show id cannot be null."
+    ) final Long eventShowId) {
 
-        return EventShowSeatModificationResponseDtoList.of(eventShowSeatModelMapper.toDtos(eventShowSeatRepository.findByEventShowId(eventShowId)));
-    }
-
-    /**
-     * Finds the event show seat details by event show id.
-     *
-     * @param eventShowWithAuditoriumDto the event show with auditorium dto
-     * @return the event show seat details dto list
-     */
-    public EventShowSeatDetailsDtoList findEventShowSeatDetailsByEventShowAndAuditoriumId(@NotNull(
-        message = "The event show details cannot be null."
-    ) final EventShowWithAuditoriumDto eventShowWithAuditoriumDto) {
-
-        final List<EventShowSeat> eventShowSeats = eventShowSeatRepository.findByEventShowId(eventShowWithAuditoriumDto
-            .getEventShowId());
+        final List<EventShowSeat> eventShowSeats = eventShowSeatService.findByEventShowId(eventShowId);
 
         if (CollectionUtils.isEmpty(eventShowSeats)) {
-            throw new EventShowServiceException("No seats found for event show: " + eventShowWithAuditoriumDto);
+            throw EventShowSeatsNotFoundException.forEventShow(eventShowId);
+        }
+        return EventShowSeatForShowResponseDtoList.of(eventShowId, eventShowSeatForShowModelMapper.toDtos(eventShowSeats));
+    }
+
+    /**
+     * Finds the event show seats by event show id.
+     *
+     * @param eventShowSeatPricesRequestDto the event show seat prices request dto
+     * @return the event show seat prices response dto
+     */
+    public EventShowSeatPricesResponseDto findEventShowSeatsByEventShowId(
+            @NotNull(
+                message = "The event show id cannot be null."
+            ) final EventShowSeatPricesRequestDto eventShowSeatPricesRequestDto) {
+
+        final List<EventShowSeat> eventShowSeats = eventShowSeatService.findByEventShowAndSeatNumbers(
+            eventShowSeatService.findEventShowById(eventShowSeatPricesRequestDto.getEventShowId()),
+            eventShowSeatPricesRequestDto.getEventShowSeatNumbers());
+
+        if (CollectionUtils.isEmpty(eventShowSeats)
+            || eventShowSeats.size() != eventShowSeatPricesRequestDto.getEventShowSeatNumbers().size()) {
+            throw new EventShowSeatsNotFoundException("Invalid event show id and seat numbers combination.");
         }
 
-        final AuditoriumSeatDtoList auditoriumSeatDtoList = eventVenueService.findAuditoriumSeatsByAuditoriumId(
-            eventShowWithAuditoriumDto
-                .getAuditoriumId());
+        return eventShowSeatPricesModelMapper.toEventShowSeatPricesResponseDto(eventShowSeatPricesRequestDto.getEventShowId(),
+            eventShowSeats);
+    }
 
-        if (auditoriumSeatDtoList == null || CollectionUtils.isEmpty(auditoriumSeatDtoList.getAuditoriumSeatDtos())) {
-            throw new EventShowServiceException("No seats found for event show: " + eventShowWithAuditoriumDto);
+    /**
+     * Reserve.
+     *
+     * @param eventShowSeatsReservationRequestDto the event show seats reservation request dto
+     * @return the event show seats reservation response dto
+     */
+    @Transactional(rollbackFor = {Throwable.class})
+    public EventShowSeatsReservationResponseDto reserve(@NotNull(message = "The reservation request cannot be null.") final EventShowSeatsReservationRequestDto eventShowSeatsReservationRequestDto) {
+
+        validateRequiredDataForReservation(eventShowSeatsReservationRequestDto.getEventShowId(), eventShowSeatsReservationRequestDto.getSeatNumbers());
+
+        final String bookingReservationId = UUID.randomUUID().toString();
+        final Long reservedSeatsCount = eventShowSeatRepository.reserve(eventShowSeatsReservationRequestDto.getEventShowId(),
+                                        eventShowSeatsReservationRequestDto.getSeatNumbers(),
+                                        bookingReservationId,
+                                        eventShowSeatsReservationRequestDto.getSeatNumbers().size());
+
+        if (reservedSeatsCount == null || reservedSeatsCount != eventShowSeatsReservationRequestDto.getSeatNumbers().size()) {
+            throw new EventShowSeatReservationServiceException("The selected seats are no longer available. Please select different seats.");
         }
 
-        final Map<Long, String> auditoriumIdToSeatNumberMap = auditoriumSeatDtoList.getAuditoriumSeatDtos().stream().collect(
-            Collectors
-                .toMap(AuditoriumSeatDto::getId, AuditoriumSeatDto::getSeatNumber));
-
-        return EventShowSeatDetailsDtoList.of(eventShowWithAuditoriumDto.getEventShowId(), eventShowWithAuditoriumDto
-            .getAuditoriumId(), auditoriumSeatDtoList.getAuditoriumName(), eventShowSeats.stream().map(
-                eventShowSeat -> EventShowSeatInformationResponseDto.of(eventShowSeat.getId(), eventShowSeat.getAmount(), eventShowSeat
-                    .getSeatReservationStatus().name(), auditoriumIdToSeatNumberMap.get(eventShowSeat.getAuditoriumSeat()
-                        .getId()))).toList());
-
+        return EventShowSeatsReservationResponseDto.of(true, bookingReservationId, eventShowSeatsReservationRequestDto);
     }
 
     /**
-     * Finds the seat numbers by ids.
+     * Book.
      *
-     * @param eventShowSeatIds the event show seat ids
-     * @return the seat numbers by ids.
+     * @param eventShowSeatsBookingRequestDto the event show seats booking request dto
+     * @return the event show seats booking response dto
      */
-    public EventShowSeatNumbersDto findSeatNumbersByIds(@NotEmpty(
-        message = "The event show seat ids cannot be null or empty."
-    ) final Set<Long> eventShowSeatIds) {
+    @Transactional(rollbackFor = {Throwable.class})
+    public EventShowSeatsBookingResponseDto book(@NotNull(message = "The booking request cannot be null.") final EventShowSeatsBookingRequestDto eventShowSeatsBookingRequestDto) {
 
-        final List<EventShowSeat> eventShowSeats = findAllEventShowSeatsByIds(eventShowSeatIds);
-        if (CollectionUtils.isEmpty(eventShowSeats)) {
-            throw new EventShowSeatsNotFoundException(eventShowSeatIds);
-        }
-        if (eventShowSeats.size() != eventShowSeatIds.size()) {
-            final Set<Long> eventShowSeatIdsFound = eventShowSeats.stream().map(EventShowSeat::getId).collect(Collectors
-                .toSet());
-            throw new EventShowSeatsNotFoundException(eventShowSeatIds.stream().filter(
-                eventShowSeatId -> !eventShowSeatIdsFound.contains(eventShowSeatId)).collect(Collectors.toSet()));
+        validate(eventShowSeatsBookingRequestDto);
+
+        final Long bookedSeatsCount = eventShowSeatRepository.book(eventShowSeatsBookingRequestDto.getEventShowId(), eventShowSeatsBookingRequestDto.getSeatNumbers(), eventShowSeatsBookingRequestDto.getBookingReservationId(), eventShowSeatsBookingRequestDto.getSeatNumbers().size());
+
+        if (bookedSeatsCount == null || bookedSeatsCount != eventShowSeatsBookingRequestDto.getSeatNumbers().size()) {
+            throw new EventShowSeatReservationServiceException("The selected seats are no longer available. Please select different seats.");
         }
 
-        return EventShowSeatNumbersDto.of(eventVenueService.findSeatNumbersByAuditoriumSeatIds(eventShowSeats.stream().map(eventShowSeat -> eventShowSeat
-            .getAuditoriumSeat().getId()).toList()));
+        return EventShowSeatsBookingResponseDto.of(true, eventShowSeatsBookingRequestDto);
     }
 
     /**
-     * Finds the all event show seats by ids.
+     * Cancel.
      *
-     * @param seatIds the seat ids
-     * @return the event show seats
+     * @param eventShowSeatsCancellationRequestDto the event show seats cancellation request dto
+     * @return the event show seats cancellation response dto
      */
-    private List<EventShowSeat> findAllEventShowSeatsByIds(final Set<Long> seatIds) {
+    @Transactional(rollbackFor = {Throwable.class})
+    public EventShowSeatsCancellationResponseDto cancel(
+            @NotNull(
+                message = "The cancellation request cannot be null."
+            ) final EventShowSeatsCancellationRequestDto eventShowSeatsCancellationRequestDto) {
 
-        return eventShowSeatRepository.findAllById(seatIds);
-    }
+        validate(eventShowSeatsCancellationRequestDto);
 
-    /**
-     * Calculate seats total amount.
-     *
-     * @param eventShowSeatIds the event show seat ids
-     * @return the amount
-     */
-    public Double calculateSeatsTotalAmount(@NotEmpty(
-        message = "The event show seat ids cannot be null or empty."
-    ) final Set<Long> eventShowSeatIds) {
+        final Long cancelledSeatsCount = eventShowSeatRepository.cancel(eventShowSeatsCancellationRequestDto.getEventShowId(),
+            eventShowSeatsCancellationRequestDto.getSeatNumbers(),
+            UUID.fromString(eventShowSeatsCancellationRequestDto.getBookingReservationId()));
 
-        if (CollectionUtils.isNotEmpty(eventShowSeatIds)) {
-            final List<EventShowSeat> eventShowSeats = findAllEventShowSeatsByIds(eventShowSeatIds);
-            if (CollectionUtils.isNotEmpty(eventShowSeats)) {
-                if (eventShowSeats.size() != eventShowSeatIds.size()) {
-                    final Set<Long> eventShowSeatIdsFound = eventShowSeats.stream().map(EventShowSeat::getId).collect(Collectors
-                        .toSet());
-                    throw new EventShowSeatsNotFoundException(eventShowSeatIds.stream().filter(
-                        eventShowSeatId -> !eventShowSeatIdsFound.contains(eventShowSeatId)).collect(Collectors.toSet()));
-                }
-                return eventShowSeatRepository.findTotalAmount(eventShowSeatIds);
-            }
+        if (cancelledSeatsCount == null || cancelledSeatsCount != eventShowSeatsCancellationRequestDto.getSeatNumbers().size()) {
+            throw new EventShowSeatReservationServiceException("Unable to cancel the seat reservations for the given request.");
         }
-        return 0d;
+        return EventShowSeatsCancellationResponseDto.of(true, eventShowSeatsCancellationRequestDto.getBookingReservationId());
     }
 
     /**
-     * Are seats available.
+     * Validate.
      *
-     * @param seatIds the seat ids
-     * @return true, if successful
+     * @param eventShowSeatsBookingRequestDto the event show seats booking request dto
      */
-    public boolean areSeatsAvailable(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds) {
+    private void validate(final EventShowSeatsBookingRequestDto eventShowSeatsBookingRequestDto) {
 
-        return eventShowSeatRepository.areSeatsAvailable(seatIds, seatIds.size());
+        validateRequiredData(eventShowSeatsBookingRequestDto.getEventShowId(), eventShowSeatsBookingRequestDto.getSeatNumbers(),
+            eventShowSeatsBookingRequestDto.getBookingReservationId());
     }
 
     /**
-     * Reserve seats.
+     * Validate.
      *
-     * @param seatIds the seat ids
-     * @return the number of reserved seats.
+     * @param eventShowSeatsCancellationRequestDto the event show seats cancellation request dto
      */
-    @Transactional(rollbackFor = {Throwable.class})
-    public int reserveSeats(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds) {
+    private void validate(final EventShowSeatsCancellationRequestDto eventShowSeatsCancellationRequestDto) {
 
-        return eventShowSeatRepository.reserveSeats(seatIds, seatIds.size());
+        validateRequiredData(eventShowSeatsCancellationRequestDto.getEventShowId(),
+            eventShowSeatsCancellationRequestDto.getSeatNumbers(),
+            eventShowSeatsCancellationRequestDto.getBookingReservationId());
     }
 
     /**
-     * Are seats reserved.
+     * Validate required data.
      *
-     * @param seatIds the seat ids
-     * @param bookingId the booking id
-     * @return true, if successful
+     * @param eventShowId the event show id
+     * @param seatNumbers the seat numbers
+     * @param bookingReservationId the booking reservation id
      */
-    public boolean areSeatsReserved(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds, @NotNull(
-        message = "The booking id cannot be null."
-    ) final Long bookingId) {
+    public void validateRequiredData(final Long eventShowId, final Set<String> seatNumbers, final String bookingReservationId) {
 
-        return eventShowSeatRepository.areSeatsReserved(seatIds, bookingId, seatIds.size());
+        validateRequiredDataForReservation(eventShowId, seatNumbers);
+
+        if (StringUtils.isBlank(bookingReservationId)) {
+            throw new EventShowSeatReservationServiceException("The booking reservation id cannot be blank.");
+        }
     }
 
     /**
-     * Book seats.
+     * Validate required data for reservation.
      *
-     * @param seatIds the seat ids
-     * @param bookingId the booking id
-     * @return the number of booked seats.
+     * @param eventShowId the event show id
+     * @param seatNumbers the seat numbers
      */
-    @Transactional(rollbackFor = {Throwable.class})
-    public int bookSeats(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds, @NotNull(
-        message = "The booking id cannot be null."
-    ) final Long bookingId) {
+    private void validateRequiredDataForReservation(final Long eventShowId, final Set<String> seatNumbers) {
 
-        return eventShowSeatRepository.bookSeats(seatIds, seatIds.size(), bookingId);
-    }
+        if (eventShowId == null) {
+            throw new EventShowSeatReservationServiceException("The event show id cannot be null.");
+        }
 
-    /**
-     * Fill booking for reserved seats.
-     *
-     * @param seatIds the seat ids
-     * @param bookingId the booking id
-     * @return the number of reserved seats.
-     */
-    @Transactional(rollbackFor = {Throwable.class})
-    public int fillBookingForReservedSeats(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds, @NotNull(
-        message = "The booking id cannot be null."
-    ) final Long bookingId) {
-
-        return eventShowSeatRepository.fillBookingForReservedSeats(seatIds, seatIds.size(), bookingId);
-    }
-
-    /**
-     * Cancel by booking id.
-     *
-     * @param bookingId the booking id
-     */
-    @Transactional(rollbackFor = {Throwable.class})
-    public void cancelByBookingId(@NotNull(message = "The booking id cannot be null.") final Long bookingId) {
-
-        eventShowSeatRepository.cancelByBookingId(bookingId);
-    }
-
-    /**
-     * Unreserve seats.
-     *
-     * @param seatIds the seat ids
-     * @return the number of seats unreserved
-     */
-    @Transactional(rollbackFor = {Throwable.class})
-    public int unreserveSeats(@NotEmpty(message = "The seat ids cannot be empty.") final Set<Long> seatIds) {
-
-        return eventShowSeatRepository.unreserveSeats(seatIds);
+        if (CollectionUtils.isEmpty(seatNumbers)) {
+            throw new EventShowSeatReservationServiceException("The seat numbers cannot be empty.");
+        }
     }
 }

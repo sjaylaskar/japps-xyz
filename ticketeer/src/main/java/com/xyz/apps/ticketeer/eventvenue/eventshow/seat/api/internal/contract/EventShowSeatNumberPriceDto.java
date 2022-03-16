@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -28,4 +30,20 @@ public class EventShowSeatNumberPriceDto {
 
     /** The amount. */
     private Double amount;
+
+    /**
+     * Of.
+     *
+     * @param seatNumber the seat number
+     * @param amount the amount
+     * @return the event show seat number price dto
+     */
+    public static EventShowSeatNumberPriceDto of(final String seatNumber, final Double amount) {
+        final EventShowSeatNumberPriceDto eventShowSeatNumberPriceDto = new EventShowSeatNumberPriceDto();
+        if (StringUtils.isNotBlank(seatNumber) && amount != null) {
+            eventShowSeatNumberPriceDto.setSeatNumber(seatNumber);
+            eventShowSeatNumberPriceDto.setAmount(amount);
+        }
+        return eventShowSeatNumberPriceDto;
+    }
 }

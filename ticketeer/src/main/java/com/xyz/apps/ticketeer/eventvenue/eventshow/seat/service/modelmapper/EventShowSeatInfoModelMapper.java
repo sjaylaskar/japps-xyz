@@ -3,7 +3,7 @@
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
-package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model;
+package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.modelmapper;
 
 import javax.annotation.PostConstruct;
 
@@ -11,6 +11,7 @@ import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatInformationResponseDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeat;
 import com.xyz.apps.ticketeer.general.model.GeneralModelMapper;
 import com.xyz.apps.ticketeer.general.model.ModelConverter;
 
@@ -49,6 +50,9 @@ public class EventShowSeatInfoModelMapper extends GeneralModelMapper<EventShowSe
         )
         .addMappings(
             mapper -> mapper.using(ModelConverter.LOCALDATETIME_TO_STRING_CONVERTER).map(EventShowSeat::getBookingTime, EventShowSeatInformationResponseDto::setBookingTime)
+        )
+        .addMappings(
+            mapper -> mapper.using(ModelConverter.UUID_TO_STRING_CONVERTER).map(EventShowSeat::getBookingReservationId, EventShowSeatInformationResponseDto::setBookingReservationId)
         );
     }
 }

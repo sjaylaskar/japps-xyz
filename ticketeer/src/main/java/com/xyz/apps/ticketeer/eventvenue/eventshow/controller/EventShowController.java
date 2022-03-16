@@ -7,7 +7,6 @@ package com.xyz.apps.ticketeer.eventvenue.eventshow.controller;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowCreationDto;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowDtoList;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowNotFoundException;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowSearchCriteria;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowService;
-import com.xyz.apps.ticketeer.general.model.DtoList;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -71,21 +67,13 @@ public class EventShowController {
      * @return the response entity
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") @NotNull(message = "The event show id cannot be null") final Long id) {
+    public ResponseEntity<?> delete(@PathVariable("id") final Long id) {
 
-        try {
-            log.info("Event show: " + id);
-            eventShowService.delete(id);
-            log.info("Event show deleted: " + id);
-            return ResponseEntity.accepted()
-                .body("Event show deleted for id: " + id);
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to delete event show: "
-                    + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Event show: " + id);
+        eventShowService.delete(id);
+        log.info("Event show deleted: " + id);
+        return ResponseEntity.accepted()
+            .body("Event show deleted for id: " + id);
     }
 
     /**
@@ -97,25 +85,10 @@ public class EventShowController {
     @GetMapping("/city/{cityId}")
     public ResponseEntity<?> getByCityId(@PathVariable("cityId") final Long cityId) {
 
-        try {
-            log.info("Event city: " + cityId);
-            final EventShowDtoList eventShowDtoList = eventShowService.findByCityId(cityId);
-            if (DtoList.isNotEmpty(eventShowDtoList)) {
-                log.info("Event shows found: " + eventShowDtoList + " in city: " + cityId);
-                return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(eventShowDtoList);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No event shows found for city: " + cityId);
-            }
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find event shows for city: "
-                    + cityId + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Event city: " + cityId);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(eventShowService.findByCityId(cityId));
     }
 
     /**
@@ -131,25 +104,10 @@ public class EventShowController {
             @RequestParam(required = false) final String date) {
 
         final EventShowSearchCriteria eventShowSearchCriteria = EventShowSearchCriteria.of(cityId, eventId, date);
-        try {
-            log.info("Event show search criteria: " + eventShowSearchCriteria);
-            final EventShowDtoList eventShowDtoList = eventShowService.search(eventShowSearchCriteria);
-            if (DtoList.isNotEmpty(eventShowDtoList)) {
-                log.info("Event shows found: " + eventShowDtoList);
-                return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(eventShowDtoList);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No event shows found by given search criteria");
-            }
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find event show by search criteria: "
-                    + eventShowSearchCriteria + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Event show search criteria: " + eventShowSearchCriteria);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(eventShowService.search(eventShowSearchCriteria));
     }
 
     /**
@@ -161,20 +119,9 @@ public class EventShowController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") @NotNull(message = "The event show id cannot be null") final Long id) {
 
-        try {
-            log.info("Event show: " + id);
-            return ResponseEntity.status(HttpStatus.OK)
-                .body(eventShowService.findById(id));
-        } catch (final EventShowNotFoundException eventShowNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventShowNotFoundException)
-                .getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find event show for id: "
-                    + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Event show: " + id);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(eventShowService.findById(id));
     }
 
     /**
@@ -188,19 +135,8 @@ public class EventShowController {
         message = "The event show id cannot be null"
     ) final Long id) {
 
-        try {
-            log.info("Event show: " + id);
-            return ResponseEntity.status(HttpStatus.OK)
-                .body(eventShowService.findDetailedInfoById(id));
-        } catch (final EventShowNotFoundException eventShowNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionUtils.getRootCause(eventShowNotFoundException)
-                .getLocalizedMessage());
-        } catch (final Exception exception) {
-            log.error(exception);
-            return ResponseEntity
-                .status(HttpStatus.EXPECTATION_FAILED)
-                .body("Failed to find event show for id: "
-                    + id + ". Error: " + ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-        }
+        log.info("Event show: " + id);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(eventShowService.findDetailedInfoById(id));
     }
 }

@@ -24,4 +24,18 @@ public class EventShowNotFoundException extends EventShowServiceException {
     public EventShowNotFoundException(final Long id) {
         super("Event show not found for id: " + id);
     }
+
+    public EventShowNotFoundException(final String message) {
+        super(message);
+    }
+
+    /**
+     * For city id.
+     *
+     * @param cityId the city id
+     * @return the event show not found exception
+     */
+    public static EventShowNotFoundException forCityId(final Long cityId) {
+        return new EventShowNotFoundException("No event shows for city: " + cityId);
+    }
 }

@@ -143,12 +143,18 @@ public class EventShowService extends GeneralService {
      */
     public EventShowDtoList search(final EventShowSearchCriteria eventShowSearchCriteria) {
 
-        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowRepository.findByEventShowSearchCriteria(
+        final List<EventShow> eventShows = eventShowRepository.findByEventShowSearchCriteria(
             eventShowSearchCriteria.getCityId(),
             eventShowSearchCriteria.getEventId(),
             StringUtils.isNotBlank(eventShowSearchCriteria.getDate())
                 ? LocalDateTimeFormatUtil.parseLocalDate(eventShowSearchCriteria.getDate())
-                : null)));
+                : null);
+
+        if (CollectionUtils.isEmpty(eventShows)) {
+            throw new EventShowNotFoundException("No event shows found.");
+        }
+
+        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShows));
     }
 
     /**
@@ -159,7 +165,13 @@ public class EventShowService extends GeneralService {
      */
     public EventShowDtoList findByCityId(@NotNull(message = "The city id cannot be null.") final Long cityId) {
 
-        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShowRepository.findByCityId(cityId)));
+        final List<EventShow> eventShows = eventShowRepository.findByCityId(cityId);
+
+        if (CollectionUtils.isEmpty(eventShows)) {
+            throw EventShowNotFoundException.forCityId(cityId);
+        }
+
+        return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShows));
     }
 
     /**

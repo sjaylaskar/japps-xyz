@@ -133,7 +133,7 @@ public class EventShowSeatController {
      * @param eventVenueId the event venue id
      * @return the by event show id
      */
-    @GetMapping("/eventshow/{eventShowId}")
+    @GetMapping("/event-show-id/{eventShowId}")
     public ResponseEntity<?> getByEventShowId(
             @PathVariable("eventShowId") final Long eventVenueId) {
 

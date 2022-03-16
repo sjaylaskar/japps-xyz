@@ -8,6 +8,7 @@ package com.xyz.apps.ticketeer.general.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -59,4 +60,7 @@ public final class ModelConverter {
 
     /** The null to zero converter. */
     public static final Converter<Double, Double> NULL_TO_ZERO_CONVERTER = converter -> (converter.getSource() != null) ? converter.getSource() : 0d;
+
+    /** The uuid to string converter. */
+    public static final Converter<UUID, String> UUID_TO_STRING_CONVERTER = converter -> (converter.getSource() != null) ? converter.getSource().toString() : null;
 }

@@ -23,6 +23,7 @@ public class EventShowSeatsNotFoundException extends EventShowServiceException {
     /** The serial version UID. */
     private static final long serialVersionUID = -5121506571197848879L;
 
+
     /**
      * Instantiates a new event show seats not found exception.
      *
@@ -32,6 +33,11 @@ public class EventShowSeatsNotFoundException extends EventShowServiceException {
         super("Event show seats not found for ids: " + CollectionUtil.stringify(eventShowSeatIds));
     }
 
+    /**
+     * Instantiates a new event show seats not found exception.
+     *
+     * @param message the message
+     */
     public EventShowSeatsNotFoundException(final String message) {
         super(message);
     }

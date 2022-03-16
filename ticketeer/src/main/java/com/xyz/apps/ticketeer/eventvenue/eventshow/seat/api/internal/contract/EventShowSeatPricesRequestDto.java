@@ -1,9 +1,12 @@
 /*
-* Id: SeatRowPriceDto.java 02-Mar-2022 3:35:47 pm SubhajoyLaskar
+* Id: EventShowSeatPricesUpdationDto.java 16-Mar-2022 9:19:12 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -12,7 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The SeatRowPriceDto.
+ * The event show seat prices updation dto.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -21,14 +24,11 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SeatRowPriceDto {
+public class EventShowSeatPricesRequestDto {
 
-    /** The start row. */
-    private char startRow;
+    /** The event show id. */
+    private Long eventShowId;
 
-    /** The end row. */
-    private char endRow;
-
-    /** The amount. */
-    private Double amount;
+    /** The event show seat numbers. */
+    private Set<String> eventShowSeatNumbers = new HashSet<>();
 }

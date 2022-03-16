@@ -42,7 +42,6 @@ public interface EventShowRepository extends JpaRepository<EventShow, Long> {
      * @param cityId the city id
      * @return the list
      */
-    @Query("select es from EventShow es where es.cityId = :cityId")
     public List<EventShow> findByCityId(@Param("cityId") final Long cityId);
 
 
