@@ -5,6 +5,9 @@
 */
 package com.xyz.apps.ticketeer.booking.api.external.contract;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -23,14 +26,10 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BookingPriceInfoDto {
 
+    final List<Double> seatBasePrices = new ArrayList<>();
+
     /** The offer code. */
     private String offerCode;
-
-    /** The base amount. */
-    private Double baseAmount;
-
-    /** The number of seats. */
-    private Integer numberOfSeats;
 
     /** The city id. */
     private Long cityId;
@@ -49,9 +48,6 @@ public class BookingPriceInfoDto {
 
     /** The show start time. */
     private String showStartTime;
-
-    /** The final amount. */
-    private Double finalAmount;
 
     /** The booking date. */
     private String bookingTime;

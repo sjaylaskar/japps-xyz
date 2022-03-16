@@ -8,6 +8,9 @@ package com.xyz.apps.ticketeer.booking.api.external.contract;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -34,4 +37,25 @@ public class EventShowSeatsBookingRequestDto {
 
     /** The booking reservation id. */
     private String bookingReservationId;
+
+    /**
+     * Of.
+     *
+     * @param eventShowId the event show id
+     * @param bookingReservationId the booking reservation id
+     * @param seatNumbers the seat numbers
+     * @return the event show seats booking request dto
+     */
+    public static EventShowSeatsBookingRequestDto of(final Long eventShowId, final String bookingReservationId, final Set<String> seatNumbers) {
+        final EventShowSeatsBookingRequestDto eventShowSeatsBookingRequestDto = new EventShowSeatsBookingRequestDto();
+
+        if (eventShowId != null
+            && StringUtils.isNotBlank(bookingReservationId)
+            && CollectionUtils.isNotEmpty(seatNumbers)) {
+           eventShowSeatsBookingRequestDto.setEventShowId(eventShowId);
+           eventShowSeatsBookingRequestDto.setBookingReservationId(bookingReservationId);
+           eventShowSeatsBookingRequestDto.setSeatNumbers(seatNumbers);
+        }
+        return eventShowSeatsBookingRequestDto;
+    }
 }

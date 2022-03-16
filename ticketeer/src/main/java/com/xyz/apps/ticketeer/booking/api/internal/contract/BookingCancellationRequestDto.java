@@ -5,9 +5,6 @@
  */
 package com.xyz.apps.ticketeer.booking.api.internal.contract;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -25,22 +22,10 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BookingConfirmationRequestDto {
+public class BookingCancellationRequestDto {
 
     /** The booking id. */
     private Long bookingId;
-
-    /** The booking reservation id. */
-    private String bookingReservationId;
-
-    /** The event show id. */
-    private Long eventShowId;
-
-    /** The event show seat ids. */
-    private Set<String> seatNumbers = new HashSet<>();
-
-    /** The offer code. */
-    private String offerCode;
 
     /** The user. */
     private String username;

@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -81,7 +83,7 @@ public class BookingDetails extends Entity {
     /** The seats. */
     @NonNull
     @NotEmpty(message = "Seat numbers must not be empty.")
-    private List<String> seatNumbers = new ArrayList<>();
+    private Set<String> seatNumbers = new TreeSet<>();
 
     @NonNull
     @NotEmpty(message = "Seat base amounts must not be empty.")
