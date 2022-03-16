@@ -31,7 +31,7 @@ public class EventShowSeatDetailsDtoList {
     private String auditoriumName;
 
     /** The event show details dtos. */
-    private List<EventShowSeatDetailsDto> eventShowDetailsDtos = new ArrayList<>();
+    private List<EventShowSeatInformationResponseDto> eventShowDetailsDtos = new ArrayList<>();
 
     /**
      * Instantiates a new event show seat details dto list.
@@ -45,7 +45,7 @@ public class EventShowSeatDetailsDtoList {
      *
      * @param eventShowSeatDetailsDtos the event show seat details dtos
      */
-    public EventShowSeatDetailsDtoList(final List<EventShowSeatDetailsDto> eventShowSeatDetailsDtos) {
+    public EventShowSeatDetailsDtoList(final List<EventShowSeatInformationResponseDto> eventShowSeatDetailsDtos) {
         eventShowDetailsDtos.addAll(eventShowSeatDetailsDtos);
     }
 
@@ -58,7 +58,7 @@ public class EventShowSeatDetailsDtoList {
      * @param eventShowSeatDetailsDtos the event show seat details dtos
      * @return the event show seat details dto list
      */
-    public static EventShowSeatDetailsDtoList of(final Long eventShowId, final Long auditoriumId, final String auditoriumName, final List<EventShowSeatDetailsDto> eventShowSeatDetailsDtos) {
+    public static EventShowSeatDetailsDtoList of(final Long eventShowId, final Long auditoriumId, final String auditoriumName, final List<EventShowSeatInformationResponseDto> eventShowSeatDetailsDtos) {
         final EventShowSeatDetailsDtoList eventShowSeatDetailsDtoList = new EventShowSeatDetailsDtoList(eventShowSeatDetailsDtos);
         eventShowSeatDetailsDtoList.setEventShowId(eventShowId);
         eventShowSeatDetailsDtoList.setAuditoriumId(auditoriumId);

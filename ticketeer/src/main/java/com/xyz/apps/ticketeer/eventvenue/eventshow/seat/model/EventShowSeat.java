@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,14 +18,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Type;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShow;
-import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,6 +47,11 @@ import lombok.ToString;
 @Setter
 @ToString
 @Validated
+@Table(
+    uniqueConstraints =
+       {@UniqueConstraint(name = "UNIQUE_eventshow_row_seat", columnNames = {"eventShow", "rowName", "seatNumber"}),
+        @UniqueConstraint(name = "UNIQUE_eventshow_seatnumber", columnNames = {"eventShow", "seatNumber"})}
+)
 public class EventShowSeat extends com.xyz.apps.ticketeer.general.model.Entity {
 
     /** The id. */
@@ -67,10 +77,16 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.general.model.Entity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private EventShow eventShow;
 
-    /** The auditorium seat. */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "auditoriumSeatId", nullable = false)
-    private AuditoriumSeat auditoriumSeat;
+    /** The row name. */
+    @Column(nullable = false, length = 5)
+    @NotBlank(message = "Row name cannot be blank.")
+    @Size(min = 1, max = 5, message = "The row name must be of at least 1 and at most 5 characters.")
+    private String rowName;
+
+    /** The seat number. */
+    @Column(nullable = false)
+    @NotBlank(message = "The seat number cannot be blank.")
+    private String seatNumber;
 
     /** The reservation time. */
     @Column(columnDefinition = "TIMESTAMP")
@@ -80,36 +96,8 @@ public class EventShowSeat extends com.xyz.apps.ticketeer.general.model.Entity {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime bookingTime;
 
-    /** The booking. */
-    private Long bookingId;
-
-    /**
-     * Instantiates a new event show seat.
-     */
-    public EventShowSeat() {
-
-    }
-
-    /**
-     * Instantiates a new event show seat.
-     *
-     * @param amount the amount
-     * @param seatReservationStatus the seat reservation status
-     * @param eventShow the event show
-     * @param auditoriumSeat the auditorium seat
-     * @param reservationTime the reservation time
-     * @param bookingId the booking id
-     */
-    public EventShowSeat(@NotNull(message = "Seat price cannot be null.") final Double amount, @NotNull(
-        message = "Seat reservation status cannot be null."
-    ) final SeatReservationStatus seatReservationStatus, final EventShow eventShow, final AuditoriumSeat auditoriumSeat,
-            final LocalDateTime reservationTime, final Long bookingId) {
-
-        this.amount = amount;
-        this.seatReservationStatus = seatReservationStatus;
-        this.eventShow = eventShow;
-        this.auditoriumSeat = auditoriumSeat;
-        this.reservationTime = reservationTime;
-        this.bookingId = bookingId;
-    }
+    /** The booking reservation id. */
+    @Type(type = "uuid-char")
+    @Column(columnDefinition = "char(36)")
+    private UUID bookingReservationId;
 }

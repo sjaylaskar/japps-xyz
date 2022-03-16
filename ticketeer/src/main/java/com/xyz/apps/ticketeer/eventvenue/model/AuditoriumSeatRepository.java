@@ -63,7 +63,7 @@ public interface AuditoriumSeatRepository extends JpaRepository<AuditoriumSeat, 
      */
     @Transactional
     @Modifying
-    public Long deleteByAuditorium(final Auditorium auditorium);
+    public Long deleteByAuditorium(@Param("auditorium") final Auditorium auditorium);
 
     /**
      * Delete by auditorium and row name.
@@ -74,7 +74,7 @@ public interface AuditoriumSeatRepository extends JpaRepository<AuditoriumSeat, 
      */
     @Transactional
     @Modifying
-    public Long deleteByAuditoriumAndRowName(final Auditorium auditorium, final String rowName);
+    public Long deleteByAuditoriumAndRowName(@Param("auditorium") final Auditorium auditorium, @Param("rowName") final String rowName);
 
     /**
      * Delete by auditorium and row name and seat number.
@@ -86,5 +86,5 @@ public interface AuditoriumSeatRepository extends JpaRepository<AuditoriumSeat, 
      */
     @Transactional
     @Modifying
-    public Long deleteByAuditoriumAndRowNameAndSeatNumber(final Auditorium auditorium, final String rowName, final Integer seatNumber);
+    public Long deleteByAuditoriumAndRowNameAndSeatNumber(@Param("auditorium") final Auditorium auditorium, @Param("rowName") final String rowName, @Param("seatNumber") final Integer seatNumber);
 }

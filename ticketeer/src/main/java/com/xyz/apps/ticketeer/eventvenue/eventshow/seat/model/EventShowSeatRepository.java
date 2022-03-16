@@ -16,6 +16,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShow;
+
 
 /**
  * The event show seat repository.
@@ -26,9 +28,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Long> {
 
-    @Query(value = "select * from event_show_seat ess where ess.event_show_id = :eventShowId",
-           nativeQuery = true)
-    public List<EventShowSeat> findByEventShowId(@Param("eventShowId") final Long eventShowId);
+    /**
+     * Finds the by event show.
+     *
+     * @param eventShow the event show
+     * @return the list
+     */
+    public List<EventShowSeat> findByEventShow(@Param("eventShow") final EventShow eventShow);
 
     /** The cancel booked seats query. */
     static final String CANCEL_BOOKED_SEATS_QUERY = "update EventShowSeat ess"
@@ -189,4 +195,45 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
      */
     @Query("select sum(ess.amount) from EventShowSeat ess where ess.id in :ids")
     public double findTotalAmount(@Param("ids") final Collection<Long> ids);
+
+    /**
+     * Finds the by event show and row name.
+     *
+     * @param eventShow the event show
+     * @param rowName the row name
+     * @return the list
+     */
+    public List<EventShowSeat> findByEventShowAndRowName(@Param("eventShow") final EventShow eventShow, @Param("rowName") final String rowName);
+
+    /**
+     * Delete by event show and row name.
+     *
+     * @param eventShow the event show
+     * @param rowName the row name
+     * @return the long
+     */
+    @Transactional
+    @Modifying
+    public Long deleteByEventShowAndRowName(@Param("eventShow") final EventShow eventShow, @Param("rowName") final String rowName);
+
+    /**
+     * Delete by event show and seat number.
+     *
+     * @param eventShow the event show
+     * @param seatNumber the seat number
+     * @return the long
+     */
+    @Transactional
+    @Modifying
+    public Long deleteByEventShowAndSeatNumber(@Param("eventShow") final EventShow eventShow, @Param("seatNumber") final String seatNumber);
+
+    /**
+     * Finds the by event show and seat numbers.
+     *
+     * @param eventShow the event show
+     * @param seatNumbers the seat numbers
+     * @return the list
+     */
+    @Query("select ess from EventShowSeat ess where ess.eventShow = :eventShow and ess.seatNumber in :seatNumbers")
+    public List<EventShowSeat> findByEventShowAndSeatNumbers(@Param("eventShow") final EventShow eventShow, @Param("seatNumbers") final Collection<String> seatNumbers);
 }

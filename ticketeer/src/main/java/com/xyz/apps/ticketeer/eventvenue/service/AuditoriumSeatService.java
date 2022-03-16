@@ -69,26 +69,7 @@ public class AuditoriumSeatService extends GeneralService {
     public AuditoriumSeatsDto add(
             @NotNull(message = "The auditorium seats cannot be null.") final AuditoriumSeatsCreationDto auditoriumSeatsCreationDto) {
 
-        validateAuditoriumSeats(auditoriumSeatsCreationDto);
-
-        final Auditorium auditorium = findAuditorium(auditoriumSeatsCreationDto);
-
-        final List<AuditoriumSeat> auditoriumSeatsSaved = new ArrayList<>();
-        for (final AuditoriumSeatRowCreationDto auditoriumSeatRowCreationDto : auditoriumSeatsCreationDto.getAuditoriumSeatRows()) {
-            final Optional<AuditoriumSeat> auditoriumSeatOptional = auditoriumSeatRepository
-                .findTopByAuditoriumAndRowNameOrderBySeatNumberDesc(auditorium, auditoriumSeatRowCreationDto.getRowName());
-            final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.saveAll(
-                toAuditoriumSeats(auditorium, auditoriumSeatRowCreationDto,
-                    (auditoriumSeatOptional.isPresent())
-                        ? (auditoriumSeatOptional.get().getSeatNumber() + 1)
-                        : 1));
-            if (CollectionUtils.isEmpty(auditoriumSeats)) {
-                throw new AuditoriumSeatServiceException("Failed to add auditorium seats.");
-            }
-        }
-
-        return auditoriumSeatModelMapper.toAuditoriumSeatsDto(auditoriumSeatsCreationDto.getEventVenueId(), auditorium.getName(),
-            auditoriumSeatsSaved);
+        return addOrUpdate(auditoriumSeatsCreationDto);
 
     }
 
@@ -102,6 +83,17 @@ public class AuditoriumSeatService extends GeneralService {
     public AuditoriumSeatsDto update(
             @NotNull(message = "The auditorium seats cannot be null.") final AuditoriumSeatsCreationDto auditoriumSeatsCreationDto) {
 
+        return addOrUpdate(auditoriumSeatsCreationDto);
+    }
+
+    /**
+     * Adds or updates the auditorium seats.
+     *
+     * @param auditoriumSeatsCreationDto the auditorium seats creation dto
+     * @return the auditorium seats dto
+     */
+    private AuditoriumSeatsDto addOrUpdate(final AuditoriumSeatsCreationDto auditoriumSeatsCreationDto) {
+
         validateAuditoriumSeats(auditoriumSeatsCreationDto);
 
         final Auditorium auditorium = findAuditorium(auditoriumSeatsCreationDto);
@@ -118,6 +110,7 @@ public class AuditoriumSeatService extends GeneralService {
             if (CollectionUtils.isEmpty(auditoriumSeats)) {
                 throw new AuditoriumSeatServiceException("Failed to add auditorium seats.");
             }
+            auditoriumSeatsSaved.addAll(auditoriumSeats);
         }
 
         return auditoriumSeatModelMapper.toAuditoriumSeatsDto(auditoriumSeatsCreationDto.getEventVenueId(), auditorium.getName(),
@@ -140,7 +133,7 @@ public class AuditoriumSeatService extends GeneralService {
 
         final Long deletedSeatsCount = auditoriumSeatRepository.deleteByAuditorium(auditorium);
 
-        if (deletedSeatsCount == 0) {
+        if (deletedSeatsCount == null || deletedSeatsCount < 1) {
             throw AuditoriumSeatNotFoundException.forEventVenueAndAuditorium(eventVenueId, auditorium.getName());
         }
 
@@ -165,7 +158,7 @@ public class AuditoriumSeatService extends GeneralService {
 
         final Long deletedSeatsCount = auditoriumSeatRepository.deleteByAuditoriumAndRowName(auditorium, seatRowName);
 
-        if (deletedSeatsCount == 0) {
+        if (deletedSeatsCount == null || deletedSeatsCount < 1) {
             throw AuditoriumSeatNotFoundException.forEventVenueAndAuditoriumAndRowName(eventVenueId, auditorium.getName(), seatRowName);
         }
 
@@ -191,7 +184,7 @@ public class AuditoriumSeatService extends GeneralService {
 
         final Long deletedSeatsCount = auditoriumSeatRepository.deleteByAuditoriumAndRowNameAndSeatNumber(auditorium, seatRowName, seatNumber);
 
-        if (deletedSeatsCount == 0) {
+        if (deletedSeatsCount == null || deletedSeatsCount < 1) {
             throw AuditoriumSeatNotFoundException.forSeatNumber(eventVenueId, auditorium.getName(), seatRowName, seatNumber);
         }
 
@@ -218,6 +211,25 @@ public class AuditoriumSeatService extends GeneralService {
         }
 
         return auditoriumSeatModelMapper.toAuditoriumSeatsDto(eventVenueId, auditoriumName, auditoriumSeats);
+
+    }
+
+    /**
+     * Finds the by id.
+     *
+     * @param auditoriumId the auditorium id
+     * @return the auditorium
+     */
+    public AuditoriumSeatsDto findByAuditoriumId(@NotNull(message = "The auditorium id cannot be null.") final Long auditoriumId) {
+        final Auditorium auditorium = auditoriumService.findById(auditoriumId);
+
+        final List<AuditoriumSeat> auditoriumSeats = auditoriumSeatRepository.findByAuditorium(auditorium);
+
+        if (CollectionUtils.isEmpty(auditoriumSeats)) {
+            throw AuditoriumSeatNotFoundException.forAuditoriumId(auditorium.getId());
+        }
+
+        return auditoriumSeatModelMapper.toAuditoriumSeatsDto(auditorium.getEventVenue().getId(), auditorium.getName(), auditoriumSeats);
 
     }
 

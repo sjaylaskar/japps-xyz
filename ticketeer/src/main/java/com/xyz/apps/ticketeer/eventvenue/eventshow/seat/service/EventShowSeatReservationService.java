@@ -22,12 +22,12 @@ import org.springframework.validation.annotation.Validated;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatDto;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowWithAuditoriumDto;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatDetailsDto;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatInformationResponseDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatDetailsDtoList;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatDtoList;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatModificationResponseDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatNumbersDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeat;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatModelMapper;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatModificationModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.model.EventShowSeatRepository;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowServiceException;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueService;
@@ -50,7 +50,7 @@ public class EventShowSeatReservationService extends GeneralService {
 
     /** The event show seat model mapper. */
     @Autowired
-    private EventShowSeatModelMapper eventShowSeatModelMapper;
+    private EventShowSeatModificationModelMapper eventShowSeatModelMapper;
 
     /** The event venue service. */
     @Autowired
@@ -62,9 +62,9 @@ public class EventShowSeatReservationService extends GeneralService {
      * @param eventShowId the event show id
      * @return the event show seat dto list
      */
-    public EventShowSeatDtoList findEventShowSeatsByEventShowId(final Long eventShowId) {
+    public EventShowSeatModificationResponseDtoList findEventShowSeatsByEventShowId(final Long eventShowId) {
 
-        return EventShowSeatDtoList.of(eventShowSeatModelMapper.toDtos(eventShowSeatRepository.findByEventShowId(eventShowId)));
+        return EventShowSeatModificationResponseDtoList.of(eventShowSeatModelMapper.toDtos(eventShowSeatRepository.findByEventShowId(eventShowId)));
     }
 
     /**
@@ -98,7 +98,7 @@ public class EventShowSeatReservationService extends GeneralService {
 
         return EventShowSeatDetailsDtoList.of(eventShowWithAuditoriumDto.getEventShowId(), eventShowWithAuditoriumDto
             .getAuditoriumId(), auditoriumSeatDtoList.getAuditoriumName(), eventShowSeats.stream().map(
-                eventShowSeat -> EventShowSeatDetailsDto.of(eventShowSeat.getId(), eventShowSeat.getAmount(), eventShowSeat
+                eventShowSeat -> EventShowSeatInformationResponseDto.of(eventShowSeat.getId(), eventShowSeat.getAmount(), eventShowSeat
                     .getSeatReservationStatus().name(), auditoriumIdToSeatNumberMap.get(eventShowSeat.getAuditoriumSeat()
                         .getId()))).toList());
 

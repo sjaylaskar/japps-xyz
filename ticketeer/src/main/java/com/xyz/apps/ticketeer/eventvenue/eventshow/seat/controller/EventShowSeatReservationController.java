@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowWithAuditoriumDto;
-import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatDtoList;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatModificationResponseDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsBookingDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.EventShowSeatService;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.EventShowSeatsNotFoundException;
@@ -133,7 +133,7 @@ public class EventShowSeatReservationController {
 
         try {
             log.info("Event show: " + eventShowId);
-            final EventShowSeatDtoList eventShowSeatDtoList = eventShowSeatService.findEventShowSeatsByEventShowId(eventShowId);
+            final EventShowSeatModificationResponseDtoList eventShowSeatDtoList = eventShowSeatService.findEventShowSeatsByEventShowId(eventShowId);
             if (DtoList.isNotEmpty(eventShowSeatDtoList)) {
                 log.info("Event show seats: " + eventShowSeatDtoList);
                 return ResponseEntity

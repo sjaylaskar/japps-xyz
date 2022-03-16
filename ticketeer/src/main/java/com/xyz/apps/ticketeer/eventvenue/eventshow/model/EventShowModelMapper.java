@@ -78,4 +78,17 @@ public class EventShowModelMapper extends GeneralModelMapper<EventShow, EventSho
             mapper -> mapper.using(auditoriumIdToAuditoriumConverter).map(EventShowDto::getAuditoriumId, EventShow::setAuditorium)
         );
     }
+
+    /**
+     * Returns an event show object with only id set.
+     *
+     * @param id the id
+     * @return the event venue
+     */
+    public EventShow fromId(final Long id) {
+        if (id != null) {
+            return new EventShow().id(id);
+        }
+        return null;
+    }
 }

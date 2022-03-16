@@ -65,4 +65,15 @@ public class AuditoriumSeatNotFoundException extends RuntimeException {
         return new AuditoriumSeatNotFoundException("No auditorium seats found for event venue id: " + eventVenueId
             + " and auditorium: " + auditoriumName);
     }
+
+    /**
+     * For auditorium id.
+     *
+     * @param auditoriumId the auditorium id
+     * @return the auditorium seat not found exception
+     */
+    public static AuditoriumSeatNotFoundException forAuditoriumId(final Long auditoriumId) {
+
+        return new AuditoriumSeatNotFoundException("No auditorium seats found for auditorium id: " + auditoriumId);
+    }
 }

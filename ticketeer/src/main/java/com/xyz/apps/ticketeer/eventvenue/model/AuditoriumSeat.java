@@ -42,8 +42,7 @@ import lombok.ToString;
 @Validated
 @Table(
     uniqueConstraints =
-       {@UniqueConstraint(name = "UNIQUE_audi_rowName_seatNr", columnNames = {"auditorium", "rowName", "seatNumber"}),
-        @UniqueConstraint(name = "UNIQUE_audi_seatNumber", columnNames = {"auditorium", "seatNumber"})}
+       {@UniqueConstraint(name = "UNIQUE_audi_rowName_seatNr", columnNames = {"auditorium", "rowName", "seatNumber"})}
 )
 public class AuditoriumSeat extends com.xyz.apps.ticketeer.general.model.Entity {
 

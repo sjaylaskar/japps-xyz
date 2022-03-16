@@ -1,5 +1,5 @@
 /*
-* Id: EventShowSeat.java 15-Feb-2022 3:17:36 am SubhajoyLaskar
+* Id: EventShowSeatModificationResponseDto.java 15-Feb-2022 3:17:36 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
@@ -16,7 +16,7 @@ import lombok.ToString;
 
 
 /**
- * The event show seat.
+ * The event show seat modification response dto.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -25,7 +25,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EventShowSeatDto extends Dto<EventShowSeat> {
+public class EventShowSeatModificationResponseDto extends Dto<EventShowSeat> {
 
     /** The id. */
     private Long id;
@@ -39,15 +39,9 @@ public class EventShowSeatDto extends Dto<EventShowSeat> {
     /** The event show. */
     private Long eventShowId;
 
-    /** The auditorium seat. */
-    private Long auditoriumSeatId;
+    /** The seat row name. */
+    private String rowName;
 
-    /** The reservation time. */
-    private String reservationTime;
-
-    /** The booking time. */
-    private String bookingTime;
-
-    /** The booking. */
-    private Long bookingId;
+    /** The seat number. */
+    private String seatNumber;
 }

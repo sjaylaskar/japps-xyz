@@ -33,7 +33,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("eventvenue/auditorium/auditoriumseat")
+@RequestMapping("eventvenue/auditorium/seat")
 @Log4j2
 @Validated
 public class AuditoriumSeatController {
@@ -68,7 +68,7 @@ public class AuditoriumSeatController {
 
         log.info("Auditorium seats: " + auditoriumSeatsCreationDto);
         return ResponseEntity
-            .status(HttpStatus.CREATED)
+            .accepted()
             .body(auditoriumSeatService.update(auditoriumSeatsCreationDto));
     }
 
@@ -86,7 +86,8 @@ public class AuditoriumSeatController {
 
         log.info("Event venue id: " + eventVenueId);
         log.info("Auditorium name: " + auditoriumName);
-        return ResponseEntity.accepted().body("Deleted " + auditoriumSeatService.deleteAllSeatsForAuditorium(eventVenueId, auditoriumName) + " seats.");
+        return ResponseEntity.accepted().body("Deleted "
+            + auditoriumSeatService.deleteAllSeatsForAuditorium(eventVenueId, auditoriumName) + " seats.");
     }
 
     /**
@@ -106,7 +107,8 @@ public class AuditoriumSeatController {
         log.info("Event venue id: " + eventVenueId);
         log.info("Auditorium name: " + auditoriumName);
         log.info("Seat row name: " + seatRowName);
-        return ResponseEntity.accepted().body("Deleted " + auditoriumSeatService.deleteSeatRow(eventVenueId, auditoriumName, seatRowName) + " seats.");
+        return ResponseEntity.accepted().body("Deleted "
+            + auditoriumSeatService.deleteSeatRow(eventVenueId, auditoriumName, seatRowName) + " seats.");
     }
 
     /**
@@ -129,7 +131,8 @@ public class AuditoriumSeatController {
         log.info("Auditorium name: " + auditoriumName);
         log.info("Seat row name: " + seatRowName);
         log.info("Seat number: " + seatNumber);
-        return ResponseEntity.accepted().body("Deleted " + auditoriumSeatService.deleteSeat(eventVenueId, auditoriumName, seatRowName, seatNumber) + " seats.");
+        return ResponseEntity.accepted().body("Deleted "
+            + auditoriumSeatService.deleteSeat(eventVenueId, auditoriumName, seatRowName, seatNumber) + " seats.");
     }
 
     /**
