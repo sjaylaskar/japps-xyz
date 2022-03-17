@@ -197,73 +197,6 @@ Discounts:
 {
   "dtos": [
     {
-      "applicableCityIds": [
-        1
-      ],
-      "applicableEventVenueIds": [
-        0
-      ],
-      "discountStrategy": "string",
-      "discountType": "string",
-      "endTime": "string",
-      "id": "string",
-      "minAmount": 0,
-      "minSeats": 0,
-      "nthSeat": 0,
-      "offerCode": "string",
-      "showTimeType": "string",
-      "startTime": "string",
-      "value": 0
-    }
-  ]
-}
-
-
-{
-  "dtos": [
-    {
-      "applicableCityIds": [
-        1
-      ],
-      "discountStrategy": "FLAT_DISCOUNT",
-      "discountType": "AMOUNT",
-      "minAmount": 0,
-      "minSeats": 0,
-      "nthSeat": 0,
-      "offerCode": "TKTEEROFF100",
-      "value": 100
-    }
-  ]
-}
-
-{
-  "dtos": [
-    {
-      "applicableCityIds": [
-        0
-      ],
-      "applicableEventVenueIds": [
-        0
-      ],
-      "discountStrategy": "string",
-      "discountType": "string",
-      "endTime": "string",
-      "id": "string",
-      "minAmount": 0,
-      "minSeats": 0,
-      "nthSeat": 0,
-      "offerCode": "string",
-      "showTimeType": "string",
-      "startTime": "string",
-      "value": 0
-    }
-  ]
-}
-
-
-{
-  "dtos": [
-    {
 "applicableEventVenueIds": [
 2
 ],
@@ -303,5 +236,137 @@ Discounts:
       "offerCode": "TKTEEROFF500",
       "value": 30
     }
+  ]
+}
+
+
+=======================
+
+{
+  "dtos": [
+    {
+      "discountStrategy": "NTH_SEAT_DISCOUNT",
+      "discountType": "PERCENTAGE",
+      "offerCode": "TKTEEROFF3RD50",
+      "nthSeat": "3",
+      "value": 50
+    },
+{
+      "discountStrategy": "SHOW_TIME_DISCOUNT",
+      "discountType": "AMOUNT",
+      "minAmount": 2000,
+      "minSeats": 3,
+      "showTimeType": "MORNING",
+      "offerCode": "TKTEEROFFMORN600",
+      "value": 600
+    },
+{
+      "discountStrategy": "SHOW_TIME_DISCOUNT",
+      "discountType": "PERCENTAGE",
+      "showTimeType": "AFTERNOON",
+      "offerCode": "TKTEEROFFNOON30",
+      "value": 30
+    }
+  ]
+}
+
+=====
+
+{
+  "dtos": [
+    {
+      "id": "6233619ce046b9690817ae71",
+      "offerCode": "TKTEEROFF3RD50",
+      "discountStrategy": "NTH_SEAT_DISCOUNT",
+      "applicableCityIds": [],
+      "applicableEventVenueIds": [],
+      "minAmount": 0,
+      "minSeats": 0,
+      "nthSeat": 3,
+      "showTimeType": null,
+      "discountType": "PERCENTAGE",
+      "value": 50,
+      "startTime": null,
+      "endTime": null
+    },
+    {
+      "id": "6233619ce046b9690817ae72",
+      "offerCode": "TKTEEROFFMORN600",
+      "discountStrategy": "SHOW_TIME_DISCOUNT",
+      "applicableCityIds": [],
+      "applicableEventVenueIds": [],
+      "minAmount": 2000,
+      "minSeats": 3,
+      "nthSeat": null,
+      "showTimeType": "MORNING",
+      "discountType": "AMOUNT",
+      "value": 600,
+      "startTime": null,
+      "endTime": null
+    },
+    {
+      "id": "6233619ce046b9690817ae73",
+      "offerCode": "TKTEEROFFNOON30",
+      "discountStrategy": "SHOW_TIME_DISCOUNT",
+      "applicableCityIds": [],
+      "applicableEventVenueIds": [],
+      "minAmount": 0,
+      "minSeats": 0,
+      "nthSeat": null,
+      "showTimeType": "AFTERNOON",
+      "discountType": "PERCENTAGE",
+      "value": 30,
+      "startTime": null,
+      "endTime": null
+    }
+  ],
+  "empty": false,
+  "notEmpty": true
+}
+
+=====
+
+{
+  "bookingId": 4,
+  "bookingReservationId": "bebb0f0c-ad23-4220-a693-4f07d1b51de2",
+  "reservationTime": "2022-03-17T21:15:58.5164809",
+  "bookingStatus": "RESERVED",
+  "username": "jaylaskar",
+  "phoneNumber": "8877900998",
+  "emailId": "jay@s.com",
+  "eventShowId": 1,
+  "seatNumbers": [
+    "AS7",
+    "AS9"
+  ]
+}
+
+{
+  "bookingId": 5,
+  "bookingReservationId": "9726a1c0-c1ff-467f-a814-76cd63842961",
+  "reservationTime": "2022-03-17T21:41:23.4981927",
+  "bookingStatus": "RESERVED",
+  "username": "jaylaskar",
+  "phoneNumber": "8877900998",
+  "emailId": "jay@s.com",
+  "eventShowId": 1,
+  "seatNumbers": [
+    "AS7",
+    "AS9"
+  ]
+}
+
+{
+  "bookingId": 6,
+  "bookingReservationId": "c99cebf1-1e58-4942-9a9a-15b1c6f5233c",
+  "reservationTime": "2022-03-17T21:42:12.45224",
+  "bookingStatus": "RESERVED",
+  "username": "jaylaskar",
+  "phoneNumber": "8877900998",
+  "emailId": "jay@s.com",
+  "eventShowId": 1,
+  "seatNumbers": [
+    "DS3",
+    "AS8"
   ]
 }
