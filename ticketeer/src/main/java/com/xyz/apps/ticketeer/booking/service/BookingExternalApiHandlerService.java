@@ -280,7 +280,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         ResponseEntity<EventShowSeatInformationResponseDtoList> eventShowInfoListResponseEntity = null;
         try {
             eventShowInfoListResponseEntity = restTemplate().getForEntity(
-                UriComponentsBuilder.fromHttpUrl(StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_RESERVATION_ID.get())))
+                UriComponentsBuilder.fromPath(StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_RESERVATION_ID.get())))
                 .queryParam("eventShowId", eventShowId)
                 .queryParam("bookingReservationId", bookingReservationId)
                 .encode()

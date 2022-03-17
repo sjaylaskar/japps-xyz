@@ -128,7 +128,7 @@ public class EventShowSeatReservationService extends GeneralService {
         validateRequiredDataForReservation(eventShowSeatsReservationRequestDto.getEventShowId(), eventShowSeatsReservationRequestDto.getSeatNumbers());
 
         final String bookingReservationId = UUID.randomUUID().toString();
-        final Long reservedSeatsCount = eventShowSeatRepository.reserve(eventShowSeatsReservationRequestDto.getEventShowId(),
+        final Integer reservedSeatsCount = eventShowSeatRepository.reserve(eventShowSeatsReservationRequestDto.getEventShowId(),
                                         eventShowSeatsReservationRequestDto.getSeatNumbers(),
                                         bookingReservationId,
                                         eventShowSeatsReservationRequestDto.getSeatNumbers().size());
@@ -151,7 +151,7 @@ public class EventShowSeatReservationService extends GeneralService {
 
         validate(eventShowSeatsBookingRequestDto);
 
-        final Long bookedSeatsCount = eventShowSeatRepository.book(eventShowSeatsBookingRequestDto.getEventShowId(), eventShowSeatsBookingRequestDto.getSeatNumbers(), eventShowSeatsBookingRequestDto.getBookingReservationId(), eventShowSeatsBookingRequestDto.getSeatNumbers().size());
+        final Integer bookedSeatsCount = eventShowSeatRepository.book(eventShowSeatsBookingRequestDto.getEventShowId(), eventShowSeatsBookingRequestDto.getSeatNumbers(), eventShowSeatsBookingRequestDto.getBookingReservationId(), eventShowSeatsBookingRequestDto.getSeatNumbers().size());
 
         if (bookedSeatsCount == null || bookedSeatsCount != eventShowSeatsBookingRequestDto.getSeatNumbers().size()) {
             throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_SELECTED_SEATS_NO_LONGER_AVAILABLE);
@@ -174,7 +174,7 @@ public class EventShowSeatReservationService extends GeneralService {
 
         validate(eventShowSeatsCancellationRequestDto);
 
-        final Long cancelledSeatsCount = eventShowSeatRepository.cancel(eventShowModelMapper.fromId(eventShowSeatsCancellationRequestDto.getEventShowId()),
+        final Integer cancelledSeatsCount = eventShowSeatRepository.cancel(eventShowModelMapper.fromId(eventShowSeatsCancellationRequestDto.getEventShowId()),
             eventShowSeatsCancellationRequestDto.getSeatNumbers(),
             UUID.fromString(eventShowSeatsCancellationRequestDto.getBookingReservationId()));
 

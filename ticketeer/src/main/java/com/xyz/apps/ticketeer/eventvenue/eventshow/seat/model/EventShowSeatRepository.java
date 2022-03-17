@@ -128,7 +128,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     @Transactional
     @Modifying
     @Query(value = RESERVE_SEATS_QUERY, nativeQuery = true)
-    public Long reserve(
+    public Integer reserve(
             @Param("eventShowId") final Long eventShowId,
             @Param("seatNumbers") final Collection<String> seatNumbers,
             @Param("bookingReservationId") final String bookingReservationId,
@@ -141,7 +141,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
             + "    from event_show_seat ess"
             + "    where "
             + "    ess.booking_reservation_id = :bookingReservationId"
-            + "    and ess.event_show_id = :event_show_id"
+            + "    and ess.event_show_id = :eventShowId"
             + "    and ess.seat_number in :seatNumbers"
             + "    and ess.seat_reservation_status = 'RESERVED'"
             + "  ) ess2"
@@ -167,7 +167,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     @Transactional
     @Modifying
     @Query(value = BOOK_SEATS_QUERY, nativeQuery = true)
-    public Long book(
+    public Integer book(
             @Param("eventShowId") final Long eventShowId,
             @Param("seatNumbers") final Collection<String> seatNumbers,
             @Param("bookingReservationId") final String bookingReservationId,
@@ -196,7 +196,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     @Transactional
     @Modifying
     @Query(CANCEL_BOOKED_SEATS_QUERY)
-    public Long cancel(
+    public Integer cancel(
             @Param("eventShow") final EventShow eventShow,
             @Param("seatNumbers") final Collection<String> seatNumbers,
             @Param("bookingReservationId") final UUID bookingReservationId);
