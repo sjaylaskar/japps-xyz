@@ -1,9 +1,13 @@
 /*
-* Id: AuditoriumSeatNotFoundException.java 16-Mar-2022 12:10:01 am SubhajoyLaskar
-* Copyright (©) 2022 Subhajoy Laskar
-* https://www.linkedin.com/in/subhajoylaskar
-*/
+ * Id: AuditoriumSeatNotFoundException.java 16-Mar-2022 12:10:01 am SubhajoyLaskar
+ * Copyright (©) 2022 Subhajoy Laskar
+ * https://www.linkedin.com/in/subhajoylaskar
+ */
 package com.xyz.apps.ticketeer.eventvenue.service;
+
+import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.NotFoundException;
+
 
 /**
  * The auditorium seat not found exception.
@@ -11,7 +15,7 @@ package com.xyz.apps.ticketeer.eventvenue.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class AuditoriumSeatNotFoundException extends RuntimeException {
+public class AuditoriumSeatNotFoundException extends NotFoundException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 8246173196749690709L;
@@ -21,8 +25,9 @@ public class AuditoriumSeatNotFoundException extends RuntimeException {
      *
      * @param message the message
      */
-    public AuditoriumSeatNotFoundException(final String message) {
-        super(message);
+    public AuditoriumSeatNotFoundException(final String messageKey, final Object... messageArguments) {
+
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 
     /**
@@ -33,9 +38,12 @@ public class AuditoriumSeatNotFoundException extends RuntimeException {
      * @param seatRowName the seat row name
      * @return the auditorium seat not found exception
      */
-    public static AuditoriumSeatNotFoundException forEventVenueAndAuditoriumAndRowName(final Long eventVenueId, final String auditoriumName, final String seatRowName) {
-        return new AuditoriumSeatNotFoundException("No auditorium seats found for event venue id: " + eventVenueId
-            + ", auditorium: " + auditoriumName + " and seat row name: " + seatRowName);
+    public static AuditoriumSeatNotFoundException forEventVenueAndAuditoriumAndRowName(final Long eventVenueId,
+            final String auditoriumName, final String seatRowName) {
+
+        return new AuditoriumSeatNotFoundException(
+            Messages.MESSAGE_ERROR_NOT_FOUND_AUDITORIUM_SEATS_FOR_EVENT_VENUE_ID_AUDITORIUM_AND_ROW_NAME, eventVenueId,
+            auditoriumName, seatRowName);
     }
 
     /**
@@ -47,10 +55,12 @@ public class AuditoriumSeatNotFoundException extends RuntimeException {
      * @param seatNumber the seat number
      * @return the exception
      */
-    public static AuditoriumSeatNotFoundException forSeatNumber(final Long eventVenueId, final String auditoriumName, final String seatRowName, final Integer seatNumber) {
+    public static AuditoriumSeatNotFoundException forSeatNumber(final Long eventVenueId, final String auditoriumName,
+            final String seatRowName, final Integer seatNumber) {
 
-        return new AuditoriumSeatNotFoundException("No auditorium seats found for event venue id: " + eventVenueId
-            + ", auditorium: " + auditoriumName + ", seat row name: " + seatRowName + " and seatNumber: " + seatNumber);
+        return new AuditoriumSeatNotFoundException(
+            Messages.MESSAGE_ERROR_NOT_FOUND_AUDITORIUM_SEATS_FOR_EVENT_VENUE_ID_AUDITORIUM_ROW_NAME_AND_SEAT_NUMBER, eventVenueId,
+            auditoriumName, seatRowName, seatNumber);
     }
 
     /**
@@ -62,8 +72,7 @@ public class AuditoriumSeatNotFoundException extends RuntimeException {
      */
     public static AuditoriumSeatNotFoundException forEventVenueAndAuditorium(final Long eventVenueId, final String auditoriumName) {
 
-        return new AuditoriumSeatNotFoundException("No auditorium seats found for event venue id: " + eventVenueId
-            + " and auditorium: " + auditoriumName);
+        return new AuditoriumSeatNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_AUDITORIUM_SEATS_FOR_EVENT_VENUE_ID_AND_AUDITORIUM, eventVenueId, auditoriumName);
     }
 
     /**
@@ -74,6 +83,6 @@ public class AuditoriumSeatNotFoundException extends RuntimeException {
      */
     public static AuditoriumSeatNotFoundException forAuditoriumId(final Long auditoriumId) {
 
-        return new AuditoriumSeatNotFoundException("No auditorium seats found for auditorium id: " + auditoriumId);
+        return new AuditoriumSeatNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_AUDITORIUM_SEATS_FOR_AUDITORIUM_ID, auditoriumId);
     }
 }

@@ -21,6 +21,18 @@ public abstract class ServiceException extends LocalizedException {
     /** The serial version UID. */
     private static final long serialVersionUID = 7367272733965850656L;
 
+    private HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+    /**
+     * With http status.
+     *
+     * @param httpStatus the http status
+     * @return the service exception
+     */
+    public ServiceException withHttpStatus(final HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
+        return this;
+    }
 
     /**
      * Instantiates a new service exception.
@@ -49,8 +61,9 @@ public abstract class ServiceException extends LocalizedException {
      *
      * @return the http status
      */
+    @Override
     public HttpStatus httpStatus() {
-        return HttpStatus.BAD_REQUEST;
+        return httpStatus;
     }
 
 }

@@ -29,6 +29,7 @@ import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDto;
 import com.xyz.apps.ticketeer.eventvenue.model.Auditorium;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeat;
 import com.xyz.apps.ticketeer.eventvenue.model.AuditoriumSeatRepository;
+import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
 import com.xyz.apps.ticketeer.eventvenue.service.modelmapper.AuditoriumSeatModelMapper;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 
@@ -108,7 +109,7 @@ public class AuditoriumSeatService extends GeneralService {
                         ? (auditoriumSeatOptional.get().getSeatNumber() + 1)
                         : 1));
             if (CollectionUtils.isEmpty(auditoriumSeats)) {
-                throw new AuditoriumSeatServiceException("Failed to add auditorium seats.");
+                throw new AuditoriumSeatServiceException(Messages.MESSAGE_ERROR_FAILURE_ADD_AUDITORIUM_SEATS);
             }
             auditoriumSeatsSaved.addAll(auditoriumSeats);
         }
@@ -261,7 +262,7 @@ public class AuditoriumSeatService extends GeneralService {
     private void validateAuditoriumSeats(final AuditoriumSeatsCreationDto auditoriumSeatsCreationDto) {
 
         if (CollectionUtils.isEmpty(auditoriumSeatsCreationDto.getAuditoriumSeatRows())) {
-            throw new AuditoriumSeatServiceException("The auditorium seat rows cannot be empty.");
+            throw new AuditoriumSeatServiceException(Messages.MESSAGE_ERROR_NOT_EMPTY_AUDITORIUM_SEAT_ROWS);
         }
 
         if (auditoriumSeatsCreationDto.getAuditoriumSeatRows()
@@ -270,12 +271,12 @@ public class AuditoriumSeatService extends GeneralService {
             .filter(Objects::nonNull)
             .filter(StringUtils::isNotBlank)
             .collect(Collectors.toSet()).size() != auditoriumSeatsCreationDto.getAuditoriumSeatRows().size()) {
-            throw new AuditoriumSeatServiceException("The auditorium seat row names must be unique and not blank.");
+            throw new AuditoriumSeatServiceException(Messages.MESSAGE_ERROR_NOT_EMPTY_AUDITORIUM_SEAT_ROWS_AND_UNIQUE);
         }
 
         if (auditoriumSeatsCreationDto.getAuditoriumSeatRows().stream().map(AuditoriumSeatRowCreationDto::getNumberOfSeats)
             .anyMatch(numberOfSeats -> numberOfSeats < 1)) {
-            throw new AuditoriumSeatServiceException("The number of seats in any row must be at least 1.");
+            throw new AuditoriumSeatServiceException(Messages.MESSAGE_ERROR_AUDITORIUM_SEAT_MIN_ROWS_ONE);
         }
     }
 
@@ -302,7 +303,7 @@ public class AuditoriumSeatService extends GeneralService {
         final EventVenueDto eventVenueDto = validateAndFindEventVenue(eventVenueId);
 
         if (StringUtils.isBlank(auditoriumName)) {
-            throw new AuditoriumSeatServiceException("The auditorium name cannot be null.");
+            throw new AuditoriumSeatServiceException(Messages.MESSAGE_ERROR_NOT_NULL_AUDITORIUM_NAME);
         }
 
         return findAuditorium(eventVenueDto.getId(), auditoriumName);
@@ -319,8 +320,7 @@ public class AuditoriumSeatService extends GeneralService {
 
         final Auditorium auditorium = auditoriumService.findByEventVenueAndAuditoriumName(eventVenueId, auditoriumName);
         if (auditorium == null) {
-            throw new AuditoriumSeatServiceException("No auditorium with name: "
-                + auditoriumName + " for event venue: " +  eventVenueId);
+            throw AuditoriumNotFoundException.forEventVenueIdAndName(eventVenueId, auditoriumName);
         }
         return auditorium;
     }
@@ -336,7 +336,7 @@ public class AuditoriumSeatService extends GeneralService {
         final EventVenueDto eventVenueDto = eventVenueService.findById(eventVenueId);
 
         if (eventVenueDto == null) {
-            throw new AuditoriumServiceException("Event venue not found for id: " + eventVenueId);
+            throw new EventVenueNotFoundException(eventVenueId);
         }
 
         return eventVenueDto;

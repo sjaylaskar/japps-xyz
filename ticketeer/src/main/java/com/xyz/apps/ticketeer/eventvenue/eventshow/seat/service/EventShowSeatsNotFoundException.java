@@ -9,7 +9,9 @@ import java.util.Collection;
 
 import javax.validation.constraints.NotNull;
 
-import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowServiceException;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.NonLocalizedServiceException;
+import com.xyz.apps.ticketeer.general.service.NotFoundException;
 import com.xyz.apps.ticketeer.util.CollectionUtil;
 
 /**
@@ -18,11 +20,31 @@ import com.xyz.apps.ticketeer.util.CollectionUtil;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class EventShowSeatsNotFoundException extends EventShowServiceException {
+public class EventShowSeatsNotFoundException extends NotFoundException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -5121506571197848879L;
 
+    /**
+     * Non localized not found exception.
+     *
+     * @param messsage the messsage
+     * @return the not found exception
+     */
+    public static NonLocalizedServiceException nonLocalizedNotFoundException(final String messsage) {
+        return NonLocalizedServiceException.of(messsage, HTTP_STATUS);
+    }
+
+    /**
+     * Auditorium not found exception.
+     *
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
+     */
+    public EventShowSeatsNotFoundException(final String messageKey, final Object ...messageArguments) {
+
+        super(Messages.resourceBundle(), messageKey, messageArguments);
+    }
 
     /**
      * Instantiates a new event show seats not found exception.
@@ -30,16 +52,7 @@ public class EventShowSeatsNotFoundException extends EventShowServiceException {
      * @param eventShowSeatIds the event show seat ids
      */
     public EventShowSeatsNotFoundException(final Collection<Long> eventShowSeatIds) {
-        super("Event show seats not found for ids: " + CollectionUtil.stringify(eventShowSeatIds));
-    }
-
-    /**
-     * Instantiates a new event show seats not found exception.
-     *
-     * @param message the message
-     */
-    public EventShowSeatsNotFoundException(final String message) {
-        super(message);
+        this(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_IDS, CollectionUtil.stringify(eventShowSeatIds));
     }
 
     /**
@@ -49,8 +62,8 @@ public class EventShowSeatsNotFoundException extends EventShowServiceException {
      * @param rowName the row name
      * @return the event show seats not found exception
      */
-    public static EventShowSeatsNotFoundException forEventShowAndRowName(final Long eventShowId, final String rowName) {
-        return new EventShowSeatsNotFoundException("Event show seats not found for event show id: " + eventShowId + " and seat row name: " + rowName);
+    public static NonLocalizedServiceException forEventShowAndRowName(final Long eventShowId, final String rowName) {
+        return nonLocalizedNotFoundException("Event show seats not found for event show id: " + eventShowId + " and seat row name: " + rowName);
     }
 
     /**
@@ -60,8 +73,8 @@ public class EventShowSeatsNotFoundException extends EventShowServiceException {
      * @param seatNumber the seat number
      * @return the event show seats not found exception
      */
-    public static EventShowSeatsNotFoundException forEventShowAndSeatNumber(final Long eventShowId, final String seatNumber) {
-        return new EventShowSeatsNotFoundException("Event show seats not found for event show id: " + eventShowId + " and seat number: " + seatNumber);
+    public static NonLocalizedServiceException forEventShowAndSeatNumber(final Long eventShowId, final String seatNumber) {
+        return nonLocalizedNotFoundException("Event show seats not found for event show id: " + eventShowId + " and seat number: " + seatNumber);
     }
 
     /**
@@ -72,7 +85,7 @@ public class EventShowSeatsNotFoundException extends EventShowServiceException {
      */
     public static EventShowSeatsNotFoundException forEventShow(@NotNull(message = "The event show id cannot be null.") final Long eventShowId) {
 
-        return new EventShowSeatsNotFoundException("Event show seats not found for event show id: " + eventShowId);
+        return new EventShowSeatsNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_ID, eventShowId);
     }
 
 }

@@ -3,7 +3,7 @@
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
-package com.xyz.apps.ticketeer.eventvenue.service;
+package com.xyz.apps.ticketeer.eventvenue.eventshow.service;
 
 import javax.annotation.PostConstruct;
 
@@ -18,14 +18,14 @@ import com.xyz.apps.ticketeer.general.service.ServiceMessageSource;
  * @version 1.0
  */
 @Service
-public class EventVenueMessageSource extends ServiceMessageSource {
+public class EventShowMessageSource extends ServiceMessageSource {
 
     /**
      * Adds the message sources.
      */
     @PostConstruct
     private void add() {
-        super.add("classpath:module/eventvenue/Messages",
-                  "classpath:module/eventvenue/ExternalApiUrls");
+        super.add("classpath:module/eventvenue/eventshow/Messages",
+                  "classpath:module/eventvenue/eventshow/ExternalApiUrls");
     }
 }

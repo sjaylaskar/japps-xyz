@@ -210,7 +210,7 @@ public class EventShowSeatService extends GeneralService {
     private void validateEventShowSeatNumberPrices(final EventShowSeatPricesUpdationDto eventShowSeatPriceUpdationDto) {
 
         if (CollectionUtils.isEmpty(eventShowSeatPriceUpdationDto.getEventShowSeatNumberPrices())) {
-            throw new EventShowSeatServiceException("The event show seat number prices cannot be empty.");
+            throw EventShowSeatServiceException.nonLocalizedServiceException("The event show seat number prices cannot be empty.");
         }
 
         if (eventShowSeatPriceUpdationDto
@@ -253,7 +253,7 @@ public class EventShowSeatService extends GeneralService {
             .flatMap(List::stream).toList());
 
         if (CollectionUtils.isEmpty(eventShowSeatsUpdated)) {
-            throw new EventShowSeatServiceException("Failed to update event show seat prices.");
+            throw EventShowSeatServiceException.nonLocalizedServiceException("Failed to update event show seat prices.");
         }
         return eventShowSeatsUpdated;
     }
@@ -352,7 +352,7 @@ public class EventShowSeatService extends GeneralService {
                     auditoriumSeat))
                 .toList());
         if (CollectionUtils.isEmpty(eventShowSeats)) {
-            throw new EventShowSeatServiceException("Failed to save event show seats info.");
+            throw EventShowSeatServiceException.nonLocalizedServiceException("Failed to save event show seats info.");
         }
         eventShowSeatsSaved.addAll(eventShowSeats);
     }
@@ -372,7 +372,7 @@ public class EventShowSeatService extends GeneralService {
         });
         final List<EventShowSeat> eventShowSeats = eventShowSeatRepository.saveAll(existingEventShowSeatsForRow);
         if (CollectionUtils.isEmpty(eventShowSeats)) {
-            throw new EventShowSeatServiceException("Failed to save event show seats info.");
+            throw EventShowSeatServiceException.nonLocalizedServiceException("Failed to save event show seats info.");
         }
         eventShowSeatsSaved.addAll(eventShowSeats);
     }
@@ -391,7 +391,7 @@ public class EventShowSeatService extends GeneralService {
             .filter(auditoriumSeatRowName -> !auditoriumSeatsByRowMap.containsKey(auditoriumSeatRowName))
             .collect(Collectors.toSet());
         if (CollectionUtils.isNotEmpty(invalidAuditoriumSeatRowNames)) {
-            throw new EventShowSeatServiceException("Invalid auditorium seat row names provided: "
+            throw EventShowSeatServiceException.nonLocalizedServiceException("Invalid auditorium seat row names provided: "
                 + CollectionUtil.stringify(invalidAuditoriumSeatRowNames));
         }
     }
@@ -404,7 +404,7 @@ public class EventShowSeatService extends GeneralService {
     private void validateEventShowSeatPrices(final EventShowSeatsCreationDto eventShowSeatsCreationDto) {
 
         if (CollectionUtils.isEmpty(eventShowSeatsCreationDto.getEventShowSeatRowPrices())) {
-            throw new EventShowSeatServiceException("The event show seat row prices cannot be empty.");
+            throw EventShowSeatServiceException.nonLocalizedServiceException("The event show seat row prices cannot be empty.");
         }
 
         validateEventShowSeatUniqueRowNames(eventShowSeatsCreationDto);
@@ -422,7 +422,7 @@ public class EventShowSeatService extends GeneralService {
         if (eventShowSeatsCreationDto.getEventShowSeatRowPrices().stream()
             .anyMatch(eventShowSeatRowPrice -> eventShowSeatRowPrice.getAmount() == null
                 || eventShowSeatRowPrice.getAmount() < 0)) {
-            throw new EventShowSeatServiceException("The seat row prices cannot be negative.");
+            throw EventShowSeatServiceException.nonLocalizedServiceException("The seat row prices cannot be negative.");
         }
     }
 
@@ -439,7 +439,7 @@ public class EventShowSeatService extends GeneralService {
             .map(EventShowSeatRowPriceDto::getAuditoriumSeatRowName)
             .filter(StringUtils::isNotBlank)
             .collect(Collectors.toSet()).size() != eventShowSeatsCreationDto.getEventShowSeatRowPrices().size()) {
-            throw new EventShowSeatServiceException("The event show seat prices cannot be null and must be for unique row names.");
+            throw EventShowSeatServiceException.nonLocalizedServiceException("The event show seat prices cannot be null and must be for unique row names.");
         }
     }
 }

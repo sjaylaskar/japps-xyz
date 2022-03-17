@@ -16,6 +16,7 @@ import com.xyz.apps.ticketeer.eventvenue.api.external.ApiPropertyKey;
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.CityDto;
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDetailsDto;
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDto;
+import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.general.service.ServiceUtil;
 import com.xyz.apps.ticketeer.util.StringUtil;
@@ -46,7 +47,7 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
             throw new EventVenueServiceException(exception.getResponseBodyAsString());
         }
         if (ServiceUtil.notHasBodyResponseEntity(cityDtoResponseEntity)) {
-            throw new EventVenueServiceException("Invalid city id: " + cityId);
+            throw new EventVenueServiceException(Messages.MESSAGE_ERROR_INVALID_CITY, cityId);
         }
         return cityDtoResponseEntity.getBody();
     }
@@ -67,7 +68,7 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
             throw new EventVenueServiceException(exception.getResponseBodyAsString());
         }
         if (ServiceUtil.notHasBodyResponseEntity(eventDtoResponseEntity)) {
-            throw new EventVenueServiceException("Invalid event id: " + eventId);
+            throw new EventVenueServiceException(Messages.MESSAGE_ERROR_INVALID_EVENT, eventId);
         }
         return eventDtoResponseEntity.getBody();
     }
@@ -88,7 +89,7 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
             throw new EventVenueServiceException(exception.getResponseBodyAsString());
         }
         if (ServiceUtil.notHasBodyResponseEntity(eventDtoResponseEntity)) {
-            throw new EventVenueServiceException("Invalid event id: " + eventId);
+            throw new EventVenueServiceException(Messages.MESSAGE_ERROR_INVALID_EVENT, eventId);
         }
         return eventDtoResponseEntity.getBody();
     }

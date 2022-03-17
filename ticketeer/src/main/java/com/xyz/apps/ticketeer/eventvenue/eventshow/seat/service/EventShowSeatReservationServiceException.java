@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service;
 
+import com.xyz.apps.ticketeer.eventvenue.eventshow.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.ServiceException;
 
 /**
  * The EventShowSeatReservationServiceException.
@@ -12,7 +14,7 @@ package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class EventShowSeatReservationServiceException extends RuntimeException {
+public class EventShowSeatReservationServiceException extends ServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 2045672256495594018L;
@@ -22,9 +24,9 @@ public class EventShowSeatReservationServiceException extends RuntimeException {
      *
      * @param message the message
      */
-    public EventShowSeatReservationServiceException(final String message) {
+    public EventShowSeatReservationServiceException(final String messageKey, final Object ...messageArguments) {
 
-        super(message);
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 
 }

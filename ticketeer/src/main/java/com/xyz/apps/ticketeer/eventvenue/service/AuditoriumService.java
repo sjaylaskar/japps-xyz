@@ -80,7 +80,7 @@ public class AuditoriumService extends GeneralService {
         final Auditorium auditorium = auditoriumRepository.save(auditoriumCreationModelMapper.toEntity(auditoriumCreationDto));
 
         if (auditorium == null) {
-            throw new AuditoriumServiceException("Failed to add auditorium: " + auditoriumCreationDto);
+            throw new AuditoriumServiceException(Messages.MESSAGE_ERROR_FAILURE_ADD_AUDITORIUM);
         }
 
         return auditoriumModelMapper.toDto(auditorium);
@@ -103,7 +103,7 @@ public class AuditoriumService extends GeneralService {
             auditoriumCreationDtoList));
 
         if (CollectionUtils.isNotEmpty(auditoriums)) {
-            throw new AuditoriumServiceException("Failed to add auditoriums.");
+            throw new AuditoriumServiceException(Messages.MESSAGE_ERROR_FAILURE_ADD_AUDITORIUM);
         }
 
         return auditoriumModelMapper.toAuditoriumDtoList(auditoriums);
@@ -129,7 +129,8 @@ public class AuditoriumService extends GeneralService {
 
         if (!StringUtils.equals(auditoriumDto.getName(), auditoriums.get(0).getName())
             && findByEventVenueAndAuditoriumName(auditoriumDto.getEventVenueId(), auditoriumDto.getName()) != null) {
-            throw new AuditoriumAlreadyExistsException(Messages.MESSAGE_ERROR_ALREADY_EXISTS_AUDITORIUM);
+            throw new AuditoriumAlreadyExistsException(Messages.MESSAGE_ERROR_ALREADY_EXISTS_AUDITORIUM_WITH_NAME_FOR_EVENT_VENUE_ID, auditoriumDto.getName(),
+                auditoriumDto.getEventVenueId());
         }
 
         auditoriums.get(0).setName(auditoriumDto.getName());
@@ -157,6 +158,7 @@ public class AuditoriumService extends GeneralService {
      * @return the auditorium
      */
     public Auditorium findById(@NotNull(message = "The auditorium id cannot be null.") final Long id) {
+
         return auditoriumRepository.findById(id).orElseThrow(() -> AuditoriumNotFoundException.forId(id));
     }
 
@@ -207,12 +209,13 @@ public class AuditoriumService extends GeneralService {
         final EventVenueDto eventVenueDto = validateAndFindEventVenue(auditoriumCreationDto.getEventVenueId());
 
         if (StringUtils.isBlank(auditoriumCreationDto.getName())) {
-            throw new AuditoriumServiceException("The auditorium name cannot be null.");
+            throw new AuditoriumServiceException(Messages.MESSAGE_ERROR_NOT_BLANK_AUDITORIUM_NAME);
         }
 
-        if (findByEventVenueAndAuditoriumName(auditoriumCreationDto.getEventVenueId(), auditoriumCreationDto.getName()) != null) {
-            throw new AuditoriumAlreadyExistsException("Auditorium with name: "
-                + auditoriumCreationDto.getName() + " already exists for event venue: " + eventVenueDto);
+        if (findByEventVenueAndAuditoriumName(eventVenueDto.getId(), auditoriumCreationDto.getName()) != null) {
+            throw new AuditoriumAlreadyExistsException(
+                Messages.MESSAGE_ERROR_ALREADY_EXISTS_AUDITORIUM_WITH_NAME_FOR_EVENT_VENUE_ID, auditoriumCreationDto.getName(),
+                auditoriumCreationDto.getEventVenueId());
         }
     }
 
@@ -224,28 +227,30 @@ public class AuditoriumService extends GeneralService {
     private void validateAuditoriums(final AuditoriumCreationDtoList auditoriumCreationDtoList) {
 
         if (CollectionUtils.isEmpty(auditoriumCreationDtoList.getAuditoriumNames())) {
-            throw new AuditoriumServiceException("The auditoriums list cannot be empty.");
+            throw new AuditoriumServiceException(Messages.MESSAGE_ERROR_NOT_EMPTY_AUDITORIUM_LIST);
         }
 
         final EventVenueDto eventVenueDto = validateAndFindEventVenue(auditoriumCreationDtoList.getEventVenueId());
 
-        if (auditoriumCreationDtoList.getAuditoriumNames().stream().filter(Objects::nonNull).toList().isEmpty() ||
+        if (auditoriumCreationDtoList.getAuditoriumNames().stream().filter(Objects::nonNull).toList().isEmpty()
+            ||
             auditoriumCreationDtoList.getAuditoriumNames().stream().anyMatch(StringUtils::isBlank)) {
-            throw new AuditoriumServiceException("The auditorium name cannot be blank.");
+            throw new AuditoriumServiceException(Messages.MESSAGE_ERROR_NOT_BLANK_AUDITORIUM_NAME);
         }
 
         if (Set.of(auditoriumCreationDtoList.getAuditoriumNames()).size() != auditoriumCreationDtoList.getAuditoriumNames()
             .size()) {
-            throw new AuditoriumServiceException("The auditorium names must be unique.");
+            throw new AuditoriumServiceException(Messages.MESSAGE_ERROR_UNIQUE_AUDITORIUM_NAMES);
         }
 
         final List<Auditorium> existingAuditoriumsForEventVenueAndNames = auditoriumRepository.findByEventVenueAndNames(
             eventVenueModelMapper.toEntity(eventVenueDto), auditoriumCreationDtoList.getAuditoriumNames());
         if (CollectionUtils.isNotEmpty(existingAuditoriumsForEventVenueAndNames)) {
-            throw new AuditoriumAlreadyExistsException("Auditoriums with names: "
-                + CollectionUtil.stringify(existingAuditoriumsForEventVenueAndNames.stream().map(Auditorium::getName)
-                    .toList())
-                + " already exist for event venue: " + eventVenueDto);
+            throw new AuditoriumAlreadyExistsException(
+                Messages.MESSAGE_ERROR_ALREADY_EXISTS_AUDITORIUM_NAMES_FOR_EVENT_VENUE_ID,
+                CollectionUtil.stringify(existingAuditoriumsForEventVenueAndNames.stream().map(Auditorium::getName)
+                    .toList()),
+                eventVenueDto.getId());
         }
     }
 
@@ -260,7 +265,7 @@ public class AuditoriumService extends GeneralService {
         final EventVenueDto eventVenueDto = eventVenueService.findById(eventVenueId);
 
         if (eventVenueDto == null) {
-            throw new AuditoriumServiceException("Event venue not found for id: " + eventVenueId);
+            throw new EventVenueNotFoundException(eventVenueId);
         }
 
         return eventVenueDto;

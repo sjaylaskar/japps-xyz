@@ -5,13 +5,16 @@
  */
 package com.xyz.apps.ticketeer.eventvenue.service;
 
+import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.NotFoundException;
+
 /**
  * The auditorium not found exception.
  *
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class AuditoriumNotFoundException extends EventVenueServiceException {
+public class AuditoriumNotFoundException extends NotFoundException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -6241245535405802412L;
@@ -23,7 +26,7 @@ public class AuditoriumNotFoundException extends EventVenueServiceException {
      */
     public AuditoriumNotFoundException(final Long id) {
 
-        super("Auditorium not found for id: " + id);
+        this(Messages.MESSAGE_ERROR_NOT_FOUND_AUDITORIUM_FOR_ID, id);
     }
 
     /**
@@ -31,9 +34,9 @@ public class AuditoriumNotFoundException extends EventVenueServiceException {
      *
      * @param message the message
      */
-    public AuditoriumNotFoundException(final String message) {
+    public AuditoriumNotFoundException(final String messageKey, final Object ...messageArguments) {
 
-        super(message);
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 
     /**
@@ -45,8 +48,7 @@ public class AuditoriumNotFoundException extends EventVenueServiceException {
      */
     public static AuditoriumNotFoundException forEventVenueIdAndId(final Long eventVenueId, final Long auditoriumId) {
 
-        return new AuditoriumNotFoundException("Auditorium not found for event venue id: "
-            + eventVenueId + " and auditorium id: " + auditoriumId);
+        return new AuditoriumNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_AUDITORIUM_FOR_EVENT_VENUE_AND_ID, eventVenueId, auditoriumId);
     }
 
     /**
@@ -58,8 +60,7 @@ public class AuditoriumNotFoundException extends EventVenueServiceException {
      */
     public static AuditoriumNotFoundException forEventVenueIdAndName(final Long eventVenueId, final String auditoriumName) {
 
-        return new AuditoriumNotFoundException("Auditorium not found for event venue id: "
-            + eventVenueId + " and auditorium name: " + auditoriumName);
+        return new AuditoriumNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_AUDITORIUM_FOR_EVENT_VENUE_AND_NAME, eventVenueId, auditoriumName);
     }
 
     /**
@@ -70,7 +71,7 @@ public class AuditoriumNotFoundException extends EventVenueServiceException {
      */
     public static AuditoriumNotFoundException forEventVenueId(final Long eventVenueId) {
 
-        return new AuditoriumNotFoundException("Auditoriums not found for event venue id: " + eventVenueId);
+        return new AuditoriumNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_AUDITORIUM_FOR_EVENT_VENUE, eventVenueId);
     }
 
     /**
@@ -81,6 +82,6 @@ public class AuditoriumNotFoundException extends EventVenueServiceException {
      */
     public static AuditoriumNotFoundException forId(final Long id) {
 
-        return new AuditoriumNotFoundException("Auditoriums not found for id: " + id);
+        return new AuditoriumNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_AUDITORIUM_FOR_ID, id);
     }
 }

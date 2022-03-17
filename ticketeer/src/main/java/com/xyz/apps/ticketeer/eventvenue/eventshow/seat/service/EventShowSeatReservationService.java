@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.eventvenue.eventshow.resources.Messages;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatForShowResponseDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatInformationResponseDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatPricesRequestDto;
@@ -108,7 +109,7 @@ public class EventShowSeatReservationService extends GeneralService {
 
         if (CollectionUtils.isEmpty(eventShowSeats)
             || eventShowSeats.size() != eventShowSeatPricesRequestDto.getEventShowSeatNumbers().size()) {
-            throw new EventShowSeatsNotFoundException("Invalid event show id and seat numbers combination.");
+            throw new EventShowSeatsNotFoundException(Messages.MESSAGE_ERROR_INVALID_COMBINATION_OF_EVENT_SHOW_AND_SEATS);
         }
 
         return eventShowSeatPricesModelMapper.toEventShowSeatPricesResponseDto(eventShowSeatPricesRequestDto.getEventShowId(),
@@ -133,7 +134,7 @@ public class EventShowSeatReservationService extends GeneralService {
                                         eventShowSeatsReservationRequestDto.getSeatNumbers().size());
 
         if (reservedSeatsCount == null || reservedSeatsCount != eventShowSeatsReservationRequestDto.getSeatNumbers().size()) {
-            throw new EventShowSeatReservationServiceException("The selected seats are no longer available. Please select different seats.");
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_SELECTED_SEATS_NO_LONGER_AVAILABLE);
         }
 
         return EventShowSeatsReservationResponseDto.of(true, bookingReservationId, eventShowSeatsReservationRequestDto);
@@ -153,7 +154,7 @@ public class EventShowSeatReservationService extends GeneralService {
         final Long bookedSeatsCount = eventShowSeatRepository.book(eventShowSeatsBookingRequestDto.getEventShowId(), eventShowSeatsBookingRequestDto.getSeatNumbers(), eventShowSeatsBookingRequestDto.getBookingReservationId(), eventShowSeatsBookingRequestDto.getSeatNumbers().size());
 
         if (bookedSeatsCount == null || bookedSeatsCount != eventShowSeatsBookingRequestDto.getSeatNumbers().size()) {
-            throw new EventShowSeatReservationServiceException("The selected seats are no longer available. Please select different seats.");
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_SELECTED_SEATS_NO_LONGER_AVAILABLE);
         }
 
         return EventShowSeatsBookingResponseDto.of(true, eventShowSeatsBookingRequestDto);
@@ -178,7 +179,7 @@ public class EventShowSeatReservationService extends GeneralService {
             UUID.fromString(eventShowSeatsCancellationRequestDto.getBookingReservationId()));
 
         if (cancelledSeatsCount == null || cancelledSeatsCount != eventShowSeatsCancellationRequestDto.getSeatNumbers().size()) {
-            throw new EventShowSeatReservationServiceException("Unable to cancel the seat reservations for the given request.");
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_FAILURE_CANCEL);
         }
         return EventShowSeatsCancellationResponseDto.of(true, eventShowSeatsCancellationRequestDto.getBookingReservationId());
     }
@@ -197,7 +198,7 @@ public class EventShowSeatReservationService extends GeneralService {
         final List<EventShowSeat> eventShowSeatsByReservation = eventShowSeatRepository.findByEventShowAndBookingReservationId(eventShowModelMapper.fromId(eventShowId), UUID.fromString(bookingReservationId));
 
         if (CollectionUtils.isEmpty(eventShowSeatsByReservation)) {
-            throw new EventShowSeatsNotFoundException("No seats found for event show id: " + eventShowId + " and booking reservation id: " + bookingReservationId);
+            throw new EventShowSeatsNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_EVENT_SHOW_ID_AND_RESERVATION_ID, eventShowId, bookingReservationId);
         }
 
         return EventShowSeatInformationResponseDtoList.of(eventShowId, eventShowSeatInfoModelMapper.toDtos(eventShowSeatsByReservation));
@@ -238,7 +239,7 @@ public class EventShowSeatReservationService extends GeneralService {
         validateRequiredDataForReservation(eventShowId, seatNumbers);
 
         if (StringUtils.isBlank(bookingReservationId)) {
-            throw new EventShowSeatReservationServiceException("The booking reservation id cannot be blank.");
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_NOT_NULL_BOOKING_RESERVATION_ID);
         }
     }
 
@@ -251,16 +252,16 @@ public class EventShowSeatReservationService extends GeneralService {
     private void validateRequiredDataForReservation(final Long eventShowId, final Set<String> seatNumbers) {
 
         if (eventShowId == null) {
-            throw new EventShowSeatReservationServiceException("The event show id cannot be null.");
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_NOT_NULL_EVENT_SHOW_ID);
         }
 
         if (CollectionUtils.isEmpty(seatNumbers)) {
-            throw new EventShowSeatReservationServiceException("The seat numbers cannot be empty.");
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_NOT_EMPTY_SEAT_NUMBERS);
         }
 
         final int maxSeatsPerBooking = EnvironmentProperties.get(environment()).maxSeatsPerBooking();
         if (seatNumbers.size() > maxSeatsPerBooking) {
-            throw new EventShowSeatReservationServiceException("Maximum seats allowed per booking is: " + maxSeatsPerBooking);
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_MAX_SEATS_PER_BOOKING, maxSeatsPerBooking);
         }
     }
 }

@@ -104,7 +104,7 @@ public class EventShowService extends GeneralService {
             auditorium.getId(), eventShowEndDateTime))));
 
         if (eventShow == null) {
-            throw new EventShowServiceException("Failed to add event show.");
+            throw EventShowServiceException.nonLocalizedServiceException("Failed to add event show.");
         }
 
         return EventShowDetailsDto.of(eventShowModelMapper.toDto(eventShow), eventShowCreationDto.getEventVenueId(), auditorium
@@ -131,7 +131,7 @@ public class EventShowService extends GeneralService {
     private void validateExistsById(final Long id) {
 
         if (!eventShowRepository.existsById(id)) {
-            throw new EventShowNotFoundException(id);
+            throw EventShowNotFoundException.forId(id);
         }
     }
 
@@ -151,7 +151,7 @@ public class EventShowService extends GeneralService {
                 : null);
 
         if (CollectionUtils.isEmpty(eventShows)) {
-            throw new EventShowNotFoundException("No event shows found.");
+            throw EventShowServiceException.nonLocalizedServiceException("No event shows found.");
         }
 
         return EventShowDtoList.of(eventShowModelMapper.toDtos(eventShows));
@@ -212,7 +212,7 @@ public class EventShowService extends GeneralService {
      */
     public EventShow findEventShowById(@NotNull(message = "The event show id cannot be null.") final Long id) {
 
-        return eventShowRepository.findById(id).orElseThrow(() -> new EventShowNotFoundException(id));
+        return eventShowRepository.findById(id).orElseThrow(() -> EventShowNotFoundException.forId(id));
     }
 
     /**
@@ -284,7 +284,7 @@ public class EventShowService extends GeneralService {
                     && eventShowEndDateTime.isBefore(showDateTimePair.getFirst())
                     || eventShowStartDateTime.isAfter(showDateTimePair.getSecond())
                         && eventShowEndDateTime.isAfter(showDateTimePair.getSecond()))) {
-                throw new EventShowServiceException("Auditorium is already booked for the time slot.");
+                throw EventShowServiceException.nonLocalizedServiceException("Auditorium is already booked for the time slot.");
             }
         }
     }
@@ -301,7 +301,7 @@ public class EventShowService extends GeneralService {
         final LocalDate eventReleaseDate = LocalDateTimeFormatUtil.parseLocalDate(eventDetailsDto.getReleaseDate());
 
         if (eventShowDate.isBefore(eventReleaseDate)) {
-            throw new EventShowServiceException("The event show date must be on or after the event release date: "
+            throw EventShowServiceException.nonLocalizedServiceException("The event show date must be on or after the event release date: "
                 + eventReleaseDate);
         }
     }

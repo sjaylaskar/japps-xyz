@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.service;
 
+import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.ServiceException;
 
 /**
  * The auditorium service exception.
@@ -12,7 +14,7 @@ package com.xyz.apps.ticketeer.eventvenue.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class AuditoriumServiceException extends RuntimeException {
+public class AuditoriumServiceException extends ServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -4687969398830792939L;
@@ -22,8 +24,8 @@ public class AuditoriumServiceException extends RuntimeException {
      *
      * @param message the message
      */
-    public AuditoriumServiceException(final String message) {
+    public AuditoriumServiceException(final String messageKey, final Object ...messageArguments) {
 
-        super(message);
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 }

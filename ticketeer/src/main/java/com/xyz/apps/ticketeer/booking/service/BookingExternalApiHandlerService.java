@@ -133,7 +133,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatsCancellationResponseEntity)
             || BooleanUtils.isFalse(eventShowSeatsCancellationResponseEntity.getBody().getAreSeatsCancelled())) {
-            throw new BookingServiceException("Failed to cancel the seat reservation.");
+            throw BookingServiceException.nonLocalizedServiceException("Failed to cancel the seat reservation.");
         }
     }
 
@@ -157,7 +157,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowDetailedInfoDtoResponseEntity)) {
-            throw new BookingServiceException("Could not find details for event show id: " + eventShowId);
+            throw BookingServiceException.nonLocalizedServiceException("Could not find details for event show id: " + eventShowId);
         }
         return eventShowDetailedInfoDtoResponseEntity.getBody();
     }
@@ -185,7 +185,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatPricesResponseDtoResponseEntity)
             || CollectionUtils.isEmpty(eventShowSeatPricesResponseDtoResponseEntity.getBody().getEventShowSeatNumberPrices())) {
-            throw new BookingServiceException("Failed to obtain seat prices for selected seats.");
+            throw BookingServiceException.nonLocalizedServiceException("Failed to obtain seat prices for selected seats.");
         }
 
         return eventShowSeatPricesResponseDtoResponseEntity.getBody();
@@ -209,7 +209,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(bookingFinalAmountResponseEntity)) {
-            throw new BookingServiceException("Failed to calculate final amount for booking.");
+            throw BookingServiceException.nonLocalizedServiceException("Failed to calculate final amount for booking.");
         }
 
         return bookingFinalAmountResponseEntity.getBody();
@@ -234,7 +234,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowDtoResponseEntity)) {
-            throw new BookingServiceException("Invalid event show id: " + eventShowId);
+            throw BookingServiceException.nonLocalizedServiceException("Invalid event show id: " + eventShowId);
         }
         return eventShowDtoResponseEntity.getBody();
     }
@@ -260,7 +260,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatForShowResponseDtoListResponseEntity)
             && CollectionUtils.isNotEmpty(eventShowSeatForShowResponseDtoListResponseEntity.getBody().getDtos())) {
-            throw new BookingServiceException("Could not find seats for event show id: " + eventShowId);
+            throw BookingServiceException.nonLocalizedServiceException("Could not find seats for event show id: " + eventShowId);
         }
 
         return eventShowSeatForShowResponseDtoListResponseEntity.getBody();
@@ -292,7 +292,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowInfoListResponseEntity)
             && CollectionUtils.isNotEmpty(eventShowInfoListResponseEntity.getBody().getDtos())) {
-            throw new BookingServiceException("Could not find seats for event show id: " + eventShowId + " and booking reservation id: " + bookingReservationId);
+            throw BookingServiceException.nonLocalizedServiceException("Could not find seats for event show id: " + eventShowId + " and booking reservation id: " + bookingReservationId);
         }
 
         return eventShowInfoListResponseEntity.getBody();
@@ -314,7 +314,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
             throw new BookingServiceException(exception.getResponseBodyAsString());
         }
         if (ServiceUtil.notHasBodyResponseEntity(cityDtoResponseEntity)) {
-            throw new BookingServiceException("Invalid city id: " + cityId);
+            throw BookingServiceException.nonLocalizedServiceException("Invalid city id: " + cityId);
         }
         return cityDtoResponseEntity.getBody();
     }
@@ -328,7 +328,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
     public void validateUser(final String username, final String password) {
 
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-            throw new BookingServiceException("User is not authenticated.");
+            throw BookingServiceException.nonLocalizedServiceException("User is not authenticated.");
         }
 
         final BasicUserDto basicUserDto = new BasicUserDto();
@@ -340,7 +340,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                 environment().getProperty(ApiPropertyKey.AUTHENTICATE_USER.get()), basicUserDto,
                 Boolean.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException("User is not authenticated.");
+            throw BookingServiceException.nonLocalizedServiceException("User is not authenticated.");
         }
     }
 }

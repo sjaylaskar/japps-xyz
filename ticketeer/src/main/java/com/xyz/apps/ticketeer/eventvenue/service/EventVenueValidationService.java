@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 
 
@@ -35,7 +36,7 @@ public class EventVenueValidationService extends GeneralService {
      */
     public void validateCity(@NotNull(message = "The city id cannot be null") final Long cityId) {
         if (eventVenueExternalApiHandlerService.findCity(cityId) == null) {
-            throw new EventVenueServiceException("Invalid city id: " + cityId);
+            throw new EventVenueServiceException(Messages.MESSAGE_ERROR_INVALID_CITY, cityId);
         }
     }
 
@@ -46,7 +47,7 @@ public class EventVenueValidationService extends GeneralService {
      */
     public void validateEventId(@NotNull(message = "The event id cannot be null") final Long eventId) {
         if (eventVenueExternalApiHandlerService.findEvent(eventId) == null) {
-            throw new EventVenueServiceException("Invalid event id: " + eventId);
+            throw new EventVenueServiceException(Messages.MESSAGE_ERROR_INVALID_EVENT, eventId);
         }
     }
 

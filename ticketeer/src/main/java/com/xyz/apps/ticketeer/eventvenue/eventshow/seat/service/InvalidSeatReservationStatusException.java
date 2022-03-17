@@ -5,7 +5,8 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service;
 
-import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowServiceException;
+import com.xyz.apps.ticketeer.eventvenue.eventshow.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.NotFoundException;
 
 /**
  * The InvalidSeatReservationStatusException.
@@ -13,7 +14,7 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowServiceExcep
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class InvalidSeatReservationStatusException extends EventShowServiceException {
+public class InvalidSeatReservationStatusException extends NotFoundException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -5557778016124471204L;
@@ -25,6 +26,6 @@ public class InvalidSeatReservationStatusException extends EventShowServiceExcep
      * @param status the status
      */
     public InvalidSeatReservationStatusException(final String status) {
-        super("Invalid seat reservation status: " + status);
+        super(Messages.resourceBundle(), Messages.MESSAGE_ERROR_INVALID_SEAT_RESERVATION_STATUS, status);
     }
 }

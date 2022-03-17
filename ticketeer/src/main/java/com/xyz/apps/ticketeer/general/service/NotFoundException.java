@@ -49,7 +49,10 @@ public abstract class NotFoundException extends ServiceException {
     @Override
     public HttpStatus httpStatus() {
 
-        return HttpStatus.NOT_FOUND;
+        return HTTP_STATUS;
     }
+
+    /** The http status. */
+    public static final HttpStatus HTTP_STATUS = HttpStatus.NOT_FOUND;
 
 }

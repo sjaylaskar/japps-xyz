@@ -8,6 +8,7 @@ package com.xyz.apps.ticketeer.general.service;
 import java.util.ResourceBundle;
 
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 
 import com.xyz.apps.ticketeer.util.MessageUtil;
 
@@ -21,6 +22,19 @@ public abstract class LocalizedException extends RuntimeException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -6712226858643691102L;
+
+    public abstract HttpStatus httpStatus();
+
+    /**
+     * This is deprecated and will be removed in future.
+     * Use the localized constructors that take a resource bundle, message key and message arguments as parameters.
+     *
+     * @param message the message.
+     */
+    @Deprecated(forRemoval = true)
+    public LocalizedException(final String message) {
+        super(message);
+    }
 
     /**
      * Instantiates a new localized exception.

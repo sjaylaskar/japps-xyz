@@ -21,6 +21,7 @@ import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueDtoList
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueUpdationDto;
 import com.xyz.apps.ticketeer.eventvenue.model.EventVenue;
 import com.xyz.apps.ticketeer.eventvenue.model.EventVenueRepository;
+import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
 import com.xyz.apps.ticketeer.eventvenue.service.modelmapper.EventVenueCreationModelMapper;
 import com.xyz.apps.ticketeer.eventvenue.service.modelmapper.EventVenueModelMapper;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
@@ -65,7 +66,7 @@ public class EventVenueService extends GeneralService {
         final EventVenue eventVenue = eventVenueRepository.save(eventVenueCreationModelMapper.toEntity(eventVenueCreationDto));
 
         if (eventVenue == null) {
-            throw new EventVenueServiceException("Failed to add event venue: " + eventVenueCreationDto);
+            throw new EventVenueServiceException(Messages.MESSAGE_ERROR_FAILURE_ADD_EVENT_VENUE, eventVenueCreationDto);
         }
 
         return eventVenueModelMapper.toDto(eventVenue);
@@ -81,7 +82,7 @@ public class EventVenueService extends GeneralService {
     public EventVenueDto update(@NotNull(message = "The event venue details cannot be null.") final EventVenueUpdationDto eventVenueUpdationDto) {
 
         if (eventVenueUpdationDto.getId() == null) {
-            throw new EventVenueServiceException("The event venue id cannot be null.");
+            throw new EventVenueServiceException(Messages.MESSAGE_ERROR_NOT_NULL_EVENT_VENUE_ID);
         }
 
         EventVenue eventVenue = findEventVenueById(eventVenueUpdationDto.getId());
@@ -89,7 +90,7 @@ public class EventVenueService extends GeneralService {
         eventVenue = eventVenueRepository.save(eventVenue);
 
         if (eventVenue == null) {
-            throw new EventVenueServiceException("Failed to updated event venue: " + eventVenueUpdationDto);
+            throw new EventVenueServiceException(Messages.MESSAGE_ERROR_FAILURE_UPDATE_EVENT_VENUE, eventVenueUpdationDto);
         }
 
         return eventVenueModelMapper.toDto(eventVenue);

@@ -5,6 +5,9 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service;
 
+import com.xyz.apps.ticketeer.eventvenue.eventshow.resources.Messages;
+import com.xyz.apps.ticketeer.general.service.NonLocalizedServiceException;
+import com.xyz.apps.ticketeer.general.service.ServiceException;
 
 /**
  * The event show seat service exception.
@@ -12,7 +15,7 @@ package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public class EventShowSeatServiceException extends RuntimeException {
+public class EventShowSeatServiceException extends ServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 7029999969604913421L;
@@ -20,10 +23,20 @@ public class EventShowSeatServiceException extends RuntimeException {
     /**
      * Instantiates a new event show seat service exception.
      *
-     * @param message the message
+     * @param messageKey the message key
+     * @param messageArguments the message arguments
      */
-    public EventShowSeatServiceException(final String message) {
-        super(message);
+    public EventShowSeatServiceException(final String messageKey, final Object ...messageArguments) {
+        super(Messages.resourceBundle(), messageKey, messageArguments);
     }
 
+    /**
+     * Non localized service exception.
+     *
+     * @param message the message
+     * @return the non localized service exception
+     */
+    public static NonLocalizedServiceException nonLocalizedServiceException(final String message) {
+        return NonLocalizedServiceException.of(message);
+    }
 }
