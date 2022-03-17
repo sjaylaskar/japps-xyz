@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.xyz.apps.ticketeer.general.service.LocalizedException;
 import com.xyz.apps.ticketeer.general.service.ServiceException;
 import com.xyz.apps.ticketeer.util.MessageUtil;
 import com.xyz.apps.ticketeer.util.StringUtil;
@@ -136,7 +137,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
      * @param request the request
      * @return the response entity
      */
-    @ExceptionHandler({ServiceException.class})
+    @ExceptionHandler({LocalizedException.class})
     public ResponseEntity<?> handleServiceException(final ServiceException exception,
             final WebRequest request) {
 

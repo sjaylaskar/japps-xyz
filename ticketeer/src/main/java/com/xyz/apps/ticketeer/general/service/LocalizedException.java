@@ -8,7 +8,6 @@ package com.xyz.apps.ticketeer.general.service;
 import java.util.ResourceBundle;
 
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 
 import com.xyz.apps.ticketeer.util.MessageUtil;
 
@@ -18,12 +17,10 @@ import com.xyz.apps.ticketeer.util.MessageUtil;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-public abstract class LocalizedException extends RuntimeException {
+public abstract class LocalizedException extends RuntimeException implements RestServiceException {
 
     /** The serial version UID. */
     private static final long serialVersionUID = -6712226858643691102L;
-
-    public abstract HttpStatus httpStatus();
 
     /**
      * This is deprecated and will be removed in future.
