@@ -145,24 +145,18 @@ public class BookingService extends GeneralService {
             final BookingReservationRequestDto bookingReservationRequestDto,
             final BookingExternalReservationRequestResult bookingExternalReservationRequestResult) {
 
-        final EventShowSeatsReservationResponseDto eventShowSeatsReservationResponse = bookingExternalApiHandlerService.reserve(
-            EventShowSeatsReservationRequestDto.of(bookingReservationRequestDto.getEventShowId(), bookingReservationRequestDto
-                .getSeatNumbers()));
-
-        if (eventShowSeatsReservationResponse == null
-            || StringUtils.isBlank(eventShowSeatsReservationResponse.getBookingReservationId())) {
-            throw new SelectedSeatsUnavailableException();
-        }
-
-        bookingExternalReservationRequestResult.value = true;
-        bookingExternalReservationRequestResult.bookingReservationId = eventShowSeatsReservationResponse.getBookingReservationId();
+        final EventShowDto eventShow = bookingExternalApiHandlerService.findEventShow(bookingReservationRequestDto
+            .getEventShowId());
 
         final EventShowSeatPricesResponseDto eventShowSeatPricesResponseDto = bookingExternalApiHandlerService
             .obtainEventShowSeatPrices(EventShowSeatPricesRequestDto.of(bookingReservationRequestDto.getEventShowId(),
                 bookingReservationRequestDto.getSeatNumbers()));
 
-        final EventShowDto eventShow = bookingExternalApiHandlerService.findEventShow(bookingReservationRequestDto
-            .getEventShowId());
+        final EventShowSeatsReservationResponseDto eventShowSeatsReservationResponse = reserveEventShowSeats(
+            bookingReservationRequestDto);
+
+        bookingExternalReservationRequestResult.value = true;
+        bookingExternalReservationRequestResult.bookingReservationId = eventShowSeatsReservationResponse.getBookingReservationId();
 
         final Booking booking = bookingRepository.save(
             bookingModelMapper.toReservedBooking(
@@ -173,6 +167,26 @@ public class BookingService extends GeneralService {
 
         return bookingModelMapper.of(booking, bookingReservationRequestDto.getSeatNumbers());
 
+    }
+
+    /**
+     * Reserve event show seats.
+     *
+     * @param bookingReservationRequestDto the booking reservation request dto
+     * @return the event show seats reservation response dto
+     */
+    private EventShowSeatsReservationResponseDto reserveEventShowSeats(
+            final BookingReservationRequestDto bookingReservationRequestDto) {
+
+        final EventShowSeatsReservationResponseDto eventShowSeatsReservationResponse = bookingExternalApiHandlerService.reserve(
+            EventShowSeatsReservationRequestDto.of(bookingReservationRequestDto.getEventShowId(), bookingReservationRequestDto
+                .getSeatNumbers()));
+
+        if (eventShowSeatsReservationResponse == null
+            || StringUtils.isBlank(eventShowSeatsReservationResponse.getBookingReservationId())) {
+            throw new SelectedSeatsUnavailableException();
+        }
+        return eventShowSeatsReservationResponse;
     }
 
     /**
@@ -215,6 +229,57 @@ public class BookingService extends GeneralService {
             final BookingConfirmationRequestDto bookingConfirmationRequestDto,
             final BookingExternalReservationRequestResult bookingExternalReservationRequestResult) {
 
+        final EventShowDto eventShow = bookingExternalApiHandlerService.findEventShow(bookingConfirmationRequestDto
+            .getEventShowId());
+
+        final EventShowSeatPricesResponseDto eventShowSeatPricesResponseDto = bookingExternalApiHandlerService
+            .obtainEventShowSeatPrices(
+                EventShowSeatPricesRequestDto.of(bookingConfirmationRequestDto.getEventShowId(),
+                    bookingConfirmationRequestDto.getSeatNumbers()));
+
+        final EventShowDetailedInfoDto eventShowDetailedInfoDto = bookingExternalApiHandlerService
+            .findEventShowDetailsByEventShowId(
+                bookingConfirmationRequestDto.getEventShowId());
+
+        final Booking booking = bookingRepository.findById(bookingConfirmationRequestDto.getBookingId()).orElseThrow(
+            BookingExpiredException::new);
+
+        booking.setAmount(calculateBaseAmountOfSeats(eventShowSeatPricesResponseDto));
+        final LocalDateTime bookingTime = LocalDateTime.now();
+        booking.setBookingTime(bookingTime);
+
+        final double finalAmount = bookingExternalApiHandlerService.calculateFinalBookingAmount(bookingModelMapper
+            .toBookingPriceInfo(
+                bookingConfirmationRequestDto, eventShow, LocalDateTimeFormatUtil.format(bookingTime),
+                eventShowSeatPricesResponseDto));
+
+        final BookingDetails bookingDetails = bookingModelMapper.toBookingDetails(bookingConfirmationRequestDto,
+            eventShowSeatPricesResponseDto, eventShowDetailedInfoDto);
+
+        final EventShowSeatsBookingResponseDto eventShowSeatsBookingResponse = confirmEventShowSeats(bookingConfirmationRequestDto);
+
+        bookingExternalReservationRequestResult.value = true;
+        bookingExternalReservationRequestResult.bookingReservationId = eventShowSeatsBookingResponse.getBookingReservationId();
+
+        booking.setOfferCode(bookingConfirmationRequestDto.getOfferCode());
+        booking.setFinalAmount(finalAmount);
+        booking.setBookingStatus(BookingStatus.CONFIRMED);
+        savePayment(booking);
+        final Booking bookingUpdated = bookingRepository.save(booking);
+        final BookingDetails bookingDetailsSaved = bookingDetailsRepository.save(bookingDetails);
+
+        return bookingModelMapper.toBookingDetailsDto(bookingUpdated, bookingDetailsSaved);
+    }
+
+    /**
+     * Confirm event show seats.
+     *
+     * @param bookingConfirmationRequestDto the booking confirmation request dto
+     * @return the event show seats booking response dto
+     */
+    private EventShowSeatsBookingResponseDto confirmEventShowSeats(
+            final BookingConfirmationRequestDto bookingConfirmationRequestDto) {
+
         final EventShowSeatsBookingResponseDto eventShowSeatsBookingResponse = bookingExternalApiHandlerService.book(
             EventShowSeatsBookingRequestDto.of(bookingConfirmationRequestDto.getEventShowId(),
                 bookingConfirmationRequestDto.getBookingReservationId(),
@@ -224,55 +289,21 @@ public class BookingService extends GeneralService {
             || StringUtils.isBlank(eventShowSeatsBookingResponse.getBookingReservationId())) {
             throw new SelectedSeatsUnavailableException();
         }
-
-        bookingExternalReservationRequestResult.value = true;
-        bookingExternalReservationRequestResult.bookingReservationId = eventShowSeatsBookingResponse.getBookingReservationId();
-
-        final Booking booking = bookingRepository.findById(bookingConfirmationRequestDto.getBookingId()).orElseThrow(
-            BookingExpiredException::new);
-
-        final EventShowSeatPricesResponseDto eventShowSeatPricesResponseDto = bookingExternalApiHandlerService.obtainEventShowSeatPrices(
-            EventShowSeatPricesRequestDto.of(bookingConfirmationRequestDto.getEventShowId(),
-                bookingConfirmationRequestDto.getSeatNumbers()));
-
-        final EventShowDto eventShow = bookingExternalApiHandlerService.findEventShow(bookingConfirmationRequestDto
-            .getEventShowId());
-
-        final LocalDateTime bookingTime = LocalDateTime.now();
-
-        final double finalAmount = bookingExternalApiHandlerService.calculateFinalBookingAmount(bookingModelMapper.toBookingPriceInfo(
-            bookingConfirmationRequestDto, eventShow, LocalDateTimeFormatUtil.format(bookingTime), eventShowSeatPricesResponseDto));
-
-        savePayment(booking, finalAmount);
-
-        booking.setAmount(calculateBaseAmountOfSeats(eventShowSeatPricesResponseDto));
-        booking.setFinalAmount(finalAmount);
-        booking.setBookingStatus(BookingStatus.CONFIRMED);
-        booking.setBookingTime(bookingTime);
-        final Booking bookingUpdated = bookingRepository.save(booking);
-
-        final EventShowDetailedInfoDto eventShowDetailedInfoDto = bookingExternalApiHandlerService
-                .findEventShowDetailsByEventShowId(
-                    bookingConfirmationRequestDto.getEventShowId());
-        final BookingDetails bookingDetails = bookingModelMapper.toBookingDetails(bookingConfirmationRequestDto, eventShowSeatPricesResponseDto, eventShowDetailedInfoDto);
-        final BookingDetails bookingDetailsSaved = bookingDetailsRepository.save(bookingDetails);
-
-        return bookingModelMapper.toBookingDetailsDto(bookingUpdated, bookingDetailsSaved);
+        return eventShowSeatsBookingResponse;
     }
 
     /**
      * Save payment.
      *
      * @param booking the booking
-     * @param finalAmount the final amount
      */
-    private void savePayment(final Booking booking, final double finalAmount) {
+    private void savePayment(final Booking booking) {
 
         final Payment payment = new Payment();
-        payment.setAmount(finalAmount);
+        payment.setAmount(booking.getFinalAmount());
         payment.setBooking(booking);
         payment.setPaymentStatus(PaymentStatus.SUCCESS);
-        payment.setTransactionId(Payment.DEFAULT_TRANSACTION_ID_PREFIX + "_" + booking.getPhoneNumber() + "_" + booking.getId());
+        payment.setTransactionId(Payment.DEFAULT_TRANSACTION_ID_PREFIX + "_" + booking.getBookingReservationId() + "_" + booking.getId());
         paymentRepository.save(payment);
     }
 
@@ -281,7 +312,9 @@ public class BookingService extends GeneralService {
      *
      * @param bookingCancellationRequestDto the booking cancellation request dto
      */
-    public void cancel(@NotNull(message = "The booking cannot be null") final BookingCancellationRequestDto bookingCancellationRequestDto) {
+    public void cancel(@NotNull(
+        message = "The booking cannot be null"
+    ) final BookingCancellationRequestDto bookingCancellationRequestDto) {
 
         validateUser(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getPassword());
 
