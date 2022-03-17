@@ -58,7 +58,7 @@ http://localhost:8082/xyz/apps/ticketeer/api/event/add/all
         {
             "countryName": "India",
             "description": "The nights of winter",
-            "duration": 120,
+            "durationInMinutes": 120,
             "eventType": "Movie",
             "genre": "Sci-Fi",
             "language": "English",
@@ -74,7 +74,7 @@ http://localhost:8082/xyz/apps/ticketeer/api/event/add/all
         {
             "countryName": "UK",
             "description": "The fall of dawn",
-            "duration": 150,
+            "durationInMinutes": 150,
             "eventType": "Movie",
             "genre": "Science Fiction",
             "language": "English",
@@ -90,7 +90,7 @@ http://localhost:8082/xyz/apps/ticketeer/api/event/add/all
         {
             "countryName": "USA",
             "description": "The Tester",
-            "duration": 150,
+            "durationInMinutes": 150,
             "eventType": "Movie",
             "genre": "Biography",
             "language": "English",
@@ -104,6 +104,65 @@ http://localhost:8082/xyz/apps/ticketeer/api/event/add/all
             "releaseDate": "2022-04-23"
         }
     ]
+}
+
+Response:
+{
+  "dtos": [
+    {
+      "eventId": 10,
+      "name": "The nights of winter",
+      "description": "The nights of winter",
+      "eventType": "Movie",
+      "language": "English",
+      "durationInMinutes": 120,
+      "releaseDate": "2022-03-23",
+      "genre": "Sci-Fi",
+      "movieDirectorName": "Jay",
+      "movieCastNames": [
+        "RK",
+        "HK",
+        "SRK"
+      ],
+      "countryName": "India"
+    },
+    {
+      "eventId": 11,
+      "name": "The fall of dawn",
+      "description": "The fall of dawn",
+      "eventType": "Movie",
+      "language": "English",
+      "durationInMinutes": 150,
+      "releaseDate": "2022-03-23",
+      "genre": "Science Fiction",
+      "movieDirectorName": "Jay",
+      "movieCastNames": [
+        "Arun",
+        "Hritesh",
+        "Sanak"
+      ],
+      "countryName": "UK"
+    },
+    {
+      "eventId": 12,
+      "name": "The Tester",
+      "description": "The Tester",
+      "eventType": "Movie",
+      "language": "English",
+      "durationInMinutes": 150,
+      "releaseDate": "2022-04-23",
+      "genre": "Biography",
+      "movieDirectorName": "Jay",
+      "movieCastNames": [
+        "Tom",
+        "Hritesh",
+        "Harry"
+      ],
+      "countryName": "USA"
+    }
+  ],
+  "empty": false,
+  "notEmpty": true
 }
 
 http://localhost:8082/xyz/apps/ticketeer/api/eventvenue/add

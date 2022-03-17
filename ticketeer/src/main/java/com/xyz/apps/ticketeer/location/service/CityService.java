@@ -206,5 +206,9 @@ public class CityService extends GeneralService {
         if (cityRepository.findByCode(cityCreationDto.getCode()) != null) {
             throw new CityAlreadyExistsException(cityCreationDto.getCode());
         }
+
+        if (countryService.findById(cityCreationDto.getCountryId()) == null) {
+            throw CountryNotFoundException.forId(cityCreationDto.getCountryId());
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
-* Id: EventService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
+* Id: UserService.java 15-Feb-2022 11:21:26 am SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
@@ -228,7 +228,7 @@ public class UserService extends GeneralService {
      * @return the user
      */
     private User findByPhoneNumber(final String phoneNumber) {
-        return userRepository.findByUsername(phoneNumber);
+        return userRepository.findByPhoneNumber(phoneNumber);
     }
 
     /**
@@ -238,6 +238,6 @@ public class UserService extends GeneralService {
      * @return the user
      */
     private User findByEmail(final String email) {
-        return userRepository.findByUsername(email);
+        return userRepository.findByEmail(email);
     }
 }

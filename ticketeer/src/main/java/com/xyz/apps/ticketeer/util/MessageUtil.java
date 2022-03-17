@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import lombok.extern.log4j.Log4j2;
+
 
 /**
  * The message util.
@@ -20,6 +22,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
  * @author Subhajoy Laskar
  * @version 1.0
  */
+@Log4j2
 public final class MessageUtil {
 
     /** The entity field validation message key suffix. */
@@ -120,7 +123,9 @@ public final class MessageUtil {
      */
     private static Locale locale() {
 
-        return LocaleContextHolder.getLocale();
+        final Locale locale = LocaleContextHolder.getLocale();
+        log.info("Request context locale: " + locale);
+        return locale;
     }
 
     /**

@@ -97,7 +97,7 @@ public class EventController {
      * @return the response entity
      */
     @DeleteMapping("/delete/{eventId}")
-    public ResponseEntity<?> deleteByEventId(@RequestBody final Long eventId) {
+    public ResponseEntity<?> deleteByEventId(@PathVariable("eventId") final Long eventId) {
 
         log.info("Event id to delete: " + eventId);
         eventService.delete(eventId);
