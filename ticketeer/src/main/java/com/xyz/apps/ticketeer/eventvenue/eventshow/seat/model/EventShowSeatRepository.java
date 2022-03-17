@@ -182,13 +182,13 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
         + " ess.reservationTime = null"
         + " where"
         + " ess.bookingReservationId = :bookingReservationId"
-        + " and ess.eventShowId = :eventShowId"
+        + " and ess.eventShow = :eventShow"
         + " and ess.seatNumber in :seatNumbers";
 
     /**
      * Cancel reserved/booked seats.
      *
-     * @param eventShowId the event show id
+     * @param eventShow the event show
      * @param seatNumbers the seat numbers
      * @param bookingReservationId the booking reservation id
      * @return the count of cancelled seats.
@@ -197,7 +197,7 @@ public interface EventShowSeatRepository extends JpaRepository<EventShowSeat, Lo
     @Modifying
     @Query(CANCEL_BOOKED_SEATS_QUERY)
     public Long cancel(
-            @Param("eventShowId") final Long eventShowId,
+            @Param("eventShow") final EventShow eventShow,
             @Param("seatNumbers") final Collection<String> seatNumbers,
             @Param("bookingReservationId") final UUID bookingReservationId);
 

@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
  * The message util.
@@ -20,8 +21,6 @@ import org.springframework.context.MessageSource;
  */
 public final class MessageUtil {
 
-    /** The default locale. */
-    private static final Locale DEFAULT_LOCALE = Locale.getDefault();
 
     /**
      * Instantiates a new message util.
@@ -40,7 +39,17 @@ public final class MessageUtil {
      */
     public static String fromMessageSource(final MessageSource messageSource, final String messageKeyDenoter, final Object ...arguments) {
         validate(messageSource, messageKeyDenoter);
-        return messageSource.getMessage(StringUtil.toMessageKey(messageKeyDenoter), arguments, DEFAULT_LOCALE);
+        return messageSource.getMessage(StringUtil.toMessageKey(messageKeyDenoter), arguments, locale());
+    }
+
+    /**
+     * Locale.
+     *
+     * @return the locale
+     */
+    private static Locale locale() {
+
+        return LocaleContextHolder.getLocale();
     }
 
     /**

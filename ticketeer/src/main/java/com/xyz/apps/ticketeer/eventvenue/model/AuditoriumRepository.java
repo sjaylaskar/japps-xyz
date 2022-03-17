@@ -49,7 +49,7 @@ public interface AuditoriumRepository extends JpaRepository<Auditorium, Long> {
      * @param id the id
      * @return the auditorium
      */
-    @Query(value = "select audi.* from Auditorium audi where audi.event_venue_id = :eventVenueId and audi.id = id", nativeQuery = true)
+    @Query(value = "select audi.* from Auditorium audi where audi.event_venue_id = :eventVenueId and audi.id = :id", nativeQuery = true)
     public List<Auditorium> findByEventVenueIdAndId(@Param(value = "eventVenueId") final Long eventVenueId, @Param(value = "id") final Long id);
 
     /**

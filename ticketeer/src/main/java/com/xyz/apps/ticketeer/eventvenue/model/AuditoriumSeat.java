@@ -43,7 +43,7 @@ import lombok.ToString;
 @Validated
 @Table(
     uniqueConstraints =
-       {@UniqueConstraint(name = "UNIQUE_audi_rowName_seatNr", columnNames = {"auditorium", "rowName", "seatNumber"})}
+       {@UniqueConstraint(name = "UNIQUE_audi_rowName_seatNr", columnNames = {"auditoriumId", "rowName", "seatNumber"})}
 )
 public class AuditoriumSeat extends com.xyz.apps.ticketeer.general.model.Entity {
 
@@ -66,7 +66,7 @@ public class AuditoriumSeat extends com.xyz.apps.ticketeer.general.model.Entity 
 
     /** The auditorium. */
     @ManyToOne(optional = false)
-    @JoinColumn(name = "auditoriumId", nullable = false, foreignKey = @ForeignKey(name = "FK_Auditorium"))
+    @JoinColumn(name = "auditoriumId", nullable = false, foreignKey = @ForeignKey(name = "FK_AudiSeat_Auditorium"))
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull(message = "Auditorium is required for Auditorium Seat.")
     private Auditorium auditorium;

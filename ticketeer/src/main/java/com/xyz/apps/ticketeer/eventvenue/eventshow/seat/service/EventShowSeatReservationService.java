@@ -174,7 +174,7 @@ public class EventShowSeatReservationService extends GeneralService {
 
         validate(eventShowSeatsCancellationRequestDto);
 
-        final Long cancelledSeatsCount = eventShowSeatRepository.cancel(eventShowSeatsCancellationRequestDto.getEventShowId(),
+        final Long cancelledSeatsCount = eventShowSeatRepository.cancel(eventShowModelMapper.fromId(eventShowSeatsCancellationRequestDto.getEventShowId()),
             eventShowSeatsCancellationRequestDto.getSeatNumbers(),
             UUID.fromString(eventShowSeatsCancellationRequestDto.getBookingReservationId()));
 
