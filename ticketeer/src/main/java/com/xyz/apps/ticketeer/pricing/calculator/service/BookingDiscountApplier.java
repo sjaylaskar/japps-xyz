@@ -62,18 +62,18 @@ public class BookingDiscountApplier {
 
         final Set<Integer> nthSeatIndices = new HashSet<>();
 
-        for (final int index = nthSeatIndex; nthSeatIndex < bookingPriceInfo.getSeatPrices().size(); nthSeatIndex += discount
+        for (final int index = nthSeatIndex; nthSeatIndex < bookingPriceInfo.getSeatBasePrices().size(); nthSeatIndex += discount
             .getNthSeat()) {
             nthSeatIndices.add(index);
         }
 
         double discountedSeatAmount = 0;
-        for (int index = 0; index < bookingPriceInfo.getSeatPrices().size(); index++) {
+        for (int index = 0; index < bookingPriceInfo.getSeatBasePrices().size(); index++) {
             discountedSeatAmount += (nthSeatIndices.contains(index))
                 ? (DiscountType.PERCENTAGE.equals(discount.getDiscountType()))
-                    ? bookingPriceInfo.getSeatPrices().get(index) * (1 - discount.getValue() / 100)
-                    : bookingPriceInfo.getSeatPrices().get(index) - discount.getValue()
-                : bookingPriceInfo.getSeatPrices().get(index);
+                    ? bookingPriceInfo.getSeatBasePrices().get(index) * (1 - discount.getValue() / 100)
+                    : bookingPriceInfo.getSeatBasePrices().get(index) - discount.getValue()
+                : bookingPriceInfo.getSeatBasePrices().get(index);
         }
 
         bookingPriceInfo.setFinalAmount(discountedSeatAmount);
@@ -169,7 +169,7 @@ public class BookingDiscountApplier {
     private void validateMinSeats() {
 
         if (discount.getMinSeats() != null
-            && (bookingPriceInfo.getSeatPrices().size() < discount.getMinSeats())) {
+            && (bookingPriceInfo.getSeatBasePrices().size() < discount.getMinSeats())) {
             throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_MIN_SEATS_FOR_OFFER_CODE,
                 discount.getMinSeats());
         }
@@ -204,7 +204,7 @@ public class BookingDiscountApplier {
     private void validateNthSeat() {
 
         if (discount.getNthSeat() != null
-            && (bookingPriceInfo.getSeatPrices().size() < discount.getNthSeat())) {
+            && (bookingPriceInfo.getSeatBasePrices().size() < discount.getNthSeat())) {
             throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_MIN_SEATS_FOR_OFFER_CODE,
                 discount.getNthSeat());
         }
@@ -230,11 +230,11 @@ public class BookingDiscountApplier {
      */
     public static void validateSeatPrices(final BookingPriceInfo bookingPriceInfo) {
 
-        if (CollectionUtils.isEmpty(bookingPriceInfo.getSeatPrices())) {
+        if (CollectionUtils.isEmpty(bookingPriceInfo.getSeatBasePrices())) {
             throw new BookingDiscountApplierException(BookingDiscountApplierMessages.MESSAGE_ERROR_NOT_EMPTY_SEAT_PRICES);
         }
 
-        if (bookingPriceInfo.getSeatPrices()
+        if (bookingPriceInfo.getSeatBasePrices()
             .stream()
             .filter(Objects::nonNull)
             .anyMatch(seatPrice -> seatPrice < 0)) {
@@ -250,7 +250,7 @@ public class BookingDiscountApplier {
      */
     public static void calculateBaseAmount(final BookingPriceInfo bookingPriceInfo) {
 
-        bookingPriceInfo.setBaseAmount(bookingPriceInfo.getSeatPrices().stream().mapToDouble(Double::valueOf).sum());
+        bookingPriceInfo.setBaseAmount(bookingPriceInfo.getSeatBasePrices().stream().mapToDouble(Double::valueOf).sum());
         bookingPriceInfo.setFinalAmount(bookingPriceInfo.getBaseAmount());
     }
 }

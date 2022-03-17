@@ -29,7 +29,7 @@ import lombok.ToString;
 public class BookingPriceInfo extends AbstractModel {
 
     /** The seat prices. */
-    private List<Double> seatPrices = new ArrayList<>();
+    private List<Double> seatBasePrices = new ArrayList<>();
 
     /** The offer code. */
     private String offerCode;

@@ -48,7 +48,7 @@ public class BookingDetails extends Entity {
 
     /** The booking id. */
     @NonNull
-    @NotBlank(message = "The booking id cannot be null.")
+    @NotNull(message = "The booking id cannot be null.")
     private Long bookingId;
 
     /** The event show name. */

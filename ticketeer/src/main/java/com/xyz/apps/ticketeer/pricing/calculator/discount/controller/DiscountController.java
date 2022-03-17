@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.pricing.calculator.discount.controller;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -184,7 +185,7 @@ public class DiscountController {
      * @return the by city id
      */
     @GetMapping(value = "city/{cityId}")
-    public ResponseEntity<?> getByCityId(@PathVariable("cityId") @NotBlank(
+    public ResponseEntity<?> getByCityId(@PathVariable("cityId") @NotNull(
         message = "The city id cannot be blank."
     ) final Long cityId) {
 
@@ -201,7 +202,7 @@ public class DiscountController {
      * @return the by event venue id
      */
     @GetMapping(value = "eventvenue/{eventVenueId}")
-    public ResponseEntity<?> getByEventVenueId(@PathVariable("eventVenueId") @NotBlank(
+    public ResponseEntity<?> getByEventVenueId(@PathVariable("eventVenueId") @NotNull(
         message = "The event venue id cannot be blank."
     ) final Long eventVenueId) {
 

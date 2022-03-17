@@ -207,13 +207,13 @@ public class BookingService extends GeneralService {
      * Confirm.
      *
      * @param bookingConfirmationRequestDto the booking dto
-     * @param bookingResult the booking result
+     * @param bookingExternalReservationRequestResult the booking external reservation request result
      * @return the booking dto
      */
     @Transactional(rollbackFor = {Throwable.class})
     private BookingDetailsDto confirm(
             final BookingConfirmationRequestDto bookingConfirmationRequestDto,
-            final BookingExternalReservationRequestResult bookingResult) {
+            final BookingExternalReservationRequestResult bookingExternalReservationRequestResult) {
 
         final EventShowSeatsBookingResponseDto eventShowSeatsBookingResponse = bookingExternalApiHandlerService.book(
             EventShowSeatsBookingRequestDto.of(bookingConfirmationRequestDto.getEventShowId(),
@@ -224,6 +224,9 @@ public class BookingService extends GeneralService {
             || StringUtils.isBlank(eventShowSeatsBookingResponse.getBookingReservationId())) {
             throw new SelectedSeatsUnavailableException();
         }
+
+        bookingExternalReservationRequestResult.value = true;
+        bookingExternalReservationRequestResult.bookingReservationId = eventShowSeatsBookingResponse.getBookingReservationId();
 
         final Booking booking = bookingRepository.findById(bookingConfirmationRequestDto.getBookingId()).orElseThrow(
             BookingExpiredException::new);
@@ -292,8 +295,7 @@ public class BookingService extends GeneralService {
     /**
      * Cancel.
      *
-     * @param cancelBookingDto the cancel booking dto
-     * @param bookingExternalReservationRequestResult the booking result
+     * @param booking the booking
      * @return true, if successful
      */
     @Transactional(rollbackFor = {Throwable.class})
@@ -335,9 +337,11 @@ public class BookingService extends GeneralService {
     }
 
     /**
-     * @param username
-     * @param id
-     * @return
+     * Finds the booking.
+     *
+     * @param username the username
+     * @param id the id
+     * @return the booking
      */
     private Booking findBooking(final String username, final Long id) {
 

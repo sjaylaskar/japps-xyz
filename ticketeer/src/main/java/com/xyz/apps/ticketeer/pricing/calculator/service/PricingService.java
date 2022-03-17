@@ -77,7 +77,7 @@ public class PricingService extends GeneralService {
                 platformConvenienceFeeResponseEntity = restTemplate().getForEntity(MessageUtil.fromMessageSource(messageSource(),
                     ExternalApiUrls.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE), Double.class);
             } catch (final HttpStatusCodeException exception) {
-                throw NonLocalizedServiceException.of(exception.getResponseBodyAsString());
+                throw NonLocalizedServiceException.of(exception.getResponseBodyAsString(), exception.getStatusCode());
             }
 
             Double platformConvenienceFeePercentage = 0.0d;

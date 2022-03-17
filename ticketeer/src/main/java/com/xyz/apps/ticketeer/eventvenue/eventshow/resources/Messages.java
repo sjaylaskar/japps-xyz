@@ -54,7 +54,7 @@ public final class Messages {
 
     /** The message error selected seats no longer available. */
     public static final String MESSAGE_ERROR_SELECTED_SEATS_NO_LONGER_AVAILABLE = ERROR_MESSAGE_PREFIX
-        + "seats.no.longer.available";
+        + "selected.seats.no.longer.available";
 
     /** The message error invalid combination of event show and seats. */
     public static final String MESSAGE_ERROR_INVALID_COMBINATION_OF_EVENT_SHOW_AND_SEATS = ERROR_MESSAGE_PREFIX
