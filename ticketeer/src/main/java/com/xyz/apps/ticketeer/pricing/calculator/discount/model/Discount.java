@@ -76,9 +76,6 @@ public class Discount extends com.xyz.apps.ticketeer.general.model.Entity {
     private Integer minSeats = 0;
 
     /** The nth seat. */
-    @NonNull
-    @NotNull(message = Messages.MESSAGE_ERROR_REQUIRED_NTH_SEAT)
-    @Min(value = 0, message = Messages.MESSAGE_ERROR_MIN_VALUE_NTH_SEAT)
     private Integer nthSeat;
 
     /** The show time type. */

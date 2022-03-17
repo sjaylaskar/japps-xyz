@@ -45,7 +45,7 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
             cityDtoResponseEntity = restTemplate().getForEntity(
                 StringUtil.format(environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw NonLocalizedServiceException.of(exception.getResponseBodyAsString());
+            throw NonLocalizedServiceException.of(exception.getResponseBodyAsString(), exception.getStatusCode());
         }
         if (ServiceUtil.notHasBodyResponseEntity(cityDtoResponseEntity)) {
             throw new EventVenueServiceException(Messages.MESSAGE_ERROR_INVALID_CITY, cityId);
@@ -66,7 +66,7 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
             eventDtoResponseEntity = restTemplate().getForEntity(
                 StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId), EventDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw NonLocalizedServiceException.of(exception.getResponseBodyAsString());
+            throw NonLocalizedServiceException.of(exception.getResponseBodyAsString(),exception.getStatusCode());
         }
         if (ServiceUtil.notHasBodyResponseEntity(eventDtoResponseEntity)) {
             throw new EventVenueServiceException(Messages.MESSAGE_ERROR_INVALID_EVENT, eventId);
@@ -87,7 +87,7 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
             eventDtoResponseEntity = restTemplate().getForEntity(
                 StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_DETAILS_BY_EVENT_ID.get()), eventId), EventDetailsDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw NonLocalizedServiceException.of(exception.getResponseBodyAsString());
+            throw NonLocalizedServiceException.of(exception.getResponseBodyAsString(),exception.getStatusCode());
         }
         if (ServiceUtil.notHasBodyResponseEntity(eventDtoResponseEntity)) {
             throw new EventVenueServiceException(Messages.MESSAGE_ERROR_INVALID_EVENT, eventId);

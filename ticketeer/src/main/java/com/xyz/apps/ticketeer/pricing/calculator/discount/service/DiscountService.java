@@ -182,7 +182,9 @@ public class DiscountService extends GeneralService {
     }
 
     /**
-     * @param discountDto
+     * Validate offer code for update.
+     *
+     * @param discountDto the discount dto
      */
     private void validateOfferCodeForUpdate(final DiscountDto discountDto) {
 
@@ -287,7 +289,7 @@ public class DiscountService extends GeneralService {
     /**
      * Validate discount exists by id.
      *
-     * @param discountDto the discount dto
+     * @param id the id
      */
     private void validateDiscountExistsById(final String id) {
 
@@ -429,7 +431,9 @@ public class DiscountService extends GeneralService {
     }
 
     /**
-     * @return
+     * Consume discount validator.
+     *
+     * @return the consumer<? super discount contract>
      */
     private Consumer<? super DiscountContract> consumeDiscountValidator() {
 
@@ -437,7 +441,9 @@ public class DiscountService extends GeneralService {
     }
 
     /**
-     * @param discountContract
+     * Accept discount validator.
+     *
+     * @param discountContract the discount contract
      */
     private void acceptDiscountValidator(final DiscountContract discountContract) {
 
