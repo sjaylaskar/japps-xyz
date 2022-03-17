@@ -31,7 +31,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.xyz.apps.ticketeer.general.service.LocalizedException;
-import com.xyz.apps.ticketeer.general.service.ServiceException;
 import com.xyz.apps.ticketeer.util.MessageUtil;
 
 
@@ -130,14 +129,14 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     /**
-     * Handle service exception.
+     * Handle localized service exception.
      *
      * @param exception the exception
      * @param request the request
      * @return the response entity
      */
     @ExceptionHandler({LocalizedException.class})
-    public ResponseEntity<?> handleServiceException(final ServiceException exception,
+    public ResponseEntity<?> handleServiceException(final LocalizedException exception,
             final WebRequest request) {
 
         return ResponseEntity.status(exception.httpStatus()).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
