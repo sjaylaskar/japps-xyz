@@ -280,10 +280,10 @@ public class EventShowService extends GeneralService {
             if (!eventShowsForDate.stream()
                 .map(eventShowForDate -> Pair.of(LocalDateTime.of(eventShowForDate.getDate(), eventShowForDate.getStartTime()),
                     LocalDateTime.of(eventShowForDate.getEndDate(), eventShowForDate.getEndTime())))
-                .allMatch(showDateTimePair -> eventShowStartDateTime.isBefore(showDateTimePair.getFirst())
-                    && eventShowEndDateTime.isBefore(showDateTimePair.getFirst())
-                    || eventShowStartDateTime.isAfter(showDateTimePair.getSecond())
-                        && eventShowEndDateTime.isAfter(showDateTimePair.getSecond()))) {
+                .allMatch(showDateTimePair -> (eventShowStartDateTime.isBefore(showDateTimePair.getFirst())
+                    && eventShowEndDateTime.isBefore(showDateTimePair.getFirst()))
+                    || (eventShowStartDateTime.isAfter(showDateTimePair.getSecond())
+                        && eventShowEndDateTime.isAfter(showDateTimePair.getSecond())))) {
                 throw EventShowServiceException.nonLocalizedServiceException("Auditorium is already booked for the time slot.");
             }
         }

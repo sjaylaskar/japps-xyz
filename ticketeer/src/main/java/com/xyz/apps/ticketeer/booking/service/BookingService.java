@@ -70,6 +70,9 @@ import com.xyz.apps.ticketeer.util.LocalDateTimeFormatUtil;
 @Validated
 public class BookingService extends GeneralService {
 
+    /** The seat reservation status available. */
+    private static final String SEAT_RESERVATION_STATUS_AVAILABLE = "AVAILABLE";
+
     /** The booking repository. */
     @Autowired
     private BookingRepository bookingRepository;
@@ -514,6 +517,6 @@ public class BookingService extends GeneralService {
         return eventShowSeatsBySeatNumberMap.entrySet().stream().filter(eventShowSeatEntry -> bookingRequestSeatNumbers.contains(
             eventShowSeatEntry.getKey()))
             .anyMatch(eventShowSeatEntry -> !StringUtils.equalsIgnoreCase(eventShowSeatEntry.getValue().get(0)
-                .getSeatReservationStatus(), "AVAILABLE"));
+                .getSeatReservationStatus(), SEAT_RESERVATION_STATUS_AVAILABLE));
     }
 }

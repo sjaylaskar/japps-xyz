@@ -67,7 +67,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                 new HttpEntity<EventShowSeatsReservationRequestDto>(eventShowSeatsReservationRequestDto),
                 EventShowSeatsReservationResponseDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatsReservationResponseDtoResponseEntity)
@@ -97,7 +97,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                 new HttpEntity<EventShowSeatsBookingRequestDto>(eventShowSeatsBookingRequestDto),
                 EventShowSeatsBookingResponseDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatsBookingResponseDtoResponseEntity)
@@ -128,7 +128,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                 new HttpEntity<EventShowSeatsCancellationRequestDto>(eventShowSeatsCancellationRequestDto),
                 EventShowSeatsCancellationResponseDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatsCancellationResponseEntity)
@@ -153,7 +153,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                 StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_DETAILED_INFO.get()), eventShowId),
                 EventShowDetailedInfoDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowDetailedInfoDtoResponseEntity)) {
@@ -180,7 +180,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                 eventShowSeatPricesRequestDto,
                 EventShowSeatPricesResponseDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatPricesResponseDtoResponseEntity)
@@ -205,7 +205,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                 environment().getProperty(ApiPropertyKey.PRICING_CALCULATE.get()), bookingPriceInfoDto,
                 Double.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(bookingFinalAmountResponseEntity)) {
@@ -230,7 +230,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                     eventShowId),
                 EventShowDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowDtoResponseEntity)) {
@@ -255,7 +255,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                 StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID.get()), eventShowId),
                 EventShowSeatForShowResponseDtoList.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatForShowResponseDtoListResponseEntity)
@@ -287,7 +287,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
                 .toUriString(),
                 EventShowSeatInformationResponseDtoList.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowInfoListResponseEntity)
@@ -311,7 +311,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
             cityDtoResponseEntity = restTemplate().getForEntity(
                 StringUtil.format(environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
         } catch (final HttpStatusCodeException exception) {
-            throw new BookingServiceException(exception.getResponseBodyAsString());
+            throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString());
         }
         if (ServiceUtil.notHasBodyResponseEntity(cityDtoResponseEntity)) {
             throw BookingServiceException.nonLocalizedServiceException("Invalid city id: " + cityId);

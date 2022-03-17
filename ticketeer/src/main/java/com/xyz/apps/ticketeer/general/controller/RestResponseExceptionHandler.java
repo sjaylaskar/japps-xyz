@@ -6,6 +6,7 @@
 package com.xyz.apps.ticketeer.general.controller;
 
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolationException;
@@ -126,6 +127,20 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
             final WebRequest request) {
 
         return ResponseEntity.badRequest().body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+    }
+
+    /**
+     * Handle missing resource exception.
+     *
+     * @param exception the exception
+     * @param request the request
+     * @return the response entity
+     */
+    @ExceptionHandler({MissingResourceException.class})
+    public ResponseEntity<?> handleMissingResourceException(final MissingResourceException exception,
+            final WebRequest request) {
+
+        return ResponseEntity.internalServerError().body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
     }
 
     /**

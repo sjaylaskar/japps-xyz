@@ -108,7 +108,7 @@ public final class LocalDateTimeFormatUtil {
             return LocalDateTime.parse(localDateTimeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         } catch (final Exception exception) {
             throw new IllegalArgumentException("Invalid date time string: "
-                + localDateTimeString + " for format: " + DateTimeFormatter.ISO_LOCAL_DATE);
+                + localDateTimeString + " for format: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         }
     }
 
@@ -125,7 +125,7 @@ public final class LocalDateTimeFormatUtil {
             return LocalTime.parse(localTimeString, DateTimeFormatter.ISO_LOCAL_TIME);
         } catch (final Exception exception) {
             throw new IllegalArgumentException("Invalid time string: "
-                + localTimeString + " for format: " + DateTimeFormatter.ISO_LOCAL_DATE);
+                + localTimeString + " for format: " + DateTimeFormatter.ISO_LOCAL_TIME);
         }
 
     }

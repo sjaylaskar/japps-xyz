@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.general.service.GeneralService;
+import com.xyz.apps.ticketeer.general.service.NonLocalizedServiceException;
 import com.xyz.apps.ticketeer.general.service.ServiceUtil;
 import com.xyz.apps.ticketeer.pricing.calculator.api.external.ExternalApiUrls;
 import com.xyz.apps.ticketeer.pricing.calculator.api.internal.contract.BookingPriceInfoDto;
@@ -76,7 +77,7 @@ public class PricingService extends GeneralService {
                 platformConvenienceFeeResponseEntity = restTemplate().getForEntity(MessageUtil.fromMessageSource(messageSource(),
                     ExternalApiUrls.GET_PLATFORM_CONVENIENCE_FEE_PERCENTAGE), Double.class);
             } catch (final HttpStatusCodeException exception) {
-                throw new PricingServiceException(exception.getResponseBodyAsString());
+                throw NonLocalizedServiceException.of(exception.getResponseBodyAsString());
             }
 
             Double platformConvenienceFeePercentage = 0.0d;
