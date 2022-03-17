@@ -28,7 +28,6 @@ import com.xyz.apps.ticketeer.pricing.calculator.model.BookingPriceInfo;
 import com.xyz.apps.ticketeer.pricing.calculator.resources.Messages;
 import com.xyz.apps.ticketeer.pricing.calculator.service.modelmapper.BookingPriceInfoModelMapper;
 import com.xyz.apps.ticketeer.util.MessageUtil;
-import com.xyz.apps.ticketeer.util.StringUtil;
 
 
 /**
@@ -56,7 +55,7 @@ public class PricingService extends GeneralService {
      * @return the double
      */
     public Double calculateFinalAmount(@NotNull(
-        message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO
+        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO
     ) final BookingPriceInfoDto bookingPriceInfoDto) {
 
         final BookingPriceInfo bookingPriceInfo = bookingPriceInfoModelMapper.toEntity(bookingPriceInfoDto);

@@ -27,7 +27,7 @@ import com.xyz.apps.ticketeer.location.model.CountryRepository;
 import com.xyz.apps.ticketeer.location.resources.Messages;
 import com.xyz.apps.ticketeer.location.service.modelmapper.CountryCreationModelMapper;
 import com.xyz.apps.ticketeer.location.service.modelmapper.CountryModelMapper;
-import com.xyz.apps.ticketeer.util.StringUtil;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 
 
 /**
@@ -59,7 +59,7 @@ public class CountryService extends GeneralService {
      * @return the country
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public CountryDto add(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY) final CountryCreationDto countryCreationDto) {
+    public CountryDto add(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY) final CountryCreationDto countryCreationDto) {
         validateCountryCreation(countryCreationDto);
         final Country country = countryRepository.save(countryCreationModelMapper.toEntity(countryCreationDto));
         if (country == null) {
@@ -75,7 +75,7 @@ public class CountryService extends GeneralService {
      * @return the list of countries
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public CountryDtoList addAll(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY_LIST) final CountryCreationDtoList countryCreationDtoList) {
+    public CountryDtoList addAll(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY_LIST) final CountryCreationDtoList countryCreationDtoList) {
 
         if (DtoList.isNotEmpty(countryCreationDtoList)) {
             if (countryCreationDtoList.dtos().stream().map(CountryCreationDto::getCode).collect(Collectors.toSet()).size() != countryCreationDtoList.size()) {
@@ -111,7 +111,7 @@ public class CountryService extends GeneralService {
      * @return the country
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public CountryDto update(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY) final CountryDto countryDto) {
+    public CountryDto update(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY) final CountryDto countryDto) {
         if (countryDto.getId() == null) {
             throw new CountryServiceException(Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY_ID);
         }
@@ -131,7 +131,7 @@ public class CountryService extends GeneralService {
      * @param id the id
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteById(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY_ID) final Long id) {
+    public void deleteById(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY_ID) final Long id) {
 
         if (!countryRepository.existsById(id)) {
             throw CountryNotFoundException.forId(id);
@@ -145,7 +145,7 @@ public class CountryService extends GeneralService {
      * @param code the code
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteByCode(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_COUNTRY_CODE) final String code) {
+    public void deleteByCode(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_COUNTRY_CODE) final String code) {
 
         final CountryDto countryDto = findByCode(code);
         if (countryDto == null) {
@@ -162,7 +162,7 @@ public class CountryService extends GeneralService {
      * @param id the id
      * @return the country
      */
-    public CountryDto findById(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY_ID) final Long id) {
+    public CountryDto findById(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_COUNTRY_ID) final Long id) {
 
         return countryModelMapper.toDto(
             countryRepository.findById(id).orElseThrow(() -> CountryNotFoundException.forId(id)));
@@ -174,7 +174,7 @@ public class CountryService extends GeneralService {
      * @param code the code
      * @return the country
      */
-    public CountryDto findByCode(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_COUNTRY_CODE) final String code) {
+    public CountryDto findByCode(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_COUNTRY_CODE) final String code) {
 
         final Country country = countryRepository.findByCode(code);
         if (country != null) {

@@ -27,7 +27,7 @@ import com.xyz.apps.ticketeer.pricing.conveniencefee.model.PlatformConvenienceFe
 import com.xyz.apps.ticketeer.pricing.conveniencefee.resources.Messages;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.service.modelmapper.PlatformConvenienceFeeCreationModelMapper;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.service.modelmapper.PlatformConvenienceFeeModelMapper;
-import com.xyz.apps.ticketeer.util.StringUtil;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -63,7 +63,7 @@ public class PlatformConvenienceFeeService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public PlatformConvenienceFeeDto add(@NotNull(
-        message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE
+        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE
     ) final PlatformConvenienceFeeCreationDto platformConvenienceFeeCreationDto) {
 
         final PlatformConvenienceFee platformConvenienceFee = platformConvenienceFeeRepository.save(
@@ -84,7 +84,7 @@ public class PlatformConvenienceFeeService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public PlatformConvenienceFeeDto update(@NotNull(
-        message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE
+        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE
     ) final PlatformConvenienceFeeDto platformConvenienceFeeDto) {
 
         if (existsById(platformConvenienceFeeDto.getId())) {
@@ -153,7 +153,7 @@ public class PlatformConvenienceFeeService extends GeneralService {
      * @param id the id
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteById(@NotBlank(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE_ID) final String id) {
+    public void deleteById(@NotBlank(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_PLATFORM_CONVENIENCE_FEE_ID) final String id) {
 
         if (existsById(id)) {
             platformConvenienceFeeRepository.deleteById(new ObjectId(id));

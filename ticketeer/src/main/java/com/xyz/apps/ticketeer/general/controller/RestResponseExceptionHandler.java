@@ -33,7 +33,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.xyz.apps.ticketeer.general.service.LocalizedException;
 import com.xyz.apps.ticketeer.general.service.ServiceException;
 import com.xyz.apps.ticketeer.util.MessageUtil;
-import com.xyz.apps.ticketeer.util.StringUtil;
 
 
 /**
@@ -177,6 +176,6 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
      * @return the message
      */
     private String messageFromResource(final String message) {
-        return (StringUtils.startsWith(message, StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX)) ? MessageUtil.fromMessageSource(messageSource, message) : message;
+        return MessageUtil.isMethodArgOrEntityFieldMessageKey(message) ? MessageUtil.fromMessageSource(messageSource, message) : message;
     }
 }

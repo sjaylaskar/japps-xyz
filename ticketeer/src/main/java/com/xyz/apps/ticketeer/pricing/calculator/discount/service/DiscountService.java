@@ -39,7 +39,7 @@ import com.xyz.apps.ticketeer.pricing.calculator.discount.resources.Messages;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountNotFoundException.OfferCode;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.modelmapper.DiscountCreationModelMapper;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.modelmapper.DiscountModelMapper;
-import com.xyz.apps.ticketeer.util.StringUtil;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 
 
 /**
@@ -75,7 +75,7 @@ public class DiscountService extends GeneralService {
      * @return the discount dto
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public DiscountDto add(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_ADD) final DiscountCreationDto discountCreationDto) {
+    public DiscountDto add(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_ADD) final DiscountCreationDto discountCreationDto) {
 
         discountExternalApiHandlerService.validateApplicableCityIds(discountCreationDto.getApplicableCityIds());
 
@@ -116,7 +116,7 @@ public class DiscountService extends GeneralService {
      * @return the discount dto list
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public DiscountDtoList addAll(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_EMPTY_DISCOUNTS_ADD) final DiscountCreationDtoList discountCreationDtoList) {
+    public DiscountDtoList addAll(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_EMPTY_DISCOUNTS_ADD) final DiscountCreationDtoList discountCreationDtoList) {
 
         if (DtoList.isEmpty(discountCreationDtoList)) {
             throw new DiscountServiceException(Messages.MESSAGE_ERROR_NOT_EMPTY_DISCOUNTS_ADD);
@@ -157,7 +157,7 @@ public class DiscountService extends GeneralService {
      * @return the discount dto
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public DiscountDto update(@NotNull(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_UPDATE) final DiscountDto discountDto) {
+    public DiscountDto update(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_DISCOUNT_UPDATE) final DiscountDto discountDto) {
 
         validateDiscountIdNotNull(discountDto);
 
@@ -200,7 +200,7 @@ public class DiscountService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public DiscountDtoList updateAll(@NotNull(
-        message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_EMPTY_DISCOUNTS_UPDATE
+        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_EMPTY_DISCOUNTS_UPDATE
     ) final DiscountDtoList discountDtoList) {
 
         if (DtoList.isEmpty(discountDtoList)) {
@@ -236,7 +236,7 @@ public class DiscountService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public void deleteByOfferCode(@NotBlank(
-        message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_DISCOUNT_OFFER_CODE_DELETE
+        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_DISCOUNT_OFFER_CODE_DELETE
     ) final String offerCode) {
 
         final Discount discount = findDiscountByOfferCode(offerCode);
@@ -254,7 +254,7 @@ public class DiscountService extends GeneralService {
      * @param id the id
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteById(@NotBlank(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_DISCOUNT_ID_DELETE) final String id) {
+    public void deleteById(@NotBlank(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_DISCOUNT_ID_DELETE) final String id) {
 
         validateDiscountExistsById(id);
 
@@ -302,7 +302,7 @@ public class DiscountService extends GeneralService {
      * @param id the id
      * @return the discount dto
      */
-    public DiscountDto findById(@NotBlank(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_DISCOUNT_ID_FIND) final String id) {
+    public DiscountDto findById(@NotBlank(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_DISCOUNT_ID_FIND) final String id) {
 
         return discountModelMapper.toDto(discountRepository.findById(new ObjectId(id)).orElseThrow(
             () -> new DiscountNotFoundException(id)));
@@ -314,7 +314,7 @@ public class DiscountService extends GeneralService {
      * @param offerCode the offer code
      * @return the discount dto
      */
-    public DiscountDto findByOfferCode(@NotBlank(message = StringUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_OFFER_CODE) final String offerCode) {
+    public DiscountDto findByOfferCode(@NotBlank(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_OFFER_CODE) final String offerCode) {
 
         final Discount discount = findDiscountByOfferCode(offerCode);
 
