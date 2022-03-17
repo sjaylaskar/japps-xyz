@@ -5,9 +5,9 @@
  */
 package com.xyz.apps.ticketeer.eventvenue.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -102,7 +102,7 @@ public class AuditoriumService extends GeneralService {
         final List<Auditorium> auditoriums = auditoriumRepository.saveAll(auditoriumCreationModelMapper.toAuditoriums(
             auditoriumCreationDtoList));
 
-        if (CollectionUtils.isNotEmpty(auditoriums)) {
+        if (CollectionUtils.isEmpty(auditoriums)) {
             throw new AuditoriumServiceException(Messages.MESSAGE_ERROR_FAILURE_ADD_AUDITORIUM);
         }
 
@@ -238,7 +238,7 @@ public class AuditoriumService extends GeneralService {
             throw new AuditoriumServiceException(Messages.MESSAGE_ERROR_NOT_BLANK_AUDITORIUM_NAME);
         }
 
-        if (Set.of(auditoriumCreationDtoList.getAuditoriumNames()).size() != auditoriumCreationDtoList.getAuditoriumNames()
+        if (new HashSet<>(auditoriumCreationDtoList.getAuditoriumNames()).size() != auditoriumCreationDtoList.getAuditoriumNames()
             .size()) {
             throw new AuditoriumServiceException(Messages.MESSAGE_ERROR_UNIQUE_AUDITORIUM_NAMES);
         }

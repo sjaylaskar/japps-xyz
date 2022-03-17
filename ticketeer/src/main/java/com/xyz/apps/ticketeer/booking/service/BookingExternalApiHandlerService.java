@@ -259,7 +259,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowSeatForShowResponseDtoListResponseEntity)
-            && CollectionUtils.isNotEmpty(eventShowSeatForShowResponseDtoListResponseEntity.getBody().getDtos())) {
+            || CollectionUtils.isEmpty(eventShowSeatForShowResponseDtoListResponseEntity.getBody().getDtos())) {
             throw BookingServiceException.nonLocalizedServiceException("Could not find seats for event show id: " + eventShowId);
         }
 
@@ -291,7 +291,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         }
 
         if (ServiceUtil.notHasBodyResponseEntity(eventShowInfoListResponseEntity)
-            && CollectionUtils.isNotEmpty(eventShowInfoListResponseEntity.getBody().getDtos())) {
+            || CollectionUtils.isEmpty(eventShowInfoListResponseEntity.getBody().getDtos())) {
             throw BookingServiceException.nonLocalizedServiceException("Could not find seats for event show id: " + eventShowId + " and booking reservation id: " + bookingReservationId);
         }
 
