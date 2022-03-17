@@ -27,7 +27,6 @@ public class BookingServiceException extends ServiceException {
      * @param message the message
      * @return the service exception
      */
-    @Deprecated(forRemoval = true)
     public static NonLocalizedServiceException nonLocalizedServiceException(final String message) {
         return NonLocalizedServiceException.of(message);
     }

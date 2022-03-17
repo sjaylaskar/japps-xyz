@@ -27,6 +27,7 @@ public class NonLocalizedServiceException extends LocalizedException {
      *
      * @param message the message
      */
+    @SuppressWarnings("removal")
     public NonLocalizedServiceException(final String message) {
 
         super(message);
