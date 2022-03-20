@@ -1,5 +1,5 @@
 /*
- * Id: MessageResourceFinder.java 13-Mar-2022 1:42:26 am SubhajoyLaskar
+ * Id: ServiceMessageSource.java 13-Mar-2022 1:42:26 am SubhajoyLaskar
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 
 /**
- * The platform convenience fee message source.
+ * The service message source.
  *
  * @author Subhajoy Laskar
  * @version 1.0

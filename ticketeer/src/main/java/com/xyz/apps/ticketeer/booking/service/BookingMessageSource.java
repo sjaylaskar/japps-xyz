@@ -13,6 +13,7 @@ import com.xyz.apps.ticketeer.general.service.ServiceMessageSource;
 
 
 /**
+ * The booking message source.
  *
  * @author Subhajoy Laskar
  * @version 1.0

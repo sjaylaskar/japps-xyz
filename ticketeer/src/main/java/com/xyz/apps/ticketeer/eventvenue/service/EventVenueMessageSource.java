@@ -1,5 +1,5 @@
 /*
- * Id: BookingMessageSource.java 13-Mar-2022 1:42:26 am SubhajoyLaskar
+ * Id: EventVenueMessageSource.java 13-Mar-2022 1:42:26 am SubhajoyLaskar
  * Copyright (©) 2022 Subhajoy Laskar
  * https://www.linkedin.com/in/subhajoylaskar
  */
@@ -13,6 +13,7 @@ import com.xyz.apps.ticketeer.general.service.ServiceMessageSource;
 
 
 /**
+ * The event venue message source.
  *
  * @author Subhajoy Laskar
  * @version 1.0
