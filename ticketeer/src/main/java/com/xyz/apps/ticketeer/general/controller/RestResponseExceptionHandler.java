@@ -190,6 +190,6 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
      * @return the message
      */
     private String messageFromResource(final String message) {
-        return MessageUtil.isMethodArgOrEntityFieldMessageKey(message) ? MessageUtil.fromMessageSource(messageSource, message) : message;
+        return MessageUtil.fromMessageSource(messageSource, message);
     }
 }

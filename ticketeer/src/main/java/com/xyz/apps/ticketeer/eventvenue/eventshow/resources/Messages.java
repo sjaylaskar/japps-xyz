@@ -7,6 +7,8 @@ package com.xyz.apps.ticketeer.eventvenue.eventshow.resources;
 
 import java.util.ResourceBundle;
 
+import com.xyz.apps.ticketeer.util.MessageUtil;
+
 
 /**
  * The messages.
@@ -71,6 +73,6 @@ public final class Messages {
      */
     public static ResourceBundle resourceBundle() {
 
-        return ResourceBundle.getBundle("module.eventvenue.eventshow.Messages");
+        return MessageUtil.resourceBundle("module.eventvenue.eventshow.Messages");
     }
 }

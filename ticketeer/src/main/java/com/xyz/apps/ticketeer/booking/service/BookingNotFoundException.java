@@ -54,4 +54,15 @@ public class BookingNotFoundException extends NotFoundException {
     public static BookingNotFoundException forUsernameAndId(final String username, final Long bookingId) {
         return new BookingNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_USERNAME_AND_ID, username, bookingId);
     }
+
+    /**
+     * For username and id and confirmed status.
+     *
+     * @param username the username
+     * @param bookingId the booking id
+     * @return the booking not found exception
+     */
+    public static BookingNotFoundException forUsernameAndIdAndConfirmedStatus(final String username, final Long bookingId) {
+        return new BookingNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_CONFIRMED_BOOKING_FOR_USERNAME_AND_ID, username, bookingId);
+    }
 }

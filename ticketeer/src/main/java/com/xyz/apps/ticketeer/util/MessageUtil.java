@@ -121,11 +121,21 @@ public final class MessageUtil {
      *
      * @return the locale
      */
-    private static Locale locale() {
+    public static Locale locale() {
 
         final Locale locale = LocaleContextHolder.getLocale();
         log.info("Request context locale: " + locale);
         return locale;
+    }
+
+    /**
+     * Resource bundle.
+     *
+     * @param resourceBundleName the resource bundle name
+     * @return the resource bundle
+     */
+    public static ResourceBundle resourceBundle(final String resourceBundleName) {
+        return ResourceBundle.getBundle(resourceBundleName, locale());
     }
 
     /**

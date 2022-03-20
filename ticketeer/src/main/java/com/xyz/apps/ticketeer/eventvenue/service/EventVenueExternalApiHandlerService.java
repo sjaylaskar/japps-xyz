@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import com.xyz.apps.ticketeer.eventvenue.api.external.ApiPropertyKey;
+import com.xyz.apps.ticketeer.eventvenue.api.external.ExternalApiUrls;
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.CityDto;
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDetailsDto;
 import com.xyz.apps.ticketeer.eventvenue.api.external.contract.EventDto;
@@ -20,7 +20,7 @@ import com.xyz.apps.ticketeer.eventvenue.resources.Messages;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.general.service.NonLocalizedServiceException;
 import com.xyz.apps.ticketeer.general.service.ServiceUtil;
-import com.xyz.apps.ticketeer.util.StringUtil;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 
 /**
  * The event venue external api handler service.
@@ -43,7 +43,7 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
         ResponseEntity<CityDto> cityDtoResponseEntity = null;
         try {
             cityDtoResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_CITY_BY_ID, cityId), CityDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw NonLocalizedServiceException.of(exception.getResponseBodyAsString(), exception.getStatusCode());
         }
@@ -64,7 +64,7 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
         ResponseEntity<EventDto> eventDtoResponseEntity = null;
         try {
             eventDtoResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_BY_ID.get()), eventId), EventDto.class);
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_EVENT_BY_ID, eventId), EventDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw NonLocalizedServiceException.of(exception.getResponseBodyAsString(),exception.getStatusCode());
         }
@@ -85,7 +85,7 @@ public class EventVenueExternalApiHandlerService extends GeneralService {
         ResponseEntity<EventDetailsDto> eventDtoResponseEntity = null;
         try {
             eventDtoResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_DETAILS_BY_EVENT_ID.get()), eventId), EventDetailsDto.class);
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_EVENT_DETAILS_BY_ID, eventId), EventDetailsDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw NonLocalizedServiceException.of(exception.getResponseBodyAsString(),exception.getStatusCode());
         }

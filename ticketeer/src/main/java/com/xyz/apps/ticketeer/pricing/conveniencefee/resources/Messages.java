@@ -7,6 +7,8 @@ package com.xyz.apps.ticketeer.pricing.conveniencefee.resources;
 
 import java.util.ResourceBundle;
 
+import com.xyz.apps.ticketeer.util.MessageUtil;
+
 /**
  * The messages.
  *
@@ -63,6 +65,6 @@ public final class Messages {
      * @return the resource bundle
      */
     public static ResourceBundle resourceBundle() {
-        return ResourceBundle.getBundle("module.pricing.conveniencefee.Messages");
+        return MessageUtil.resourceBundle("module.pricing.conveniencefee.Messages");
     }
 }

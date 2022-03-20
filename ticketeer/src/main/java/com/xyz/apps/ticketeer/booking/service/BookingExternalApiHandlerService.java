@@ -18,7 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.xyz.apps.ticketeer.booking.api.external.ApiPropertyKey;
+import com.xyz.apps.ticketeer.booking.api.external.ExternalApiUrls;
 import com.xyz.apps.ticketeer.booking.api.external.contract.BasicUserDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.CityDto;
@@ -36,7 +36,7 @@ import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsReserv
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatsReservationResponseDto;
 import com.xyz.apps.ticketeer.general.service.GeneralService;
 import com.xyz.apps.ticketeer.general.service.ServiceUtil;
-import com.xyz.apps.ticketeer.util.StringUtil;
+import com.xyz.apps.ticketeer.util.MessageUtil;
 
 
 /**
@@ -62,7 +62,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         ResponseEntity<EventShowSeatsReservationResponseDto> eventShowSeatsReservationResponseDtoResponseEntity = null;
         try {
             eventShowSeatsReservationResponseDtoResponseEntity = restTemplate().exchange(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_RESERVE.get()),
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.EVENT_SHOW_SEATS_RESERVE),
                 HttpMethod.PUT,
                 new HttpEntity<EventShowSeatsReservationRequestDto>(eventShowSeatsReservationRequestDto),
                 EventShowSeatsReservationResponseDto.class);
@@ -92,7 +92,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         ResponseEntity<EventShowSeatsBookingResponseDto> eventShowSeatsBookingResponseDtoResponseEntity = null;
         try {
             eventShowSeatsBookingResponseDtoResponseEntity = restTemplate().exchange(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BOOK.get()),
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.EVENT_SHOW_SEATS_BOOK),
                 HttpMethod.PUT,
                 new HttpEntity<EventShowSeatsBookingRequestDto>(eventShowSeatsBookingRequestDto),
                 EventShowSeatsBookingResponseDto.class);
@@ -123,7 +123,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         try {
 
             eventShowSeatsCancellationResponseEntity = restTemplate().exchange(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_CANCEL.get()),
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.EVENT_SHOW_SEATS_CANCEL),
                 HttpMethod.PUT,
                 new HttpEntity<EventShowSeatsCancellationRequestDto>(eventShowSeatsCancellationRequestDto),
                 EventShowSeatsCancellationResponseDto.class);
@@ -150,7 +150,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         ResponseEntity<EventShowDetailedInfoDto> eventShowDetailedInfoDtoResponseEntity = null;
         try {
             eventShowDetailedInfoDtoResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_DETAILED_INFO.get()), eventShowId),
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.EVENT_SHOW_DETAILED_INFO, eventShowId),
                 EventShowDetailedInfoDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString()).withHttpStatus(exception.getStatusCode());
@@ -176,7 +176,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         try {
             eventShowSeatPricesResponseDtoResponseEntity
             = restTemplate().postForEntity(
-                environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEAT_PRICES.get()),
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.EVENT_SHOW_SEAT_PRICES),
                 eventShowSeatPricesRequestDto,
                 EventShowSeatPricesResponseDto.class);
         } catch (final HttpStatusCodeException exception) {
@@ -202,7 +202,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         ResponseEntity<Double> bookingFinalAmountResponseEntity = null;
         try {
             bookingFinalAmountResponseEntity = restTemplate().postForEntity(
-                environment().getProperty(ApiPropertyKey.PRICING_CALCULATE.get()), bookingPriceInfoDto,
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.PRICING_CALCULATE), bookingPriceInfoDto,
                 Double.class);
         } catch (final HttpStatusCodeException exception) {
             throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString()).withHttpStatus(exception.getStatusCode()).withHttpStatus(exception.getStatusCode());
@@ -226,7 +226,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         ResponseEntity<EventShowDto> eventShowDtoResponseEntity = null;
         try {
             eventShowDtoResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_EVENT_SHOW_BY_ID.get()),
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_EVENT_SHOW_BY_ID,
                     eventShowId),
                 EventShowDto.class);
         } catch (final HttpStatusCodeException exception) {
@@ -252,7 +252,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         ResponseEntity<EventShowSeatForShowResponseDtoList> eventShowSeatForShowResponseDtoListResponseEntity = null;
         try {
             eventShowSeatForShowResponseDtoListResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID.get()), eventShowId),
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.EVENT_SHOW_SEATS_BY_EVENT_SHOW_ID, eventShowId),
                 EventShowSeatForShowResponseDtoList.class);
         } catch (final HttpStatusCodeException exception) {
             throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString()).withHttpStatus(exception.getStatusCode());
@@ -280,7 +280,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         ResponseEntity<EventShowSeatInformationResponseDtoList> eventShowInfoListResponseEntity = null;
         try {
             eventShowInfoListResponseEntity = restTemplate().getForEntity(
-                UriComponentsBuilder.fromPath(StringUtil.format(environment().getProperty(ApiPropertyKey.EVENT_SHOW_SEATS_BY_RESERVATION_ID.get())))
+                UriComponentsBuilder.fromPath(MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.EVENT_SHOW_SEATS_BY_RESERVATION_ID))
                 .queryParam("eventShowId", eventShowId)
                 .queryParam("bookingReservationId", bookingReservationId)
                 .encode()
@@ -309,7 +309,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
         ResponseEntity<CityDto> cityDtoResponseEntity = null;
         try {
             cityDtoResponseEntity = restTemplate().getForEntity(
-                StringUtil.format(environment().getProperty(ApiPropertyKey.GET_CITY_BY_ID.get()), cityId), CityDto.class);
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_CITY_BY_ID, cityId), CityDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString()).withHttpStatus(exception.getStatusCode());
         }
@@ -337,7 +337,7 @@ public class BookingExternalApiHandlerService extends GeneralService {
 
         try {
             restTemplate().postForEntity(
-                environment().getProperty(ApiPropertyKey.AUTHENTICATE_USER.get()), basicUserDto,
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.AUTHENTICATE_USER), basicUserDto,
                 Boolean.class);
         } catch (final HttpStatusCodeException exception) {
             throw BookingServiceException.nonLocalizedServiceException("User is not authenticated.");

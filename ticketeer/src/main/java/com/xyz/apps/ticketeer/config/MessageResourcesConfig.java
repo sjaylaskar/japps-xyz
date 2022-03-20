@@ -30,6 +30,7 @@ public class MessageResourcesConfig {
           = new ReloadableResourceBundleMessageSource();
 
         messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
     }
 }

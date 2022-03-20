@@ -38,6 +38,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     public Booking findByUsernameAndId(@Param("username") final String username, @Param("id") final Long id);
 
     /**
+     * Finds the confirmed booking by username and id.
+     *
+     * @param username the username
+     * @param id the id
+     * @return the booking
+     */
+    @Query("select bk from Booking bk where"
+            + " bk.username = :username"
+            + " and bk.id = :id"
+            + " and bk.bookingStatus = com.xyz.apps.ticketeer.booking.model.BookingStatus.CONFIRMED")
+    public Booking findConfirmedBookingByUsernameAndId(@Param("username") final String username, @Param("id") final Long id);
+
+    /**
      * Finds the by username.
      *
      * @param username the username

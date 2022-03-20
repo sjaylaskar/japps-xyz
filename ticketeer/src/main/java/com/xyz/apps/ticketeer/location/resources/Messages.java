@@ -7,6 +7,8 @@ package com.xyz.apps.ticketeer.location.resources;
 
 import java.util.ResourceBundle;
 
+import com.xyz.apps.ticketeer.util.MessageUtil;
+
 /**
  * The messages.
  *
@@ -141,6 +143,6 @@ public final class Messages {
      * @return the resource bundle
      */
     public static ResourceBundle resourceBundle() {
-        return ResourceBundle.getBundle("module.location.Messages");
+        return MessageUtil.resourceBundle("module.location.Messages");
     }
 }

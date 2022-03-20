@@ -26,6 +26,7 @@ public class BookingMessageSource extends ServiceMessageSource {
      */
     @PostConstruct
     private void add() {
-        super.add("classpath:module/booking/Messages");
+        super.add("classpath:module/booking/Messages",
+                  "classpath:module/booking/ExternalApiUrls");
     }
 }

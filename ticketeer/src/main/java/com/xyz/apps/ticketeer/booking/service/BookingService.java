@@ -312,9 +312,7 @@ public class BookingService extends GeneralService {
      *
      * @param bookingCancellationRequestDto the booking cancellation request dto
      */
-    public void cancel(@NotNull(
-        message = "The booking cannot be null"
-    ) final BookingCancellationRequestDto bookingCancellationRequestDto) {
+    public void cancel(@NotNull(message = "The booking cannot be null") final BookingCancellationRequestDto bookingCancellationRequestDto) {
 
         validateUser(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getPassword());
 
@@ -322,7 +320,22 @@ public class BookingService extends GeneralService {
             throw new BookingServiceException(Messages.MESSAGE_ERROR_REQUIRED_ID);
         }
 
-        cancel(findBooking(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getBookingId()));
+        cancel(findConfirmedBooking(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getBookingId()));
+    }
+
+    /**
+     * Finds the confirmed booking.
+     *
+     * @param username the username
+     * @param bookingId the booking id
+     * @return the booking
+     */
+    private Booking findConfirmedBooking(final String username, final Long bookingId) {
+        final Booking booking = bookingRepository.findConfirmedBookingByUsernameAndId(username, bookingId);
+        if (booking == null) {
+            throw BookingNotFoundException.forUsernameAndIdAndConfirmedStatus(username, bookingId);
+        }
+        return booking;
     }
 
     /**
@@ -454,6 +467,10 @@ public class BookingService extends GeneralService {
                 .stream().anyMatch(seatNumber -> !eventShowSeatsForReservation.getDtos().stream().map(
                     EventShowSeatInformationResponseDto::getSeatNumber).collect(Collectors.toSet()).contains(seatNumber))) {
             throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_SEATS_FOR_RESERVATION);
+        }
+
+        if (!BookingStatus.RESERVED.equals(optionalBooking.get().getBookingStatus())) {
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_BOOKING_FOR_CONFIRMATION);
         }
     }
 

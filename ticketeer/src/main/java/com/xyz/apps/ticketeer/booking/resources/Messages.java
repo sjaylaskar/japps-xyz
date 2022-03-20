@@ -7,6 +7,8 @@ package com.xyz.apps.ticketeer.booking.resources;
 
 import java.util.ResourceBundle;
 
+import com.xyz.apps.ticketeer.util.MessageUtil;
+
 
 /**
  * The messages.
@@ -77,6 +79,12 @@ public final class Messages {
     /** The message error invalid seats selected. */
     public static final String MESSAGE_ERROR_INVALID_SEATS_SELECTED = ERROR_MESSAGE_PREFIX + "invalid.seats.selected";
 
+    /** The message error invalid booking for confirmation. */
+    public static final String MESSAGE_ERROR_INVALID_BOOKING_FOR_CONFIRMATION = ERROR_MESSAGE_PREFIX + "invalid.booking.for.confirmation";
+
+    /** The message error not found confirmed booking for username and id. */
+    public static final String MESSAGE_ERROR_NOT_FOUND_CONFIRMED_BOOKING_FOR_USERNAME_AND_ID = ERROR_MESSAGE_PREFIX + "notFound.confirmed.booking.for.username.and.id";
+
     /**
      * Resource bundle.
      *
@@ -84,6 +92,6 @@ public final class Messages {
      */
     public static ResourceBundle resourceBundle() {
 
-        return ResourceBundle.getBundle("module.booking.Messages");
+        return MessageUtil.resourceBundle("module.booking.Messages");
     }
 }
