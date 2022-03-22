@@ -108,13 +108,13 @@ public class AuditoriumController {
     }
 
     /**
-     * Gets the by id.
+     * Gets the auditoriums by event venue id.
      *
      * @param eventVenueId the event venue id
-     * @return the by id
+     * @return the auditoriums by event venue id.
      */
     @GetMapping("/eventvenue/{eventVenueId}")
-    public ResponseEntity<?> getById(@PathVariable("eventVenueId") final Long eventVenueId) {
+    public ResponseEntity<?> getByEventVenueId(@PathVariable("eventVenueId") final Long eventVenueId) {
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(auditoriumService.findByEventVenueId(eventVenueId));
