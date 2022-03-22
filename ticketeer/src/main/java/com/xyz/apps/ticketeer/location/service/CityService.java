@@ -28,7 +28,6 @@ import com.xyz.apps.ticketeer.location.model.CityRepository;
 import com.xyz.apps.ticketeer.location.resources.Messages;
 import com.xyz.apps.ticketeer.location.service.modelmapper.CityCreationModelMapper;
 import com.xyz.apps.ticketeer.location.service.modelmapper.CityModelMapper;
-import com.xyz.apps.ticketeer.util.MessageUtil;
 
 
 /**
@@ -64,7 +63,7 @@ public class CityService extends GeneralService {
      * @return the city
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public CityDto add(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY) final CityCreationDto cityCreationDto) {
+    public CityDto add(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_CITY) final CityCreationDto cityCreationDto) {
         validateCityCreation(cityCreationDto);
         final City city = cityRepository.save(cityCreationModelMapper.toEntity(cityCreationDto));
         if (city == null) {
@@ -80,7 +79,7 @@ public class CityService extends GeneralService {
      * @return the list of cities.
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public CityDtoList addAll(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_LIST) final CityCreationDtoList cityCreationDtoList) {
+    public CityDtoList addAll(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_CITY_LIST) final CityCreationDtoList cityCreationDtoList) {
         if (DtoList.isNotEmpty(cityCreationDtoList)) {
             if (cityCreationDtoList.dtos().stream().map(CityCreationDto::getCode).collect(Collectors.toSet()).size() != cityCreationDtoList.size()) {
                 throw new CityServiceException(Messages.MESSAGE_ERROR_UNIQUE_CITY_CODES);
@@ -103,7 +102,7 @@ public class CityService extends GeneralService {
      * @return the city
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public CityDto update(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY) final CityDto cityDto) {
+    public CityDto update(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_CITY) final CityDto cityDto) {
         if (cityDto.getId() == null) {
             throw new CityServiceException(Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID);
         }
@@ -123,7 +122,7 @@ public class CityService extends GeneralService {
      * @param id the id
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteById(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID) final Long id) {
+    public void deleteById(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID) final Long id) {
         if (!cityRepository.existsById(id)) {
             throw CityNotFoundException.forId(id);
         }
@@ -136,7 +135,7 @@ public class CityService extends GeneralService {
      * @param code the code
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteByCode(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_CODE) final String code) {
+    public void deleteByCode(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_CITY_CODE) final String code) {
         final CityDto cityDto = findByCode(code);
         if (cityDto == null) {
             throw CityNotFoundException.forCode(code);
@@ -150,7 +149,7 @@ public class CityService extends GeneralService {
      * @param id the id
      * @return the city
      */
-    public CityDto findById(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID) final Long id) {
+    public CityDto findById(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID) final Long id) {
         return cityModelMapper.toDto(cityRepository.findById(id).orElseThrow(() -> CityNotFoundException.forId(id)));
     }
 
@@ -160,7 +159,7 @@ public class CityService extends GeneralService {
      * @param code the code
      * @return the city
      */
-    public CityDto findByCode(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_CODE) final String code) {
+    public CityDto findByCode(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_CITY_CODE) final String code) {
         final City city = cityRepository.findByCode(code);
         if (city != null) {
             return cityModelMapper.toDto(city);
@@ -174,7 +173,7 @@ public class CityService extends GeneralService {
      * @param countryId the country id
      * @return the list of cities
      */
-    public CityDtoList findByCountry(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID) final Long countryId) {
+    public CityDtoList findByCountry(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID) final Long countryId) {
         final CountryDto countryDto = countryService.findById(countryId);
         final List<City> cities = cityRepository.findByCountry(countryService.toCountry(countryDto));
         if (CollectionUtils.isNotEmpty(cities)) {

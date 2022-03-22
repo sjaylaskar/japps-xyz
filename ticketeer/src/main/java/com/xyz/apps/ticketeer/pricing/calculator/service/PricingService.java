@@ -56,7 +56,7 @@ public class PricingService extends GeneralService {
      * @return the double
      */
     public Double calculateFinalAmount(@NotNull(
-        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO
+        message = Messages.MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO
     ) final BookingPriceInfoDto bookingPriceInfoDto) {
 
         final BookingPriceInfo bookingPriceInfo = bookingPriceInfoModelMapper.toEntity(bookingPriceInfoDto);

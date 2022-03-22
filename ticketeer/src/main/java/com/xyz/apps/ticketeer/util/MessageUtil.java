@@ -6,12 +6,15 @@
 package com.xyz.apps.ticketeer.util;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.util.Pair;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -22,17 +25,16 @@ import lombok.extern.log4j.Log4j2;
  * @author Subhajoy Laskar
  * @version 1.0
  */
+
+/** The log. */
 @Log4j2
 public final class MessageUtil {
 
     /** The entity field validation message key suffix. */
-    private static final String ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX = "}";
+    public static final String ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX = "}";
 
     /** The entity field validation message key prefix. */
-    private static final String ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX = "{";
-
-    /** The message key. */
-    public static final String METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX = "[#$#methodArgValidationMessageKeyPrefix#$#]";
+    public static final String ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX = "{";
 
     /**
      * Instantiates a new message util.
@@ -42,63 +44,17 @@ public final class MessageUtil {
     }
 
     /**
-     * To message key.
+     * Format property errors.
      *
-     * @param messageKeyDenoter the message key denoter
-     * @return the message key
+     * @param messageSource the message source
+     * @param propertyToInvalidValueMessagePairs the property to invalid value message pairs
+     * @return the errors delimited by newline character.
      */
-    public static String fromMethodArgMessageKey(final String messageKeyDenoter) {
+    public static String formatPropertyErrors(final MessageSource messageSource, final List<Pair<String, Pair<String, String>>> propertyToInvalidValueMessagePairs) {
 
-        return (isMethodArgMessageKey(messageKeyDenoter))
-            ? StringUtils.replace(messageKeyDenoter, METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX, StringUtils.EMPTY)
-            : messageKeyDenoter;
-    }
-
-    /**
-     * From entity field validation message key.
-     *
-     * @param messageKeyDenoter the message key denoter
-     * @return the string
-     */
-    public static String fromEntityFieldValidationMessageKey(final String messageKeyDenoter) {
-
-        if (!isEntityFieldValidationMessageKey(messageKeyDenoter)) {
-            return messageKeyDenoter;
-        }
-        return messageKeyDenoter.substring(1, messageKeyDenoter.length() - 1);
-    }
-
-    /**
-     * Checks if is method arg message key.
-     *
-     * @param messageKeyDenoter the message key denoter
-     * @return true, if is method arg message key
-     */
-    public static boolean isMethodArgMessageKey(final String messageKeyDenoter) {
-
-        return StringUtils.startsWith(messageKeyDenoter, METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX);
-    }
-
-    /**
-     * Checks if is method arg or entity field message key.
-     *
-     * @param messageKey the message key
-     * @return true, if is method arg or entity field message key
-     */
-    public static boolean isMethodArgOrEntityFieldMessageKey(final String messageKey) {
-        return isMethodArgMessageKey(messageKey) || isEntityFieldValidationMessageKey(messageKey);
-    }
-
-    /**
-     * Checks if is entity field validation message key.
-     *
-     * @param messageKeyDenoter the message key denoter
-     * @return true, if is entity field validation message key
-     */
-    public static boolean isEntityFieldValidationMessageKey(final String messageKeyDenoter) {
-
-        return StringUtils.startsWith(messageKeyDenoter, ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX)
-            && StringUtils.endsWith(messageKeyDenoter, ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX);
+        return propertyToInvalidValueMessagePairs.stream().map(pair -> formatPropertyError(messageSource, pair.getFirst(), pair.getSecond()
+            .getFirst(), pair.getSecond().getSecond()))
+            .collect(Collectors.joining("\n"));
     }
 
     /**
@@ -113,7 +69,22 @@ public final class MessageUtil {
             final Object... arguments) {
 
         validate(messageSource, messageKeyDenoter);
-        return messageSource.getMessage(fromEntityFieldValidationMessageKey(fromMethodArgMessageKey(messageKeyDenoter)), arguments, locale());
+        return messageSource.getMessage(fromEntityFieldValidationMessageKey(messageKeyDenoter), arguments, locale());
+    }
+
+    /**
+     * Message.
+     *
+     * @param resourceBundle the resource bundle
+     * @param messageKeyDenoter the message key denoter
+     * @param arguments the arguments
+     * @return the message
+     */
+    public static String fromResourceBundle(final ResourceBundle resourceBundle, final String messageKeyDenoter,
+            final Object... arguments) {
+
+        validate(resourceBundle, messageKeyDenoter);
+        return MessageFormat.format(resourceBundle.getString(fromEntityFieldValidationMessageKey(messageKeyDenoter)), arguments);
     }
 
     /**
@@ -139,18 +110,30 @@ public final class MessageUtil {
     }
 
     /**
-     * Message.
+     * From entity field validation message key.
      *
-     * @param resourceBundle the resource bundle
      * @param messageKeyDenoter the message key denoter
-     * @param arguments the arguments
-     * @return the message
+     * @return the string
      */
-    public static String fromResourceBundle(final ResourceBundle resourceBundle, final String messageKeyDenoter,
-            final Object... arguments) {
+    private static String fromEntityFieldValidationMessageKey(final String messageKeyDenoter) {
 
-        validate(resourceBundle, messageKeyDenoter);
-        return MessageFormat.format(resourceBundle.getString(fromEntityFieldValidationMessageKey(fromMethodArgMessageKey(messageKeyDenoter))), arguments);
+        if (!isEntityFieldValidationMessageKey(messageKeyDenoter)) {
+            return messageKeyDenoter;
+        }
+        return messageKeyDenoter.substring(1, messageKeyDenoter.length() - 1);
+    }
+
+
+    /**
+     * Checks if is entity field validation message key.
+     *
+     * @param messageKeyDenoter the message key denoter
+     * @return true, if is entity field validation message key
+     */
+    private static boolean isEntityFieldValidationMessageKey(final String messageKeyDenoter) {
+
+        return StringUtils.startsWith(messageKeyDenoter, ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX)
+            && StringUtils.endsWith(messageKeyDenoter, ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX);
     }
 
     /**
@@ -191,5 +174,30 @@ public final class MessageUtil {
         if (StringUtils.isBlank(messageKey)) {
             throw new IllegalArgumentException("The message key cannot be blank.");
         }
+    }
+
+    /**
+     * Format property error.
+     *
+     * @param messageSource the message source
+     * @param propertyName the property name
+     * @param invalidValue the invalid value
+     * @param message the message
+     * @return the error in the format: {@code propertyName}[{@code invalidValue}] => Error: {@code message}.
+     */
+    private static String formatPropertyError(final MessageSource messageSource, final String propertyName, final String invalidValue, final String message) {
+
+        return propertyName + "[" + invalidValue + "] => Error: " + messageFromResource(messageSource, message);
+    }
+
+    /**
+     * Message from resource.
+     *
+     * @param messageSource the message source
+     * @param message the message
+     * @return the message
+     */
+    private static String messageFromResource(final MessageSource messageSource, final String message) {
+        return fromMessageSource(messageSource, message);
     }
 }

@@ -28,7 +28,7 @@ public final class Messages {
     private static final String ERROR_MESSAGE_PREFIX = "pricing.calculator.message.error.";
 
     /** The message error required booking price info. */
-    public static final String MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO = "{" + ERROR_MESSAGE_PREFIX + "required.bookingPriceInfo}";
+    public static final String MESSAGE_ERROR_REQUIRED_BOOKING_PRICE_INFO = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.bookingPriceInfo" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required discount add. */
     public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_ADD = ERROR_MESSAGE_PREFIX + "required.discountToAdd";

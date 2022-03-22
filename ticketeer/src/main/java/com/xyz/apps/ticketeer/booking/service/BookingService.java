@@ -43,6 +43,7 @@ import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingCancellationR
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingConfirmationRequestDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingDetailsDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingDetailsDtoList;
+import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingRequestValidator;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingReservationRequestDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingReservationResponseDto;
 import com.xyz.apps.ticketeer.booking.model.Booking;
@@ -114,7 +115,7 @@ public class BookingService extends GeneralService {
     public BookingReservationResponseDto reserve(@NotNull(
         message = "The booking reservation request cannot be null"
     ) final BookingReservationRequestDto bookingReservationRequestDto) {
-
+        BookingRequestValidator.validate(bookingReservationRequestDto);
         validateBooking(bookingReservationRequestDto);
         final BookingExternalReservationRequestResult bookingExternalReservationRequestResult =
             new BookingExternalReservationRequestResult();
@@ -196,9 +197,9 @@ public class BookingService extends GeneralService {
      * @return the booking dto
      */
     public BookingDetailsDto confirm(@NotNull(
-        message = "The booking confirmation request cannot be null"
+        message = Messages.MESSAGE_ERROR_REQUIRED_BOOKING_CONFIRMATION_REQUEST
     ) final BookingConfirmationRequestDto bookingConfirmationRequestDto) {
-
+        BookingRequestValidator.validate(bookingConfirmationRequestDto);
         validateBooking(bookingConfirmationRequestDto);
         final BookingExternalReservationRequestResult bookingExternalReservationRequestResult =
             new BookingExternalReservationRequestResult();
@@ -313,7 +314,7 @@ public class BookingService extends GeneralService {
      * @param bookingCancellationRequestDto the booking cancellation request dto
      */
     public void cancel(@NotNull(message = "The booking cannot be null") final BookingCancellationRequestDto bookingCancellationRequestDto) {
-
+        BookingRequestValidator.validate(bookingCancellationRequestDto);
         validateUser(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getPassword());
 
         if (bookingCancellationRequestDto.getBookingId() == null) {

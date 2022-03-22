@@ -5,9 +5,7 @@
  */
 package com.xyz.apps.ticketeer.general.controller;
 
-import java.util.List;
 import java.util.MissingResourceException;
-import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolationException;
 
@@ -68,7 +66,8 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
                 return super.handleException(constraintViolationException, request);
             }
             return ResponseEntity.badRequest().body(
-                formatPropertyErrors(
+                MessageUtil.formatPropertyErrors(
+                    messageSource,
                     constraintViolationException
                         .getConstraintViolations().stream()
                         .map(constraintViolation -> Pair.of(constraintViolation.getPropertyPath().toString(),
@@ -92,7 +91,8 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
             return super.handleMethodArgumentNotValid(exception, headers, status, request);
         }
         return ResponseEntity.badRequest().body(
-            formatPropertyErrors(
+            MessageUtil.formatPropertyErrors(
+                messageSource,
                 exception.getBindingResult().getFieldErrors()
                     .stream().map(fieldError -> Pair.of(fieldError.getField(),
                         Pair.of(fieldError.getRejectedValue() == null ? "null" : fieldError.getRejectedValue().toString(),
@@ -155,41 +155,5 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
             final WebRequest request) {
 
         return ResponseEntity.status(exception.httpStatus()).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
-    }
-
-    /**
-     * Format property error.
-     *
-     * @param propertyName the property name
-     * @param invalidValue the invalid value
-     * @param message the message
-     * @return the error in the format: {@code propertyName}[{@code invalidValue}] => Error: {@code message}.
-     */
-    private String formatPropertyError(final String propertyName, final String invalidValue, final String message) {
-
-        return propertyName + "[" + invalidValue + "] => Error: " + messageFromResource(message);
-    }
-
-    /**
-     * Format property errors.
-     *
-     * @param propertyToInvalidValueMessagePairs the property to invalid value message pairs
-     * @return the errors delimited by newline character.
-     */
-    private String formatPropertyErrors(final List<Pair<String, Pair<String, String>>> propertyToInvalidValueMessagePairs) {
-
-        return propertyToInvalidValueMessagePairs.stream().map(pair -> formatPropertyError(pair.getFirst(), pair.getSecond()
-            .getFirst(), pair.getSecond().getSecond()))
-            .collect(Collectors.joining("\n"));
-    }
-
-    /**
-     * Message from resource.
-     *
-     * @param message the message
-     * @return the message
-     */
-    private String messageFromResource(final String message) {
-        return MessageUtil.fromMessageSource(messageSource, message);
     }
 }

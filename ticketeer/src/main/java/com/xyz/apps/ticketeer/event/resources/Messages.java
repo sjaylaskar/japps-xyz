@@ -35,28 +35,28 @@ public final class Messages {
     private static final String ERROR_REQUIRED_MESSAGE_PREFIX = ERROR_MESSAGE_PREFIX + "required.event.";
 
     /** The message error required name. */
-    public static final String MESSAGE_ERROR_REQUIRED_NAME = "{" + ERROR_REQUIRED_MESSAGE_PREFIX + "name}";
+    public static final String MESSAGE_ERROR_REQUIRED_NAME = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_REQUIRED_MESSAGE_PREFIX + "name" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required id. */
-    public static final String MESSAGE_ERROR_REQUIRED_ID = "{" + ERROR_REQUIRED_MESSAGE_PREFIX + "id}";
+    public static final String MESSAGE_ERROR_REQUIRED_ID = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_REQUIRED_MESSAGE_PREFIX + "id" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required type. */
-    public static final String MESSAGE_ERROR_REQUIRED_TYPE = "{" + ERROR_REQUIRED_MESSAGE_PREFIX + "type}";
+    public static final String MESSAGE_ERROR_REQUIRED_TYPE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_REQUIRED_MESSAGE_PREFIX + "type" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required language. */
-    public static final String MESSAGE_ERROR_REQUIRED_LANGUAGE = "{" + ERROR_REQUIRED_MESSAGE_PREFIX + "language}";
+    public static final String MESSAGE_ERROR_REQUIRED_LANGUAGE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_REQUIRED_MESSAGE_PREFIX + "language" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required duration. */
-    public static final String MESSAGE_ERROR_REQUIRED_DURATION = "{" + ERROR_REQUIRED_MESSAGE_PREFIX + "duration}";
+    public static final String MESSAGE_ERROR_REQUIRED_DURATION = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_REQUIRED_MESSAGE_PREFIX + "duration" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required release date. */
-    public static final String MESSAGE_ERROR_REQUIRED_RELEASE_DATE = "{" + ERROR_REQUIRED_MESSAGE_PREFIX + "releaseDate}";
+    public static final String MESSAGE_ERROR_REQUIRED_RELEASE_DATE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_REQUIRED_MESSAGE_PREFIX + "releaseDate" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required country name. */
-    public static final String MESSAGE_ERROR_REQUIRED_COUNTRY_NAME = "{" + ERROR_REQUIRED_MESSAGE_PREFIX + "countryName}";
+    public static final String MESSAGE_ERROR_REQUIRED_COUNTRY_NAME = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_REQUIRED_MESSAGE_PREFIX + "countryName" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error invalid duration. */
-    public static final String MESSAGE_ERROR_INVALID_DURATION = "{" + ERROR_MESSAGE_PREFIX + "invalid.event.duration}";
+    public static final String MESSAGE_ERROR_INVALID_DURATION = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "invalid.event.duration" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /*
      * Other messages:

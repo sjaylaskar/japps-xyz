@@ -32,30 +32,30 @@ public final class Messages {
      */
 
     /** The message error required username. */
-    public static final String MESSAGE_ERROR_REQUIRED_USERNAME = "{" + ERROR_MESSAGE_PREFIX + "required.username}";
+    public static final String MESSAGE_ERROR_REQUIRED_USERNAME = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.username" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
-    public static final String MESSAGE_ERROR_REQUIRED_PASSWORD = "{" + ERROR_MESSAGE_PREFIX + "required.password}";
+    public static final String MESSAGE_ERROR_REQUIRED_PASSWORD = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.password" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required phone number. */
-    public static final String MESSAGE_ERROR_REQUIRED_PHONE_NUMBER = "{" + ERROR_MESSAGE_PREFIX + "required.phoneNumber}";
+    public static final String MESSAGE_ERROR_REQUIRED_PHONE_NUMBER = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.phoneNumber" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required email. */
-    public static final String MESSAGE_ERROR_REQUIRED_EMAIL = "{" + ERROR_MESSAGE_PREFIX + "required.email}";
+    public static final String MESSAGE_ERROR_REQUIRED_EMAIL = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.email" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required first name. */
-    public static final String MESSAGE_ERROR_REQUIRED_FIRST_NAME = "{" + ERROR_MESSAGE_PREFIX + "required.firstname}";
+    public static final String MESSAGE_ERROR_REQUIRED_FIRST_NAME = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.firstname" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error invalid username. */
-    public static final String MESSAGE_ERROR_INVALID_USERNAME = "{" + ERROR_MESSAGE_PREFIX + "invalid.username}";
+    public static final String MESSAGE_ERROR_INVALID_USERNAME = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "invalid.username" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error invalid password. */
-    public static final String MESSAGE_ERROR_INVALID_PASSWORD = "{" + ERROR_MESSAGE_PREFIX + "invalid.password}";
+    public static final String MESSAGE_ERROR_INVALID_PASSWORD = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "invalid.password" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error invalid phone number. */
-    public static final String MESSAGE_ERROR_INVALID_PHONE_NUMBER = "{" + ERROR_MESSAGE_PREFIX + "invalid.phoneNumber}";
+    public static final String MESSAGE_ERROR_INVALID_PHONE_NUMBER = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "invalid.phoneNumber" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error invalid email. */
-    public static final String MESSAGE_ERROR_INVALID_EMAIL = "{" + ERROR_MESSAGE_PREFIX + "invalid.email}";
+    public static final String MESSAGE_ERROR_INVALID_EMAIL = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "invalid.email" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /*
      * Other messages:

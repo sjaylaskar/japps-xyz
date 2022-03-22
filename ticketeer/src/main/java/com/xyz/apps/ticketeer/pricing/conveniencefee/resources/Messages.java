@@ -32,10 +32,10 @@ public final class Messages {
      */
 
     /** The message error fee percentage required. */
-    public static final String MESSAGE_ERROR_REQUIRED_FEE_PERCENTAGE = "{" + ERROR_MESSAGE_PREFIX + "required.feePercentage}";
+    public static final String MESSAGE_ERROR_REQUIRED_FEE_PERCENTAGE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.feePercentage" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error updation time required. */
-    public static final String MESSAGE_ERROR_REQUIRED_UPDATION_TIME = "{" + ERROR_MESSAGE_PREFIX + "required.updationTime}";
+    public static final String MESSAGE_ERROR_REQUIRED_UPDATION_TIME = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.updationTime" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /*
      * Other messages:

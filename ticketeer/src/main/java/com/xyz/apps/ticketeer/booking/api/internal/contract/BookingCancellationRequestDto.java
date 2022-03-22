@@ -32,4 +32,6 @@ public class BookingCancellationRequestDto {
 
     /** The password. */
     private String password;
+
+
 }

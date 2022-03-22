@@ -27,7 +27,6 @@ import com.xyz.apps.ticketeer.user.model.UserRepository;
 import com.xyz.apps.ticketeer.user.resources.Messages;
 import com.xyz.apps.ticketeer.user.service.modelmapper.UserCreationModelMapper;
 import com.xyz.apps.ticketeer.user.service.modelmapper.UserModelMapper;
-import com.xyz.apps.ticketeer.util.MessageUtil;
 
 /**
  * The user service.
@@ -58,7 +57,7 @@ public class UserService extends GeneralService {
      * @return the event
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public UserDto add(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_USER) final UserCreationDto userCreationDto) {
+    public UserDto add(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_USER) final UserCreationDto userCreationDto) {
         validateUserCreation(userCreationDto);
 
         final User user = userRepository.save(userCreationModelMapper.toEntity(userCreationDto));
@@ -77,7 +76,7 @@ public class UserService extends GeneralService {
      * @return the user
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public UserDto update(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_USER) final UserDto userDto) {
+    public UserDto update(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_USER) final UserDto userDto) {
         if (userDto.getId() == null) {
             throw new UserServiceException(Messages.MESSAGE_ERROR_NOT_NULL_USER_ID);
         }
@@ -98,7 +97,7 @@ public class UserService extends GeneralService {
      * @param id the id
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteById(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_USER_ID) final Long id) {
+    public void deleteById(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_USER_ID) final Long id) {
         if (!userRepository.existsById(id)) {
             throw new UserNotFoundException(id);
         }
@@ -112,7 +111,7 @@ public class UserService extends GeneralService {
      * @return true, if successful
      */
     @Transactional(rollbackFor = {Throwable.class})
-    public void deleteByUsername(@NotBlank(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_BLANK_USERNAME) final String username) {
+    public void deleteByUsername(@NotBlank(message = Messages.MESSAGE_ERROR_NOT_BLANK_USERNAME) final String username) {
         final User user = findByUsername(username);
         if (user == null) {
             throw new UserNotFoundException(username);
@@ -126,7 +125,7 @@ public class UserService extends GeneralService {
      * @param basicUserDto the basic user dto
      * @return true, if successful
      */
-    public boolean authenticate(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_USER) final BasicUserDto basicUserDto) {
+    public boolean authenticate(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_USER) final BasicUserDto basicUserDto) {
         if (StringUtils.isNotBlank(basicUserDto.getUsername())
             && StringUtils.isNotBlank(basicUserDto.getPassword())) {
             final User user = userRepository.findByUsernameAndPassword(basicUserDto.getUsername(), basicUserDto.getPassword());
@@ -157,7 +156,7 @@ public class UserService extends GeneralService {
      * @param id the id
      * @return the user dto
      */
-    public UserDto findById(@NotNull(message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_USER) final Long id) {
+    public UserDto findById(@NotNull(message = Messages.MESSAGE_ERROR_NOT_NULL_USER) final Long id) {
         return userModelMapper.toDto(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
     }
 

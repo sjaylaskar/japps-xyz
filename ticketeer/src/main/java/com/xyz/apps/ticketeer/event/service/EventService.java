@@ -82,7 +82,7 @@ public class EventService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public EventDetailsDto add(@NotNull(
-        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_EVENT_DETAILS
+        message = Messages.MESSAGE_ERROR_REQUIRED_EVENT_DETAILS
     ) final EventDetailsCreationDto eventDetailsCreationDto) {
 
         final Event event = save(eventModelMapper.toEntity(EventDto.of(eventDetailsCreationDto)));
@@ -106,7 +106,7 @@ public class EventService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public EventDetailsDtoList addAll(@NotNull(
-        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_EVENT_DETAILS_LIST
+        message = Messages.MESSAGE_ERROR_REQUIRED_EVENT_DETAILS_LIST
     ) final EventDetailsCreationDtoList eventCreationDtoList) {
 
         final List<Event> events = saveAll(eventModelMapper.toEntities(eventCreationDtoList.dtos().stream().map(EventDto::of)
@@ -134,7 +134,7 @@ public class EventService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public EventDetailsDto update(@NotNull(
-        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_REQUIRED_EVENT_DETAILS_LIST
+        message = Messages.MESSAGE_ERROR_REQUIRED_EVENT_DETAILS_LIST
     ) final EventDetailsDto eventDetailsDto) {
 
         if (eventDetailsDto.getEventId() == null) {
@@ -171,7 +171,7 @@ public class EventService extends GeneralService {
      */
     @Transactional(rollbackFor = {Throwable.class})
     public void delete(@NotNull(
-        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_EVENT_ID
+        message = Messages.MESSAGE_ERROR_NOT_NULL_EVENT_ID
     ) final Long eventId) {
 
         if (!eventRepository.existsById(eventId)) {
@@ -206,7 +206,7 @@ public class EventService extends GeneralService {
      * @return the event dto
      */
     public EventDto findById(@NotNull(
-        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_EVENT_ID
+        message = Messages.MESSAGE_ERROR_NOT_NULL_EVENT_ID
     ) final Long id) {
 
         return eventModelMapper.toDto(eventRepository.findById(id).orElseThrow(() -> EventNotFoundException.forId(id)));
@@ -219,7 +219,7 @@ public class EventService extends GeneralService {
      * @return the event details dto
      */
     public EventDetailsDto findEventDetailsByEventId(@NotNull(
-        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_EVENT_ID
+        message = Messages.MESSAGE_ERROR_NOT_NULL_EVENT_ID
     ) final Long eventId) {
 
         final EventDetails eventDetails = findEventDetails(eventId);
@@ -236,7 +236,7 @@ public class EventService extends GeneralService {
      * @return the event details dto list
      */
     public EventDetailsDtoList findEventDetailsByEventIds(@NotEmpty(
-        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_EMPTY_EVENT_ID_LIST
+        message = Messages.MESSAGE_ERROR_NOT_EMPTY_EVENT_ID_LIST
     ) final List<Long> eventIds) {
 
         final List<EventDetails> eventDetailsList = mongoTemplate().find(new Query().addCriteria(Criteria
@@ -254,7 +254,7 @@ public class EventService extends GeneralService {
      * @return the event details dto list
      */
     public EventDetailsDtoList findEventDetailsByCityId(@NotNull(
-        message = MessageUtil.METHOD_ARG_VALIDATION_MESSAGE_KEY_PREFIX + Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID
+        message = Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID
     ) final Long cityId) {
 
         ResponseEntity<EventShowDtoList> eventShowDtoListResponseEntity = null;

@@ -32,25 +32,25 @@ public final class Messages {
      */
 
     /** The message error required country code. */
-    public static final String MESSAGE_ERROR_REQUIRED_COUNTRY_CODE = "{" + ERROR_MESSAGE_PREFIX + "required.country.code}";
+    public static final String MESSAGE_ERROR_REQUIRED_COUNTRY_CODE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.country.code" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required country name. */
-    public static final String MESSAGE_ERROR_REQUIRED_COUNTRY_NAME = "{" + ERROR_MESSAGE_PREFIX + "required.country.name}";
+    public static final String MESSAGE_ERROR_REQUIRED_COUNTRY_NAME = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.country.name" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error invalid country code. */
-    public static final String MESSAGE_ERROR_INVALID_COUNTRY_CODE = "{" + ERROR_MESSAGE_PREFIX + "invalid.country.code}";
+    public static final String MESSAGE_ERROR_INVALID_COUNTRY_CODE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "invalid.country.code" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required city code. */
-    public static final String MESSAGE_ERROR_REQUIRED_CITY_CODE = "{" + ERROR_MESSAGE_PREFIX + "required.city.code}";
+    public static final String MESSAGE_ERROR_REQUIRED_CITY_CODE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.city.code" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required city name. */
-    public static final String MESSAGE_ERROR_REQUIRED_CITY_NAME = "{" + ERROR_MESSAGE_PREFIX + "required.city.name}";
+    public static final String MESSAGE_ERROR_REQUIRED_CITY_NAME = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.city.name" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required city country. */
-    public static final String MESSAGE_ERROR_REQUIRED_CITY_COUNTRY = "{" + ERROR_MESSAGE_PREFIX + "required.city.country}";
+    public static final String MESSAGE_ERROR_REQUIRED_CITY_COUNTRY = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.city.country" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error invalid city code. */
-    public static final String MESSAGE_ERROR_INVALID_CITY_CODE = "{" + ERROR_MESSAGE_PREFIX + "invalid.city.code}";
+    public static final String MESSAGE_ERROR_INVALID_CITY_CODE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "invalid.city.code" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /*
      * Other messages:

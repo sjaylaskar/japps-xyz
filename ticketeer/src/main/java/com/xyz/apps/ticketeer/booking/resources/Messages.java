@@ -85,6 +85,36 @@ public final class Messages {
     /** The message error not found confirmed booking for username and id. */
     public static final String MESSAGE_ERROR_NOT_FOUND_CONFIRMED_BOOKING_FOR_USERNAME_AND_ID = ERROR_MESSAGE_PREFIX + "notFound.confirmed.booking.for.username.and.id";
 
+    /** The message error required booking reservation id. */
+    public static final String MESSAGE_ERROR_REQUIRED_BOOKING_RESERVATION_ID = ERROR_MESSAGE_PREFIX + "required.booking.reservation.id";
+
+    /** The message error required event show id. */
+    public static final String MESSAGE_ERROR_REQUIRED_EVENT_SHOW_ID = ERROR_MESSAGE_PREFIX + "required.eventShow.id";
+
+    /** The message error required seat numbers. */
+    public static final String MESSAGE_ERROR_REQUIRED_SEAT_NUMBERS = ERROR_MESSAGE_PREFIX + "required.seatNumbers";
+
+    /** The message error required username. */
+    public static final String MESSAGE_ERROR_REQUIRED_USERNAME = ERROR_MESSAGE_PREFIX + "required.username";
+
+    /** The message error required password. */
+    public static final String MESSAGE_ERROR_REQUIRED_PASSWORD = ERROR_MESSAGE_PREFIX + "required.password";
+
+    /** The message error required booking confirmation request. */
+    public static final String MESSAGE_ERROR_REQUIRED_BOOKING_CONFIRMATION_REQUEST = ERROR_MESSAGE_PREFIX + "required.bookingConfirmationRequest";
+
+    /** The message error required booking reservation request. */
+    public static final String MESSAGE_ERROR_REQUIRED_BOOKING_RESERVATION_REQUEST = ERROR_MESSAGE_PREFIX + "required.bookingReservationRequest";
+
+    /** The message error required booking cancellation request. */
+    public static final String MESSAGE_ERROR_REQUIRED_BOOKING_CANCELLATION_REQUEST = ERROR_MESSAGE_PREFIX + "required.bookingCancellationRequest";
+
+    /** The message error required email id. */
+    public static final String MESSAGE_ERROR_REQUIRED_EMAIL_ID = ERROR_MESSAGE_PREFIX + "required.emailId";
+
+    /** The message error required phone number. */
+    public static final String MESSAGE_ERROR_REQUIRED_PHONE_NUMBER = ERROR_MESSAGE_PREFIX + "required.phoneNumber";
+
     /**
      * Resource bundle.
      *

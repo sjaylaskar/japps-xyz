@@ -31,34 +31,34 @@ public final class Messages {
      * Model Messages:
      */
     /** The message error required discount offer code. */
-    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_OFFER_CODE = "{" + ERROR_MESSAGE_PREFIX + "required.offerCode}";
+    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_OFFER_CODE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.offerCode" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error length offer code. */
-    public static final String MESSAGE_ERROR_LENGTH_OFFER_CODE = "{" + ERROR_MESSAGE_PREFIX + "length.offerCode}";
+    public static final String MESSAGE_ERROR_LENGTH_OFFER_CODE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "length.offerCode" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required discount strategy. */
-    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_STRATEGY = "{" + ERROR_MESSAGE_PREFIX + "required.discountStrategy}";
+    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_STRATEGY = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.discountStrategy" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required min amount. */
-    public static final String MESSAGE_ERROR_REQUIRED_MIN_AMOUNT = "{" + ERROR_MESSAGE_PREFIX + "required.minAmount}";
+    public static final String MESSAGE_ERROR_REQUIRED_MIN_AMOUNT = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.minAmount" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required min seats. */
-    public static final String MESSAGE_ERROR_REQUIRED_MIN_SEATS = "{" + ERROR_MESSAGE_PREFIX + "required.minSeats}";
+    public static final String MESSAGE_ERROR_REQUIRED_MIN_SEATS = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.minSeats" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error min value min seats. */
-    public static final String MESSAGE_ERROR_MIN_VALUE_MIN_SEATS = "{" + ERROR_MESSAGE_PREFIX + "minValue.minSeats}";
+    public static final String MESSAGE_ERROR_MIN_VALUE_MIN_SEATS = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "minValue.minSeats" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required nth seat. */
-    public static final String MESSAGE_ERROR_REQUIRED_NTH_SEAT = "{" + ERROR_MESSAGE_PREFIX + "required.nthSeat}";
+    public static final String MESSAGE_ERROR_REQUIRED_NTH_SEAT = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.nthSeat" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error min value nth seat. */
-    public static final String MESSAGE_ERROR_MIN_VALUE_NTH_SEAT = "{" + ERROR_MESSAGE_PREFIX + "minValue.nthSeat}";
+    public static final String MESSAGE_ERROR_MIN_VALUE_NTH_SEAT = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "minValue.nthSeat" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required discount type. */
-    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_TYPE = "{" + ERROR_MESSAGE_PREFIX + "required.discountType}";
+    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_TYPE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.discountType" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /** The message error required discount value. */
-    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_VALUE = "{" + ERROR_MESSAGE_PREFIX + "required.discountValue}";
+    public static final String MESSAGE_ERROR_REQUIRED_DISCOUNT_VALUE = MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_PREFIX + ERROR_MESSAGE_PREFIX + "required.discountValue" + MessageUtil.ENTITY_FIELD_VALIDATION_MESSAGE_KEY_SUFFIX;
 
     /*
      * Other messages:
