@@ -115,6 +115,12 @@ public final class Messages {
     /** The message error required phone number. */
     public static final String MESSAGE_ERROR_REQUIRED_PHONE_NUMBER = ERROR_MESSAGE_PREFIX + "required.phoneNumber";
 
+    /** The message error not allowed booking show ended. */
+    public static final String MESSAGE_ERROR_NOT_ALLOWED_BOOKING_SHOW_ENDED = "not.allowed.booking.show.ended";
+
+    /** The message error not allowed cancellation show started. */
+    public static final String MESSAGE_ERROR_NOT_ALLOWED_CANCELLATION_SHOW_STARTED = "not.allowed.cancellation.show.started";
+
     /**
      * Resource bundle.
      *

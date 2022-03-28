@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDetailedInfoDto;
-import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDetailsDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatNumberPriceDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatPricesResponseDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingConfirmationRequestDto;
@@ -177,7 +177,7 @@ public class BookingModelMapper {
      * @return the booking price info
      */
     public BookingPriceInfoDto toBookingPriceInfo(final BookingConfirmationRequestDto bookingConfirmationRequestDto,
-            final EventShowDto eventShow, final String bookingTime, final EventShowSeatPricesResponseDto eventShowSeatPrices) {
+            final EventShowDetailsDto eventShow, final String bookingTime, final EventShowSeatPricesResponseDto eventShowSeatPrices) {
 
         final BookingPriceInfoDto bookingPriceInfoDto = new BookingPriceInfoDto();
         bookingPriceInfoDto.setSeatBasePrices(eventShowSeatPrices.getEventShowSeatNumberPrices().stream().map(

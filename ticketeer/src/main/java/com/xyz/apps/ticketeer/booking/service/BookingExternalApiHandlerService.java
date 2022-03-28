@@ -23,7 +23,7 @@ import com.xyz.apps.ticketeer.booking.api.external.contract.BasicUserDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.BookingPriceInfoDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.CityDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDetailedInfoDto;
-import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDetailsDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatForShowResponseDtoList;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatInformationResponseDtoList;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatPricesRequestDto;
@@ -219,24 +219,23 @@ public class BookingExternalApiHandlerService extends GeneralService {
      * Finds the event show.
      *
      * @param eventShowId the event show id
-     * @return the event show dto
      */
-    public EventShowDto findEventShow(@NotNull(message = "The event show id cannot be null") final Long eventShowId) {
+    public EventShowDetailsDto findEventShow(@NotNull(message = "The event show id cannot be null") final Long eventShowId) {
 
-        ResponseEntity<EventShowDto> eventShowDtoResponseEntity = null;
+        ResponseEntity<EventShowDetailsDto> eventShowDetailsDtoResponseEntity = null;
         try {
-            eventShowDtoResponseEntity = restTemplate().getForEntity(
+            eventShowDetailsDtoResponseEntity = restTemplate().getForEntity(
                 MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_EVENT_SHOW_BY_ID,
                     eventShowId),
-                EventShowDto.class);
+                EventShowDetailsDto.class);
         } catch (final HttpStatusCodeException exception) {
             throw BookingServiceException.nonLocalizedServiceException(exception.getResponseBodyAsString()).withHttpStatus(exception.getStatusCode());
         }
 
-        if (ServiceUtil.notHasBodyResponseEntity(eventShowDtoResponseEntity)) {
+        if (ServiceUtil.notHasBodyResponseEntity(eventShowDetailsDtoResponseEntity)) {
             throw BookingServiceException.nonLocalizedServiceException("Invalid event show id: " + eventShowId);
         }
-        return eventShowDtoResponseEntity.getBody();
+        return eventShowDetailsDtoResponseEntity.getBody();
     }
 
     /**

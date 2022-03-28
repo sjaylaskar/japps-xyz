@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDetailedInfoDto;
-import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDto;
+import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowDetailsDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatForShowResponseDto;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatForShowResponseDtoList;
 import com.xyz.apps.ticketeer.booking.api.external.contract.EventShowSeatInformationResponseDto;
@@ -115,6 +115,7 @@ public class BookingService extends GeneralService {
     public BookingReservationResponseDto reserve(@NotNull(
         message = "The booking reservation request cannot be null"
     ) final BookingReservationRequestDto bookingReservationRequestDto) {
+
         BookingRequestValidator.validate(bookingReservationRequestDto);
         validateBooking(bookingReservationRequestDto);
         final BookingExternalReservationRequestResult bookingExternalReservationRequestResult =
@@ -146,7 +147,7 @@ public class BookingService extends GeneralService {
             final BookingReservationRequestDto bookingReservationRequestDto,
             final BookingExternalReservationRequestResult bookingExternalReservationRequestResult) {
 
-        final EventShowDto eventShow = bookingExternalApiHandlerService.findEventShow(bookingReservationRequestDto
+        final EventShowDetailsDto eventShow = bookingExternalApiHandlerService.findEventShow(bookingReservationRequestDto
             .getEventShowId());
 
         final EventShowSeatPricesResponseDto eventShowSeatPricesResponseDto = bookingExternalApiHandlerService
@@ -199,6 +200,7 @@ public class BookingService extends GeneralService {
     public BookingDetailsDto confirm(@NotNull(
         message = Messages.MESSAGE_ERROR_REQUIRED_BOOKING_CONFIRMATION_REQUEST
     ) final BookingConfirmationRequestDto bookingConfirmationRequestDto) {
+
         BookingRequestValidator.validate(bookingConfirmationRequestDto);
         validateBooking(bookingConfirmationRequestDto);
         final BookingExternalReservationRequestResult bookingExternalReservationRequestResult =
@@ -230,7 +232,7 @@ public class BookingService extends GeneralService {
             final BookingConfirmationRequestDto bookingConfirmationRequestDto,
             final BookingExternalReservationRequestResult bookingExternalReservationRequestResult) {
 
-        final EventShowDto eventShow = bookingExternalApiHandlerService.findEventShow(bookingConfirmationRequestDto
+        final EventShowDetailsDto eventShow = bookingExternalApiHandlerService.findEventShow(bookingConfirmationRequestDto
             .getEventShowId());
 
         final EventShowSeatPricesResponseDto eventShowSeatPricesResponseDto = bookingExternalApiHandlerService
@@ -304,7 +306,8 @@ public class BookingService extends GeneralService {
         payment.setAmount(booking.getFinalAmount());
         payment.setBooking(booking);
         payment.setPaymentStatus(PaymentStatus.SUCCESS);
-        payment.setTransactionId(Payment.DEFAULT_TRANSACTION_ID_PREFIX + "_" + booking.getBookingReservationId() + "_" + booking.getId());
+        payment.setTransactionId(Payment.DEFAULT_TRANSACTION_ID_PREFIX
+            + "_" + booking.getBookingReservationId() + "_" + booking.getId());
         paymentRepository.save(payment);
     }
 
@@ -313,7 +316,10 @@ public class BookingService extends GeneralService {
      *
      * @param bookingCancellationRequestDto the booking cancellation request dto
      */
-    public void cancel(@NotNull(message = "The booking cannot be null") final BookingCancellationRequestDto bookingCancellationRequestDto) {
+    public void cancel(@NotNull(
+        message = "The booking cannot be null"
+    ) final BookingCancellationRequestDto bookingCancellationRequestDto) {
+
         BookingRequestValidator.validate(bookingCancellationRequestDto);
         validateUser(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getPassword());
 
@@ -321,7 +327,9 @@ public class BookingService extends GeneralService {
             throw new BookingServiceException(Messages.MESSAGE_ERROR_REQUIRED_ID);
         }
 
-        cancel(findConfirmedBooking(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getBookingId()));
+        final Booking bookingToCancel = findConfirmedBooking(bookingCancellationRequestDto.getUsername(), bookingCancellationRequestDto.getBookingId());
+        validateBookingCancellationTime(bookingExternalApiHandlerService.findEventShow(bookingToCancel.getEventShowId()));
+        cancel(bookingToCancel);
     }
 
     /**
@@ -332,11 +340,26 @@ public class BookingService extends GeneralService {
      * @return the booking
      */
     private Booking findConfirmedBooking(final String username, final Long bookingId) {
+
         final Booking booking = bookingRepository.findConfirmedBookingByUsernameAndId(username, bookingId);
         if (booking == null) {
             throw BookingNotFoundException.forUsernameAndIdAndConfirmedStatus(username, bookingId);
         }
         return booking;
+    }
+
+    /**
+     * Validate booking cancellation time.
+     *
+     * @param eventShow the event show
+     */
+    private void validateBookingCancellationTime(final EventShowDetailsDto eventShow) {
+
+        if (!LocalDateTime.now().isBefore(LocalDateTime.of(
+            LocalDateTimeFormatUtil.parseLocalDate(eventShow.getDate()),
+            LocalDateTimeFormatUtil.parseLocalTime(eventShow.getStartTime())))) {
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_NOT_ALLOWED_CANCELLATION_SHOW_STARTED);
+        }
     }
 
     /**
@@ -459,6 +482,12 @@ public class BookingService extends GeneralService {
             throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_REQUEST);
         }
 
+        if (!BookingStatus.RESERVED.equals(optionalBooking.get().getBookingStatus())) {
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_BOOKING_FOR_CONFIRMATION);
+        }
+
+        validateBookingReservationTime(bookingExternalApiHandlerService.findEventShow(optionalBooking.get().getEventShowId()));
+
         final EventShowSeatInformationResponseDtoList eventShowSeatsForReservation = bookingExternalApiHandlerService
             .findEventShowSeatsByBookingReservation(bookingConfirmationRequestDto.getEventShowId(), optionalBooking.get()
                 .getBookingReservationId().toString());
@@ -468,10 +497,6 @@ public class BookingService extends GeneralService {
                 .stream().anyMatch(seatNumber -> !eventShowSeatsForReservation.getDtos().stream().map(
                     EventShowSeatInformationResponseDto::getSeatNumber).collect(Collectors.toSet()).contains(seatNumber))) {
             throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_SEATS_FOR_RESERVATION);
-        }
-
-        if (!BookingStatus.RESERVED.equals(optionalBooking.get().getBookingStatus())) {
-            throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_BOOKING_FOR_CONFIRMATION);
         }
     }
 
@@ -507,8 +532,25 @@ public class BookingService extends GeneralService {
      */
     private void validateEventShow(final Long eventShowId) {
 
-        if (bookingExternalApiHandlerService.findEventShow(eventShowId) == null) {
+        final EventShowDetailsDto eventShow = bookingExternalApiHandlerService.findEventShow(eventShowId);
+        if (eventShow == null) {
             throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_EVENT_SHOW_ID, eventShowId);
+        }
+
+        validateBookingReservationTime(eventShow);
+    }
+
+    /**
+     * Validate booking reservation time.
+     *
+     * @param eventShow the event show
+     */
+    private void validateBookingReservationTime(final EventShowDetailsDto eventShow) {
+
+        if (!LocalDateTime.now().isBefore(LocalDateTime.of(
+            LocalDateTimeFormatUtil.parseLocalDate(eventShow.getEndDate()),
+            LocalDateTimeFormatUtil.parseLocalTime(eventShow.getEndTime())))) {
+            throw new BookingServiceException(Messages.MESSAGE_ERROR_NOT_ALLOWED_BOOKING_SHOW_ENDED);
         }
     }
 
@@ -540,7 +582,7 @@ public class BookingService extends GeneralService {
             throw new BookingServiceException(Messages.MESSAGE_ERROR_INVALID_SEATS_SELECTED);
         }
 
-        if (isAnySeatUnavailableForReservation(bookingRequestSeatNumbers, eventShowSeatsBySeatNumberMap)) {
+        if (isAnySelectedSeatUnavailableForReservation(bookingRequestSeatNumbers, eventShowSeatsBySeatNumberMap)) {
             throw new SelectedSeatsUnavailableException();
         }
     }
@@ -560,13 +602,13 @@ public class BookingService extends GeneralService {
     }
 
     /**
-     * Checks if is any seat unavailable for reservation.
+     * Checks if is any selected seat unavailable for reservation.
      *
      * @param bookingRequestSeatNumbers the booking request seat numbers
      * @param eventShowSeatsBySeatNumberMap the event show seats by seat number map
      * @return true, if is any seat unavailable for reservation
      */
-    private boolean isAnySeatUnavailableForReservation(final Set<String> bookingRequestSeatNumbers,
+    private boolean isAnySelectedSeatUnavailableForReservation(final Set<String> bookingRequestSeatNumbers,
             final Map<String, List<EventShowSeatForShowResponseDto>> eventShowSeatsBySeatNumberMap) {
 
         return eventShowSeatsBySeatNumberMap.entrySet().stream().filter(eventShowSeatEntry -> bookingRequestSeatNumbers.contains(

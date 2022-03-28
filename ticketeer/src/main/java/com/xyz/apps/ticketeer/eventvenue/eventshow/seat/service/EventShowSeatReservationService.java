@@ -5,6 +5,7 @@
  */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import com.xyz.apps.ticketeer.eventvenue.eventshow.model.EventShow;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.resources.Messages;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatForShowResponseDtoList;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatInformationResponseDtoList;
@@ -125,7 +127,7 @@ public class EventShowSeatReservationService extends GeneralService {
     @Transactional(rollbackFor = {Throwable.class})
     public EventShowSeatsReservationResponseDto reserve(@NotNull(message = "The reservation request cannot be null.") final EventShowSeatsReservationRequestDto eventShowSeatsReservationRequestDto) {
 
-        validateRequiredDataForReservation(eventShowSeatsReservationRequestDto.getEventShowId(), eventShowSeatsReservationRequestDto.getSeatNumbers());
+        validate(eventShowSeatsReservationRequestDto);
 
         final String bookingReservationId = UUID.randomUUID().toString();
         final Integer reservedSeatsCount = eventShowSeatRepository.reserve(eventShowSeatsReservationRequestDto.getEventShowId(),
@@ -207,12 +209,25 @@ public class EventShowSeatReservationService extends GeneralService {
     /**
      * Validate.
      *
+     * @param eventShowSeatsReservationRequestDto the event show seats reservation request dto
+     */
+    private void validate(final EventShowSeatsReservationRequestDto eventShowSeatsReservationRequestDto) {
+
+        validateRequiredDataForReservation(eventShowSeatsReservationRequestDto.getEventShowId(), eventShowSeatsReservationRequestDto.getSeatNumbers());
+        validateSeatBookingReservationTime(eventShowSeatService.findEventShowById(eventShowSeatsReservationRequestDto.getEventShowId()));
+    }
+
+    /**
+     * Validate.
+     *
      * @param eventShowSeatsBookingRequestDto the event show seats booking request dto
      */
     private void validate(final EventShowSeatsBookingRequestDto eventShowSeatsBookingRequestDto) {
 
         validateRequiredData(eventShowSeatsBookingRequestDto.getEventShowId(), eventShowSeatsBookingRequestDto.getSeatNumbers(),
             eventShowSeatsBookingRequestDto.getBookingReservationId());
+
+        validateSeatBookingReservationTime(eventShowSeatService.findEventShowById(eventShowSeatsBookingRequestDto.getEventShowId()));
     }
 
     /**
@@ -225,6 +240,8 @@ public class EventShowSeatReservationService extends GeneralService {
         validateRequiredData(eventShowSeatsCancellationRequestDto.getEventShowId(),
             eventShowSeatsCancellationRequestDto.getSeatNumbers(),
             eventShowSeatsCancellationRequestDto.getBookingReservationId());
+
+        validateSeatBookingCancellationTime(eventShowSeatService.findEventShowById(eventShowSeatsCancellationRequestDto.getEventShowId()));
     }
 
     /**
@@ -277,6 +294,25 @@ public class EventShowSeatReservationService extends GeneralService {
 
         if (CollectionUtils.isEmpty(eventShowSeatService.findByEventShowAndSeatNumbers(eventShowModelMapper.fromId(eventShowId), seatNumbers))) {
             throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_EVENT_SHOW_ID_AND_SEAT_NUMBERS, eventShowId, seatNumbers);
+        }
+    }
+
+    /**
+     * Validate seat booking reservation time.
+     *
+     * @param eventShow the event show
+     */
+    private void validateSeatBookingReservationTime(final EventShow eventShow) {
+
+        if (!LocalDateTime.now().isBefore(LocalDateTime.of(eventShow.getEndDate(), eventShow.getEndTime()))) {
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_NOT_ALLOWED_BOOKING_SHOW_ENDED);
+        }
+    }
+
+    private void validateSeatBookingCancellationTime(final EventShow eventShow) {
+
+        if (!LocalDateTime.now().isBefore(LocalDateTime.of(eventShow.getDate(), eventShow.getStartTime()))) {
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_NOT_ALLOWED_CANCELLATION_SHOW_STARTED);
         }
     }
 }

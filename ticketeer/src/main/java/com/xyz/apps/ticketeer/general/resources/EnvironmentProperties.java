@@ -16,10 +16,6 @@ import lombok.extern.log4j.Log4j2;
  * @author Subhajoy Laskar
  * @version 1.0
  */
-
-/** The log. */
-
-/** The log. */
 @Log4j2
 public final class EnvironmentProperties {
 
@@ -53,8 +49,8 @@ public final class EnvironmentProperties {
         return instance;
     }
 
-    /** The using default text. */
-    private static final String USING_DEFAULT_TEXT = "Resorting to default value.";
+    /** The resort to default warning message. */
+    private static final String RESORT_TO_DEFAULT_WARNING_MESSAGE = "Resorting to default value.";
 
     /** The show endtime duration extra minutes. */
     private static final String SHOW_ENDTIME_DURATION_EXTRA_MINUTES = "show.endtime.duration.extra.minutes";
@@ -120,6 +116,6 @@ public final class EnvironmentProperties {
     private void logException(final Exception exception) {
 
         log.error(exception.getLocalizedMessage());
-        log.warn(USING_DEFAULT_TEXT);
+        log.warn(RESORT_TO_DEFAULT_WARNING_MESSAGE);
     }
 }

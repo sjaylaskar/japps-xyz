@@ -69,6 +69,12 @@ public final class Messages {
     public static final String MESSAGE_ERROR_INVALID_SEAT_RESERVATION_STATUS = ERROR_MESSAGE_PREFIX
         + "invalid.seat.reservation.status";
 
+    /** The message error not allowed booking show ended. */
+    public static final String MESSAGE_ERROR_NOT_ALLOWED_BOOKING_SHOW_ENDED = "not.allowed.booking.show.ended";
+
+    /** The message error not allowed cancellation show started. */
+    public static final String MESSAGE_ERROR_NOT_ALLOWED_CANCELLATION_SHOW_STARTED = "not.allowed.cancellation.show.started";
+
     /**
      * Resource bundle.
      *
