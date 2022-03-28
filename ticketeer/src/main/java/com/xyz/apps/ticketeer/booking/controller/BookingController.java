@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.booking.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +22,7 @@ import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingCancellationR
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingConfirmationRequestDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingReservationRequestDto;
 import com.xyz.apps.ticketeer.booking.service.BookingService;
+import com.xyz.apps.ticketeer.util.ResponseBuilder;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -54,9 +54,7 @@ public class BookingController {
     public ResponseEntity<?> reserve(@RequestBody final BookingReservationRequestDto bookingReservationRequestDto) {
 
         log.info("Booking: " + bookingReservationRequestDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(bookingService.reserve(bookingReservationRequestDto));
+        return ResponseBuilder.created(bookingService.reserve(bookingReservationRequestDto));
     }
 
     /**
@@ -69,9 +67,7 @@ public class BookingController {
     public ResponseEntity<?> confirm(@RequestBody final BookingConfirmationRequestDto bookingConfirmationRequestDto) {
 
         log.info("Booking: " + bookingConfirmationRequestDto);
-        return ResponseEntity
-            .status(HttpStatus.ACCEPTED)
-            .body(bookingService.confirm(bookingConfirmationRequestDto));
+        return ResponseBuilder.accepted(bookingService.confirm(bookingConfirmationRequestDto));
     }
 
     /**
@@ -85,9 +81,7 @@ public class BookingController {
 
         log.info("Booking: " + bookingCancellationRequestDto.getBookingId());
         bookingService.cancel(bookingCancellationRequestDto);
-        return ResponseEntity
-            .status(HttpStatus.ACCEPTED)
-            .body("Booking cancelled: " + bookingCancellationRequestDto.getBookingId());
+        return ResponseBuilder.accepted("Booking cancelled: " + bookingCancellationRequestDto.getBookingId());
     }
 
     /**
@@ -104,8 +98,7 @@ public class BookingController {
 
         log.info("Username: " + username);
         log.info("Booking id: " + bookingId);
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(bookingService.findByUsernameAndId(username, bookingId));
+        return ResponseBuilder.ok(bookingService.findByUsernameAndId(username, bookingId));
     }
 
     /**
@@ -119,7 +112,6 @@ public class BookingController {
             @PathVariable("username") final String username) {
 
         log.info("Username: " + username);
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(bookingService.findByUsername(username));
+        return ResponseBuilder.ok(bookingService.findByUsername(username));
     }
 }

@@ -25,6 +25,7 @@ import com.xyz.apps.ticketeer.user.api.internal.contract.BasicUserDto;
 import com.xyz.apps.ticketeer.user.api.internal.contract.UserCreationDto;
 import com.xyz.apps.ticketeer.user.api.internal.contract.UserDto;
 import com.xyz.apps.ticketeer.user.service.UserService;
+import com.xyz.apps.ticketeer.util.ResponseBuilder;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -58,9 +59,7 @@ public class UserController {
     public ResponseEntity<?> add(@RequestBody final UserCreationDto userCreationDto) {
 
         log.info("User: " + userCreationDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(userService.add(userCreationDto));
+        return ResponseBuilder.created(userService.add(userCreationDto));
     }
 
     /**
