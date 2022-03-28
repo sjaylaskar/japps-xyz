@@ -5,6 +5,8 @@
 */
 package com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -33,6 +35,9 @@ public class EventShowDetailedInfoDto {
     /** The start time. */
     private String startTime;
 
+    /** The end date. */
+    private String endDate;
+
     /** The end time. */
     private String endTime;
 
@@ -60,14 +65,21 @@ public class EventShowDetailedInfoDto {
      */
     public static EventShowDetailedInfoDto of(final EventShowDto eventShowDto, final String eventName, final String cityName, final String eventVenueName, final String auditoriumName) {
         final EventShowDetailedInfoDto eventShowDetailedInfoDto = new EventShowDetailedInfoDto();
-        eventShowDetailedInfoDto.setEventShowId(eventShowDto.getId());
-        eventShowDetailedInfoDto.setDate(eventShowDto.getDate());
-        eventShowDetailedInfoDto.setStartTime(eventShowDto.getStartTime());
-        eventShowDetailedInfoDto.setEndTime(eventShowDto.getEndTime());
-        eventShowDetailedInfoDto.setEventName(eventName);
-        eventShowDetailedInfoDto.setCityName(cityName);
-        eventShowDetailedInfoDto.setEventVenueName(eventVenueName);
-        eventShowDetailedInfoDto.setAuditoriumName(auditoriumName);
+        if (eventShowDto != null
+           && StringUtils.isNotBlank(eventName)
+           && StringUtils.isNotBlank(cityName)
+           && StringUtils.isNotBlank(eventVenueName)
+           && StringUtils.isNotBlank(auditoriumName)) {
+            eventShowDetailedInfoDto.setEventShowId(eventShowDto.getId());
+            eventShowDetailedInfoDto.setDate(eventShowDto.getDate());
+            eventShowDetailedInfoDto.setStartTime(eventShowDto.getStartTime());
+            eventShowDetailedInfoDto.setEndDate(eventShowDto.getEndDate());
+            eventShowDetailedInfoDto.setEndTime(eventShowDto.getEndTime());
+            eventShowDetailedInfoDto.setEventName(eventName);
+            eventShowDetailedInfoDto.setCityName(cityName);
+            eventShowDetailedInfoDto.setEventVenueName(eventVenueName);
+            eventShowDetailedInfoDto.setAuditoriumName(auditoriumName);
+        }
         return eventShowDetailedInfoDto;
     }
 

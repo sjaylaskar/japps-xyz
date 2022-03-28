@@ -27,7 +27,7 @@ public final class BookingRequestValidator {
     }
 
     /**
-     * Validate.
+     * Validates required data for booking confirmation.
      *
      * @param bookingConfirmationRequestDto the booking confirmation request dto
      */
@@ -62,7 +62,7 @@ public final class BookingRequestValidator {
     }
 
     /**
-     * Validate.
+     * Validates required data for booking reservation.
      *
      * @param bookingReservationRequestDto the booking reservation request dto
      */
@@ -97,7 +97,7 @@ public final class BookingRequestValidator {
     }
 
     /**
-     * Validate.
+     * Validates required data for booking cancellation.
      *
      * @param bookingCancellationRequestDto the booking cancellation request dto
      */

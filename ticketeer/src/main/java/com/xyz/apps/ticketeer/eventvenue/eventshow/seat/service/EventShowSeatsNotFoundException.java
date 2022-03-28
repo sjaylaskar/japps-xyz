@@ -6,8 +6,7 @@
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service;
 
 import java.util.Collection;
-
-import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 import com.xyz.apps.ticketeer.eventvenue.eventshow.resources.Messages;
 import com.xyz.apps.ticketeer.general.service.NonLocalizedServiceException;
@@ -83,9 +82,20 @@ public class EventShowSeatsNotFoundException extends NotFoundException {
      * @param eventShowId the event show id
      * @return the event show seats not found exception
      */
-    public static EventShowSeatsNotFoundException forEventShow(@NotNull(message = "The event show id cannot be null.") final Long eventShowId) {
+    public static EventShowSeatsNotFoundException forEventShow(final Long eventShowId) {
 
-        return new EventShowSeatsNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_ID, eventShowId);
+        return new EventShowSeatsNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_EVENT_SHOW_ID, eventShowId);
     }
 
+    /**
+     * For event show id and seat numbers.
+     *
+     * @param eventShowId the event show id
+     * @param seatNumbers the seat numbers
+     * @return the event show seats not found exception
+     */
+    public static EventShowSeatsNotFoundException forEventShowIdAndSeatNumbers(final Long eventShowId, final Set<String> seatNumbers) {
+
+        return new EventShowSeatsNotFoundException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_EVENT_SHOW_ID, eventShowId, CollectionUtil.stringify(seatNumbers));
+    }
 }

@@ -29,7 +29,10 @@ public final class Messages {
     private static final String ERROR_MESSAGE_PREFIX = "eventvenue.eventshow.message.error.";
 
     /** The message error not found for id. */
-    public static final String MESSAGE_ERROR_NOT_FOUND_FOR_ID = ERROR_MESSAGE_PREFIX + "notFound.forId";
+    public static final String MESSAGE_ERROR_NOT_FOUND_FOR_EVENT_SHOW_ID = ERROR_MESSAGE_PREFIX + "notFound.for.eventShowId";
+
+    /** The message error not found for event show id and seat numbers. */
+    public static final String MESSAGE_ERROR_NOT_FOUND_FOR_EVENT_SHOW_ID_AND_SEAT_NUMBERS = ERROR_MESSAGE_PREFIX + "notFound.for.eventShowId.and.seatNumbers";
 
     /** The message error not found for ids. */
     public static final String MESSAGE_ERROR_NOT_FOUND_FOR_IDS = ERROR_MESSAGE_PREFIX + "notFound.forIds";

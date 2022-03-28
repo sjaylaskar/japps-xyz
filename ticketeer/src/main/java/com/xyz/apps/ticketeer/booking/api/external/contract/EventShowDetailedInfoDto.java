@@ -33,6 +33,9 @@ public class EventShowDetailedInfoDto {
     /** The start time. */
     private String startTime;
 
+    /** The end date. */
+    private String endDate;
+
     /** The end time. */
     private String endTime;
 

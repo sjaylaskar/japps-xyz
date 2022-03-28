@@ -61,8 +61,8 @@ public class EventShowDetailsDto {
      * @return the event show details dto
      */
     public static EventShowDetailsDto of(final EventShowDto eventShowDto, final Long eventVenueId, final String auditoriumName) {
+        final EventShowDetailsDto eventShowDetailsDto = new EventShowDetailsDto();
         if (eventShowDto != null && eventVenueId != null && StringUtils.isNotBlank(auditoriumName)) {
-            final EventShowDetailsDto eventShowDetailsDto = new EventShowDetailsDto();
             eventShowDetailsDto.setId(eventShowDto.getId());
             eventShowDetailsDto.setDate(eventShowDto.getDate());
             eventShowDetailsDto.setStartTime(eventShowDto.getStartTime());
@@ -74,6 +74,6 @@ public class EventShowDetailsDto {
             eventShowDetailsDto.setAuditoriumName(auditoriumName);
             return eventShowDetailsDto;
         }
-        return null;
+        return eventShowDetailsDto;
     }
 }

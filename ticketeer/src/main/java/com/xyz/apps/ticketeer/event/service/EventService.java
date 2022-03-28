@@ -29,8 +29,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.xyz.apps.ticketeer.event.api.external.ExternalApiUrls;
-import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDto;
-import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDtoList;
+import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDetailsDto;
+import com.xyz.apps.ticketeer.event.api.external.contract.EventShowDetailsDtoList;
 import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsCreationDto;
 import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsCreationDtoList;
 import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsDto;
@@ -257,19 +257,19 @@ public class EventService extends GeneralService {
         message = Messages.MESSAGE_ERROR_NOT_NULL_CITY_ID
     ) final Long cityId) {
 
-        ResponseEntity<EventShowDtoList> eventShowDtoListResponseEntity = null;
+        ResponseEntity<EventShowDetailsDtoList> eventShowDetailsDtoListResponseEntity = null;
         try {
-            eventShowDtoListResponseEntity = restTemplate().getForEntity(
-                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_EVENT_SHOWS_BY_CITY_ID, cityId), EventShowDtoList.class);
+            eventShowDetailsDtoListResponseEntity = restTemplate().getForEntity(
+                MessageUtil.fromMessageSource(messageSource(), ExternalApiUrls.GET_EVENT_SHOWS_BY_CITY_ID, cityId), EventShowDetailsDtoList.class);
         } catch (final HttpStatusCodeException exception) {
             throw EventNotFoundException.forCityId(cityId);
         }
 
-        if (ServiceUtil.notHasBodyResponseEntity(eventShowDtoListResponseEntity) || CollectionUtils.isEmpty(eventShowDtoListResponseEntity.getBody().getDtos())) {
+        if (ServiceUtil.notHasBodyResponseEntity(eventShowDetailsDtoListResponseEntity) || CollectionUtils.isEmpty(eventShowDetailsDtoListResponseEntity.getBody().getEventShowDetailsList())) {
             throw EventNotFoundException.forCityId(cityId);
         }
 
-        return findEventDetailsByEventIds(eventShowDtoListResponseEntity.getBody().getDtos().stream().map(EventShowDto::getEventId).toList());
+        return findEventDetailsByEventIds(eventShowDetailsDtoListResponseEntity.getBody().getEventShowDetailsList().stream().map(EventShowDetailsDto::getEventId).toList());
 
     }
 

@@ -1,5 +1,5 @@
 /*
-* Id: EventShowDto.java 02-Mar-2022 5:45:41 pm SubhajoyLaskar
+* Id: EventShowDetailsDto.java 02-Mar-2022 3:06:56 pm SubhajoyLaskar
 * Copyright (©) 2022 Subhajoy Laskar
 * https://www.linkedin.com/in/subhajoylaskar
 */
@@ -11,9 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
 /**
- * The event show dto.
+ * The event show details dto.
  *
  * @author Subhajoy Laskar
  * @version 1.0
@@ -22,7 +21,10 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EventShowDto {
+public class EventShowDetailsDto {
+
+    /** The id. */
+    private Long id;
 
     /** The date. */
     private String date;
@@ -30,18 +32,22 @@ public class EventShowDto {
     /** The start time. */
     private String startTime;
 
+    /** The end date. */
+    private String endDate;
+
     /** The end time. */
     private String endTime;
+
+    /** The event. */
+    private Long eventId;
 
     /** The city id. */
     private Long cityId;
 
-    /** The event venue. */
+    /** The event venue id. */
     private Long eventVenueId;
 
     /** The auditorium. */
-    private Long auditoriumId;
+    private String auditoriumName;
 
-    /** The event. */
-    private Long eventId;
 }

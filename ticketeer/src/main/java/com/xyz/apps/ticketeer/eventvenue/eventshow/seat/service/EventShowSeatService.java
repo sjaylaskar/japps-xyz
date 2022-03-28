@@ -241,7 +241,7 @@ public class EventShowSeatService extends GeneralService {
                         .stream().collect(Collectors.groupingBy(EventShowSeat::getSeatNumber));
 
         if (MapUtils.isEmpty(eventShowSeatsBySeatNumber)) {
-            throw new EventShowSeatsNotFoundException("No event show seats found to update.");
+            throw EventShowSeatsNotFoundException.nonLocalizedNotFoundException("No event show seats found to update.");
         }
 
         eventShowSeatPriceUpdationDto.getEventShowSeatNumberPrices()

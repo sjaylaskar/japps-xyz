@@ -263,5 +263,20 @@ public class EventShowSeatReservationService extends GeneralService {
         if (seatNumbers.size() > maxSeatsPerBooking) {
             throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_MAX_SEATS_PER_BOOKING, maxSeatsPerBooking);
         }
+
+        validateSeatsExistForShow(eventShowId, seatNumbers);
+    }
+
+    /**
+     * Validate seats exist for show.
+     *
+     * @param eventShowId the event show id
+     * @param seatNumbers the seat numbers
+     */
+    private void validateSeatsExistForShow(final Long eventShowId, final Set<String> seatNumbers) {
+
+        if (CollectionUtils.isEmpty(eventShowSeatService.findByEventShowAndSeatNumbers(eventShowModelMapper.fromId(eventShowId), seatNumbers))) {
+            throw new EventShowSeatReservationServiceException(Messages.MESSAGE_ERROR_NOT_FOUND_FOR_EVENT_SHOW_ID_AND_SEAT_NUMBERS, eventShowId, seatNumbers);
+        }
     }
 }
