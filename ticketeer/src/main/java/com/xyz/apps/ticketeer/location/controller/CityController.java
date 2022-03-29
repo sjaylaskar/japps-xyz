@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.location.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +22,7 @@ import com.xyz.apps.ticketeer.location.api.internal.contract.CityCreationDto;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CityCreationDtoList;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CityDto;
 import com.xyz.apps.ticketeer.location.service.CityService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -54,9 +54,7 @@ public class CityController {
     public ResponseEntity<?> add(@RequestBody final CityCreationDto cityCreationDto) {
 
         log.info("CityDto: " + cityCreationDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(cityService.add(cityCreationDto));
+        return RestResponse.created(cityService.add(cityCreationDto));
     }
 
     /**
@@ -69,9 +67,7 @@ public class CityController {
     public ResponseEntity<?> addAll(@RequestBody final CityCreationDtoList cityCreationDtoList) {
 
         log.info("City list: " + cityCreationDtoList);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(cityService.addAll(cityCreationDtoList));
+        return RestResponse.created(cityService.addAll(cityCreationDtoList));
     }
 
     /**
@@ -84,9 +80,7 @@ public class CityController {
     public ResponseEntity<?> update(@RequestBody final CityDto cityDto) {
 
         log.info("CityDto: " + cityDto);
-        return ResponseEntity
-            .accepted()
-            .body(cityService.update(cityDto));
+        return  RestResponse.accepted(cityService.update(cityDto));
     }
 
     /**
@@ -100,7 +94,7 @@ public class CityController {
         log.info("City id: " + id);
         cityService.deleteById(id);
         log.info("City deleted: " + id);
-        return ResponseEntity.accepted().body("Deleted city with id: " + id);
+        return  RestResponse.accepted("Deleted city with id: " + id);
     }
 
     /**
@@ -114,7 +108,7 @@ public class CityController {
         log.info("City code: " + code);
         cityService.deleteByCode(code);
         log.info("City deleted: " + code);
-        return ResponseEntity.accepted().body("Deleted city: " + code);
+        return  RestResponse.accepted("Deleted city: " + code);
     }
 
     /**
@@ -126,8 +120,7 @@ public class CityController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(cityService.findById(id));
+        return RestResponse.ok(cityService.findById(id));
     }
 
     /**
@@ -139,9 +132,7 @@ public class CityController {
     @GetMapping(value = "code/{code}")
     public ResponseEntity<?> getByCode(@PathVariable("code") final String code) {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(cityService.findByCode(code));
+        return RestResponse.ok(cityService.findByCode(code));
     }
 
     /**
@@ -154,9 +145,7 @@ public class CityController {
     public ResponseEntity<?> getByCountryId(
             @PathVariable("countryId") final Long countryId) {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(cityService.findByCountry(countryId));
+        return RestResponse.ok(cityService.findByCountry(countryId));
     }
 
     /**
@@ -167,8 +156,6 @@ public class CityController {
     @GetMapping("/all")
     public ResponseEntity<?> all() {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(cityService.findAll());
+        return RestResponse.ok(cityService.findAll());
     }
 }

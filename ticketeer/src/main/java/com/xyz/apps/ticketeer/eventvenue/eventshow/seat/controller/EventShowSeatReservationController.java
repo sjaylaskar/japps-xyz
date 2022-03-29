@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +23,7 @@ import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.Ev
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsCancellationRequestDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsReservationRequestDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.EventShowSeatReservationService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -55,9 +55,7 @@ public class EventShowSeatReservationController {
     public ResponseEntity<?> getSeatsByEventShow(@PathVariable("eventShowId") final Long eventShowId) {
 
         log.info("Event show id: " + eventShowId);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventShowSeatReservationService.findEventShowSeatsByEventShowId(eventShowId));
+        return RestResponse.ok(eventShowSeatReservationService.findEventShowSeatsByEventShowId(eventShowId));
     }
 
     /**
@@ -74,9 +72,7 @@ public class EventShowSeatReservationController {
 
         log.info("Event show id: " + eventShowId);
         log.info("Booking reservation id: " + bookingReservationId);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventShowSeatReservationService.findByEventShowIdAndBookingReservationId(eventShowId, bookingReservationId));
+        return RestResponse.ok(eventShowSeatReservationService.findByEventShowIdAndBookingReservationId(eventShowId, bookingReservationId));
     }
 
     /**
@@ -90,9 +86,7 @@ public class EventShowSeatReservationController {
             @RequestBody final EventShowSeatPricesRequestDto eventShowSeatPricesRequestDto) {
 
         log.info("Event show seat prices request: " + eventShowSeatPricesRequestDto);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventShowSeatReservationService.findSeatPrices(eventShowSeatPricesRequestDto));
+        return RestResponse.ok(eventShowSeatReservationService.findSeatPrices(eventShowSeatPricesRequestDto));
     }
 
     /**
@@ -105,9 +99,7 @@ public class EventShowSeatReservationController {
     public ResponseEntity<?> reserve(@RequestBody final EventShowSeatsReservationRequestDto eventShowSeatsReservationRequestDto) {
 
         log.info("Event show seats reservation request: " + eventShowSeatsReservationRequestDto);
-        return ResponseEntity
-            .accepted()
-            .body(eventShowSeatReservationService.reserve(eventShowSeatsReservationRequestDto));
+        return RestResponse.accepted(eventShowSeatReservationService.reserve(eventShowSeatsReservationRequestDto));
     }
 
     /**
@@ -120,9 +112,7 @@ public class EventShowSeatReservationController {
     public ResponseEntity<?> book(@RequestBody final EventShowSeatsBookingRequestDto eventShowSeatsBookingRequestDto) {
 
         log.info("Event show seats booking request: " + eventShowSeatsBookingRequestDto);
-        return ResponseEntity
-            .accepted()
-            .body(eventShowSeatReservationService.book(eventShowSeatsBookingRequestDto));
+        return RestResponse.accepted(eventShowSeatReservationService.book(eventShowSeatsBookingRequestDto));
     }
 
     /**
@@ -135,7 +125,6 @@ public class EventShowSeatReservationController {
     public ResponseEntity<?> cancel(@RequestBody final EventShowSeatsCancellationRequestDto eventShowSeatsCancellationRequestDto) {
 
         log.info("Event show seats cancellation request: " + eventShowSeatsCancellationRequestDto);
-        return ResponseEntity
-            .accepted().body(eventShowSeatReservationService.cancel(eventShowSeatsCancellationRequestDto));
+        return RestResponse.accepted(eventShowSeatReservationService.cancel(eventShowSeatsCancellationRequestDto));
     }
 }

@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.eventvenue.eventshow.seat.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatPricesUpdationDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.api.internal.contract.EventShowSeatsCreationDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.seat.service.EventShowSeatService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -55,9 +55,7 @@ public class EventShowSeatController {
     public ResponseEntity<?> add(@RequestBody final EventShowSeatsCreationDto eventShowSeatsCreationDto) {
 
         log.info("Event show seats: " + eventShowSeatsCreationDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(eventShowSeatService.add(eventShowSeatsCreationDto));
+        return RestResponse.created(eventShowSeatService.add(eventShowSeatsCreationDto));
     }
 
     /**
@@ -70,9 +68,7 @@ public class EventShowSeatController {
     public ResponseEntity<?> updateForSeatRows(@RequestBody final EventShowSeatsCreationDto eventShowSeatsCreationDto) {
 
         log.info("Event show seats: " + eventShowSeatsCreationDto);
-        return ResponseEntity
-            .accepted()
-            .body(eventShowSeatService.update(eventShowSeatsCreationDto));
+        return RestResponse.accepted(eventShowSeatService.update(eventShowSeatsCreationDto));
     }
 
     /**
@@ -86,9 +82,7 @@ public class EventShowSeatController {
             @RequestBody final EventShowSeatPricesUpdationDto eventShowSeatPricesUpdationDto) {
 
         log.info("Event show seats: " + eventShowSeatPricesUpdationDto);
-        return ResponseEntity
-            .accepted()
-            .body(eventShowSeatService.update(eventShowSeatPricesUpdationDto));
+        return RestResponse.accepted(eventShowSeatService.update(eventShowSeatPricesUpdationDto));
     }
 
     /**
@@ -105,7 +99,7 @@ public class EventShowSeatController {
 
         log.info("Event show id: " + eventShowId);
         log.info("Seat row name: " + rowName);
-        return ResponseEntity.accepted().body("Deleted "
+        return RestResponse.accepted("Deleted "
             + eventShowSeatService.deleteByEventShowAndSeatRow(eventShowId, rowName) + " seats.");
     }
 
@@ -123,7 +117,7 @@ public class EventShowSeatController {
 
         log.info("Event show id: " + eventShowId);
         log.info("Seat number: " + seatNumber);
-        return ResponseEntity.accepted().body("Deleted "
+        return RestResponse.accepted("Deleted "
             + eventShowSeatService.deleteByEventShowAndSeatNumber(eventShowId, seatNumber) + " seats.");
     }
 
@@ -137,7 +131,6 @@ public class EventShowSeatController {
     public ResponseEntity<?> getByEventShowId(
             @PathVariable("eventShowId") final Long eventVenueId) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(eventShowSeatService.findEventShowSeatsByEventShowId(eventVenueId));
+        return RestResponse.ok(eventShowSeatService.findEventShowSeatsByEventShowId(eventVenueId));
     }
 }

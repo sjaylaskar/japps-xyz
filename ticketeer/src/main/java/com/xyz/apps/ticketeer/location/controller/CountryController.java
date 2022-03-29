@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.location.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +21,7 @@ import com.xyz.apps.ticketeer.location.api.internal.contract.CountryCreationDto;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CountryCreationDtoList;
 import com.xyz.apps.ticketeer.location.api.internal.contract.CountryDto;
 import com.xyz.apps.ticketeer.location.service.CountryService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -52,9 +52,7 @@ public class CountryController {
     public ResponseEntity<?> add(@RequestBody final CountryCreationDto countryCreationDto) {
 
         log.info("Country: " + countryCreationDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(countryService.add(countryCreationDto));
+        return RestResponse.created(countryService.add(countryCreationDto));
     }
 
     /**
@@ -67,9 +65,7 @@ public class CountryController {
     public ResponseEntity<?> addAll(@RequestBody final CountryCreationDtoList countryCreationDtoList) {
 
         log.info("Country list: " + countryCreationDtoList);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(countryService.addAll(countryCreationDtoList));
+        return RestResponse.created(countryService.addAll(countryCreationDtoList));
     }
 
     /**
@@ -82,9 +78,7 @@ public class CountryController {
     public ResponseEntity<?> update(@RequestBody final CountryDto countryDto) {
 
         log.info("Country: " + countryDto);
-        return ResponseEntity
-            .accepted()
-            .body(countryService.update(countryDto));
+        return RestResponse.accepted(countryService.update(countryDto));
     }
 
     /**
@@ -98,7 +92,7 @@ public class CountryController {
         log.info("Country id: " + id);
         countryService.deleteById(id);
         log.info("Country deleted: " + id);
-        return ResponseEntity.accepted().body("Deleted country: " + id);
+        return RestResponse.accepted("Deleted country: " + id);
     }
 
     /**
@@ -111,7 +105,7 @@ public class CountryController {
 
         log.info("Country code: " + code);
         countryService.deleteByCode(code);
-        return ResponseEntity.accepted().body("Deleted country: " + code);
+        return RestResponse.accepted("Deleted country: " + code);
     }
 
     /**
@@ -123,8 +117,7 @@ public class CountryController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(countryService.findById(id));
+        return RestResponse.ok(countryService.findById(id));
     }
 
     /**
@@ -136,9 +129,7 @@ public class CountryController {
     @GetMapping(value = "code/{code}")
     public ResponseEntity<?> getByCode(@PathVariable("code") final String code) {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(countryService.findByCode(code));
+        return RestResponse.ok(countryService.findByCode(code));
     }
 
     /**
@@ -149,8 +140,6 @@ public class CountryController {
     @GetMapping("/all")
     public ResponseEntity<?> all() {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(countryService.findAll());
+        return RestResponse.ok(countryService.findAll());
     }
 }

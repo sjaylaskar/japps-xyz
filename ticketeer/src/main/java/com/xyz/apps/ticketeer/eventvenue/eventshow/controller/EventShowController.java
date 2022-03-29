@@ -8,7 +8,6 @@ package com.xyz.apps.ticketeer.eventvenue.eventshow.controller;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.api.internal.contract.EventShowCreationDto;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowSearchCriteria;
 import com.xyz.apps.ticketeer.eventvenue.eventshow.service.EventShowService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -55,9 +55,7 @@ public class EventShowController {
     public ResponseEntity<?> add(@RequestBody final EventShowCreationDto eventShowCreationDto) {
 
         log.info("Event show: " + eventShowCreationDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(eventShowService.add(eventShowCreationDto));
+        return RestResponse.created(eventShowService.add(eventShowCreationDto));
     }
 
     /**
@@ -72,8 +70,7 @@ public class EventShowController {
         log.info("Event show: " + id);
         eventShowService.delete(id);
         log.info("Event show deleted: " + id);
-        return ResponseEntity.accepted()
-            .body("Event show deleted for id: " + id);
+        return RestResponse.accepted("Event show deleted for id: " + id);
     }
 
     /**
@@ -86,9 +83,7 @@ public class EventShowController {
     public ResponseEntity<?> getByCityId(@PathVariable("cityId") final Long cityId) {
 
         log.info("Event city: " + cityId);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventShowService.findByCityId(cityId));
+        return RestResponse.ok(eventShowService.findByCityId(cityId));
     }
 
     /**
@@ -105,9 +100,7 @@ public class EventShowController {
 
         final EventShowSearchCriteria eventShowSearchCriteria = EventShowSearchCriteria.of(cityId, eventId, date);
         log.info("Event show search criteria: " + eventShowSearchCriteria);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventShowService.search(eventShowSearchCriteria));
+        return RestResponse.ok(eventShowService.search(eventShowSearchCriteria));
     }
 
     /**
@@ -120,8 +113,7 @@ public class EventShowController {
     public ResponseEntity<?> getById(@PathVariable("id") @NotNull(message = "The event show id cannot be null") final Long id) {
 
         log.info("Event show: " + id);
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(eventShowService.findById(id));
+        return RestResponse.ok(eventShowService.findById(id));
     }
 
     /**
@@ -136,7 +128,6 @@ public class EventShowController {
     ) final Long id) {
 
         log.info("Event show: " + id);
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(eventShowService.findDetailedInfoById(id));
+        return RestResponse.ok(eventShowService.findDetailedInfoById(id));
     }
 }

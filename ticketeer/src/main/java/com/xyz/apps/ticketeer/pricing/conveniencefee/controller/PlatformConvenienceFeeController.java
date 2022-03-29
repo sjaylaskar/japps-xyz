@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.pricing.conveniencefee.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.api.internal.contract.PlatformConvenienceFeeCreationDto;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.api.internal.contract.PlatformConvenienceFeeDto;
 import com.xyz.apps.ticketeer.pricing.conveniencefee.service.PlatformConvenienceFeeService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -58,9 +58,7 @@ public class PlatformConvenienceFeeController {
         final PlatformConvenienceFeeDto platformConvenienceFeeDtoAdded = platformConvenienceFeeService.add(
             platformConvenienceFeeCreationDto);
         log.info("PlatformConvenienceFee added: " + platformConvenienceFeeDtoAdded);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(platformConvenienceFeeDtoAdded);
+        return RestResponse.created(platformConvenienceFeeDtoAdded);
     }
 
     /**
@@ -76,9 +74,7 @@ public class PlatformConvenienceFeeController {
         final PlatformConvenienceFeeDto platformConvenienceFeeDtoUpdated = platformConvenienceFeeService.update(
             platformConvenienceFeeDto);
         log.info("PlatformConvenienceFee updated: " + platformConvenienceFeeDtoUpdated);
-        return ResponseEntity
-            .accepted()
-            .body(platformConvenienceFeeDtoUpdated);
+        return RestResponse.accepted(platformConvenienceFeeDtoUpdated);
     }
 
     /**
@@ -93,7 +89,7 @@ public class PlatformConvenienceFeeController {
         log.info("PlatformConvenienceFee id: " + id);
         platformConvenienceFeeService.deleteById(id);
         log.info("PlatformConvenienceFee deleted: " + id);
-        return ResponseEntity.accepted().body("Deleted platformConvenienceFee with id: " + id);
+        return RestResponse.accepted("Deleted platformConvenienceFee with id: " + id);
     }
 
     /**
@@ -106,8 +102,6 @@ public class PlatformConvenienceFeeController {
 
         final Double percentage = platformConvenienceFeeService.findPercentage();
         log.info("Platform covenience fee percentage: " + percentage);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(percentage);
+        return RestResponse.ok(percentage);
     }
 }

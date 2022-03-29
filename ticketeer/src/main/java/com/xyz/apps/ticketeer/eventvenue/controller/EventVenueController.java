@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.eventvenue.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueCreationDto;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.EventVenueUpdationDto;
 import com.xyz.apps.ticketeer.eventvenue.service.EventVenueService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -53,9 +53,7 @@ public class EventVenueController {
     public ResponseEntity<?> add(@RequestBody final EventVenueCreationDto eventVenueCreationDto) {
 
         log.info("Event venue: " + eventVenueCreationDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(eventVenueService.add(eventVenueCreationDto));
+        return RestResponse.created(eventVenueService.add(eventVenueCreationDto));
     }
 
     /**
@@ -68,9 +66,7 @@ public class EventVenueController {
     public ResponseEntity<?> update(@RequestBody final EventVenueUpdationDto eventVenueUpdationDto) {
 
         log.info("Event venue: " + eventVenueUpdationDto);
-        return ResponseEntity
-            .accepted()
-            .body(eventVenueService.update(eventVenueUpdationDto));
+        return RestResponse.accepted(eventVenueService.update(eventVenueUpdationDto));
     }
 
     /**
@@ -85,7 +81,7 @@ public class EventVenueController {
         log.info("Event venue id: " + id);
         eventVenueService.delete(id);
         log.info("Event venue deleted: " + id);
-        return ResponseEntity.accepted().body("Deleted event venue with id: " + id);
+        return RestResponse.accepted("Deleted event venue with id: " + id);
     }
 
     /**
@@ -97,8 +93,7 @@ public class EventVenueController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(eventVenueService.findById(id));
+        return RestResponse.ok(eventVenueService.findById(id));
     }
 
     /**
@@ -110,7 +105,6 @@ public class EventVenueController {
     @GetMapping("/city/{cityId}")
     public ResponseEntity<?> getByCityId(@PathVariable("cityId") final Long cityId) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(eventVenueService.findByCityId(cityId));
+        return RestResponse.ok(eventVenueService.findByCityId(cityId));
     }
 }

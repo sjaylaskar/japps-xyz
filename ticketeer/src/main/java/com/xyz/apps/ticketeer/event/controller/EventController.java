@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.event.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +23,7 @@ import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsCreationDt
 import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsCreationDtoList;
 import com.xyz.apps.ticketeer.event.api.internal.contract.EventDetailsDto;
 import com.xyz.apps.ticketeer.event.service.EventService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -55,9 +55,7 @@ public class EventController {
     public ResponseEntity<?> add(@RequestBody final EventDetailsCreationDto eventDetailsCreationDto) {
 
         log.info("Event details: " + eventDetailsCreationDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(eventService.add(eventDetailsCreationDto));
+        return RestResponse.created(eventService.add(eventDetailsCreationDto));
     }
 
     /**
@@ -70,9 +68,7 @@ public class EventController {
     public ResponseEntity<?> addAll(@RequestBody final EventDetailsCreationDtoList eventDetailsCreationDtoList) {
 
         log.info("Events list: " + eventDetailsCreationDtoList);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(eventService.addAll(eventDetailsCreationDtoList));
+        return RestResponse.created(eventService.addAll(eventDetailsCreationDtoList));
     }
 
     /**
@@ -85,9 +81,7 @@ public class EventController {
     public ResponseEntity<?> update(@RequestBody final EventDetailsDto eventDetailsDto) {
 
         log.info("Event details: " + eventDetailsDto);
-        return ResponseEntity
-            .accepted()
-            .body(eventService.update(eventDetailsDto));
+        return RestResponse.accepted(eventService.update(eventDetailsDto));
     }
 
     /**
@@ -102,9 +96,7 @@ public class EventController {
         log.info("Event id to delete: " + eventId);
         eventService.delete(eventId);
         log.info("Event deleted: " + eventId);
-        return ResponseEntity
-            .accepted()
-            .body("Event deleted: " + eventId);
+        return RestResponse.accepted("Event deleted: " + eventId);
     }
 
     /**
@@ -115,9 +107,7 @@ public class EventController {
     @GetMapping("/all")
     public ResponseEntity<?> all() {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventService.findAll());
+        return RestResponse.ok(eventService.findAll());
     }
 
     /**
@@ -134,9 +124,7 @@ public class EventController {
             @RequestParam(defaultValue = "0", required = false) final Integer pageNumber,
             @RequestParam(defaultValue = "1", required = false) final Integer pageSize) {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventService.searchByText(text, pageNumber, pageSize));
+        return RestResponse.ok(eventService.searchByText(text, pageNumber, pageSize));
     }
 
     /**
@@ -148,9 +136,7 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventService.findById(id));
+        return RestResponse.ok(eventService.findById(id));
     }
 
     /**
@@ -162,9 +148,7 @@ public class EventController {
     @GetMapping("/details/{eventId}")
     public ResponseEntity<?> getEventDetailsByEventId(@PathVariable("eventId") final Long eventId) {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventService.findEventDetailsByEventId(eventId));
+        return RestResponse.ok(eventService.findEventDetailsByEventId(eventId));
     }
 
     /**
@@ -176,8 +160,6 @@ public class EventController {
     @GetMapping("/search/city/{cityId}")
     public ResponseEntity<?> getByCityId(@PathVariable("cityId") final Long cityId) {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(eventService.findEventDetailsByCityId(cityId));
+        return RestResponse.ok(eventService.findEventDetailsByCityId(cityId));
     }
 }

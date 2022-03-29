@@ -22,7 +22,7 @@ import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingCancellationR
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingConfirmationRequestDto;
 import com.xyz.apps.ticketeer.booking.api.internal.contract.BookingReservationRequestDto;
 import com.xyz.apps.ticketeer.booking.service.BookingService;
-import com.xyz.apps.ticketeer.util.ResponseBuilder;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -54,7 +54,7 @@ public class BookingController {
     public ResponseEntity<?> reserve(@RequestBody final BookingReservationRequestDto bookingReservationRequestDto) {
 
         log.info("Booking: " + bookingReservationRequestDto);
-        return ResponseBuilder.created(bookingService.reserve(bookingReservationRequestDto));
+        return RestResponse.created(bookingService.reserve(bookingReservationRequestDto));
     }
 
     /**
@@ -67,7 +67,7 @@ public class BookingController {
     public ResponseEntity<?> confirm(@RequestBody final BookingConfirmationRequestDto bookingConfirmationRequestDto) {
 
         log.info("Booking: " + bookingConfirmationRequestDto);
-        return ResponseBuilder.accepted(bookingService.confirm(bookingConfirmationRequestDto));
+        return RestResponse.accepted(bookingService.confirm(bookingConfirmationRequestDto));
     }
 
     /**
@@ -81,7 +81,7 @@ public class BookingController {
 
         log.info("Booking: " + bookingCancellationRequestDto.getBookingId());
         bookingService.cancel(bookingCancellationRequestDto);
-        return ResponseBuilder.accepted("Booking cancelled: " + bookingCancellationRequestDto.getBookingId());
+        return RestResponse.accepted("Booking cancelled: " + bookingCancellationRequestDto.getBookingId());
     }
 
     /**
@@ -98,7 +98,7 @@ public class BookingController {
 
         log.info("Username: " + username);
         log.info("Booking id: " + bookingId);
-        return ResponseBuilder.ok(bookingService.findByUsernameAndId(username, bookingId));
+        return RestResponse.ok(bookingService.findByUsernameAndId(username, bookingId));
     }
 
     /**
@@ -112,6 +112,6 @@ public class BookingController {
             @PathVariable("username") final String username) {
 
         log.info("Username: " + username);
-        return ResponseBuilder.ok(bookingService.findByUsername(username));
+        return RestResponse.ok(bookingService.findByUsername(username));
     }
 }

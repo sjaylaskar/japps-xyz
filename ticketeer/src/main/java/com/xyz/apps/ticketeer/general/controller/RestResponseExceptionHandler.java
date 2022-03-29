@@ -31,6 +31,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.xyz.apps.ticketeer.general.service.LocalizedException;
 import com.xyz.apps.ticketeer.util.MessageUtil;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 
 /**
@@ -65,7 +66,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
             if (CollectionUtils.isEmpty(constraintViolationException.getConstraintViolations())) {
                 return super.handleException(constraintViolationException, request);
             }
-            return ResponseEntity.badRequest().body(
+            return RestResponse.badRequest(
                 MessageUtil.formatPropertyErrors(
                     messageSource,
                     constraintViolationException
@@ -90,7 +91,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
         if (exception.getBindingResult() == null || CollectionUtils.isEmpty(exception.getBindingResult().getFieldErrors())) {
             return super.handleMethodArgumentNotValid(exception, headers, status, request);
         }
-        return ResponseEntity.badRequest().body(
+        return RestResponse.badRequest(
             MessageUtil.formatPropertyErrors(
                 messageSource,
                 exception.getBindingResult().getFieldErrors()
@@ -111,8 +112,9 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
             final WebRequest request) {
 
         final String message = ExceptionUtils.getRootCause(exception).getLocalizedMessage();
-        return ResponseEntity.status(StringUtils.containsIgnoreCase(message, "Duplicate")
-            ? HttpStatus.CONFLICT : HttpStatus.BAD_REQUEST).body(message);
+        return StringUtils.containsIgnoreCase(message, "Duplicate")
+               ? RestResponse.conflict(message)
+               : RestResponse.badRequest(message);
     }
 
     /**
@@ -126,7 +128,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<?> handleIllegalArgumentException(final IllegalArgumentException exception,
             final WebRequest request) {
 
-        return ResponseEntity.badRequest().body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        return RestResponse.badRequest(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
     }
 
     /**
@@ -140,7 +142,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<?> handleMissingResourceException(final MissingResourceException exception,
             final WebRequest request) {
 
-        return ResponseEntity.internalServerError().body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        return RestResponse.internalServerError(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
     }
 
     /**
@@ -154,6 +156,6 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<?> handleServiceException(final LocalizedException exception,
             final WebRequest request) {
 
-        return ResponseEntity.status(exception.httpStatus()).body(ExceptionUtils.getRootCause(exception).getLocalizedMessage());
+        return RestResponse.of(exception.httpStatus(), ExceptionUtils.getRootCause(exception).getLocalizedMessage());
     }
 }

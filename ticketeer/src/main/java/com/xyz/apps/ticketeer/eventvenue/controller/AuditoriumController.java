@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.eventvenue.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +22,7 @@ import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumCreatio
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumCreationDtoList;
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumDto;
 import com.xyz.apps.ticketeer.eventvenue.service.AuditoriumService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -54,9 +54,7 @@ public class AuditoriumController {
     public ResponseEntity<?> add(@RequestBody final AuditoriumCreationDto auditoriumCreationDto) {
 
         log.info("Auditorium: " + auditoriumCreationDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(auditoriumService.add(auditoriumCreationDto));
+        return RestResponse.created(auditoriumService.add(auditoriumCreationDto));
     }
 
     /**
@@ -69,9 +67,7 @@ public class AuditoriumController {
     public ResponseEntity<?> addAll(@RequestBody final AuditoriumCreationDtoList auditoriumCreationDtoList) {
 
         log.info("Auditoriums: " + auditoriumCreationDtoList);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(auditoriumService.addAll(auditoriumCreationDtoList));
+        return RestResponse.created(auditoriumService.addAll(auditoriumCreationDtoList));
     }
 
     /**
@@ -84,9 +80,7 @@ public class AuditoriumController {
     public ResponseEntity<?> update(@RequestBody final AuditoriumDto auditoriumDto) {
 
         log.info("Event venue: " + auditoriumDto);
-        return ResponseEntity
-            .accepted()
-            .body(auditoriumService.update(auditoriumDto));
+        return RestResponse.accepted(auditoriumService.update(auditoriumDto));
     }
 
     /**
@@ -104,7 +98,7 @@ public class AuditoriumController {
         auditoriumService.deleteByEventVenueIdAndAuditoriumName(eventVenueId, auditoriumName);
         final String deleteMessage = "Deleted auditorium: " + auditoriumName + " for event venue: " + eventVenueId;
         log.info(deleteMessage);
-        return ResponseEntity.accepted().body(deleteMessage);
+        return  RestResponse.accepted(deleteMessage);
     }
 
     /**
@@ -116,8 +110,7 @@ public class AuditoriumController {
     @GetMapping("/eventvenue/{eventVenueId}")
     public ResponseEntity<?> getByEventVenueId(@PathVariable("eventVenueId") final Long eventVenueId) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(auditoriumService.findByEventVenueId(eventVenueId));
+        return  RestResponse.ok(auditoriumService.findByEventVenueId(eventVenueId));
     }
 
 }

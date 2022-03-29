@@ -6,7 +6,6 @@
 package com.xyz.apps.ticketeer.eventvenue.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xyz.apps.ticketeer.eventvenue.api.internal.contract.AuditoriumSeatsCreationDto;
 import com.xyz.apps.ticketeer.eventvenue.service.AuditoriumSeatService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -52,9 +52,7 @@ public class AuditoriumSeatController {
     public ResponseEntity<?> add(@RequestBody final AuditoriumSeatsCreationDto auditoriumSeatsCreationDto) {
 
         log.info("Auditorium seats: " + auditoriumSeatsCreationDto);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(auditoriumSeatService.add(auditoriumSeatsCreationDto));
+        return  RestResponse.created(auditoriumSeatService.add(auditoriumSeatsCreationDto));
     }
 
     /**
@@ -67,9 +65,7 @@ public class AuditoriumSeatController {
     public ResponseEntity<?> update(@RequestBody final AuditoriumSeatsCreationDto auditoriumSeatsCreationDto) {
 
         log.info("Auditorium seats: " + auditoriumSeatsCreationDto);
-        return ResponseEntity
-            .accepted()
-            .body(auditoriumSeatService.update(auditoriumSeatsCreationDto));
+        return  RestResponse.accepted(auditoriumSeatService.update(auditoriumSeatsCreationDto));
     }
 
     /**
@@ -86,7 +82,7 @@ public class AuditoriumSeatController {
 
         log.info("Event venue id: " + eventVenueId);
         log.info("Auditorium name: " + auditoriumName);
-        return ResponseEntity.accepted().body("Deleted "
+        return  RestResponse.accepted("Deleted "
             + auditoriumSeatService.deleteAllSeatsForAuditorium(eventVenueId, auditoriumName) + " seats.");
     }
 
@@ -107,7 +103,7 @@ public class AuditoriumSeatController {
         log.info("Event venue id: " + eventVenueId);
         log.info("Auditorium name: " + auditoriumName);
         log.info("Seat row name: " + seatRowName);
-        return ResponseEntity.accepted().body("Deleted "
+        return  RestResponse.accepted("Deleted "
             + auditoriumSeatService.deleteSeatRow(eventVenueId, auditoriumName, seatRowName) + " seats.");
     }
 
@@ -131,7 +127,7 @@ public class AuditoriumSeatController {
         log.info("Auditorium name: " + auditoriumName);
         log.info("Seat row name: " + seatRowName);
         log.info("Seat number: " + seatNumber);
-        return ResponseEntity.accepted().body("Deleted "
+        return  RestResponse.accepted("Deleted "
             + auditoriumSeatService.deleteSeat(eventVenueId, auditoriumName, seatRowName, seatNumber) + " seats.");
     }
 
@@ -147,8 +143,7 @@ public class AuditoriumSeatController {
             @PathVariable("eventVenueId") final Long eventVenueId,
             @PathVariable("auditoriumName") final String auditoriumName) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(auditoriumSeatService.findByEventVenueAndAuditorium(eventVenueId, auditoriumName));
+        return  RestResponse.ok(auditoriumSeatService.findByEventVenueAndAuditorium(eventVenueId, auditoriumName));
     }
 
 }

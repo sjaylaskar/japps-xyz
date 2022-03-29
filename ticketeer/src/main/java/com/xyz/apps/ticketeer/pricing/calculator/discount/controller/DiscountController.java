@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,6 +26,7 @@ import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDto;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.api.internal.contract.DiscountDtoList;
 import com.xyz.apps.ticketeer.pricing.calculator.discount.service.DiscountService;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -60,9 +60,7 @@ public class DiscountController {
         log.info("Discount: " + discountCreationDto);
         final DiscountDto discountDtoAdded = discountService.add(discountCreationDto);
         log.info("Discount added: " + discountDtoAdded);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(discountDtoAdded);
+        return RestResponse.created(discountDtoAdded);
     }
 
     /**
@@ -77,9 +75,7 @@ public class DiscountController {
         log.info("Discount list: " + discountCreationDtoList);
         final DiscountDtoList discountDtoListAdded = discountService.addAll(discountCreationDtoList);
         log.info("Discounts added: " + discountDtoListAdded);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(discountDtoListAdded);
+        return RestResponse.created(discountDtoListAdded);
     }
 
     /**
@@ -94,9 +90,7 @@ public class DiscountController {
         log.info("Discount: " + discountDto);
         final DiscountDto discountDtoUpdated = discountService.update(discountDto);
         log.info("Discount updated: " + discountDtoUpdated);
-        return ResponseEntity
-            .accepted()
-            .body(discountDtoUpdated);
+        return RestResponse.accepted(discountDtoUpdated);
     }
 
     /**
@@ -111,9 +105,7 @@ public class DiscountController {
         log.info("Discount list: " + discountDtoList);
         final DiscountDtoList discountDtoListUpdated = discountService.updateAll(discountDtoList);
         log.info("Discounts updated: " + discountDtoListUpdated);
-        return ResponseEntity
-            .accepted()
-            .body(discountDtoListUpdated);
+        return RestResponse.accepted(discountDtoListUpdated);
     }
 
     /**
@@ -127,7 +119,7 @@ public class DiscountController {
         log.info("Discount id: " + id);
         discountService.deleteById(id);
         log.info("Discount deleted: " + id);
-        return ResponseEntity.accepted().body("Deleted discount with id: " + id);
+        return RestResponse.accepted("Deleted discount with id: " + id);
     }
 
     /**
@@ -143,7 +135,7 @@ public class DiscountController {
         log.info("Discount code: " + offerCode);
         discountService.deleteByOfferCode(offerCode);
         log.info("Discount deleted: " + offerCode);
-        return ResponseEntity.accepted().body("Deleted discount: " + offerCode);
+        return RestResponse.accepted("Deleted discount: " + offerCode);
     }
 
     /**
@@ -156,9 +148,7 @@ public class DiscountController {
     public ResponseEntity<?> getById(@PathVariable("id") final String id) {
 
         final DiscountDto discountDtoFound = discountService.findById(id);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(discountDtoFound);
+        return RestResponse.ok(discountDtoFound);
     }
 
     /**
@@ -173,9 +163,7 @@ public class DiscountController {
     ) final String offerCode) {
 
         final DiscountDto discountDtoFound = discountService.findByOfferCode(offerCode);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(discountDtoFound);
+        return RestResponse.ok(discountDtoFound);
     }
 
     /**
@@ -190,9 +178,7 @@ public class DiscountController {
     ) final Long cityId) {
 
         final DiscountDtoList discountDtoListFound = discountService.findByCityId(cityId);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(discountDtoListFound);
+        return RestResponse.ok(discountDtoListFound);
     }
 
     /**
@@ -207,9 +193,7 @@ public class DiscountController {
     ) final Long eventVenueId) {
 
         final DiscountDtoList discountDtoListFound = discountService.findByEventVenueId(eventVenueId);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(discountDtoListFound);
+        return RestResponse.ok(discountDtoListFound);
     }
 
     /**
@@ -221,9 +205,7 @@ public class DiscountController {
     public ResponseEntity<?> all() {
 
         final DiscountDtoList discountDtoListFound = discountService.findAll();
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(discountDtoListFound);
+        return RestResponse.ok(discountDtoListFound);
     }
 
     /**
@@ -234,9 +216,7 @@ public class DiscountController {
     @GetMapping(value = "/strategies")
     public ResponseEntity<?> strategies() {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(discountService.findDiscountStrategies());
+        return RestResponse.ok(discountService.findDiscountStrategies());
     }
 
     /**
@@ -247,9 +227,7 @@ public class DiscountController {
     @GetMapping(value = "/types")
     public ResponseEntity<?> types() {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(discountService.findDiscountTypes());
+        return RestResponse.ok(discountService.findDiscountTypes());
     }
 
     /**
@@ -260,8 +238,6 @@ public class DiscountController {
     @GetMapping(value = "/show-time-types")
     public ResponseEntity<?> showTimeTypes() {
 
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(discountService.findShowTimeTypes());
+        return RestResponse.ok(discountService.findShowTimeTypes());
     }
 }

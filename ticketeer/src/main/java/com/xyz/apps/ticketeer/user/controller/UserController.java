@@ -8,7 +8,6 @@ package com.xyz.apps.ticketeer.user.controller;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,7 +24,7 @@ import com.xyz.apps.ticketeer.user.api.internal.contract.BasicUserDto;
 import com.xyz.apps.ticketeer.user.api.internal.contract.UserCreationDto;
 import com.xyz.apps.ticketeer.user.api.internal.contract.UserDto;
 import com.xyz.apps.ticketeer.user.service.UserService;
-import com.xyz.apps.ticketeer.util.ResponseBuilder;
+import com.xyz.apps.ticketeer.util.RestResponse;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -59,7 +58,7 @@ public class UserController {
     public ResponseEntity<?> add(@RequestBody final UserCreationDto userCreationDto) {
 
         log.info("User: " + userCreationDto);
-        return ResponseBuilder.created(userService.add(userCreationDto));
+        return RestResponse.created(userService.add(userCreationDto));
     }
 
     /**
@@ -72,9 +71,7 @@ public class UserController {
     public ResponseEntity<?> update(@RequestBody final UserDto userDto) {
 
         log.info("UserDto: " + userDto);
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(userService.update(userDto));
+        return RestResponse.accepted(userService.update(userDto));
     }
 
     /**
@@ -89,7 +86,7 @@ public class UserController {
         log.info("User id: " + id);
         userService.deleteById(id);
         log.info("User deleted: " + id);
-        return ResponseEntity.accepted().body("Deleted user with id: " + id);
+        return RestResponse.accepted("Deleted user with id: " + id);
     }
 
     /**
@@ -104,7 +101,7 @@ public class UserController {
         log.info("Username: " + username);
         userService.deleteByUsername(username);
         log.info("User deleted: " + username);
-        return ResponseEntity.accepted().body("Deleted user with username: " + username);
+        return RestResponse.accepted("Deleted user with username: " + username);
     }
 
     /**
@@ -119,7 +116,7 @@ public class UserController {
     ) final BasicUserDto basicUserDto) {
 
         log.info("User: " + basicUserDto.getUsername());
-        return ResponseEntity.ok().body(userService.authenticate(basicUserDto));
+        return RestResponse.ok(userService.authenticate(basicUserDto));
     }
 
     /**
@@ -130,7 +127,7 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<?> all() {
 
-        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
+        return RestResponse.ok(userService.findAll());
     }
 
     /**
@@ -142,7 +139,6 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") final Long id) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(userService.findById(id));
+        return RestResponse.ok(userService.findById(id));
     }
 }
